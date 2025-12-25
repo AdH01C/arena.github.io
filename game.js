@@ -189,6 +189,69 @@ const CLASS_TREES = {
             { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
             { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 3, color: 0xffd700, desc: "+50% All Offense for 3 turns" }
         ]}
+    ],
+
+    "SHADOW": [
+        // 0-9: BASE - Stealth Assassin
+        { name: "SHADE", desc: "Tier 1: Stealth", skills: [
+            { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash' },
+            { name: "POISON BLADE", cost: 25, mult: 1.5, color: 0x00ff00, vfx: 'multi', hits: 3 },
+            { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 2, color: 0x220033, desc: "+30% Dodge for 2 turns" }
+        ]},
+        // 10-19: Poison Master
+        { name: "VENOM-WEAVER", desc: "Tier 2: Toxins", skills: [
+            { name: "TOXIC SLASH", cost: 0, mult: 0.8, color: 0x00aa00, vfx: 'multi', hits: 4 },
+            { name: "VENOM BURST", cost: 45, mult: 4.5, color: 0x00ff00, vfx: 'implode', hits: 1 },
+            { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Crit for 3 turns" }
+        ]},
+        // 20-29: Ghost
+        { name: "PHANTOM", desc: "Tier 3: Intangible", skills: [
+            { name: "PHASE STRIKE", cost: 0, mult: 0.6, color: 0x8800aa, vfx: 'slash', hits: 5 },
+            { name: "SOUL DRAIN", cost: 55, mult: 5.0, color: 0xaa00ff, vfx: 'implode', heal: 80 },
+            { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 1, color: 0x8800aa, desc: "Invincible for 1 turn" }
+        ]},
+        // 30-39: Assassin
+        { name: "DEATH-DEALER", desc: "Tier 4: Execute", skills: [
+            { name: "MARKED DEATH", cost: 0, mult: 1.5, color: 0x440044, vfx: 'crit', hits: 2 },
+            { name: "EXECUTE ORDER", cost: 75, mult: 8.0, color: 0xff0044, vfx: 'heavy', hits: 1 },
+            { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0xff0044, desc: "+50% Crit DMG for 3 turns" }
+        ]},
+        // 40-49: Nightmare
+        { name: "NIGHTMARE", desc: "Tier 5: Fear", skills: [
+            { name: "TERROR", cost: 0, mult: 0.7, color: 0x110011, vfx: 'implode', hits: 6 },
+            { name: "NIGHT TERROR", cost: 90, mult: 6.0, color: 0x330033, vfx: 'blackhole', hits: 3 },
+            { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0x330033, desc: "+25% Lifesteal for 3 turns" }
+        ]},
+        // 50-59: Reaper
+        { name: "GRIM-REAPER", desc: "Tier 6: Death", skills: [
+            { name: "SCYTHE SWEEP", cost: 0, mult: 1.2, color: 0x000000, vfx: 'slash', hits: 4 },
+            { name: "REAP SOULS", cost: 110, mult: 10.0, color: 0x440044, vfx: 'implode', heal: 150 },
+            { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 3, color: 0x000000, desc: "+35% Crit for 3 turns" }
+        ]},
+        // 60-69: Wraith
+        { name: "WRAITH-LORD", desc: "Tier 7: Ethereal", skills: [
+            { name: "SPECTRAL BLADES", cost: 0, mult: 0.5, color: 0x6600aa, vfx: 'omni', hits: 10 },
+            { name: "SOUL SHATTER", cost: 140, mult: 12.0, color: 0xaa00ff, vfx: 'blackhole', hits: 1 },
+            { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x6600aa, desc: "Invincible for 2 turns" }
+        ]},
+        // 70-79: Void Assassin
+        { name: "VOID-FANG", desc: "Tier 8: Void", skills: [
+            { name: "VOID FANGS", cost: 0, mult: 0.8, color: 0x220022, vfx: 'multi', hits: 12 },
+            { name: "ANNIHILATE", cost: 170, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+            { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0x220022, desc: "+25% All Offense for 3 turns" }
+        ]},
+        // 80-89: Entropy
+        { name: "ENTROPY", desc: "Tier 9: Decay", skills: [
+            { name: "DECAY", cost: 0, mult: 1.5, color: 0x003300, vfx: 'implode', hits: 8 },
+            { name: "ENTROPY WAVE", cost: 200, mult: 30.0, color: 0x006600, vfx: 'nova', hits: 1 },
+            { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 3, color: 0x003300, desc: "+75% Crit DMG for 3 turns" }
+        ]},
+        // 90+: Death Incarnate
+        { name: "OBLIVION", desc: "Tier 10: End", skills: [
+            { name: "OBLIVION", cost: 0, mult: 0.8, color: 0x000000, vfx: 'blackhole', hits: 20 },
+            { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1 },
+            { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 3, color: 0x000000, desc: "+60% All Offense for 3 turns" }
+        ]}
     ]
 };
 
@@ -610,7 +673,7 @@ const game = {
         container.innerHTML = '';
         if(tier === 0) {
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
-            ['RONIN', 'PRIEST', 'MECH'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0)));
+            ['RONIN', 'PRIEST', 'MECH', 'SHADOW'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0)));
         } else {
             document.querySelector('#class-screen h2').innerText = `TIER ${tier+1} ADVANCEMENT`;
             const currentKey = this.player.jobType;
@@ -659,7 +722,7 @@ const game = {
         engine.scene.remove(this.player.mesh);
 
         // Create new model based on class
-        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600 };
+        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600, 'SHADOW': 0x220033 };
         const color = colors[type] || 0x00f2ff;
 
         if(type === 'RONIN') {
@@ -668,6 +731,8 @@ const game = {
             this.player.model = Models.createPriest(color, 1.5, tier);
         } else if(type === 'MECH') {
             this.player.model = Models.createMech(color, 1.5, tier);
+        } else if(type === 'SHADOW') {
+            this.player.model = Models.createShadow(color, 1.5, tier);
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }

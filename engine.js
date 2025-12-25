@@ -276,6 +276,72 @@ const Models = {
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
 
+    createShadow(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:c || 0x110011, metalness:0.3, roughness:0.8});
+        const mG = new THREE.MeshBasicMaterial({color:0x00ff00}); // Poison green glow
+        const mD = new THREE.MeshStandardMaterial({color:0x000000, metalness:0.5, roughness:0.5});
+        const mP = new THREE.MeshBasicMaterial({color:0xaa00ff}); // Purple accents
+
+        // Slim legs
+        this.box(0.1,0.5,0.1,mB,-0.12,0.25,0,g); this.box(0.1,0.5,0.1,mB,0.12,0.25,0,g);
+
+        // Torso - slim and hooded
+        const t = this.box(0.35,0.4,0.2,mB,0,0.7,0,g);
+        this.box(0.1,0.1,0.05,mG,0,0,0.11,t); // Small chest glow
+
+        // Hood
+        const hood = this.box(0.3,0.25,0.28,mD,0,0.45,0,t);
+        this.box(0.25,0.15,0.05,mG,0,-0.02,0.14,hood); // Glowing eyes in hood
+
+        // Tattered cloak (tier dependent)
+        if(tier >= 1) {
+            this.box(0.4,0.5,0.05,mD,0,-0.15,-0.12,t); // Back cloak
+        }
+        if(tier >= 3) {
+            this.box(0.45,0.6,0.05,mD,0,-0.2,-0.14,t); // Longer cloak
+        }
+
+        // Arms
+        const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.08,0.35,0.08,mB,0,-0.18,0,arm); return arm;}
+        mkArm(-0.25);
+        const rightArm = mkArm(0.25);
+
+        // Dual daggers
+        const dagger1 = new THREE.Group(); dagger1.position.set(0,-0.3,0.1); rightArm.add(dagger1);
+        this.box(0.02,0.02,0.25,mD,0,0,0.1,dagger1);
+        this.box(0.01,0.01,0.2,mG,0,0,0.15,dagger1); // Poison edge
+
+        // Smoke/shadow particles at higher tiers
+        if(tier >= 4) {
+            for(let i=0;i<3;i++) {
+                const smoke = new THREE.Mesh(new THREE.SphereGeometry(0.08,6,6), mP);
+                smoke.position.set((Math.random()-0.5)*0.4, -0.1 + i*0.15, -0.2);
+                t.add(smoke);
+            }
+        }
+
+        // Spectral wings at high tier
+        if(tier >= 6) {
+            const wing1 = this.box(0.02,0.4,0.3,mP,-0.25,0.3,-0.2,t);
+            wing1.rotation.z = -0.3;
+            const wing2 = this.box(0.02,0.4,0.3,mP,0.25,0.3,-0.2,t);
+            wing2.rotation.z = 0.3;
+        }
+
+        // Death aura at max tier
+        if(tier >= 8) {
+            const aura = new THREE.Mesh(new THREE.TorusGeometry(0.4,0.03,8,16), mG);
+            aura.rotation.x = Math.PI/2;
+            aura.position.y = 0;
+            g.add(aura);
+        }
+
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
+
     // === ENEMY MODELS ===
     createDrone(c, s=1) {
         const g = new THREE.Group();
