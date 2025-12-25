@@ -172,6 +172,111 @@ const Models = {
             this.box(0.15,0.5,0.15,mB,0,-0.3,0,s); this.box(0.1,0.6,0.05,mG,0,0,0.1,s); return s;}
         g.scale.set(s,s,s); return {mesh:g, weapon:mkArm(0.35)};
     },
+
+    // === CLASS-SPECIFIC PLAYER MODELS ===
+    createRonin(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x222, metalness:0.9, roughness:0.1});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        const mBlade = new THREE.MeshStandardMaterial({color:0xaaaaff, metalness:1, roughness:0.1, emissive:0x4444aa});
+        // Legs
+        this.box(0.12,0.5,0.15,mB,-0.15,0.25,0,g); this.box(0.12,0.5,0.15,mB,0.15,0.25,0,g);
+        // Torso with glowing core
+        const t = this.box(0.4,0.45,0.3,mB,0,0.65,0,g); this.box(0.15,0.15,0.1,mG,0,0,0.16,t);
+        // Head with visor
+        const h = this.box(0.25,0.25,0.25,mB,0,0.45,0,t); this.box(0.22,0.06,0.05,mG,0,0.02,0.13,h);
+        // Scarf/cape (tier dependent)
+        if(tier >= 2) { const cape = this.box(0.3,0.5,0.05,mG,0,-0.1,-0.2,t); cape.rotation.x = 0.3; }
+        // Arms
+        const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.1,0.4,0.1,mB,0,-0.2,0,arm); return arm;}
+        mkArm(-0.3);
+        const rightArm = mkArm(0.3);
+        // Katana
+        const katana = new THREE.Group(); katana.position.set(0,-0.3,0.15); rightArm.add(katana);
+        this.box(0.03,0.8,0.02,mBlade,0,0.4,0,katana); this.box(0.08,0.08,0.03,mB,0,0,0,katana);
+        // Tier effects: shoulder pads, energy wings
+        if(tier >= 4) { this.box(0.18,0.08,0.15,mG,-0.3,0.35,0,t); this.box(0.18,0.08,0.15,mG,0.3,0.35,0,t); }
+        if(tier >= 7) {
+            const wing1 = this.box(0.02,0.4,0.3,mG,-0.35,0.3,-0.15,t); wing1.rotation.z = 0.3;
+            const wing2 = this.box(0.02,0.4,0.3,mG,0.35,0.3,-0.15,t); wing2.rotation.z = -0.3;
+        }
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
+
+    createPriest(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x444, metalness:0.6, roughness:0.3});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        const mGold = new THREE.MeshStandardMaterial({color:0xffd700, metalness:1, roughness:0.2, emissive:0x332200});
+        // Legs (robed)
+        this.box(0.3,0.5,0.25,mB,0,0.25,0,g);
+        // Torso - robed with glowing runes
+        const t = this.box(0.45,0.5,0.35,mB,0,0.7,0,g);
+        this.box(0.1,0.1,0.1,mG,0.12,0.1,0.18,t); this.box(0.1,0.1,0.1,mG,-0.12,0.1,0.18,t);
+        // Head with halo
+        const h = this.box(0.22,0.25,0.22,mB,0,0.48,0,t); this.box(0.18,0.08,0.05,mG,0,0.02,0.12,h);
+        // Halo (tier dependent)
+        if(tier >= 3) {
+            const halo = new THREE.Mesh(new THREE.TorusGeometry(0.2,0.02,8,16), mGold);
+            halo.position.set(0,0.2,0); halo.rotation.x = Math.PI/2; h.add(halo);
+        }
+        // Arms
+        const ag = new THREE.Group(); ag.position.y=0.3; t.add(ag);
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.12,0.45,0.12,mB,0,-0.25,0,arm); return arm;}
+        mkArm(-0.32);
+        const rightArm = mkArm(0.32);
+        // Staff
+        const staff = new THREE.Group(); staff.position.set(0,-0.3,0.1); rightArm.add(staff);
+        this.box(0.04,1.0,0.04,mGold,0,0.5,0,staff);
+        const orb = new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8), mG); orb.position.y=1.05; staff.add(orb);
+        // Wings at higher tiers
+        if(tier >= 6) {
+            for(let i=0;i<2;i++) {
+                const w = this.box(0.02,0.5,0.4,mG,(i===0?-1:1)*0.35,0.2,-0.2,t);
+                w.rotation.z = (i===0?1:-1)*0.4; w.rotation.y = (i===0?1:-1)*0.2;
+            }
+        }
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
+
+    createMech(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x555, metalness:0.95, roughness:0.1});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        const mDark = new THREE.MeshStandardMaterial({color:0x222, metalness:0.9, roughness:0.2});
+        // Heavy legs
+        this.box(0.2,0.5,0.2,mB,-0.22,0.25,0,g); this.box(0.2,0.5,0.2,mB,0.22,0.25,0,g);
+        this.box(0.25,0.15,0.3,mDark,-0.22,0.08,0,g); this.box(0.25,0.15,0.3,mDark,0.22,0.08,0,g);
+        // Heavy torso
+        const t = this.box(0.7,0.55,0.45,mB,0,0.75,0,g);
+        this.box(0.25,0.2,0.1,mG,0,0,0.23,t); // Chest reactor
+        // Head - visor style
+        const h = this.box(0.28,0.22,0.25,mDark,0,0.45,0,t); this.box(0.24,0.08,0.05,mG,0,0,0.13,h);
+        // Shoulder cannons (tier dependent)
+        if(tier >= 2) { this.box(0.15,0.15,0.3,mDark,-0.5,0.35,0,t); this.box(0.15,0.15,0.3,mDark,0.5,0.35,0,t); }
+        if(tier >= 5) { this.box(0.08,0.08,0.2,mG,-0.5,0.35,0.2,t); this.box(0.08,0.08,0.2,mG,0.5,0.35,0.2,t); }
+        // Arms
+        const ag = new THREE.Group(); ag.position.y=0.3; t.add(ag);
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.18,0.45,0.18,mB,0,-0.25,0,arm); return arm;}
+        mkArm(-0.5);
+        const rightArm = mkArm(0.5);
+        // Gatling gun
+        const gun = new THREE.Group(); gun.position.set(0,-0.35,0.15); rightArm.add(gun);
+        this.box(0.12,0.12,0.4,mDark,0,0,0.15,gun);
+        for(let i=0;i<4;i++) { this.box(0.03,0.03,0.3,mB,Math.cos(i*1.57)*0.05,Math.sin(i*1.57)*0.05,0.25,gun); }
+        // Backpack at higher tiers
+        if(tier >= 4) { this.box(0.5,0.4,0.2,mDark,0,0.1,-0.35,t); }
+        if(tier >= 7) {
+            this.box(0.1,0.6,0.1,mG,-0.2,0.4,-0.45,t); this.box(0.1,0.6,0.1,mG,0.2,0.4,-0.45,t);
+        }
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
+
+    // === ENEMY MODELS ===
     createDrone(c, s=1) {
         const g = new THREE.Group();
         const mB = new THREE.MeshStandardMaterial({color:0x444}); const mG = new THREE.MeshBasicMaterial({color:c});
@@ -179,24 +284,117 @@ const Models = {
         this.box(0.6,0.05,0.1,mB,0,0.3,0,core); g.userData.rotatorY=0.05;
         g.scale.set(s,s,s); return {mesh:g, weapon:core};
     },
+
+    createSentinel(c, s=1) { // Tall bipedal enemy
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x333, metalness:0.8, roughness:0.2});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        // Long legs
+        this.box(0.1,0.8,0.1,mB,-0.15,0.4,0,g); this.box(0.1,0.8,0.1,mB,0.15,0.4,0,g);
+        // Slim torso
+        const t = this.box(0.35,0.4,0.25,mB,0,1.0,0,g); this.box(0.15,0.15,0.1,mG,0,0,0.13,t);
+        // Angular head
+        const h = this.box(0.2,0.3,0.2,mB,0,0.35,0,t); this.box(0.18,0.05,0.05,mG,0,0.05,0.11,h);
+        // Blade arms
+        this.box(0.05,0.5,0.1,mG,-0.25,-0.1,0,t); this.box(0.05,0.5,0.1,mG,0.25,-0.1,0,t);
+        g.scale.set(s,s,s); return {mesh:g, weapon:t};
+    },
+
+    createTank(c, s=1) { // Heavy armored enemy
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x444, metalness:0.9, roughness:0.1});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        // Treads
+        this.box(0.2,0.3,0.6,mB,-0.35,0.15,0,g); this.box(0.2,0.3,0.6,mB,0.35,0.15,0,g);
+        // Hull
+        const t = this.box(0.6,0.4,0.5,mB,0,0.5,0,g); this.box(0.3,0.2,0.1,mG,0,0.05,0.26,t);
+        // Turret
+        const turret = this.box(0.35,0.25,0.35,mB,0,0.35,0,t);
+        this.box(0.08,0.08,0.4,mG,0,0,0.3,turret);
+        g.scale.set(s,s,s); return {mesh:g, weapon:turret};
+    },
+
+    createSpider(c, s=1) { // Multi-legged enemy
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x333, metalness:0.7, roughness:0.3});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        // Body
+        const body = this.box(0.5,0.25,0.4,mB,0,0.5,0,g);
+        this.box(0.2,0.15,0.1,mG,0,0.05,0.21,body);
+        // Legs (4 pairs)
+        for(let i=0;i<4;i++) {
+            const xOff = (i-1.5)*0.15;
+            const leg1 = this.box(0.04,0.4,0.04,mB,-0.3+xOff,0,-0.1+i*0.08,body); leg1.rotation.z = 0.8;
+            const leg2 = this.box(0.04,0.4,0.04,mB,0.3-xOff,0,-0.1+i*0.08,body); leg2.rotation.z = -0.8;
+        }
+        // Eyes
+        this.box(0.08,0.08,0.05,mG,-0.1,0.1,0.21,body); this.box(0.08,0.08,0.05,mG,0.1,0.1,0.21,body);
+        g.scale.set(s,s,s); return {mesh:g, weapon:body};
+    },
+
+    createFloater(c, s=1) { // Floating orb with tentacles
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x222, metalness:0.8, roughness:0.2});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        // Main orb
+        const orb = new THREE.Mesh(new THREE.SphereGeometry(0.35,12,12), mB);
+        orb.position.y = 1.2; g.add(orb);
+        // Eye
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.15,8,8), mG);
+        eye.position.z = 0.25; orb.add(eye);
+        // Tentacles
+        for(let i=0;i<5;i++) {
+            const tent = this.box(0.04,0.5,0.04,mB,Math.cos(i*1.26)*0.2,-0.4,Math.sin(i*1.26)*0.2,orb);
+            tent.rotation.x = 0.3; tent.rotation.z = Math.cos(i*1.26)*0.3;
+        }
+        g.userData.rotatorY = 0.02;
+        g.scale.set(s,s,s); return {mesh:g, weapon:orb};
+    },
+
     createBoss(c, s=1) {
         const g = new THREE.Group();
-        const mB = new THREE.MeshStandardMaterial({color:0x111, metalness:1}); const mG = new THREE.MeshBasicMaterial({color:0xff0000});
+        const mB = new THREE.MeshStandardMaterial({color:0x111, metalness:1}); const mG = new THREE.MeshBasicMaterial({color:c || 0xff0000});
         const t = this.box(0.8,0.8,0.6,mB,0,1.0,0,g); this.box(0.4,0.4,0.1,mG,0,0,0.31,t);
         this.box(0.5,0.5,0.5,mB,-0.7,0.2,0,t); this.box(0.5,0.5,0.5,mB,0.7,0.2,0,t);
         g.scale.set(s,s,s); return {mesh:g, weapon:t};
     },
+
+    createMidBoss(c, s=1, variant=0) { // Enhanced mid-bosses
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x222, metalness:0.95, roughness:0.1});
+        const mG = new THREE.MeshBasicMaterial({color:c});
+        const mGold = new THREE.MeshStandardMaterial({color:0xffd700, metalness:1, roughness:0.1, emissive:0x332200});
+        if(variant === 0) { // WARDEN (Floor 25)
+            this.box(0.25,0.7,0.25,mB,-0.3,0.35,0,g); this.box(0.25,0.7,0.25,mB,0.3,0.35,0,g);
+            const t = this.box(0.9,0.7,0.5,mB,0,1.0,0,g); this.box(0.35,0.3,0.1,mG,0,0,0.26,t);
+            const h = this.box(0.4,0.35,0.35,mB,0,0.55,0,t); this.box(0.35,0.1,0.05,mG,0,0.05,0.18,h);
+            this.box(0.15,0.2,0.6,mB,-0.55,0.3,0,t); this.box(0.15,0.2,0.6,mB,0.55,0.3,0,t);
+            this.box(0.05,0.8,0.5,mGold,-0.7,0,0.1,t);
+        } else if(variant === 1) { // EXECUTIONER (Floor 50)
+            this.box(0.2,0.6,0.2,mB,-0.25,0.3,0,g); this.box(0.2,0.6,0.2,mB,0.25,0.3,0,g);
+            const t = this.box(0.7,0.6,0.4,mB,0,0.9,0,g); this.box(0.25,0.25,0.1,mG,0,0,0.21,t);
+            const h = this.box(0.3,0.4,0.3,mB,0,0.5,0,t); this.box(0.28,0.08,0.05,mG,0,0.1,0.16,h);
+            // Giant axe
+            this.box(0.6,0.1,0.4,mGold,0.6,0.1,0,t); this.box(0.08,1.2,0.08,mB,0.6,-0.5,0,t);
+        } else { // OVERLORD (Floor 75)
+            const t = this.box(1.0,0.8,0.6,mB,0,1.2,0,g); this.box(0.4,0.4,0.1,mG,0,0,0.31,t);
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(0.8,0.05,8,24), mGold);
+            ring.position.y = 0.5; ring.userData.rotatorY = 0.03; t.add(ring);
+            this.box(0.3,1.0,0.15,mG,-0.7,0,0,t); this.box(0.3,1.0,0.15,mG,0.7,0,0,t);
+        }
+        g.scale.set(s,s,s); return {mesh:g, weapon:g};
+    },
+
     // NEW: THE ARCHITECT (Floor 100)
     createArchitect(s=1) {
         const g = new THREE.Group();
         const mGold = new THREE.MeshStandardMaterial({color:0xffd700, metalness:1.0, roughness:0.1, emissive:0x332200});
         const mVoid = new THREE.MeshBasicMaterial({color:0x000000});
-        const mLight = new THREE.MeshBasicMaterial({color:0xffffff});
 
         // Floating Rings
         const r1 = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.05, 8, 32), mGold);
         r1.position.y = 2; r1.userData.rotatorX = 0.02; r1.userData.rotatorY = 0.02; g.add(r1);
-        
+
         const r2 = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.05, 8, 32), mGold);
         r2.position.y = 2; r2.userData.rotatorZ = 0.01; r2.userData.rotatorY = -0.02; g.add(r2);
 
@@ -211,7 +409,7 @@ const Models = {
             w.lookAt(0,2,0);
             g.add(w);
         }
-        
+
         g.scale.set(s,s,s);
         return {mesh:g, weapon:core};
     }

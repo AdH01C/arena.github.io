@@ -17,6 +17,7 @@
     <div id="hud">
         <div id="top-ui">
             <div class="stat-box" id="floor-display">FLOOR <span id="floor-num">1</span></div>
+            <div class="stat-box" id="combo-display" style="display:none;">🔥 COMBO <span id="combo-num">0</span></div>
             <div class="stat-box" id="gold-display">CREDITS: <span id="gold-num">0</span></div>
         </div>
 
@@ -60,6 +61,9 @@
         <button id="btn-skill-2" class="btn" onclick="game.useSkill(1)">
             <span class="btn-name">HEAVY</span><br><span class="btn-cost" id="cost-1">20 MP</span>
         </button>
+        <button id="btn-skill-3" class="btn btn-buff" onclick="game.useSkill(2)">
+            <span class="btn-name">BUFF</span><br><span class="btn-cost" id="cost-2">0 MP</span>
+        </button>
     </div>
 
     <div id="start-screen" class="screen active">
@@ -91,6 +95,41 @@
         <h1 class="crit-fail">CRITICAL FAILURE</h1>
         <p class="fail-stats">FLOOR REACHED: <span id="final-floor">0</span></p>
         <button class="btn" onclick="game.startRun()">REBOOT SYSTEM</button>
+    </div>
+
+    <div id="awakening-screen" class="screen">
+        <h1 style="color:#ffd700; text-shadow: 0 0 30px #ffd700, 0 0 60px #ff8800;">⚡ AWAKENING ⚡</h1>
+        <p style="color:#fff; font-size:18px; max-width:500px; margin:20px auto;">
+            You have reached <span style="color:#ff0055">FLOOR 50</span>. Your neural pathways have evolved beyond their original parameters.
+        </p>
+        <div style="background:rgba(0,0,0,0.5); border:2px solid #ffd700; padding:20px; margin:20px auto; max-width:400px; border-radius:10px;">
+            <h3 style="color:#ffd700; margin-bottom:15px;">UNLOCKED ABILITIES:</h3>
+            <p style="color:#ff00ff; margin:10px 0;">⚡ BREACH: Deal 0.5% of enemy Max HP per hit</p>
+            <p style="color:#ffaa00; margin:10px 0;">🔥 MOMENTUM: +2% damage per combo hit</p>
+            <p style="color:#ff5500; margin:10px 0;">💀 ENHANCED CRITS: +50% crit damage</p>
+            <p style="color:#00ff00; margin:10px 0;">📈 STAT BOOST: +50% ATK, HP, and Mana</p>
+        </div>
+        <p style="color:#aaa; font-size:14px;">New shop items are now available!</p>
+        <button class="btn" style="background:linear-gradient(180deg, #ffd700, #ff8800); color:#000;" onclick="game.completeAwakening()">EMBRACE POWER</button>
+    </div>
+
+    <div id="rebirth-screen" class="screen">
+        <h1 style="color:#ff00ff; text-shadow: 0 0 30px #ff00ff, 0 0 60px #aa00ff;">✦ REBIRTH ✦</h1>
+        <p style="color:#fff; font-size:22px; margin:20px auto;">
+            THE ARCHITECT HAS FALLEN
+        </p>
+        <div style="background:rgba(0,0,0,0.6); border:2px solid #ff00ff; padding:25px; margin:20px auto; max-width:450px; border-radius:10px;">
+            <h2 style="color:#ff00ff; margin-bottom:20px;">REBIRTH LEVEL: <span id="rebirth-level" style="color:#fff;">1</span></h2>
+            <p style="color:#00ff00; margin:12px 0; font-size:16px;">💰 +<span id="rebirth-bonus">10000</span> CREDITS BONUS</p>
+            <p style="color:#ff5500; margin:12px 0; font-size:16px;">📈 +50% ATK, HP, MANA</p>
+            <p style="color:#ffaa00; margin:12px 0; font-size:16px;">⚡ +0.5% Breach Damage</p>
+            <p style="color:#00f2ff; margin:12px 0; font-size:16px;">🔥 +1% Combo Multiplier</p>
+            <hr style="border-color:#ff00ff; margin:20px 0;">
+            <p style="color:#ff0000; margin:12px 0; font-size:14px;">⚠️ ENEMIES: 2.5x HP PER REBIRTH</p>
+            <p style="color:#ffd700; margin:12px 0; font-size:14px;">✨ ALL PERKS NOW LEGENDARY</p>
+            <p style="color:#00ff00; margin:12px 0; font-size:14px;">💎 3x GOLD PER REBIRTH</p>
+        </div>
+        <button class="btn" style="background:linear-gradient(180deg, #ff00ff, #aa00ff); font-size:20px;" onclick="game.completeRebirth()">BEGIN NEW CYCLE</button>
     </div>
 
     <script src="engine.js"></script>

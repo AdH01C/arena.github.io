@@ -6,52 +6,62 @@ const CLASS_TREES = {
         // 0-9: BASE
         { name: "CYBER-RONIN", desc: "Tier 1: Basics", skills: [
             { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash' },
-            { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1 }
+            { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1 },
+            { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 3, color: 0xaa00ff, desc: "+15% Crit for 3 turns" }
         ]},
         // 10-19: ASSASSIN
         { name: "VOID-STALKER", desc: "Tier 2: Speed", skills: [
             { name: "PHANTOM CUT", cost: 0, mult: 1.2, color: 0x9900ff, vfx: 'multi', hits: 3 },
-            { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1 }
+            { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1 },
+            { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 3, color: 0x9900ff, desc: "+25% Dodge for 3 turns" }
         ]},
         // 20-29: TIME
         { name: "TIME-SLAYER", desc: "Tier 3: Multi-Hit", skills: [
             { name: "DIMENSION REND", cost: 0, mult: 0.5, color: 0xffffff, vfx: 'slash', hits: 5 },
-            { name: "OMNI-SLASH", cost: 60, mult: 6.0, color: 0xaa00ff, vfx: 'omni', hits: 10 }
+            { name: "OMNI-SLASH", cost: 60, mult: 6.0, color: 0xaa00ff, vfx: 'omni', hits: 10 },
+            { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 3, color: 0xffffff, desc: "+30% Double Strike for 3 turns" }
         ]},
         // 30-39: SHADOW
         { name: "SHADOW-LORD", desc: "Tier 4: Dark Arts", skills: [
             { name: "NIGHTFALL", cost: 0, mult: 0.8, color: 0x330033, vfx: 'implode', hits: 4 },
-            { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1 }
+            { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1 },
+            { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 3, color: 0x550055, desc: "+20% Lifesteal for 3 turns" }
         ]},
         // 40-49: BLOOD
         { name: "BLOOD-LETTER", desc: "Tier 5: Lifesteal", skills: [
             { name: "HEMORRHAGE", cost: 0, mult: 1.0, color: 0xff0000, vfx: 'multi', hits: 6 },
-            { name: "VAMPIRISM", cost: 100, mult: 5.0, color: 0xaa0000, vfx: 'implode', heal: 200 }
+            { name: "VAMPIRISM", cost: 100, mult: 5.0, color: 0xaa0000, vfx: 'implode', heal: 200 },
+            { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 30, duration: 3, color: 0xff0000, desc: "+30 ATK for 3 turns" }
         ]},
         // 50-59: ETHER
         { name: "ETHER-BLADE", desc: "Tier 6: Magic Dmg", skills: [
             { name: "SPIRIT SLASH", cost: 0, mult: 1.5, color: 0x00ffff, vfx: 'beam', hits: 2 },
-            { name: "SOUL REND", cost: 120, mult: 10.0, color: 0x00aaff, vfx: 'crit', hits: 1 }
+            { name: "SOUL REND", cost: 120, mult: 10.0, color: 0x00aaff, vfx: 'crit', hits: 1 },
+            { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 2, color: 0x00ffff, desc: "+40% Dodge for 2 turns" }
         ]},
         // 60-69: VOID
         { name: "VOID-WALKER", desc: "Tier 7: Black Holes", skills: [
             { name: "GRAVITY WELL", cost: 0, mult: 0.5, color: 0x111111, vfx: 'implode', hits: 8 },
-            { name: "EVENT HORIZON", cost: 150, mult: 12.0, color: 0x000000, vfx: 'blackhole', hits: 1 }
+            { name: "EVENT HORIZON", cost: 150, mult: 12.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+            { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0x111111, desc: "+50% Crit DMG for 3 turns" }
         ]},
         // 70-79: LIGHTSPEED
         { name: "FLASH-STEP", desc: "Tier 8: Velocity", skills: [
             { name: "MACH SLASH", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'omni', hits: 20 },
-            { name: "LIGHTSPEED", cost: 180, mult: 15.0, color: 0xffffff, vfx: 'beam', hits: 1 }
+            { name: "LIGHTSPEED", cost: 180, mult: 15.0, color: 0xffffff, vfx: 'beam', hits: 1 },
+            { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 3, color: 0xffff00, desc: "+50% Double Strike for 3 turns" }
         ]},
         // 80-89: REALITY
         { name: "REALITY-BREAKER", desc: "Tier 9: Glitch", skills: [
             { name: "GLITCH CUT", cost: 0, mult: 1.0, color: 0x00ff00, vfx: 'matrix', hits: 10 },
-            { name: "SYSTEM PURGE", cost: 220, mult: 20.0, color: 0x00ff00, vfx: 'matrix', hits: 1 }
+            { name: "SYSTEM PURGE", cost: 220, mult: 20.0, color: 0x00ff00, vfx: 'matrix', hits: 1 },
+            { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 3, color: 0x00ff00, desc: "+30% Crit for 3 turns" }
         ]},
         // 90+: GOD
         { name: "SINGULARITY", desc: "Tier 10: Cosmic", skills: [
             { name: "BIG BANG", cost: 0, mult: 1.0, color: 0xffffff, vfx: 'blackhole', hits: 15 },
-            { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1 }
+            { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+            { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0xffd700, desc: "+25% All Offense for 3 turns" }
         ]}
     ],
 
@@ -59,52 +69,62 @@ const CLASS_TREES = {
         // 0-9
         { name: "TECH-PRIEST", desc: "Tier 1: Basics", skills: [
             { name: "ZAP", cost: 0, mult: 0.8, color: 0xffff00, vfx: 'zap', manaGain: 8 },
-            { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', heal: 30 }
+            { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', heal: 30 },
+            { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 20, duration: 3, color: 0x00ff00, desc: "Heal 20 HP for 3 turns" }
         ]},
         // 10-19
         { name: "CYBER-BISHOP", desc: "Tier 2: Holy", skills: [
             { name: "SIPHON", cost: 0, mult: 1.0, color: 0xffffaa, vfx: 'drain', manaGain: 15 },
-            { name: "HOLY NOVA", cost: 50, mult: 3.5, color: 0x00ffff, vfx: 'nova', heal: 50 }
+            { name: "HOLY NOVA", cost: 50, mult: 3.5, color: 0x00ffff, vfx: 'nova', heal: 50 },
+            { name: "SANCTUARY", cost: 25, isBuff: true, buffType: 'shield', buffVal: 50, duration: 1, color: 0x00ffff, desc: "+50 Shield" }
         ]},
         // 20-29
         { name: "DEUS-EX", desc: "Tier 3: Machine", skills: [
             { name: "DATA DRAIN", cost: 0, mult: 1.2, color: 0x00ff00, vfx: 'matrix', manaGain: 25 },
-            { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', heal: 100 }
+            { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', heal: 100 },
+            { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 15, duration: 3, color: 0x00ff00, desc: "+15 Armor for 3 turns" }
         ]},
         // 30-39
         { name: "ANGEL-MK1", desc: "Tier 4: Flight", skills: [
             { name: "LASER WING", cost: 0, mult: 0.5, color: 0xffffff, vfx: 'beam', hits: 4, manaGain: 30 },
-            { name: "HEAVENLY RAY", cost: 100, mult: 8.0, color: 0xffffdd, vfx: 'god_beam', heal: 150 }
+            { name: "HEAVENLY RAY", cost: 100, mult: 8.0, color: 0xffffdd, vfx: 'god_beam', heal: 150 },
+            { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 50, duration: 3, color: 0xffffff, desc: "Heal 50 HP for 3 turns" }
         ]},
         // 40-49
         { name: "ORACLE", desc: "Tier 5: Sight", skills: [
             { name: "PREDICTION", cost: 0, mult: 2.0, color: 0xaa00ff, vfx: 'zap', manaGain: 40 },
-            { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', heal: 200 }
+            { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', heal: 200 },
+            { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 3, color: 0xaa00ff, desc: "+35% Dodge for 3 turns" }
         ]},
         // 50-59
         { name: "HIGH-TEMPLAR", desc: "Tier 6: Storm", skills: [
             { name: "PSIONIC STORM", cost: 0, mult: 0.5, color: 0x0000ff, vfx: 'rain', hits: 10, manaGain: 10 },
-            { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', heal: 250 }
+            { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', heal: 250 },
+            { name: "PSI SHIELD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 100, duration: 1, color: 0x0000ff, desc: "+100 Shield" }
         ]},
         // 60-69
         { name: "SERAPHIM", desc: "Tier 7: Fire", skills: [
             { name: "HOLY FIRE", cost: 0, mult: 1.5, color: 0xffaa00, vfx: 'beam', hits: 3, manaGain: 50 },
-            { name: "PURGATORY", cost: 180, mult: 15.0, color: 0xff5500, vfx: 'nuke', heal: 300 }
+            { name: "PURGATORY", cost: 180, mult: 15.0, color: 0xff5500, vfx: 'nuke', heal: 300 },
+            { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 3, color: 0xffaa00, desc: "+30% Thorns for 3 turns" }
         ]},
         // 70-79
         { name: "ARCHON", desc: "Tier 8: Power", skills: [
             { name: "POWER OVERWHELM", cost: 0, mult: 1.0, color: 0x00f2ff, vfx: 'omni', hits: 5, manaGain: 60 },
-            { name: "ARCHON BEAM", cost: 220, mult: 20.0, color: 0x00f2ff, vfx: 'god_beam', heal: 400 }
+            { name: "ARCHON BEAM", cost: 220, mult: 20.0, color: 0x00f2ff, vfx: 'god_beam', heal: 400 },
+            { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 3, color: 0x00f2ff, desc: "+25% All Defense for 3 turns" }
         ]},
         // 80-89
         { name: "SOURCE-CODE", desc: "Tier 9: Admin", skills: [
             { name: "REWRITE", cost: 0, mult: 2.0, color: 0x00ff00, vfx: 'matrix', manaGain: 100 },
-            { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', heal: 500 }
+            { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', heal: 500 },
+            { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 150, duration: 3, color: 0x00ff00, desc: "Heal 150 HP for 3 turns" }
         ]},
         // 90+
         { name: "DIGITAL-GOD", desc: "Tier 10: Omni", skills: [
             { name: "CREATION", cost: 0, mult: 5.0, color: 0xffffff, vfx: 'god_beam', manaGain: 999 },
-            { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', heal: 9999 }
+            { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', heal: 9999 },
+            { name: "IMMORTALITY", cost: 100, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0xffd700, desc: "Invincible for 2 turns" }
         ]}
     ],
 
@@ -112,52 +132,62 @@ const CLASS_TREES = {
         // 0-9
         { name: "HEAVY-MECH", desc: "Tier 1: Basics", skills: [
             { name: "GATLING", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'gatling', hits: 3 },
-            { name: "MISSILE", cost: 30, mult: 3.0, color: 0xff5500, vfx: 'explode', hits: 1 }
+            { name: "MISSILE", cost: 30, mult: 3.0, color: 0xff5500, vfx: 'explode', hits: 1 },
+            { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 10, duration: 3, color: 0xaaaaaa, desc: "+10 Armor for 3 turns" }
         ]},
         // 10-19
         { name: "WAR-TITAN", desc: "Tier 2: Dakka", skills: [
             { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6 },
-            { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1 }
+            { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1 },
+            { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 20, duration: 3, color: 0xff9900, desc: "+20 ATK for 3 turns" }
         ]},
         // 20-29
         { name: "APOCALYPSE", desc: "Tier 3: Barrage", skills: [
             { name: "BULLET HELL", cost: 0, mult: 0.1, color: 0xffaa00, vfx: 'gatling', hits: 15 },
-            { name: "BUNKER BUSTER", cost: 80, mult: 7.0, color: 0xff0000, vfx: 'nuke', hits: 1 }
+            { name: "BUNKER BUSTER", cost: 80, mult: 7.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
+            { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 15, duration: 3, color: 0xffaa00, desc: "+15 Mana Regen for 3 turns" }
         ]},
         // 30-39
         { name: "ARTILLERY", desc: "Tier 4: Long Range", skills: [
             { name: "HOWITZER", cost: 0, mult: 2.0, color: 0xaa5500, vfx: 'heavy', hits: 1 },
-            { name: "CARPET BOMB", cost: 100, mult: 1.0, color: 0xff5500, vfx: 'rain', hits: 10 }
+            { name: "CARPET BOMB", cost: 100, mult: 1.0, color: 0xff5500, vfx: 'rain', hits: 10 },
+            { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 25, duration: 3, color: 0xaa5500, desc: "+25 Armor for 3 turns" }
         ]},
         // 40-49
         { name: "LASER-CORE", desc: "Tier 5: Energy", skills: [
             { name: "PULSE RIFLE", cost: 0, mult: 0.5, color: 0x00f2ff, vfx: 'beam', hits: 5 },
-            { name: "ION CANNON", cost: 120, mult: 12.0, color: 0x00ffff, vfx: 'god_beam', hits: 1 }
+            { name: "ION CANNON", cost: 120, mult: 12.0, color: 0x00ffff, vfx: 'god_beam', hits: 1 },
+            { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 3, color: 0x00f2ff, desc: "+40% Crit DMG for 3 turns" }
         ]},
         // 50-59
         { name: "FORTRESS", desc: "Tier 6: Defense", skills: [
             { name: "FLAK", cost: 0, mult: 0.3, color: 0xffff00, vfx: 'explode', hits: 12 },
-            { name: "DOOMSDAY", cost: 150, mult: 15.0, color: 0xff0000, vfx: 'nuke', hits: 1 }
+            { name: "DOOMSDAY", cost: 150, mult: 15.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
+            { name: "BUNKER", cost: 45, isBuff: true, buffType: 'shield', buffVal: 150, duration: 1, color: 0xffff00, desc: "+150 Shield" }
         ]},
         // 60-69
         { name: "GUNDAM-X", desc: "Tier 7: Mobile", skills: [
             { name: "BEAM SABER", cost: 0, mult: 1.0, color: 0xff00ff, vfx: 'slash', hits: 3 },
-            { name: "FULL BURST", cost: 180, mult: 0.8, color: 0x00ff00, vfx: 'omni', hits: 25 }
+            { name: "FULL BURST", cost: 180, mult: 0.8, color: 0x00ff00, vfx: 'omni', hits: 25 },
+            { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 3, color: 0xff00ff, desc: "+20% All Offense for 3 turns" }
         ]},
         // 70-79
         { name: "DREADNOUGHT", desc: "Tier 8: Space", skills: [
             { name: "MACRO CANNON", cost: 0, mult: 3.0, color: 0xaaaaff, vfx: 'heavy', hits: 2 },
-            { name: "EXTERMINATUS", cost: 220, mult: 25.0, color: 0xffaa00, vfx: 'rain', hits: 15 }
+            { name: "EXTERMINATUS", cost: 220, mult: 25.0, color: 0xffaa00, vfx: 'rain', hits: 15 },
+            { name: "VOID SHIELDS", cost: 55, isBuff: true, buffType: 'shield', buffVal: 250, duration: 1, color: 0xaaaaff, desc: "+250 Shield" }
         ]},
         // 80-89
         { name: "WORLD-EATER", desc: "Tier 9: Planetary", skills: [
             { name: "CRUST CRACK", cost: 0, mult: 2.0, color: 0xff5500, vfx: 'implode', hits: 5 },
-            { name: "CORE DETONATE", cost: 260, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1 }
+            { name: "CORE DETONATE", cost: 260, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
+            { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 100, duration: 3, color: 0xff5500, desc: "+100 ATK for 3 turns" }
         ]},
         // 90+
         { name: "ANNIHILATOR", desc: "Tier 10: Universal", skills: [
             { name: "ZERO POINT", cost: 0, mult: 1.0, color: 0xffffff, vfx: 'gatling', hits: 50 },
-            { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1 }
+            { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
+            { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 3, color: 0xffd700, desc: "+50% All Offense for 3 turns" }
         ]}
     ]
 };
@@ -183,6 +213,9 @@ const PERK_POOL = [
 const game = {
     floor: 1, gold: 0, player: null, enemy: null, state: 'IDLE',
 
+    // --- REBIRTH SYSTEM ---
+    rebirth: 0, // Rebirth level (0 = first playthrough)
+
     // --- BUFF TRACKING ---
     buffs: {}, // { perkName: { count: N, totalValue: V, icon: '🔧', desc: 'description' } }
 
@@ -191,8 +224,15 @@ const game = {
         heal: { level: 1, baseCost: 50, costMult: 1.5, baseVal: 50, valInc: 25 },
         atk:  { level: 1, baseCost: 100, costMult: 1.4, baseVal: 5,  valInc: 5 },
         hp:   { level: 1, baseCost: 100, costMult: 1.4, baseVal: 30, valInc: 20 },
-        mana: { level: 1, baseCost: 75,  costMult: 1.3, baseVal: 20, valInc: 10 }
+        mana: { level: 1, baseCost: 75,  costMult: 1.3, baseVal: 20, valInc: 10 },
+        // Late-game items (unlock at floor 50)
+        breach: { level: 1, baseCost: 2000, costMult: 2.0, baseVal: 0.002, valInc: 0.001 }, // % max HP damage
+        combo:  { level: 1, baseCost: 1500, costMult: 1.8, baseVal: 0.01, valInc: 0.005 }, // Combo damage multiplier
+        crit:   { level: 1, baseCost: 1000, costMult: 1.6, baseVal: 0.25, valInc: 0.15 } // Crit damage
     },
+
+    // Combo counter for battle
+    battleCombo: 0,
 
     // --- HELPERS (Calculates Price based on Level) ---
     getItemCost(id) {
@@ -200,7 +240,7 @@ const game = {
         // Cost = Base * (Multiplier ^ (Level - 1))
         return Math.floor(item.baseCost * Math.pow(item.costMult, item.level - 1));
     },
-    
+
     getItemValue(id) {
         const item = this.shopData[id];
         return item.baseVal + ((item.level - 1) * item.valInc);
@@ -208,7 +248,9 @@ const game = {
 
     startRun() {
         this.floor = 1; this.gold = 0;
+        this.rebirth = 0; // Reset rebirth on new run
         this.buffs = {}; // Reset buffs
+        this.battleCombo = 0;
         this.resetShop();
         this.renderBuffs(); // Clear buff display
         if(this.player) engine.scene.remove(this.player.mesh);
@@ -222,20 +264,39 @@ const game = {
         this.shopData.atk.level = 1;
         this.shopData.hp.level = 1;
         this.shopData.mana.level = 1;
+        this.shopData.breach.level = 1;
+        this.shopData.combo.level = 1;
+        this.shopData.crit.level = 1;
     },
 
     useSkill(slot) {
         if(this.state !== 'IDLE') return;
         const skill = this.player.skills[slot];
+        if(!skill) return;
         const actualCost = Math.max(0, Math.floor(skill.cost * (1 - this.player.manaCostReduction)));
         if(this.player.mana < actualCost) { this.showText("NO MANA", this.player.mesh.position, '#00f2ff'); return; }
 
         this.state = 'ANIMATING';
         this.player.mana -= actualCost;
+
+        // Handle buff skills
+        if(skill.isBuff) {
+            this.applyBuff(skill);
+            engine.spawnParticles(this.player.mesh.position, skill.color, 15);
+            this.showText(skill.name, this.player.mesh.position, '#ffe600');
+            setTimeout(() => {
+                this.state = 'IDLE';
+                this.enemyTurn();
+            }, 500);
+            this.updateUI();
+            this.updateButtons();
+            return;
+        }
+
         let hits = skill.hits || 1;
-        
-        let delay = 150; 
-        if(skill.vfx === 'gatling') delay = 50; 
+
+        let delay = 150;
+        if(skill.vfx === 'gatling') delay = 50;
         else if(hits > 40) delay = 15;
         else if(hits > 15) delay = 30;
         else if(hits > 3) delay = 80;
@@ -252,10 +313,90 @@ const game = {
         this.updateUI();
     },
 
+    applyBuff(skill) {
+        const p = this.player;
+        const type = skill.buffType;
+        const val = skill.buffVal;
+        const dur = skill.duration;
+
+        // Initialize active buffs array if needed
+        if(!p.activeBuffs) p.activeBuffs = [];
+
+        // Store original values for reverting
+        const buff = { type, val, duration: dur, name: skill.name, color: skill.color };
+
+        // Apply the buff based on type
+        if(type === 'crit') { p.critChance += val; buff.revert = () => p.critChance -= val; }
+        else if(type === 'dodge') { p.dodge += val; buff.revert = () => p.dodge -= val; }
+        else if(type === 'doubleStrike') { p.doubleStrike += val; buff.revert = () => p.doubleStrike -= val; }
+        else if(type === 'lifesteal') { p.lifesteal += val; buff.revert = () => p.lifesteal -= val; }
+        else if(type === 'atk') { p.atk += val; buff.revert = () => p.atk -= val; }
+        else if(type === 'armor') { p.armor += val; buff.revert = () => p.armor -= val; }
+        else if(type === 'critDamage') { p.critDamage += val; buff.revert = () => p.critDamage -= val; }
+        else if(type === 'thorns') { p.thorns += val; buff.revert = () => p.thorns -= val; }
+        else if(type === 'manaRegen') { p.manaRegen += val; buff.revert = () => p.manaRegen -= val; }
+        else if(type === 'shield') { p.shield += val; p.maxShield = Math.max(p.maxShield, p.shield); buff.revert = () => {}; }
+        else if(type === 'regen') { buff.healPerTurn = val; buff.revert = () => {}; }
+        else if(type === 'invincible') { p.invincible = true; buff.revert = () => p.invincible = false; }
+        else if(type === 'all_offense') {
+            p.critChance += val; p.critDamage += val; p.atk += Math.floor(p.atk * val);
+            const atkBonus = Math.floor(p.atk * val / (1 + val));
+            buff.revert = () => { p.critChance -= val; p.critDamage -= val; p.atk -= atkBonus; };
+        }
+        else if(type === 'all_defense') {
+            p.armor += Math.floor(val * 50); p.dodge += val;
+            buff.revert = () => { p.armor -= Math.floor(val * 50); p.dodge -= val; };
+        }
+
+        p.activeBuffs.push(buff);
+    },
+
+    tickBuffs() {
+        if(!this.player.activeBuffs) return;
+
+        // Process heal-over-time buffs
+        this.player.activeBuffs.forEach(buff => {
+            if(buff.healPerTurn) {
+                this.player.hp = Math.min(this.player.maxHp, this.player.hp + buff.healPerTurn);
+                this.showText(`+${buff.healPerTurn} HP`, this.player.mesh.position, '#00ff00');
+            }
+        });
+
+        // Decrement durations and remove expired buffs
+        this.player.activeBuffs = this.player.activeBuffs.filter(buff => {
+            buff.duration--;
+            if(buff.duration <= 0) {
+                buff.revert();
+                this.showText(`${buff.name} ENDED`, this.player.mesh.position, '#888');
+                return false;
+            }
+            return true;
+        });
+
+        this.updateUI();
+    },
+
     triggerHit(skill, index, totalHits) {
         let isCrit = Math.random() < this.player.critChance;
         const critMult = this.player.critDamage + (this.floor * 0.05);
         let raw = Math.floor(this.player.atk * skill.mult * (isCrit ? critMult : 1));
+
+        // COMBO SYSTEM: Each hit in battle increases damage
+        this.battleCombo = (this.battleCombo || 0) + 1;
+        const comboBonus = 1 + (this.battleCombo * (this.player.comboMult || 0.01));
+        raw = Math.floor(raw * comboBonus);
+
+        // Show combo milestones
+        if(this.battleCombo === 10) this.showText("10 COMBO!", this.player.mesh.position, '#ffaa00');
+        else if(this.battleCombo === 25) this.showText("25 COMBO!", this.player.mesh.position, '#ff5500');
+        else if(this.battleCombo === 50) this.showText("50 COMBO!", this.player.mesh.position, '#ff0000');
+        else if(this.battleCombo === 100) this.showText("100 COMBO!!", this.player.mesh.position, '#ff00ff');
+
+        // % MAX HP DAMAGE (Breach) - helps against tanky enemies
+        if(this.player.breachDamage > 0) {
+            const breachDmg = Math.floor(this.enemy.maxHp * this.player.breachDamage);
+            raw += breachDmg;
+        }
 
         // Execute bonus: deal extra damage to low HP enemies
         if(this.player.executeThreshold > 0 && (this.enemy.hp / this.enemy.maxHp) <= this.player.executeThreshold) {
@@ -315,6 +456,13 @@ const game = {
 
     nextFloor() {
         this.floor++;
+
+        // AWAKENING at floor 50 - major power boost
+        if(this.floor === 50 && !this.player.awakened) {
+            this.triggerAwakening();
+            return;
+        }
+
         if(this.floor % 10 === 0 && this.floor <= 90) {
             const tier = this.floor / 10;
             this.offerJobSelection(tier);
@@ -327,7 +475,41 @@ const game = {
         this.updateButtons();
         this.updateUI();
     },
-    
+
+    // --- AWAKENING SYSTEM (Floor 50) ---
+    triggerAwakening() {
+        this.player.awakened = true;
+
+        // Major stat boosts
+        this.player.atk = Math.floor(this.player.atk * 1.5);
+        this.player.maxHp = Math.floor(this.player.maxHp * 1.5);
+        this.player.hp = this.player.maxHp;
+        this.player.maxMana = Math.floor(this.player.maxMana * 1.5);
+        this.player.mana = this.player.maxMana;
+
+        // Unlock late-game mechanics
+        this.player.comboMult = 0.02;      // 2% damage per combo hit (was 1%)
+        this.player.breachDamage = 0.005;  // 0.5% enemy max HP per hit
+        this.player.critDamage += 0.5;     // +50% crit damage
+
+        // Show awakening screen
+        this.setScreen('awakening-screen');
+    },
+
+    completeAwakening() {
+        this.showText("AWAKENED!", this.player.mesh.position, '#ffd700');
+        engine.spawnShockwave(this.player.mesh.position, 0xffd700, 5);
+        engine.addShake(0.5);
+
+        // Continue to floor 50
+        this.state = 'IDLE';
+        this.setScreen('hud');
+        document.getElementById('battle-controls').classList.add('active');
+        this.spawnEnemy();
+        this.updateButtons();
+        this.updateUI();
+    },
+
     // --- NAVIGATION TO SHOP ---
     goToShop() {
         this.setScreen('shop-screen');
@@ -339,9 +521,15 @@ const game = {
     generateShop() {
         const container = document.getElementById('shop-container');
         container.innerHTML = '';
-        
+
         // Show Current Player Stats so you can see them grow
-        document.getElementById('shop-tier').innerHTML = `<br><span style="font-size:16px; color:#fff">CURRENT ATK: <span style="color:#ff0055">${Math.floor(this.player.atk)}</span> | HP: <span style="color:#00f2ff">${Math.floor(this.player.maxHp)}</span></span>`;
+        const breachPct = ((this.player.breachDamage || 0) * 100).toFixed(1);
+        const comboPct = ((this.player.comboMult || 0.01) * 100).toFixed(1);
+        let statsHtml = `CURRENT ATK: <span style="color:#ff0055">${Math.floor(this.player.atk)}</span> | HP: <span style="color:#00f2ff">${Math.floor(this.player.maxHp)}</span>`;
+        if(this.floor >= 50) {
+            statsHtml += ` | BREACH: <span style="color:#ff00ff">${breachPct}%</span> | COMBO: <span style="color:#ffaa00">${comboPct}%</span>`;
+        }
+        document.getElementById('shop-tier').innerHTML = `<br><span style="font-size:16px; color:#fff">${statsHtml}</span>`;
 
         const items = [
             { id: 'heal', name: "NANO REPAIR",  desc: (val)=>`+${val} HP` },
@@ -350,14 +538,25 @@ const game = {
             { id: 'mana', name: "ARC BATTERY",  desc: (val)=>`+${val} MAX MP` }
         ];
 
+        // LATE-GAME ITEMS (unlock after floor 50)
+        if(this.floor >= 50) {
+            items.push(
+                { id: 'breach', name: "QUANTUM CORE", desc: (val)=>`+${(val*100).toFixed(1)}% Enemy Max HP Damage`, tier: 'epic' },
+                { id: 'combo',  name: "WAR PROTOCOL", desc: (val)=>`+${(val*100).toFixed(1)}% Combo Damage/Hit`, tier: 'epic' },
+                { id: 'crit',   name: "FATAL CHIP",   desc: (val)=>`+${(val*100).toFixed(0)}% Crit Damage`, tier: 'rare' }
+            );
+        }
+
         items.forEach(def => {
             const data = this.shopData[def.id];
             const cost = this.getItemCost(def.id);
             const val = this.getItemValue(def.id);
-            
+
             const el = document.createElement('div');
             el.className = 'shop-item';
-            
+            if(def.tier === 'epic') el.style.borderColor = '#aa00ff';
+            else if(def.tier === 'rare') el.style.borderColor = '#00aaff';
+
             const canAfford = this.gold >= cost;
             const costColor = canAfford ? '#ffe600' : '#555';
             const itemColor = canAfford ? '#fff' : '#777';
@@ -365,14 +564,14 @@ const game = {
             el.innerHTML = `
                 <div style="color:${itemColor}">
                     <div class="item-name" style="font-size:20px">
-                        ${def.name} 
+                        ${def.name}
                         <span style="font-size:14px;color:#00f2ff; font-weight:bold; margin-left:5px;">LVL ${data.level}</span>
                     </div>
                     <div class="item-desc">${def.desc(val)}</div>
                 </div>
                 <div class="cost" style="color:${costColor}">${cost} CR</div>
             `;
-            
+
             el.onclick = () => this.buyItem(def.id);
             container.appendChild(el);
         });
@@ -381,16 +580,20 @@ const game = {
     // --- BUY LOGIC ---
     buyItem(id) {
         const cost = this.getItemCost(id);
-        
+
         if(this.gold >= cost) {
             this.gold -= cost;
             const val = this.getItemValue(id);
-            
+
             // Apply Stats
             if(id === 'heal') this.player.hp = Math.min(this.player.maxHp, this.player.hp + val);
             else if(id === 'atk') this.player.atk += val;
             else if(id === 'hp') { this.player.maxHp += val; this.player.hp += val; }
             else if(id === 'mana') { this.player.maxMana += val; this.player.mana += val; }
+            // Late-game stats
+            else if(id === 'breach') this.player.breachDamage = (this.player.breachDamage || 0) + val;
+            else if(id === 'combo') this.player.comboMult = (this.player.comboMult || 0.01) + val;
+            else if(id === 'crit') this.player.critDamage += val;
 
             // LEVEL UP THE ITEM
             this.shopData[id].level++;
@@ -419,20 +622,26 @@ const game = {
     createJobCard(container, jobData, onClick) {
         const card = document.createElement('div');
         card.className = 'perk-card legendary'; card.style.height = 'auto';
+        const s3 = jobData.skills[2];
+        const buffInfo = s3 ? `<br><strong style="color:#ffe600">3:</strong> <span style="color:#ffe600">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
         card.innerHTML = `<div class="perk-title">${jobData.name}</div><div class="perk-desc">${jobData.desc}</div>
-        <div style="font-size:14px;color:#fff;margin-top:10px;"><strong>1:</strong> ${jobData.skills[0].name}<br><span style="color:#aaa">${jobData.skills[0].mult}x / ${jobData.skills[0].hits||1} Hits</span><br><strong>2:</strong> ${jobData.skills[1].name}<br><span style="color:#aaa">${jobData.skills[1].mult}x / ${jobData.skills[1].hits||1} Hits</span></div>`;
+        <div style="font-size:14px;color:#fff;margin-top:10px;"><strong>1:</strong> ${jobData.skills[0].name}<br><span style="color:#aaa">${jobData.skills[0].mult}x / ${jobData.skills[0].hits||1} Hits</span><br><strong>2:</strong> ${jobData.skills[1].name}<br><span style="color:#aaa">${jobData.skills[1].mult}x / ${jobData.skills[1].hits||1} Hits</span>${buffInfo}</div>`;
         card.onclick = onClick; container.appendChild(card);
     },
 
     setJob(type, tier) {
         this.player.jobType = type; this.player.jobTier = tier; this.player.skills = CLASS_TREES[type][tier].skills;
+
+        // Update player model based on class
+        this.updatePlayerModel(type, tier);
+
         if(tier > 0) {
             const scale = tier + 1;
-            this.player.atk += 25 * scale; 
-            this.player.maxHp += 150 * scale; 
+            this.player.atk += 25 * scale;
+            this.player.maxHp += 150 * scale;
             this.player.hp = this.player.maxHp;
-            this.player.maxMana += 50 * scale; 
-            this.player.mana = this.player.maxMana; 
+            this.player.maxMana += 50 * scale;
+            this.player.mana = this.player.maxMana;
             this.player.manaRegen += 2 * scale;
             this.showText("ASCENDED!", this.player.mesh.position, "#ffe600");
         }
@@ -441,40 +650,115 @@ const game = {
         this.updateUI();
     },
 
+    updatePlayerModel(type, tier) {
+        // Store old position
+        const oldPos = this.player.mesh.position.clone();
+        const oldRot = this.player.mesh.rotation.y;
+
+        // Remove old mesh
+        engine.scene.remove(this.player.mesh);
+
+        // Create new model based on class
+        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600 };
+        const color = colors[type] || 0x00f2ff;
+
+        if(type === 'RONIN') {
+            this.player.model = Models.createRonin(color, 1.5, tier);
+        } else if(type === 'PRIEST') {
+            this.player.model = Models.createPriest(color, 1.5, tier);
+        } else if(type === 'MECH') {
+            this.player.model = Models.createMech(color, 1.5, tier);
+        } else {
+            this.player.model = Models.createHumanoid(color, 1.5);
+        }
+
+        // Restore position
+        this.player.mesh = this.player.model.mesh;
+        this.player.mesh.position.copy(oldPos);
+        this.player.mesh.rotation.y = oldRot;
+        this.player.mesh.userData.idle = true;
+        this.player.mesh.userData.baseY = 0;
+        this.player.mesh.userData.idleSpeed = 0.002;
+        this.player.mesh.userData.idleAmp = 0.1;
+
+        engine.scene.add(this.player.mesh);
+    },
+
     spawnEnemy() {
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
-        
+
+        // Reset combo for new battle
+        this.battleCombo = 0;
+
         const isFinalBoss = (this.floor === 100);
         const isMidBoss = (this.floor === 25 || this.floor === 50 || this.floor === 75);
         const isFloorBoss = (this.floor % 5 === 0 && !isFinalBoss && !isMidBoss);
 
-        let hp = Math.floor(120 * Math.pow(1.16, this.floor)); 
-        let atk = Math.floor(10 * Math.pow(1.10, this.floor));
+        // REBALANCED HP SCALING: exponential until 50, then linear growth
+        let hp, atk;
+        if(this.floor <= 50) {
+            hp = Math.floor(100 * Math.pow(1.12, this.floor));
+            atk = Math.floor(8 * Math.pow(1.08, this.floor));
+        } else {
+            // Floor 50 base values
+            const hp50 = Math.floor(100 * Math.pow(1.12, 50)); // ~28,900
+            const atk50 = Math.floor(8 * Math.pow(1.08, 50));  // ~375
+            // Linear scaling after 50: +15% of base per floor
+            hp = Math.floor(hp50 + (this.floor - 50) * (hp50 * 0.12));
+            atk = Math.floor(atk50 + (this.floor - 50) * (atk50 * 0.08));
+        }
+
+        // REBIRTH SCALING: Exponential multiplier per rebirth
+        if(this.rebirth > 0) {
+            const rebirthMult = Math.pow(2.5, this.rebirth); // 2.5x HP per rebirth
+            hp = Math.floor(hp * rebirthMult);
+            atk = Math.floor(atk * Math.pow(1.5, this.rebirth)); // 1.5x ATK per rebirth
+        }
 
         if(isFinalBoss) {
             hp = 5000000; atk *= 5;
             document.getElementById('enemy-name').innerText = `THE ARCHITECT (FINAL)`;
             document.getElementById('enemy-name').style.color = '#ffd700';
             this.enemy = new Unit(false, hp, hp, atk, 0xffd700, 'architect');
-        } 
+        }
         else if (isMidBoss) {
             hp *= 3; atk *= 1.5;
-            const names = {25:"GATEKEEPER", 50:"WARLORD", 75:"CORRUPTOR"};
+            const names = {25:"WARDEN", 50:"EXECUTIONER", 75:"OVERLORD"};
+            const variants = {25: 0, 50: 1, 75: 2};
             document.getElementById('enemy-name').innerText = `${names[this.floor]} (MID BOSS)`;
             document.getElementById('enemy-name').style.color = '#ff5500';
-            this.enemy = new Unit(false, hp, hp, atk, 0xff5500, 'boss');
+            this.enemy = new Unit(false, hp, hp, atk, 0xff5500, 'midboss', variants[this.floor]);
         }
         else if(isFloorBoss) {
             hp *= 2.0; atk *= 1.2;
             document.getElementById('enemy-name').innerText = `SECTOR BOSS - ${this.floor}`;
             document.getElementById('enemy-name').style.color = '#ff0000';
             this.enemy = new Unit(false, hp, hp, atk, 0xff0000, 'boss');
-        } 
+        }
         else {
-            document.getElementById('enemy-name').innerText = `TARGET - FLOOR ${this.floor}`;
+            // More enemy variety based on floor
+            const enemyTypes = ['walker', 'drone', 'sentinel', 'tank', 'spider', 'floater'];
+            const floorMod = this.floor % 60;
+            let type;
+            const names = {
+                'walker': 'PATROL UNIT',
+                'drone': 'RECON DRONE',
+                'sentinel': 'SENTINEL',
+                'tank': 'HEAVY TANK',
+                'spider': 'SPIDER BOT',
+                'floater': 'WATCHER'
+            };
+
+            if(floorMod < 10) type = Math.random() > 0.5 ? 'walker' : 'drone';
+            else if(floorMod < 20) type = ['walker', 'drone', 'sentinel'][Math.floor(Math.random()*3)];
+            else if(floorMod < 30) type = ['sentinel', 'tank', 'drone'][Math.floor(Math.random()*3)];
+            else if(floorMod < 40) type = ['tank', 'spider', 'sentinel'][Math.floor(Math.random()*3)];
+            else if(floorMod < 50) type = ['spider', 'floater', 'tank'][Math.floor(Math.random()*3)];
+            else type = enemyTypes[Math.floor(Math.random()*enemyTypes.length)];
+
+            document.getElementById('enemy-name').innerText = `${names[type]} - F${this.floor}`;
             document.getElementById('enemy-name').style.color = '#aaa';
-            const type = Math.random() > 0.5 ? 'walker' : 'drone';
-            const color = new THREE.Color().setHSL(Math.random(), 1, 0.5);
+            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.5);
             this.enemy = new Unit(false, hp, hp, atk, color, type);
         }
         const targetY = this.enemy.mesh.userData.baseY;
@@ -487,7 +771,7 @@ const game = {
             const dmg = Math.floor(this.enemy.atk * (0.8 + Math.random()*0.4));
             this.player.takeDmg(dmg);
             this.showText(dmg, this.player.mesh.position, '#ff0055');
-            engine.addShake(0.1); 
+            engine.addShake(0.1);
 
             if(this.enemy.type === 'architect') {
                 const attacks = ['god_beam', 'blackhole', 'matrix', 'nuke'];
@@ -499,12 +783,16 @@ const game = {
             } else {
                 engine.spawnParticles(this.player.mesh.position, 0xffaa00, 5);
             }
-            
+
             const regen = this.player.manaRegen;
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + regen);
             this.showText(`+${regen} MP`, this.player.mesh.position, '#00f2ff');
+
+            // Tick down buff durations at start of new player turn
+            this.tickBuffs();
+
             this.updateUI();
-            
+
             if(this.player.hp <= 0) {
                 this.state = 'GAMEOVER';
                 document.getElementById('final-floor').innerText = this.floor;
@@ -518,15 +806,20 @@ const game = {
 
     winBattle() {
         this.state = 'REWARD';
+
+        // Floor 100 victory - trigger REBIRTH instead of ending
         if(this.floor === 100) {
-            document.getElementById('final-floor').innerText = "100 (COMPLETE)";
-            document.querySelector('#gameover-screen h1').innerText = "SYSTEM CONQUERED";
-            document.querySelector('#gameover-screen h1').style.color = "#00ff00";
-            this.setScreen('gameover-screen');
+            this.triggerRebirth();
             return;
         }
 
         let loot = 50 + (this.floor * 15);
+
+        // REBIRTH BONUS: Massive gold multiplier
+        if(this.rebirth > 0) {
+            loot = Math.floor(loot * Math.pow(3, this.rebirth)); // 3x per rebirth level
+        }
+
         // Bonus credits perk
         if(this.player.bonusCredits > 0) {
             loot = Math.floor(loot * (1 + this.player.bonusCredits));
@@ -542,10 +835,60 @@ const game = {
             }
         }
         engine.tween(this.enemy.mesh.scale, 'y', 0.1, 200);
+
+        // Reset player position after battle
+        this.resetPlayerPosition();
+
         this.updateUI();
         this.generatePerks();
         this.setScreen('reward-screen');
         document.getElementById('battle-controls').classList.remove('active');
+    },
+
+    // --- REBIRTH SYSTEM ---
+    triggerRebirth() {
+        this.rebirth++;
+        this.floor = 1; // Reset to floor 1
+
+        // Keep player stats but boost them
+        this.player.atk = Math.floor(this.player.atk * 1.5);
+        this.player.maxHp = Math.floor(this.player.maxHp * 1.5);
+        this.player.hp = this.player.maxHp;
+        this.player.maxMana = Math.floor(this.player.maxMana * 1.5);
+        this.player.mana = this.player.maxMana;
+        this.player.critDamage += 0.5;
+        this.player.comboMult += 0.01;
+        this.player.breachDamage += 0.005;
+
+        // Grant bonus gold
+        const rebirthBonus = 10000 * this.rebirth;
+        this.gold += rebirthBonus;
+
+        // Show rebirth screen
+        this.setScreen('rebirth-screen');
+        document.getElementById('rebirth-level').innerText = this.rebirth;
+        document.getElementById('rebirth-bonus').innerText = rebirthBonus.toLocaleString();
+    },
+
+    completeRebirth() {
+        this.showText(`REBIRTH ${this.rebirth}!`, this.player.mesh.position, '#ff00ff');
+        engine.spawnShockwave(this.player.mesh.position, 0xff00ff, 6);
+        engine.addShake(0.6);
+
+        // Continue to floor 1 with new rebirth level
+        this.state = 'IDLE';
+        this.setScreen('hud');
+        document.getElementById('battle-controls').classList.add('active');
+        this.spawnEnemy();
+        this.updateButtons();
+        this.updateUI();
+    },
+
+    resetPlayerPosition() {
+        if(this.player && this.player.mesh) {
+            this.player.mesh.position.set(-2.5, this.player.mesh.userData.baseY || 0, 0);
+            this.player.mesh.rotation.y = Math.PI/2;
+        }
     },
 
     generatePerks() {
@@ -576,11 +919,24 @@ const game = {
         ];
 
         for(let i=0; i<3; i++) {
-            const rand = Math.random();
-            let tier = RARITY.COMMON;
-            if (rand < RARITY.LEGENDARY.prob) tier = RARITY.LEGENDARY;
-            else if (rand < RARITY.EPIC.prob) tier = RARITY.EPIC;
-            else if (rand < RARITY.RARE.prob) tier = RARITY.RARE;
+            let tier;
+
+            // REBIRTH MODE: All perks are LEGENDARY with additional scaling
+            if(this.rebirth > 0) {
+                tier = {
+                    id: 'legendary',
+                    name: `LEGENDARY ★${this.rebirth}`,
+                    mult: 5.0 * (1 + this.rebirth * 0.5), // +50% value per rebirth
+                    prob: 1.0
+                };
+            } else {
+                const rand = Math.random();
+                tier = RARITY.COMMON;
+                if (rand < RARITY.LEGENDARY.prob) tier = RARITY.LEGENDARY;
+                else if (rand < RARITY.EPIC.prob) tier = RARITY.EPIC;
+                else if (rand < RARITY.RARE.prob) tier = RARITY.RARE;
+            }
+
             const template = PERK_POOL[Math.floor(Math.random() * PERK_POOL.length)];
             const finalVal = Math.floor(template.baseVal * tier.mult);
             const desc = template.desc.replace('{val}', finalVal);
@@ -645,18 +1001,47 @@ const game = {
     setScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if(id !== 'hud') document.getElementById(id).classList.add('active'); },
     updateButtons() {
         if(!this.player) return;
-        const s1 = this.player.skills[0]; const s2 = this.player.skills[1];
+        const s1 = this.player.skills[0]; const s2 = this.player.skills[1]; const s3 = this.player.skills[2];
         const cost1 = Math.max(0, Math.floor(s1.cost * (1 - this.player.manaCostReduction)));
         const cost2 = Math.max(0, Math.floor(s2.cost * (1 - this.player.manaCostReduction)));
         const discount1 = cost1 < s1.cost ? `<span style="text-decoration:line-through;color:#666">${s1.cost}</span> ` : '';
         const discount2 = cost2 < s2.cost ? `<span style="text-decoration:line-through;color:#666">${s2.cost}</span> ` : '';
         document.getElementById('btn-skill-1').innerHTML = `<span class="btn-name">${s1.name}</span><br><span class="btn-cost">${discount1}${cost1} MP</span>`;
         document.getElementById('btn-skill-2').innerHTML = `<span class="btn-name">${s2.name}</span><br><span class="btn-cost">${discount2}${cost2} MP</span>`;
+
+        // Update buff skill button
+        if(s3) {
+            const cost3 = Math.max(0, Math.floor(s3.cost * (1 - this.player.manaCostReduction)));
+            const discount3 = cost3 < s3.cost ? `<span style="text-decoration:line-through;color:#666">${s3.cost}</span> ` : '';
+            document.getElementById('btn-skill-3').innerHTML = `<span class="btn-name">${s3.name}</span><br><span class="btn-cost">${discount3}${cost3} MP</span>`;
+            document.getElementById('btn-skill-3').style.display = 'inline-block';
+        } else {
+            document.getElementById('btn-skill-3').style.display = 'none';
+        }
     },
     updateUI() {
-        document.getElementById('floor-num').innerText = this.floor;
-        document.getElementById('gold-num').innerText = this.gold;
-        document.getElementById('shop-gold').innerText = this.gold;
+        // Show rebirth level in floor display
+        const floorDisplay = this.rebirth > 0 ? `${this.floor} ★${this.rebirth}` : this.floor;
+        document.getElementById('floor-num').innerText = floorDisplay;
+        document.getElementById('gold-num').innerText = this.gold.toLocaleString();
+        document.getElementById('shop-gold').innerText = this.gold.toLocaleString();
+
+        // Combo display (show after floor 50 or when combo > 0)
+        const comboDisplay = document.getElementById('combo-display');
+        const comboNum = document.getElementById('combo-num');
+        if(this.battleCombo > 0 || this.floor >= 50) {
+            comboDisplay.style.display = 'block';
+            comboNum.innerText = this.battleCombo || 0;
+            // Color based on combo
+            if(this.battleCombo >= 100) comboDisplay.style.color = '#ff00ff';
+            else if(this.battleCombo >= 50) comboDisplay.style.color = '#ff0000';
+            else if(this.battleCombo >= 25) comboDisplay.style.color = '#ff5500';
+            else if(this.battleCombo >= 10) comboDisplay.style.color = '#ffaa00';
+            else comboDisplay.style.color = '#fff';
+        } else {
+            comboDisplay.style.display = 'none';
+        }
+
         if(this.player) {
             document.getElementById('p-hp-fill').style.width = Math.min(100, (this.player.hp/this.player.maxHp)*100) + '%';
             document.getElementById('p-hp-text').innerText = `${Math.floor(this.player.hp)} / ${this.player.maxHp}`;
@@ -683,22 +1068,40 @@ const game = {
 };
 
 class Unit {
-    constructor(isPlayer, hp, maxHp, atk, color, type='walker') {
+    constructor(isPlayer, hp, maxHp, atk, color, type='walker', variant=0) {
         this.isPlayer = isPlayer; this.hp = hp; this.maxHp = maxHp; this.atk = atk; this.type = type;
         this.maxMana = isPlayer ? 50 : 100; this.mana = this.maxMana; this.manaRegen = 5;
         this.critChance = 0.05; this.critDamage = 1.5; this.lifesteal = 0; this.jobType = null; this.jobTier = 0;
         this.armor = 0; this.dodge = 0; this.thorns = 0; this.doubleStrike = 0; this.manaCostReduction = 0;
         this.executeThreshold = 0; this.overkillBonus = 0; this.shield = 0; this.maxShield = 0; this.bonusCredits = 0;
+        this.activeBuffs = []; this.invincible = false;
+        // Late-game scaling stats
+        this.comboMult = 0.01; // Damage increase per combo hit (1% base)
+        this.breachDamage = 0; // % of enemy max HP dealt as bonus damage
+        this.awakened = false; // Unlocked at floor 50
+
+        // Create model based on type
         if(isPlayer) this.model = Models.createHumanoid(color, 1.5);
-        else if (type === 'architect') this.model = Models.createArchitect(2.5); // FINAL BOSS
-        else if (type === 'boss') this.model = Models.createBoss(color, 2.5);
+        else if (type === 'architect') this.model = Models.createArchitect(2.5);
+        else if (type === 'midboss') this.model = Models.createMidBoss(color, 2.2, variant);
+        else if (type === 'boss') this.model = Models.createBoss(color, 2.0);
         else if (type === 'drone') this.model = Models.createDrone(color, 1.3);
+        else if (type === 'sentinel') this.model = Models.createSentinel(color, 1.4);
+        else if (type === 'tank') this.model = Models.createTank(color, 1.5);
+        else if (type === 'spider') this.model = Models.createSpider(color, 1.4);
+        else if (type === 'floater') this.model = Models.createFloater(color, 1.3);
         else this.model = Models.createHumanoid(color, 1.5);
+
         this.mesh = this.model.mesh;
         this.mesh.position.set(isPlayer ? -2.5 : 2.5, 0, 0);
         this.mesh.rotation.y = isPlayer ? Math.PI/2 : -Math.PI/2;
-        this.mesh.userData.idle = true; this.mesh.userData.baseY = (type === 'drone'||type==='boss'||type==='architect') ? 1.5 : 0;
-        this.mesh.userData.idleSpeed = 0.002; this.mesh.userData.idleAmp = 0.1;
+
+        // Set base Y (floating enemies)
+        const floatingTypes = ['drone', 'boss', 'architect', 'floater', 'midboss'];
+        this.mesh.userData.idle = true;
+        this.mesh.userData.baseY = floatingTypes.includes(type) ? 1.5 : (type === 'spider' ? 0.3 : 0);
+        this.mesh.userData.idleSpeed = 0.002;
+        this.mesh.userData.idleAmp = floatingTypes.includes(type) ? 0.15 : 0.1;
         this.mesh.position.y = this.mesh.userData.baseY;
         engine.scene.add(this.mesh);
     }
@@ -711,6 +1114,11 @@ class Unit {
         });
     }
     takeDmg(amount) {
+        // Invincible check
+        if(this.isPlayer && this.invincible) {
+            game.showText("IMMUNE!", this.mesh.position, '#ffd700');
+            return 0;
+        }
         // Dodge check
         if(this.isPlayer && Math.random() < this.dodge) {
             game.showText("DODGE!", this.mesh.position, '#00ff00');
