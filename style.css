@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap');
+
+body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sans-serif; color: white; user-select: none; }
+
+/* --- HUD LAYOUT --- */
+.screen {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.9); z-index: 10;
+    transition: opacity 0.3s; pointer-events: none; opacity: 0;
+}
+.screen.active { pointer-events: auto; opacity: 1; }
+
+.glitch-title { font-size: 80px; margin: 0; color: #00f2ff; text-shadow: 0 0 30px #00f2ff; letter-spacing: 5px; }
+.sub-title { color: #888; letter-spacing: 2px; }
+.screen-title { font-size: 50px; color: #ffe600; text-shadow: 0 0 20px #ffaa00; letter-spacing: 3px; }
+
+/* --- HUD BARS --- */
+#top-ui { position: absolute; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 20px 40px; box-sizing: border-box; z-index: 5; }
+.stat-box { background: rgba(0,0,0,0.7); border: 1px solid #444; padding: 5px 25px; font-size: 32px; transform: skewX(-15deg); display: flex; gap: 10px; }
+#floor-display { color: #ffaa00; border-color: #ffaa00; }
+#gold-display { color: #ffe600; border-color: #ffe600; }
+
+.unit-hud { position: absolute; width: 350px; z-index: 5; }
+#p-wrapper { bottom: 30px; left: 30px; }
+#e-wrapper { top: 90px; right: 30px; }
+
+.hp-label { font-size: 22px; color: #aaa; margin-bottom: 2px; letter-spacing: 1px; }
+
+/* NEW BAR STYLES */
+.bar-container {
+    width: 100%; height: 24px; background: #111; border: 1px solid #444; 
+    transform: skewX(-20deg); position: relative; margin-bottom: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.bar-fill { height: 100%; width: 100%; transition: width 0.2s linear; }
+.hp-fill { background: #ff0055; box-shadow: 0 0 15px #ff0055; }
+#p-hp-fill { background: #00f2ff; box-shadow: 0 0 15px #00f2ff; }
+.mana-fill { background: #0088ff; box-shadow: 0 0 10px #0088ff; }
+
+/* NUMERICAL OVERLAY */
+.overlay-text {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: white; text-shadow: 1px 1px 2px black;
+    transform: skewX(20deg); /* Counter-skew text */
+    z-index: 2;
+}
+
+/* --- CONTROLS --- */
+#battle-controls {
+    position: absolute; bottom: 30px; width: 100%; text-align: center;
+    pointer-events: auto; opacity: 0; transition: 0.3s; transform: translateY(20px);
+}
+#battle-controls.active { opacity: 1; transform: translateY(0); }
+
+.btn {
+    background: rgba(0,0,0,0.8); border: 2px solid #fff; color: #fff;
+    font-family: 'Teko'; padding: 10px 40px; margin: 0 10px; cursor: pointer;
+    transition: 0.2s; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+}
+.btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff; }
+.btn-name { font-size: 26px; font-weight: bold; }
+.btn-cost { font-size: 18px; color: #00f2ff; }
+
+/* --- SHOP & CARDS --- */
+.card-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+.perk-card {
+    width: 200px; height: 280px; background: linear-gradient(180deg, #222 0%, #111 100%);
+    border: 1px solid #555; padding: 15px; cursor: pointer; text-align: center; transition: 0.3s;
+}
+.perk-card:hover { border-color: #ffe600; transform: scale(1.05); }
+.perk-title { font-size: 26px; color: #ffe600; margin-bottom: 10px; }
+.perk-desc { font-size: 18px; color: #ccc; }
+
+.shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 600px; }
+.shop-item {
+    background: rgba(30,30,30,0.9); border: 1px solid #777; padding: 15px;
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+}
+.shop-item:hover { background: #ffe600; color: #000; }
+.cost { font-weight: bold; color: #ffe600; }
+.shop-item:hover .cost { color: #000; }
+.next-btn { margin-top: 30px; border-color: #ffaa00; color: #ffaa00; }
+.next-btn:hover { background: #ffaa00; }
+
+.dmg-float {
+    position: absolute; font-size: 40px; font-weight: bold; pointer-events: none;
+    animation: floatUp 0.6s forwards; text-shadow: 0 0 5px #000; z-index: 20;
+}
+@keyframes floatUp { 
+    0%{opacity:1; transform:translateY(0) scale(0.5);} 
+    100%{opacity:0; transform:translateY(-80px) scale(1.2);} 
+}
+
+/* --- RARITY STYLES --- */
+.perk-card {
+    /* Keep existing .perk-card styles but remove default border color */
+    position: relative;
+    overflow: hidden;
+}
+
+/* COMMON (Gray/White) */
+.perk-card.common { border-color: #888; box-shadow: 0 0 10px rgba(136, 136, 136, 0.2); }
+.perk-card.common .perk-title { color: #fff; }
+.perk-card.common .rarity-tag { color: #888; }
+
+/* RARE (Blue) - 30% */
+.perk-card.rare { border-color: #0088ff; box-shadow: 0 0 15px rgba(0, 136, 255, 0.4); }
+.perk-card.rare .perk-title { color: #0088ff; }
+.perk-card.rare .rarity-tag { color: #0088ff; font-weight: bold; }
+
+/* EPIC (Purple) - 5% */
+.perk-card.epic { border-color: #aa00ff; box-shadow: 0 0 25px rgba(170, 0, 255, 0.6); }
+.perk-card.epic .perk-title { color: #aa00ff; text-shadow: 0 0 10px #aa00ff; }
+.perk-card.epic .rarity-tag { color: #aa00ff; font-weight: bold; letter-spacing: 2px; }
+
+/* LEGENDARY (Gold) - 1% */
+.perk-card.legendary { 
+    border-color: #ffe600; 
+    box-shadow: 0 0 30px rgba(255, 230, 0, 0.8), inset 0 0 20px rgba(255, 230, 0, 0.2);
+    animation: legendaryPulse 2s infinite;
+}
+.perk-card.legendary .perk-title { color: #ffe600; text-shadow: 0 0 15px #ffaa00; }
+.perk-card.legendary .rarity-tag { color: #ffe600; font-weight: bold; letter-spacing: 4px; text-shadow: 0 0 5px #000; }
+
+@keyframes legendaryPulse {
+    0% { transform: scale(1); border-color: #ffe600; }
+    50% { transform: scale(1.02); border-color: #ffaa00; }
+    100% { transform: scale(1); border-color: #ffe600; }
+}
+
+.rarity-tag {
+    font-size: 14px; margin-top: auto; text-transform: uppercase;
+}

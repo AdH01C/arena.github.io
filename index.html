@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON TOWER: OVERCLOCK</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <div id="hud">
+        <div id="top-ui">
+            <div class="stat-box" id="floor-display">FLOOR <span id="floor-num">1</span></div>
+            <div class="stat-box" id="gold-display">CREDITS: <span id="gold-num">0</span></div>
+        </div>
+
+        <div id="p-wrapper" class="unit-hud">
+            <div class="hp-label">HULL INTEGRITY</div>
+            <div class="bar-container" id="p-hp-bar">
+                <div class="bar-fill hp-fill" id="p-hp-fill"></div>
+                <div class="overlay-text" id="p-hp-text">100 / 100</div>
+            </div>
+            
+            <div class="hp-label" style="margin-top:5px; color:#00f2ff">ENERGY CELL (MANA)</div>
+            <div class="bar-container" id="p-mana-bar" style="border-color: #00f2ff;">
+                <div class="bar-fill mana-fill" id="p-mana-fill"></div>
+                <div class="overlay-text" id="p-mana-text">50 / 50</div>
+            </div>
+        </div>
+
+        <div id="e-wrapper" class="unit-hud" style="text-align:right;">
+            <div class="hp-label" id="enemy-name">TARGET SIGNAL</div>
+            <div class="bar-container" id="e-hp-bar">
+                <div class="bar-fill hp-fill" id="e-hp-fill" style="float:right;"></div>
+                <div class="overlay-text" id="e-hp-text">100 / 100</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="battle-controls">
+        <button id="btn-skill-1" class="btn" onclick="game.useSkill(0)">
+            <span class="btn-name">STRIKE</span><br><span class="btn-cost" id="cost-0">0 MP</span>
+        </button>
+        <button id="btn-skill-2" class="btn" onclick="game.useSkill(1)">
+            <span class="btn-name">HEAVY</span><br><span class="btn-cost" id="cost-1">20 MP</span>
+        </button>
+    </div>
+
+    <div id="start-screen" class="screen active">
+        <h1 class="glitch-title">NEON TOWER</h1>
+        <h2 class="sub-title">SYSTEM REBOOT...</h2>
+        <button class="btn" onclick="game.startRun()">INITIATE RUN</button>
+    </div>
+
+    <div id="class-screen" class="screen">
+        <h2 class="screen-title">CLASS ASCENSION</h2>
+        <div class="card-container" id="class-container"></div>
+    </div>
+
+    <div id="reward-screen" class="screen">
+        <h2 class="screen-title">SYSTEM UPGRADE</h2>
+        <div class="card-container" id="perk-container"></div>
+    </div>
+
+    <div id="shop-screen" class="screen">
+        <h2 class="screen-title">THE ARMORY</h2>
+        <div class="shop-header">CREDITS: <span id="shop-gold">0</span></div>
+        <div class="shop-grid">
+            <div class="shop-item" onclick="game.buyItem('heal')">
+                <div><div class="item-name">REPAIR</div><div class="item-desc">+50 HP</div></div>
+                <div class="cost">50 CR</div>
+            </div>
+            <div class="shop-item" onclick="game.buyItem('mana')">
+                <div><div class="item-name">BATTERY</div><div class="item-desc">+20 MAX MANA</div></div>
+                <div class="cost">75 CR</div>
+            </div>
+            <div class="shop-item" onclick="game.buyItem('atk')">
+                <div><div class="item-name">WEAPON OC</div><div class="item-desc">+5 DMG</div></div>
+                <div class="cost">100 CR</div>
+            </div>
+            <div class="shop-item" onclick="game.buyItem('hp')">
+                <div><div class="item-name">PLATING</div><div class="item-desc">+20 MAX HP</div></div>
+                <div class="cost">100 CR</div>
+            </div>
+        </div>
+        <button class="btn next-btn" onclick="game.nextFloor()">NEXT FLOOR</button>
+    </div>
+
+    <div id="gameover-screen" class="screen">
+        <h1 class="crit-fail">CRITICAL FAILURE</h1>
+        <p class="fail-stats">FLOOR REACHED: <span id="final-floor">0</span></p>
+        <button class="btn" onclick="game.startRun()">REBOOT SYSTEM</button>
+    </div>
+
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
