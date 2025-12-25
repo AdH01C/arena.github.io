@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEON TOWER: MOBILE</title>
+    <title>NEON TOWER: FINAL</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -54,7 +54,7 @@
 
     <div id="start-screen" class="screen active">
         <h1 class="glitch-title">NEON TOWER</h1>
-        <h2 class="sub-title">SYSTEM REBOOT...</h2>
+        <h2 class="sub-title">ASCENSION PROTOCOL V3.0</h2>
         <button class="btn" onclick="game.startRun()">INITIATE RUN</button>
     </div>
 
@@ -69,26 +69,11 @@
     </div>
 
     <div id="shop-screen" class="screen">
-        <h2 class="screen-title">THE ARMORY</h2>
+        <h2 class="screen-title">THE ARMORY <span id="shop-tier" style="font-size:20px; color:#888">TIER 1</span></h2>
         <div class="shop-header">CREDITS: <span id="shop-gold">0</span></div>
-        <div class="shop-grid">
-            <div class="shop-item" onclick="game.buyItem('heal')">
-                <div><div class="item-name">REPAIR</div><div class="item-desc">+50 HP</div></div>
-                <div class="cost">50 CR</div>
-            </div>
-            <div class="shop-item" onclick="game.buyItem('mana')">
-                <div><div class="item-name">BATTERY</div><div class="item-desc">+20 MAX MANA</div></div>
-                <div class="cost">75 CR</div>
-            </div>
-            <div class="shop-item" onclick="game.buyItem('atk')">
-                <div><div class="item-name">WEAPON OC</div><div class="item-desc">+5 DMG</div></div>
-                <div class="cost">100 CR</div>
-            </div>
-            <div class="shop-item" onclick="game.buyItem('hp')">
-                <div><div class="item-name">PLATING</div><div class="item-desc">+20 MAX HP</div></div>
-                <div class="cost">100 CR</div>
-            </div>
-        </div>
+        
+        <div class="shop-grid" id="shop-container"></div>
+        
         <button class="btn next-btn" onclick="game.nextFloor()">NEXT FLOOR</button>
     </div>
 
