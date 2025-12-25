@@ -6,6 +6,7 @@ const engine = {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
         this.renderer = new THREE.WebGLRenderer({antialias:true});
+        this.renderer.setPixelRatio(window.devicePixelRatio); // ADD THIS LINE
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
         

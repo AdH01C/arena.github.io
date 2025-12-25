@@ -133,3 +133,64 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
 .rarity-tag {
     font-size: 14px; margin-top: auto; text-transform: uppercase;
 }
+
+/* =========================================
+   MOBILE & RESPONSIVE UPGRADES
+   ========================================= */
+
+/* 1. FORCE LANDSCAPE OVERLAY */
+#rotate-warning {
+    display: none; /* Hidden by default */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 9999;
+    flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: #ff0055;
+}
+#rotate-warning h1 { font-size: 40px; margin: 0; text-shadow: 0 0 20px red; }
+#rotate-warning p { font-size: 24px; color: #fff; letter-spacing: 2px; }
+
+/* Show warning only in Portrait Mode on phones */
+@media screen and (orientation: portrait) {
+    #rotate-warning { display: flex; }
+    /* Hide game elements so they don't break */
+    #hud, #battle-controls, .screen, canvas { display: none !important; }
+}
+
+/* 2. MOBILE LAYOUT TWEAKS (When screen is small/landscape) */
+@media screen and (max-height: 500px) {
+    
+    /* Make HUD smaller so it doesn't cover the robots */
+    #top-ui { padding: 5px 10px; }
+    .stat-box { font-size: 20px; padding: 2px 15px; }
+    
+    /* Move HP bars to corners */
+    #p-wrapper { bottom: 10px; left: 10px; width: 200px; }
+    #e-wrapper { top: 60px; right: 10px; width: 200px; }
+    .hp-label { font-size: 14px; }
+    .bar-container { height: 14px; }
+    .overlay-text { font-size: 12px; }
+
+    /* Make Combat Buttons BIGGER for thumbs */
+    #battle-controls { bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 10px; }
+    .btn {
+        padding: 15px 25px; /* Fat finger padding */
+        margin: 0;
+        width: 140px; /* Fixed width for consistency */
+    }
+    .btn-name { font-size: 22px; }
+    .btn-cost { font-size: 14px; }
+
+    /* Adjust Card Size for small screens */
+    .card-container { gap: 10px; }
+    .perk-card { width: 160px; height: 220px; padding: 10px; }
+    .perk-title { font-size: 20px; }
+    .perk-desc { font-size: 14px; }
+    
+    /* Shop Grid */
+    .shop-grid { width: 90%; grid-template-columns: 1fr; gap: 5px; } /* Stack shop items */
+    .shop-item { padding: 5px 15px; }
+    
+    /* Text Titles */
+    .glitch-title { font-size: 50px; }
+    .screen-title { font-size: 30px; }
+}
