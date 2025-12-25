@@ -182,13 +182,16 @@ const PERK_POOL = [
 // --- GAME CONTROLLER ---
 const game = {
     floor: 1, gold: 0, player: null, enemy: null, state: 'IDLE',
-    
+
+    // --- BUFF TRACKING ---
+    buffs: {}, // { perkName: { count: N, totalValue: V, icon: '🔧', desc: 'description' } }
+
     // --- PROGRESSIVE SHOP DATA (Persistent) ---
     shopData: {
-        heal: { level: 1, baseCost: 50, costMult: 1.5, baseVal: 50, valInc: 25 }, 
-        atk:  { level: 1, baseCost: 100, costMult: 1.4, baseVal: 5,  valInc: 5 }, 
-        hp:   { level: 1, baseCost: 100, costMult: 1.4, baseVal: 30, valInc: 20 }, 
-        mana: { level: 1, baseCost: 75,  costMult: 1.3, baseVal: 20, valInc: 10 } 
+        heal: { level: 1, baseCost: 50, costMult: 1.5, baseVal: 50, valInc: 25 },
+        atk:  { level: 1, baseCost: 100, costMult: 1.4, baseVal: 5,  valInc: 5 },
+        hp:   { level: 1, baseCost: 100, costMult: 1.4, baseVal: 30, valInc: 20 },
+        mana: { level: 1, baseCost: 75,  costMult: 1.3, baseVal: 20, valInc: 10 }
     },
 
     // --- HELPERS (Calculates Price based on Level) ---
@@ -205,13 +208,15 @@ const game = {
 
     startRun() {
         this.floor = 1; this.gold = 0;
-        this.resetShop(); 
+        this.buffs = {}; // Reset buffs
+        this.resetShop();
+        this.renderBuffs(); // Clear buff display
         if(this.player) engine.scene.remove(this.player.mesh);
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
         this.player = new Unit(true, 150, 150, 20, 0x00f2ff);
-        this.offerJobSelection(0); 
+        this.offerJobSelection(0);
     },
-    
+
     resetShop() {
         this.shopData.heal.level = 1;
         this.shopData.atk.level = 1;
@@ -222,10 +227,11 @@ const game = {
     useSkill(slot) {
         if(this.state !== 'IDLE') return;
         const skill = this.player.skills[slot];
-        if(this.player.mana < skill.cost) { this.showText("NO MANA", this.player.mesh.position, '#00f2ff'); return; }
+        const actualCost = Math.max(0, Math.floor(skill.cost * (1 - this.player.manaCostReduction)));
+        if(this.player.mana < actualCost) { this.showText("NO MANA", this.player.mesh.position, '#00f2ff'); return; }
 
         this.state = 'ANIMATING';
-        this.player.mana -= skill.cost;
+        this.player.mana -= actualCost;
         let hits = skill.hits || 1;
         
         let delay = 150; 
@@ -248,9 +254,15 @@ const game = {
 
     triggerHit(skill, index, totalHits) {
         let isCrit = Math.random() < this.player.critChance;
-        const critMult = 1.5 + (this.floor * 0.05);
+        const critMult = this.player.critDamage + (this.floor * 0.05);
         let raw = Math.floor(this.player.atk * skill.mult * (isCrit ? critMult : 1));
-        
+
+        // Execute bonus: deal extra damage to low HP enemies
+        if(this.player.executeThreshold > 0 && (this.enemy.hp / this.enemy.maxHp) <= this.player.executeThreshold) {
+            raw = Math.floor(raw * 1.5);
+            this.showText("EXECUTE!", this.enemy.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '#ff0000');
+        }
+
         if(skill.heal) this.player.hp = Math.min(this.player.maxHp, this.player.hp + (skill.heal/totalHits));
         if(skill.manaGain) this.player.mana = Math.min(this.player.maxMana, this.player.mana + (skill.manaGain/totalHits));
         if(this.player.lifesteal > 0) {
@@ -260,6 +272,16 @@ const game = {
 
         this.enemy.takeDmg(raw);
         this.showText(raw, this.enemy.mesh.position, '#ffffff');
+
+        // Double Strike chance
+        if(this.player.doubleStrike > 0 && Math.random() < this.player.doubleStrike) {
+            const bonusDmg = Math.floor(raw * 0.5);
+            setTimeout(() => {
+                this.enemy.takeDmg(bonusDmg);
+                this.showText(`${bonusDmg} x2`, this.enemy.mesh.position, '#00ffaa');
+                engine.spawnParticles(this.enemy.mesh.position, 0x00ffaa, 3);
+            }, 100);
+        }
 
         if(isCrit) {
             const critPos = this.enemy.mesh.position.clone();
@@ -302,6 +324,7 @@ const game = {
         this.setScreen('hud');
         document.getElementById('battle-controls').classList.add('active');
         this.spawnEnemy();
+        this.updateButtons();
         this.updateUI();
     },
     
@@ -503,8 +526,21 @@ const game = {
             return;
         }
 
-        const loot = 50 + (this.floor * 15);
+        let loot = 50 + (this.floor * 15);
+        // Bonus credits perk
+        if(this.player.bonusCredits > 0) {
+            loot = Math.floor(loot * (1 + this.player.bonusCredits));
+        }
         this.gold += loot;
+
+        // Overkill bonus: extra credits for overkilling enemies
+        if(this.player.overkillBonus > 0 && this.enemy.hp < 0) {
+            const overkillCredits = Math.floor(Math.abs(this.enemy.hp) * this.player.overkillBonus * 0.1);
+            if(overkillCredits > 0) {
+                this.gold += overkillCredits;
+                this.showText(`+${overkillCredits} OVERKILL`, this.enemy.mesh.position, '#ffe600');
+            }
+        }
         engine.tween(this.enemy.mesh.scale, 'y', 0.1, 200);
         this.updateUI();
         this.generatePerks();
@@ -516,7 +552,28 @@ const game = {
         const container = document.getElementById('perk-container');
         container.innerHTML = '';
         const RARITY = { COMMON: {id:'common', name:'COMMON', mult:1, prob:1.0}, RARE: {id:'rare', name:'RARE', mult:1.5, prob:0.36}, EPIC: {id:'epic', name:'EPIC', mult:2.5, prob:0.06}, LEGENDARY: {id:'legendary', name:'LEGENDARY', mult:5.0, prob:0.01} };
-        const PERK_POOL = [ { name: "RECYCLER", baseVal: 5,  desc: "+{val} Mana Regen", func: (p, v) => p.manaRegen += v }, { name: "CRITICAL OS", baseVal: 5, desc: "+{val}% Crit Chance", func: (p, v) => p.critChance += (v/100) }, { name: "HYDRAULICS", baseVal: 10,  desc: "+{val} Base Damage", func: (p, v) => p.atk += v }, { name: "TITANIUM",   baseVal: 50, desc: "+{val} Max HP", func: (p, v) => { p.maxHp += v; p.hp += v; } }, { name: "BATTERY",    baseVal: 30, desc: "+{val} Max Mana", func: (p, v) => { p.maxMana += v; p.mana += v; } }, { name: "VAMPIRE",    baseVal: 3,  desc: "+{val}% Lifesteal", func: (p, v) => p.lifesteal = (p.lifesteal||0) + (v/100) } ];
+        const PERK_POOL = [
+            // Original perks
+            { name: "RECYCLER", icon: "♻️", baseVal: 5, desc: "+{val} Mana Regen", statDesc: "Mana Regen", func: (p, v) => p.manaRegen += v },
+            { name: "CRITICAL OS", icon: "🎯", baseVal: 5, desc: "+{val}% Crit Chance", statDesc: "Crit Chance", func: (p, v) => p.critChance += (v/100) },
+            { name: "HYDRAULICS", icon: "💪", baseVal: 10, desc: "+{val} Base Damage", statDesc: "Bonus DMG", func: (p, v) => p.atk += v },
+            { name: "TITANIUM", icon: "🛡️", baseVal: 50, desc: "+{val} Max HP", statDesc: "Bonus HP", func: (p, v) => { p.maxHp += v; p.hp += v; } },
+            { name: "BATTERY", icon: "🔋", baseVal: 30, desc: "+{val} Max Mana", statDesc: "Bonus Mana", func: (p, v) => { p.maxMana += v; p.mana += v; } },
+            { name: "VAMPIRE", icon: "🧛", baseVal: 3, desc: "+{val}% Lifesteal", statDesc: "Lifesteal", func: (p, v) => p.lifesteal = (p.lifesteal||0) + (v/100) },
+            // New perks
+            { name: "CHROME PLATING", icon: "🔩", baseVal: 5, desc: "+{val} Armor", statDesc: "Armor", func: (p, v) => p.armor += v },
+            { name: "REFLEX BOOST", icon: "⚡", baseVal: 3, desc: "+{val}% Dodge Chance", statDesc: "Dodge", func: (p, v) => p.dodge += (v/100) },
+            { name: "NEURAL SPIKE", icon: "🧠", baseVal: 10, desc: "+{val}% Crit Damage", statDesc: "Crit DMG", func: (p, v) => p.critDamage += (v/100) },
+            { name: "RAZOR SKIN", icon: "🔪", baseVal: 5, desc: "+{val}% Thorns Damage", statDesc: "Thorns", func: (p, v) => p.thorns += (v/100) },
+            { name: "ECHO STRIKE", icon: "👊", baseVal: 5, desc: "+{val}% Double Strike", statDesc: "Double Strike", func: (p, v) => p.doubleStrike += (v/100) },
+            { name: "OVERCLOCK", icon: "⏱️", baseVal: 5, desc: "-{val}% Mana Cost", statDesc: "Mana Reduction", func: (p, v) => p.manaCostReduction = Math.min(0.5, (p.manaCostReduction||0) + (v/100)) },
+            { name: "TERMINATOR", icon: "💀", baseVal: 5, desc: "Execute below {val}% HP", statDesc: "Execute Threshold", func: (p, v) => p.executeThreshold = Math.max(p.executeThreshold, v/100) },
+            { name: "SALVAGER", icon: "💰", baseVal: 10, desc: "+{val}% Bonus Credits", statDesc: "Bonus Credits", func: (p, v) => p.bonusCredits += (v/100) },
+            { name: "OVERKILL CHIP", icon: "💥", baseVal: 10, desc: "+{val}% Overkill Bonus", statDesc: "Overkill", func: (p, v) => p.overkillBonus += (v/100) },
+            { name: "ENERGY SHIELD", icon: "🔷", baseVal: 30, desc: "+{val} Shield", statDesc: "Shield", func: (p, v) => p.shield += v, noStack: true },
+            { name: "NANO REPAIR", icon: "💚", baseVal: 20, desc: "Heal {val} HP", statDesc: "Healed", func: (p, v) => p.hp = Math.min(p.maxHp, p.hp + v), noStack: true },
+            { name: "SURGE CAPACITOR", icon: "💙", baseVal: 15, desc: "+{val} Mana", statDesc: "Mana Restored", func: (p, v) => p.mana = Math.min(p.maxMana, p.mana + v), noStack: true }
+        ];
 
         for(let i=0; i<3; i++) {
             const rand = Math.random();
@@ -530,8 +587,45 @@ const game = {
             const card = document.createElement('div');
             card.className = `perk-card ${tier.id}`;
             card.innerHTML = `<div class="perk-title">${template.name}</div><div class="perk-desc">${desc}</div><div class="rarity-tag">${tier.name}</div>`;
-            card.onclick = () => { template.func(this.player, finalVal); this.goToShop(); };
+            card.onclick = () => {
+                template.func(this.player, finalVal);
+                this.trackBuff(template, finalVal);
+                this.goToShop();
+            };
             container.appendChild(card);
+        }
+    },
+
+    trackBuff(template, value) {
+        // Don't track one-time effects (heals, mana restore) unless they provide permanent bonuses
+        if(template.noStack) return;
+
+        const key = template.name;
+        if(!this.buffs[key]) {
+            this.buffs[key] = { count: 0, totalValue: 0, icon: template.icon, name: template.name, statDesc: template.statDesc };
+        }
+        this.buffs[key].count++;
+        this.buffs[key].totalValue += value;
+        this.renderBuffs();
+    },
+
+    renderBuffs() {
+        const container = document.getElementById('buff-container');
+        container.innerHTML = '';
+
+        for(const key in this.buffs) {
+            const buff = this.buffs[key];
+            const el = document.createElement('div');
+            el.className = 'buff-icon';
+            el.innerHTML = `
+                <span class="buff-emoji">${buff.icon}</span>
+                ${buff.count > 1 ? `<span class="buff-stack">${buff.count}</span>` : ''}
+                <div class="buff-tooltip">
+                    <div class="buff-name">${buff.name}</div>
+                    <div class="buff-value">+${buff.totalValue} ${buff.statDesc}</div>
+                </div>
+            `;
+            container.appendChild(el);
         }
     },
     
@@ -552,8 +646,12 @@ const game = {
     updateButtons() {
         if(!this.player) return;
         const s1 = this.player.skills[0]; const s2 = this.player.skills[1];
-        document.getElementById('btn-skill-1').innerHTML = `<span class="btn-name">${s1.name}</span><br><span class="btn-cost">${s1.cost} MP</span>`;
-        document.getElementById('btn-skill-2').innerHTML = `<span class="btn-name">${s2.name}</span><br><span class="btn-cost">${s2.cost} MP</span>`;
+        const cost1 = Math.max(0, Math.floor(s1.cost * (1 - this.player.manaCostReduction)));
+        const cost2 = Math.max(0, Math.floor(s2.cost * (1 - this.player.manaCostReduction)));
+        const discount1 = cost1 < s1.cost ? `<span style="text-decoration:line-through;color:#666">${s1.cost}</span> ` : '';
+        const discount2 = cost2 < s2.cost ? `<span style="text-decoration:line-through;color:#666">${s2.cost}</span> ` : '';
+        document.getElementById('btn-skill-1').innerHTML = `<span class="btn-name">${s1.name}</span><br><span class="btn-cost">${discount1}${cost1} MP</span>`;
+        document.getElementById('btn-skill-2').innerHTML = `<span class="btn-name">${s2.name}</span><br><span class="btn-cost">${discount2}${cost2} MP</span>`;
     },
     updateUI() {
         document.getElementById('floor-num').innerText = this.floor;
@@ -564,6 +662,18 @@ const game = {
             document.getElementById('p-hp-text').innerText = `${Math.floor(this.player.hp)} / ${this.player.maxHp}`;
             document.getElementById('p-mana-fill').style.width = Math.min(100, (this.player.mana/this.player.maxMana)*100) + '%';
             document.getElementById('p-mana-text').innerText = `${Math.floor(this.player.mana)} / ${this.player.maxMana}`;
+
+            // Shield bar - only show if player has shield
+            const shieldWrapper = document.getElementById('p-shield-wrapper');
+            if(this.player.shield > 0) {
+                shieldWrapper.style.display = 'block';
+                document.getElementById('p-shield-text').innerText = Math.floor(this.player.shield);
+                // Use a max shield reference (track max shield gained)
+                this.player.maxShield = Math.max(this.player.maxShield || this.player.shield, this.player.shield);
+                document.getElementById('p-shield-fill').style.width = Math.min(100, (this.player.shield / this.player.maxShield) * 100) + '%';
+            } else {
+                shieldWrapper.style.display = 'none';
+            }
         }
         if(this.enemy) {
             document.getElementById('e-hp-fill').style.width = Math.min(100, (this.enemy.hp/this.enemy.maxHp)*100) + '%';
@@ -575,8 +685,10 @@ const game = {
 class Unit {
     constructor(isPlayer, hp, maxHp, atk, color, type='walker') {
         this.isPlayer = isPlayer; this.hp = hp; this.maxHp = maxHp; this.atk = atk; this.type = type;
-        this.maxMana = isPlayer ? 50 : 100; this.mana = this.maxMana; this.manaRegen = 5; 
-        this.critChance = 0.05; this.lifesteal = 0; this.jobType = null; this.jobTier = 0;
+        this.maxMana = isPlayer ? 50 : 100; this.mana = this.maxMana; this.manaRegen = 5;
+        this.critChance = 0.05; this.critDamage = 1.5; this.lifesteal = 0; this.jobType = null; this.jobTier = 0;
+        this.armor = 0; this.dodge = 0; this.thorns = 0; this.doubleStrike = 0; this.manaCostReduction = 0;
+        this.executeThreshold = 0; this.overkillBonus = 0; this.shield = 0; this.maxShield = 0; this.bonusCredits = 0;
         if(isPlayer) this.model = Models.createHumanoid(color, 1.5);
         else if (type === 'architect') this.model = Models.createArchitect(2.5); // FINAL BOSS
         else if (type === 'boss') this.model = Models.createBoss(color, 2.5);
@@ -599,7 +711,29 @@ class Unit {
         });
     }
     takeDmg(amount) {
-        this.hp = Math.max(0, this.hp - amount);
+        // Dodge check
+        if(this.isPlayer && Math.random() < this.dodge) {
+            game.showText("DODGE!", this.mesh.position, '#00ff00');
+            return 0;
+        }
+        // Armor reduces damage
+        let finalDmg = Math.max(1, amount - this.armor);
+        // Shield absorbs damage first
+        if(this.shield > 0) {
+            const absorbed = Math.min(this.shield, finalDmg);
+            this.shield -= absorbed;
+            finalDmg -= absorbed;
+            if(absorbed > 0) game.showText(`-${absorbed} SHIELD`, this.mesh.position, '#00f2ff');
+        }
+        this.hp = Math.max(0, this.hp - finalDmg);
+        // Thorns damage (reflect)
+        if(this.isPlayer && this.thorns > 0 && game.enemy) {
+            const thornsDmg = Math.floor(amount * this.thorns);
+            if(thornsDmg > 0) {
+                game.enemy.hp = Math.max(0, game.enemy.hp - thornsDmg);
+                game.showText(`${thornsDmg} THORNS`, game.enemy.mesh.position, '#ff00ff');
+            }
+        }
         const base = this.mesh.position.x;
         this.mesh.position.x += (this.isPlayer ? -0.2 : 0.2);
         setTimeout(()=> this.mesh.position.x = base, 50);

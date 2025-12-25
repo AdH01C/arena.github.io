@@ -20,15 +20,25 @@
             <div class="stat-box" id="gold-display">CREDITS: <span id="gold-num">0</span></div>
         </div>
 
+        <div id="buff-container"></div>
+
         <div id="p-wrapper" class="unit-hud">
             <div class="hp-label">HULL INTEGRITY</div>
             <div class="bar-container" id="p-hp-bar">
                 <div class="bar-fill hp-fill" id="p-hp-fill"></div>
                 <div class="overlay-text" id="p-hp-text">100 / 100</div>
             </div>
-            
-            <div class="hp-label" style="margin-top:5px; color:#00f2ff">ENERGY CELL (MANA)</div>
-            <div class="bar-container" id="p-mana-bar" style="border-color: #00f2ff;">
+
+            <div id="p-shield-wrapper" style="display:none; margin-top:5px;">
+                <div class="hp-label" style="color:#00f2ff">ENERGY SHIELD</div>
+                <div class="bar-container" id="p-shield-bar" style="border-color: #00f2ff; height: 12px;">
+                    <div class="bar-fill" id="p-shield-fill" style="background: #00f2ff; box-shadow: 0 0 10px #00f2ff;"></div>
+                    <div class="overlay-text" id="p-shield-text" style="font-size: 14px;">0</div>
+                </div>
+            </div>
+
+            <div class="hp-label" style="margin-top:5px; color:#0088ff">ENERGY CELL (MANA)</div>
+            <div class="bar-container" id="p-mana-bar" style="border-color: #0088ff;">
                 <div class="bar-fill mana-fill" id="p-mana-fill"></div>
                 <div class="overlay-text" id="p-mana-text">50 / 50</div>
             </div>

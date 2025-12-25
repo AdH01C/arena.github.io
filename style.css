@@ -21,6 +21,79 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
 #floor-display { color: #ffaa00; border-color: #ffaa00; }
 #gold-display { color: #ffe600; border-color: #ffe600; }
 
+/* --- BUFF ICONS --- */
+#buff-container {
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 300px;
+    z-index: 10;
+}
+.buff-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid #555;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 16px;
+    cursor: default;
+    transition: transform 0.1s, border-color 0.2s;
+}
+.buff-icon:hover {
+    transform: scale(1.15);
+    border-color: #fff;
+    z-index: 20;
+}
+.buff-icon .buff-emoji {
+    font-size: 18px;
+}
+.buff-icon .buff-stack {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #ff0055;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 3px;
+    min-width: 12px;
+    text-align: center;
+}
+.buff-icon .buff-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.95);
+    border: 1px solid #00f2ff;
+    padding: 6px 10px;
+    white-space: nowrap;
+    font-size: 12px;
+    color: #fff;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    z-index: 100;
+}
+.buff-icon:hover .buff-tooltip {
+    display: block;
+}
+.buff-tooltip .buff-name {
+    color: #ffe600;
+    font-weight: bold;
+}
+.buff-tooltip .buff-value {
+    color: #00f2ff;
+}
+
 .unit-hud { position: absolute; width: 350px; z-index: 5; }
 #p-wrapper { bottom: 30px; left: 30px; }
 #e-wrapper { top: 90px; right: 30px; }
@@ -158,11 +231,17 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
 
 /* 2. MOBILE LAYOUT TWEAKS (When screen is small/landscape) */
 @media screen and (max-height: 500px) {
-    
+
     /* Make HUD smaller so it doesn't cover the robots */
     #top-ui { padding: 5px 10px; }
     .stat-box { font-size: 20px; padding: 2px 15px; }
-    
+
+    /* Buff icons on mobile */
+    #buff-container { top: 55px; left: 10px; max-width: 200px; gap: 4px; }
+    .buff-icon { width: 28px; height: 28px; }
+    .buff-icon .buff-emoji { font-size: 14px; }
+    .buff-icon .buff-stack { font-size: 8px; padding: 0 3px; }
+
     /* Move HP bars to corners */
     #p-wrapper { bottom: 10px; left: 10px; width: 200px; }
     #e-wrapper { top: 60px; right: 10px; width: 200px; }
@@ -185,11 +264,11 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
     .perk-card { width: 160px; height: 220px; padding: 10px; }
     .perk-title { font-size: 20px; }
     .perk-desc { font-size: 14px; }
-    
+
     /* Shop Grid */
     .shop-grid { width: 90%; grid-template-columns: 1fr; gap: 5px; } /* Stack shop items */
     .shop-item { padding: 5px 15px; }
-    
+
     /* Text Titles */
     .glitch-title { font-size: 50px; }
     .screen-title { font-size: 30px; }
