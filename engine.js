@@ -342,6 +342,66 @@ const Models = {
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
 
+    createBrawler(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:c || 0xff4400, metalness:0.4, roughness:0.6});
+        const mG = new THREE.MeshBasicMaterial({color:0xff6600}); // Orange glow
+        const mD = new THREE.MeshStandardMaterial({color:0x333333, metalness:0.7, roughness:0.3});
+        const mW = new THREE.MeshBasicMaterial({color:0xffcc00}); // Golden highlights
+
+        // Strong legs
+        this.box(0.14,0.5,0.14,mB,-0.15,0.25,0,g); this.box(0.14,0.5,0.14,mB,0.15,0.25,0,g);
+
+        // Muscular torso
+        const t = this.box(0.45,0.45,0.25,mB,0,0.72,0,g);
+        this.box(0.15,0.08,0.05,mG,0,0.1,0.13,t); // Chest emblem
+
+        // Head - fighter style
+        const h = this.box(0.2,0.22,0.2,mB,0,0.38,0,t);
+        this.box(0.22,0.06,0.05,mG,0,0,0.1,h); // Eye visor
+
+        // Shoulder pads (tier dependent)
+        if(tier >= 2) {
+            this.box(0.12,0.1,0.12,mD,-0.32,0.25,0,t);
+            this.box(0.12,0.1,0.12,mD,0.32,0.25,0,t);
+        }
+
+        // Championship belt at mid tier
+        if(tier >= 4) {
+            this.box(0.5,0.08,0.28,mW,0,-0.15,0,t);
+        }
+
+        // Arms - muscular
+        const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.12,0.4,0.12,mB,0,-0.2,0,arm); return arm;}
+        const leftArm = mkArm(-0.32);
+        const rightArm = mkArm(0.32);
+
+        // Boxing gloves / fighting fists
+        this.box(0.14,0.12,0.14,mG,0,-0.35,0.05,leftArm);
+        this.box(0.14,0.12,0.14,mG,0,-0.35,0.05,rightArm);
+
+        // Flame aura at high tier
+        if(tier >= 6) {
+            for(let i=0;i<5;i++) {
+                const flame = new THREE.Mesh(new THREE.ConeGeometry(0.05,0.15,4), mG);
+                flame.position.set((Math.random()-0.5)*0.4, 0.5 + Math.random()*0.2, -0.15);
+                t.add(flame);
+            }
+        }
+
+        // Golden aura ring at max tier
+        if(tier >= 8) {
+            const aura = new THREE.Mesh(new THREE.TorusGeometry(0.5,0.04,8,16), mW);
+            aura.rotation.x = Math.PI/2;
+            aura.position.y = 0;
+            g.add(aura);
+        }
+
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
+
     // === ENEMY MODELS ===
     createDrone(c, s=1) {
         const g = new THREE.Group();

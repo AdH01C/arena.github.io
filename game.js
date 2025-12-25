@@ -252,6 +252,69 @@ const CLASS_TREES = {
             { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1 },
             { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 3, color: 0x000000, desc: "+60% All Offense for 3 turns" }
         ]}
+    ],
+
+    "BRAWLER": [
+        // 0-9: BASE - Street Fighter (isFrenzy = click speed bonus, doubleAttack = hits twice)
+        { name: "STREET-PUNK", desc: "Tier 1: Speed", skills: [
+            { name: "JAB", cost: 0, mult: 0.6, color: 0xff4400, vfx: 'punch', isFrenzy: true },
+            { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', doubleAttack: true },
+            { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 3, color: 0xff4400, desc: "+20% ATK Mult for 3 turns" }
+        ]},
+        // 10-19: Boxer
+        { name: "CHROME-BOXER", desc: "Tier 2: Combos", skills: [
+            { name: "ONE-TWO", cost: 0, mult: 0.5, color: 0xff5500, vfx: 'punch', hits: 2, isFrenzy: true },
+            { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', doubleAttack: true },
+            { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atkMult', buffVal: 0.30, duration: 3, color: 0xff5500, desc: "+30% ATK Mult for 3 turns" }
+        ]},
+        // 20-29: Kickboxer
+        { name: "CYBER-KICK", desc: "Tier 3: Kicks", skills: [
+            { name: "RAPID KICKS", cost: 0, mult: 0.4, color: 0xff6600, vfx: 'punch', hits: 4, isFrenzy: true },
+            { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', doubleAttack: true },
+            { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atkMult', buffVal: 0.40, duration: 3, color: 0xff6600, desc: "+40% ATK Mult for 3 turns" }
+        ]},
+        // 30-39: Wrestler
+        { name: "GRAPPLER", desc: "Tier 4: Throws", skills: [
+            { name: "COMBO STRIKE", cost: 0, mult: 0.5, color: 0xff7700, vfx: 'punch', hits: 5, isFrenzy: true },
+            { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', doubleAttack: true },
+            { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atkMult', buffVal: 0.50, duration: 3, color: 0xff7700, desc: "+50% ATK Mult for 3 turns" }
+        ]},
+        // 40-49: Berserker
+        { name: "BERSERKER", desc: "Tier 5: Fury", skills: [
+            { name: "FRENZY", cost: 0, mult: 0.3, color: 0xff2200, vfx: 'punch', hits: 8, isFrenzy: true },
+            { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 5, doubleAttack: true },
+            { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atkMult', buffVal: 0.60, duration: 3, color: 0xff2200, desc: "+60% ATK Mult for 3 turns" }
+        ]},
+        // 50-59: Champion
+        { name: "PIT-CHAMPION", desc: "Tier 6: Glory", skills: [
+            { name: "FLURRY", cost: 0, mult: 0.25, color: 0xffaa00, vfx: 'punch', hits: 12, isFrenzy: true },
+            { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', doubleAttack: true },
+            { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atkMult', buffVal: 0.75, duration: 3, color: 0xffaa00, desc: "+75% ATK Mult for 3 turns" }
+        ]},
+        // 60-69: Titan
+        { name: "IRON-TITAN", desc: "Tier 7: Power", skills: [
+            { name: "METEOR FISTS", cost: 0, mult: 0.3, color: 0xff5500, vfx: 'punch', hits: 15, isFrenzy: true },
+            { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', doubleAttack: true },
+            { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atkMult', buffVal: 1.0, duration: 3, color: 0xff5500, desc: "+100% ATK Mult for 3 turns" }
+        ]},
+        // 70-79: God Fist
+        { name: "GOD-FIST", desc: "Tier 8: Divine", skills: [
+            { name: "INFINITE COMBO", cost: 0, mult: 0.2, color: 0xffd700, vfx: 'omni', hits: 25, isFrenzy: true },
+            { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', doubleAttack: true },
+            { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atkMult', buffVal: 1.25, duration: 3, color: 0xffd700, desc: "+125% ATK Mult for 3 turns" }
+        ]},
+        // 80-89: Universe
+        { name: "STAR-BREAKER", desc: "Tier 9: Cosmic", skills: [
+            { name: "STAR RUSH", cost: 0, mult: 0.25, color: 0xffff00, vfx: 'omni', hits: 30, isFrenzy: true },
+            { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', doubleAttack: true },
+            { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atkMult', buffVal: 1.50, duration: 3, color: 0xffff00, desc: "+150% ATK Mult for 3 turns" }
+        ]},
+        // 90+: One Punch
+        { name: "ONE-PUNCH", desc: "Tier 10: END", skills: [
+            { name: "SERIOUS PUNCHES", cost: 0, mult: 0.15, color: 0xffffff, vfx: 'omni', hits: 50, isFrenzy: true },
+            { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1 },
+            { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 3, color: 0xffffff, desc: "+200% ATK Mult for 3 turns" }
+        ]}
     ]
 };
 
@@ -281,6 +344,10 @@ const game = {
 
     // --- BUFF TRACKING ---
     buffs: {}, // { perkName: { count: N, totalValue: V, icon: '🔧', desc: 'description' } }
+
+    // --- BRAWLER FRENZY MASH SYSTEM ---
+    frenzySkill: null, // Current frenzy skill being mashed
+    frenzyMashHits: 0, // Bonus hits from mashing
 
     // --- PROGRESSIVE SHOP DATA (Persistent) ---
     shopData: {
@@ -333,6 +400,14 @@ const game = {
     },
 
     useSkill(slot) {
+        // BRAWLER FRENZY: Allow mashing during frenzy attacks
+        if(this.state === 'FRENZY_MASH' && this.frenzySkill) {
+            this.frenzyMashHits++;
+            this.triggerHit(this.frenzySkill, this.frenzyMashHits, 99, 0.5);
+            this.showText(`+${this.frenzyMashHits}!`, this.player.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '#ff4400');
+            return;
+        }
+
         if(this.state !== 'IDLE') return;
         const skill = this.player.skills[slot];
         if(!skill) return;
@@ -358,21 +433,57 @@ const game = {
 
         let hits = skill.hits || 1;
 
+        // BRAWLER: Double Attack skill hits twice
+        if(skill.doubleAttack) {
+            hits *= 2;
+        }
+
         let delay = 150;
-        if(skill.vfx === 'gatling') delay = 50;
+        if(skill.vfx === 'gatling' || skill.vfx === 'punch') delay = 50;
         else if(hits > 40) delay = 15;
         else if(hits > 15) delay = 30;
         else if(hits > 3) delay = 80;
 
-        this.player.attackAnim(() => {
-            for(let i=0; i<hits; i++) {
-                setTimeout(() => { this.triggerHit(skill, i, hits); }, i * delay);
-            }
-            setTimeout(() => {
-                if(this.enemy.hp <= 0) this.winBattle();
-                else this.enemyTurn();
-            }, 500 + (hits * delay));
-        });
+        // BRAWLER FRENZY: Open mash window for frenzy skills
+        if(skill.isFrenzy) {
+            this.state = 'FRENZY_MASH';
+            this.frenzySkill = skill;
+            this.frenzyMashHits = 0;
+            const mashDuration = 1500; // 1.5 seconds to mash
+
+            this.showText("MASH NOW!", this.player.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)), '#ff4400');
+
+            this.player.attackAnim(() => {
+                // Base hits happen automatically
+                for(let i=0; i<hits; i++) {
+                    setTimeout(() => { this.triggerHit(skill, i, hits, 0); }, i * delay);
+                }
+
+                // End mash window after duration
+                setTimeout(() => {
+                    this.state = 'ANIMATING';
+                    this.frenzySkill = null;
+                    const bonusHits = this.frenzyMashHits;
+                    if(bonusHits > 0) {
+                        this.showText(`+${bonusHits} BONUS HITS!`, this.player.mesh.position, '#ffaa00');
+                    }
+                    setTimeout(() => {
+                        if(this.enemy.hp <= 0) this.winBattle();
+                        else this.enemyTurn();
+                    }, 300);
+                }, mashDuration);
+            });
+        } else {
+            this.player.attackAnim(() => {
+                for(let i=0; i<hits; i++) {
+                    setTimeout(() => { this.triggerHit(skill, i, hits, 0); }, i * delay);
+                }
+                setTimeout(() => {
+                    if(this.enemy.hp <= 0) this.winBattle();
+                    else this.enemyTurn();
+                }, 500 + (hits * delay));
+            });
+        }
         this.updateUI();
     },
 
@@ -394,6 +505,7 @@ const game = {
         else if(type === 'doubleStrike') { p.doubleStrike += val; buff.revert = () => p.doubleStrike -= val; }
         else if(type === 'lifesteal') { p.lifesteal += val; buff.revert = () => p.lifesteal -= val; }
         else if(type === 'atk') { p.atk += val; buff.revert = () => p.atk -= val; }
+        else if(type === 'atkMult') { p.atkMult = (p.atkMult || 0) + val; buff.revert = () => p.atkMult -= val; }
         else if(type === 'armor') { p.armor += val; buff.revert = () => p.armor -= val; }
         else if(type === 'critDamage') { p.critDamage += val; buff.revert = () => p.critDamage -= val; }
         else if(type === 'thorns') { p.thorns += val; buff.revert = () => p.thorns -= val; }
@@ -439,10 +551,20 @@ const game = {
         this.updateUI();
     },
 
-    triggerHit(skill, index, totalHits) {
+    triggerHit(skill, index, totalHits, frenzyBonus = 0) {
         let isCrit = Math.random() < this.player.critChance;
         const critMult = this.player.critDamage + (this.floor * 0.05);
         let raw = Math.floor(this.player.atk * skill.mult * (isCrit ? critMult : 1));
+
+        // BRAWLER: Apply frenzy bonus (click speed) and atkMult buff
+        const atkMultBonus = this.player.atkMult || 0;
+        raw = Math.floor(raw * (1 + frenzyBonus + atkMultBonus));
+
+        // Show frenzy bonus text on first hit
+        if(frenzyBonus > 0 && index === 0) {
+            const frenzyPct = Math.floor(frenzyBonus * 100);
+            this.showText(`FRENZY +${frenzyPct}%!`, this.player.mesh.position.clone().add(new THREE.Vector3(0, 1.5, 0)), '#ff4400');
+        }
 
         // COMBO SYSTEM: Each hit in battle increases damage
         this.battleCombo = (this.battleCombo || 0) + 1;
@@ -503,6 +625,7 @@ const game = {
         else if(type === 'heavy') { engine.spawnParticles(pos, color, 30, 0.6); engine.addShake(0.3); engine.spawnShockwave(pos, color, 2); }
         else if(type === 'multi') { engine.spawnParticles(pos, color, 10, 0.4); pos.x+=(Math.random()-0.5); pos.y+=(Math.random()-0.5); }
         else if(type === 'omni') { engine.spawnParticles(pos, color, 8, 0.5); if(index===totalHits-1) engine.spawnShockwave(pos, color, 3); }
+        else if(type === 'punch') { engine.spawnParticles(pos, color, 6, 0.25); engine.addShake(0.03); } // Fast punch VFX
         else if(type === 'zap') engine.spawnParticles(pos, 0xffff00, 5, 0.2);
         else if(type === 'beam') { engine.spawnBeam(pos, color, 8, 0.3); engine.addShake(0.05); }
         else if(type === 'god_beam') { engine.spawnBeam(pos, color, 20, 1.0); engine.spawnShockwave(pos, color, 3); engine.addShake(0.2); }
@@ -514,6 +637,7 @@ const game = {
         else if(type === 'blackhole') { engine.spawnImplosion(pos, 0x000000); engine.spawnShockwave(pos, 0xaa00aa, 5); engine.addShake(0.5); }
         else if(type === 'matrix') { engine.spawnMatrix(pos, 0x00ff00); }
         else if(type === 'rain') { engine.spawnMatrix(pos, color); engine.spawnParticles(pos, color, 10); }
+        else if(type === 'crit') { engine.spawnParticles(pos, 0xffcc00, 25, 0.5); engine.addShake(0.15); engine.spawnShockwave(pos, 0xffcc00, 1.5); }
         else engine.spawnParticles(pos, color, 10);
     },
 
@@ -673,21 +797,26 @@ const game = {
         container.innerHTML = '';
         if(tier === 0) {
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
-            ['RONIN', 'PRIEST', 'MECH', 'SHADOW'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0)));
+            ['RONIN', 'PRIEST', 'MECH', 'SHADOW', 'BRAWLER'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0), jobKey));
         } else {
             document.querySelector('#class-screen h2').innerText = `TIER ${tier+1} ADVANCEMENT`;
             const currentKey = this.player.jobType;
-            if(CLASS_TREES[currentKey][tier]) this.createJobCard(container, CLASS_TREES[currentKey][tier], () => this.setJob(currentKey, tier));
+            if(CLASS_TREES[currentKey][tier]) this.createJobCard(container, CLASS_TREES[currentKey][tier], () => this.setJob(currentKey, tier), currentKey);
             else this.nextFloor();
         }
     },
-    
-    createJobCard(container, jobData, onClick) {
+
+    createJobCard(container, jobData, onClick, jobKey = '') {
         const card = document.createElement('div');
         card.className = 'perk-card legendary'; card.style.height = 'auto';
         const s3 = jobData.skills[2];
         const buffInfo = s3 ? `<br><strong style="color:#ffe600">3:</strong> <span style="color:#ffe600">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
-        card.innerHTML = `<div class="perk-title">${jobData.name}</div><div class="perk-desc">${jobData.desc}</div>
+
+        // Mark broken classes
+        const isBroken = jobKey === 'SHADOW' || jobKey === 'BRAWLER';
+        const brokenTag = isBroken ? `<div style="background:linear-gradient(90deg,#ff0000,#ff6600);color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px;font-size:12px;margin-bottom:8px;text-shadow:0 0 5px #000;">⚠️ BROKEN ⚠️</div>` : '';
+
+        card.innerHTML = `${brokenTag}<div class="perk-title">${jobData.name}</div><div class="perk-desc">${jobData.desc}</div>
         <div style="font-size:14px;color:#fff;margin-top:10px;"><strong>1:</strong> ${jobData.skills[0].name}<br><span style="color:#aaa">${jobData.skills[0].mult}x / ${jobData.skills[0].hits||1} Hits</span><br><strong>2:</strong> ${jobData.skills[1].name}<br><span style="color:#aaa">${jobData.skills[1].mult}x / ${jobData.skills[1].hits||1} Hits</span>${buffInfo}</div>`;
         card.onclick = onClick; container.appendChild(card);
     },
@@ -722,7 +851,7 @@ const game = {
         engine.scene.remove(this.player.mesh);
 
         // Create new model based on class
-        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600, 'SHADOW': 0x220033 };
+        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600, 'SHADOW': 0x220033, 'BRAWLER': 0xff4400 };
         const color = colors[type] || 0x00f2ff;
 
         if(type === 'RONIN') {
@@ -733,6 +862,8 @@ const game = {
             this.player.model = Models.createMech(color, 1.5, tier);
         } else if(type === 'SHADOW') {
             this.player.model = Models.createShadow(color, 1.5, tier);
+        } else if(type === 'BRAWLER') {
+            this.player.model = Models.createBrawler(color, 1.5, tier);
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }
