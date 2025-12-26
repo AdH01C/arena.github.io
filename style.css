@@ -257,16 +257,24 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
     .bar-container { height: 14px; }
     .overlay-text { font-size: 12px; }
 
-    /* Make Combat Buttons BIGGER for thumbs */
-    #battle-controls { bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 10px; }
+    /* Make Combat Buttons BIGGER for thumbs - MOVED TO RIGHT */
+    #battle-controls {
+        bottom: 10px;
+        right: 10px;
+        left: auto;
+        width: auto;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
     .btn {
-        padding: 15px 25px; /* Fat finger padding */
+        padding: 12px 20px; /* Fat finger padding */
         margin: 0;
-        width: 140px; /* Fixed width for consistency */
+        width: 110px; /* Slightly smaller to fit */
         min-height: 44px; /* Apple recommended touch target */
     }
-    .btn-name { font-size: 22px; }
-    .btn-cost { font-size: 14px; }
+    .btn-name { font-size: 18px; }
+    .btn-cost { font-size: 12px; }
 
     /* Adjust Card Size for small screens */
     .card-container {
