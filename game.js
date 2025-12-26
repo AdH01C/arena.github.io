@@ -1,319 +1,635 @@
 // --- JOB TREES (UPDATED FOR SPECTACLE) ---
 
 // --- 100 LEVEL JOB TREES ---
+// const CLASS_TREES = {
+//     "RONIN": [
+//         // 0-9: BASE
+//         { name: "CYBER-RONIN", desc: "Tier 1: Basics", skills: [
+//             { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash' },
+//             { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1 },
+//             { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 3, color: 0xaa00ff, desc: "+15% Crit for 3 turns" }
+//         ]},
+//         // 10-19: ASSASSIN
+//         { name: "VOID-STALKER", desc: "Tier 2: Speed", skills: [
+//             { name: "PHANTOM CUT", cost: 0, mult: 1.2, color: 0x9900ff, vfx: 'multi', hits: 3 },
+//             { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1 },
+//             { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 3, color: 0x9900ff, desc: "+25% Dodge for 3 turns" }
+//         ]},
+//         // 20-29: TIME
+//         { name: "TIME-SLAYER", desc: "Tier 3: Multi-Hit", skills: [
+//             { name: "DIMENSION REND", cost: 0, mult: 0.5, color: 0xffffff, vfx: 'slash', hits: 5 },
+//             { name: "OMNI-SLASH", cost: 60, mult: 6.0, color: 0xaa00ff, vfx: 'omni', hits: 10 },
+//             { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 3, color: 0xffffff, desc: "+30% Double Strike for 3 turns" }
+//         ]},
+//         // 30-39: SHADOW
+//         { name: "SHADOW-LORD", desc: "Tier 4: Dark Arts", skills: [
+//             { name: "NIGHTFALL", cost: 0, mult: 0.8, color: 0x330033, vfx: 'implode', hits: 4 },
+//             { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1 },
+//             { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 3, color: 0x550055, desc: "+20% Lifesteal for 3 turns" }
+//         ]},
+//         // 40-49: BLOOD
+//         { name: "BLOOD-LETTER", desc: "Tier 5: Lifesteal", skills: [
+//             { name: "HEMORRHAGE", cost: 0, mult: 1.0, color: 0xff0000, vfx: 'multi', hits: 6 },
+//             { name: "VAMPIRISM", cost: 100, mult: 5.0, color: 0xaa0000, vfx: 'implode', heal: 200 },
+//             { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 30, duration: 3, color: 0xff0000, desc: "+30 ATK for 3 turns" }
+//         ]},
+//         // 50-59: ETHER
+//         { name: "ETHER-BLADE", desc: "Tier 6: Magic Dmg", skills: [
+//             { name: "SPIRIT SLASH", cost: 0, mult: 1.5, color: 0x00ffff, vfx: 'beam', hits: 2 },
+//             { name: "SOUL REND", cost: 120, mult: 10.0, color: 0x00aaff, vfx: 'crit', hits: 1 },
+//             { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 2, color: 0x00ffff, desc: "+40% Dodge for 2 turns" }
+//         ]},
+//         // 60-69: VOID
+//         { name: "VOID-WALKER", desc: "Tier 7: Black Holes", skills: [
+//             { name: "GRAVITY WELL", cost: 0, mult: 0.5, color: 0x111111, vfx: 'implode', hits: 8 },
+//             { name: "EVENT HORIZON", cost: 150, mult: 12.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+//             { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0x111111, desc: "+50% Crit DMG for 3 turns" }
+//         ]},
+//         // 70-79: LIGHTSPEED
+//         { name: "FLASH-STEP", desc: "Tier 8: Velocity", skills: [
+//             { name: "MACH SLASH", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'omni', hits: 20 },
+//             { name: "LIGHTSPEED", cost: 180, mult: 15.0, color: 0xffffff, vfx: 'beam', hits: 1 },
+//             { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 3, color: 0xffff00, desc: "+50% Double Strike for 3 turns" }
+//         ]},
+//         // 80-89: REALITY
+//         { name: "REALITY-BREAKER", desc: "Tier 9: Glitch", skills: [
+//             { name: "GLITCH CUT", cost: 0, mult: 1.0, color: 0x00ff00, vfx: 'matrix', hits: 10 },
+//             { name: "SYSTEM PURGE", cost: 220, mult: 20.0, color: 0x00ff00, vfx: 'matrix', hits: 1 },
+//             { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 3, color: 0x00ff00, desc: "+30% Crit for 3 turns" }
+//         ]},
+//         // 90+: GOD
+//         { name: "SINGULARITY", desc: "Tier 10: Cosmic", skills: [
+//             { name: "BIG BANG", cost: 0, mult: 1.0, color: 0xffffff, vfx: 'blackhole', hits: 15 },
+//             { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+//             { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0xffd700, desc: "+25% All Offense for 3 turns" }
+//         ]}
+//     ],
+
+//     "PRIEST": [
+//         // 0-9
+//         { name: "TECH-PRIEST", desc: "Tier 1: Basics", skills: [
+//             { name: "ZAP", cost: 0, mult: 0.8, color: 0xffff00, vfx: 'zap', manaGain: 8 },
+//             { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', heal: 30 },
+//             { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 20, duration: 3, color: 0x00ff00, desc: "Heal 20 HP for 3 turns" }
+//         ]},
+//         // 10-19
+//         { name: "CYBER-BISHOP", desc: "Tier 2: Holy", skills: [
+//             { name: "SIPHON", cost: 0, mult: 1.0, color: 0xffffaa, vfx: 'drain', manaGain: 15 },
+//             { name: "HOLY NOVA", cost: 50, mult: 3.5, color: 0x00ffff, vfx: 'nova', heal: 50 },
+//             { name: "SANCTUARY", cost: 25, isBuff: true, buffType: 'shield', buffVal: 50, duration: 1, color: 0x00ffff, desc: "+50 Shield" }
+//         ]},
+//         // 20-29
+//         { name: "DEUS-EX", desc: "Tier 3: Machine", skills: [
+//             { name: "DATA DRAIN", cost: 0, mult: 1.2, color: 0x00ff00, vfx: 'matrix', manaGain: 25 },
+//             { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', heal: 100 },
+//             { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 15, duration: 3, color: 0x00ff00, desc: "+15 Armor for 3 turns" }
+//         ]},
+//         // 30-39
+//         { name: "ANGEL-MK1", desc: "Tier 4: Flight", skills: [
+//             { name: "LASER WING", cost: 0, mult: 0.5, color: 0xffffff, vfx: 'beam', hits: 4, manaGain: 30 },
+//             { name: "HEAVENLY RAY", cost: 100, mult: 8.0, color: 0xffffdd, vfx: 'god_beam', heal: 150 },
+//             { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 50, duration: 3, color: 0xffffff, desc: "Heal 50 HP for 3 turns" }
+//         ]},
+//         // 40-49
+//         { name: "ORACLE", desc: "Tier 5: Sight", skills: [
+//             { name: "PREDICTION", cost: 0, mult: 2.0, color: 0xaa00ff, vfx: 'zap', manaGain: 40 },
+//             { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', heal: 200 },
+//             { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 3, color: 0xaa00ff, desc: "+35% Dodge for 3 turns" }
+//         ]},
+//         // 50-59
+//         { name: "HIGH-TEMPLAR", desc: "Tier 6: Storm", skills: [
+//             { name: "PSIONIC STORM", cost: 0, mult: 0.5, color: 0x0000ff, vfx: 'rain', hits: 10, manaGain: 10 },
+//             { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', heal: 250 },
+//             { name: "PSI SHIELD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 100, duration: 1, color: 0x0000ff, desc: "+100 Shield" }
+//         ]},
+//         // 60-69
+//         { name: "SERAPHIM", desc: "Tier 7: Fire", skills: [
+//             { name: "HOLY FIRE", cost: 0, mult: 1.5, color: 0xffaa00, vfx: 'beam', hits: 3, manaGain: 50 },
+//             { name: "PURGATORY", cost: 180, mult: 15.0, color: 0xff5500, vfx: 'nuke', heal: 300 },
+//             { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 3, color: 0xffaa00, desc: "+30% Thorns for 3 turns" }
+//         ]},
+//         // 70-79
+//         { name: "ARCHON", desc: "Tier 8: Power", skills: [
+//             { name: "POWER OVERWHELM", cost: 0, mult: 1.0, color: 0x00f2ff, vfx: 'omni', hits: 5, manaGain: 60 },
+//             { name: "ARCHON BEAM", cost: 220, mult: 20.0, color: 0x00f2ff, vfx: 'god_beam', heal: 400 },
+//             { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 3, color: 0x00f2ff, desc: "+25% All Defense for 3 turns" }
+//         ]},
+//         // 80-89
+//         { name: "SOURCE-CODE", desc: "Tier 9: Admin", skills: [
+//             { name: "REWRITE", cost: 0, mult: 2.0, color: 0x00ff00, vfx: 'matrix', manaGain: 100 },
+//             { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', heal: 500 },
+//             { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 150, duration: 3, color: 0x00ff00, desc: "Heal 150 HP for 3 turns" }
+//         ]},
+//         // 90+
+//         { name: "DIGITAL-GOD", desc: "Tier 10: Omni", skills: [
+//             { name: "CREATION", cost: 0, mult: 5.0, color: 0xffffff, vfx: 'god_beam', manaGain: 999 },
+//             { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', heal: 9999 },
+//             { name: "IMMORTALITY", cost: 100, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0xffd700, desc: "Invincible for 2 turns" }
+//         ]}
+//     ],
+
+//     "MECH": [
+//         // 0-9
+//         { name: "HEAVY-MECH", desc: "Tier 1: Basics", skills: [
+//             { name: "GATLING", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'gatling', hits: 3 },
+//             { name: "MISSILE", cost: 30, mult: 3.0, color: 0xff5500, vfx: 'explode', hits: 1 },
+//             { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 10, duration: 3, color: 0xaaaaaa, desc: "+10 Armor for 3 turns" }
+//         ]},
+//         // 10-19
+//         { name: "WAR-TITAN", desc: "Tier 2: Dakka", skills: [
+//             { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6 },
+//             { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1 },
+//             { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 20, duration: 3, color: 0xff9900, desc: "+20 ATK for 3 turns" }
+//         ]},
+//         // 20-29
+//         { name: "APOCALYPSE", desc: "Tier 3: Barrage", skills: [
+//             { name: "BULLET HELL", cost: 0, mult: 0.1, color: 0xffaa00, vfx: 'gatling', hits: 15 },
+//             { name: "BUNKER BUSTER", cost: 80, mult: 7.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
+//             { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 15, duration: 3, color: 0xffaa00, desc: "+15 Mana Regen for 3 turns" }
+//         ]},
+//         // 30-39
+//         { name: "ARTILLERY", desc: "Tier 4: Long Range", skills: [
+//             { name: "HOWITZER", cost: 0, mult: 2.0, color: 0xaa5500, vfx: 'heavy', hits: 1 },
+//             { name: "CARPET BOMB", cost: 100, mult: 1.0, color: 0xff5500, vfx: 'rain', hits: 10 },
+//             { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 25, duration: 3, color: 0xaa5500, desc: "+25 Armor for 3 turns" }
+//         ]},
+//         // 40-49
+//         { name: "LASER-CORE", desc: "Tier 5: Energy", skills: [
+//             { name: "PULSE RIFLE", cost: 0, mult: 0.5, color: 0x00f2ff, vfx: 'beam', hits: 5 },
+//             { name: "ION CANNON", cost: 120, mult: 12.0, color: 0x00ffff, vfx: 'god_beam', hits: 1 },
+//             { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 3, color: 0x00f2ff, desc: "+40% Crit DMG for 3 turns" }
+//         ]},
+//         // 50-59
+//         { name: "FORTRESS", desc: "Tier 6: Defense", skills: [
+//             { name: "FLAK", cost: 0, mult: 0.3, color: 0xffff00, vfx: 'explode', hits: 12 },
+//             { name: "DOOMSDAY", cost: 150, mult: 15.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
+//             { name: "BUNKER", cost: 45, isBuff: true, buffType: 'shield', buffVal: 150, duration: 1, color: 0xffff00, desc: "+150 Shield" }
+//         ]},
+//         // 60-69
+//         { name: "GUNDAM-X", desc: "Tier 7: Mobile", skills: [
+//             { name: "BEAM SABER", cost: 0, mult: 1.0, color: 0xff00ff, vfx: 'slash', hits: 3 },
+//             { name: "FULL BURST", cost: 180, mult: 0.8, color: 0x00ff00, vfx: 'omni', hits: 25 },
+//             { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 3, color: 0xff00ff, desc: "+20% All Offense for 3 turns" }
+//         ]},
+//         // 70-79
+//         { name: "DREADNOUGHT", desc: "Tier 8: Space", skills: [
+//             { name: "MACRO CANNON", cost: 0, mult: 3.0, color: 0xaaaaff, vfx: 'heavy', hits: 2 },
+//             { name: "EXTERMINATUS", cost: 220, mult: 25.0, color: 0xffaa00, vfx: 'rain', hits: 15 },
+//             { name: "VOID SHIELDS", cost: 55, isBuff: true, buffType: 'shield', buffVal: 250, duration: 1, color: 0xaaaaff, desc: "+250 Shield" }
+//         ]},
+//         // 80-89
+//         { name: "WORLD-EATER", desc: "Tier 9: Planetary", skills: [
+//             { name: "CRUST CRACK", cost: 0, mult: 2.0, color: 0xff5500, vfx: 'implode', hits: 5 },
+//             { name: "CORE DETONATE", cost: 260, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
+//             { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 100, duration: 3, color: 0xff5500, desc: "+100 ATK for 3 turns" }
+//         ]},
+//         // 90+
+//         { name: "ANNIHILATOR", desc: "Tier 10: Universal", skills: [
+//             { name: "ZERO POINT", cost: 0, mult: 1.0, color: 0xffffff, vfx: 'gatling', hits: 50 },
+//             { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
+//             { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 3, color: 0xffd700, desc: "+50% All Offense for 3 turns" }
+//         ]}
+//     ],
+
+//     "SHADOW": [
+//         // 0-9: BASE - Stealth Assassin
+//         { name: "SHADE", desc: "Tier 1: Stealth", skills: [
+//             { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash' },
+//             { name: "POISON BLADE", cost: 25, mult: 1.5, color: 0x00ff00, vfx: 'multi', hits: 3 },
+//             { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 2, color: 0x220033, desc: "+30% Dodge for 2 turns" }
+//         ]},
+//         // 10-19: Poison Master
+//         { name: "VENOM-WEAVER", desc: "Tier 2: Toxins", skills: [
+//             { name: "TOXIC SLASH", cost: 0, mult: 0.8, color: 0x00aa00, vfx: 'multi', hits: 4 },
+//             { name: "VENOM BURST", cost: 45, mult: 4.5, color: 0x00ff00, vfx: 'implode', hits: 1 },
+//             { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Crit for 3 turns" }
+//         ]},
+//         // 20-29: Ghost
+//         { name: "PHANTOM", desc: "Tier 3: Intangible", skills: [
+//             { name: "PHASE STRIKE", cost: 0, mult: 0.6, color: 0x8800aa, vfx: 'slash', hits: 5 },
+//             { name: "SOUL DRAIN", cost: 55, mult: 5.0, color: 0xaa00ff, vfx: 'implode', heal: 80 },
+//             { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 1, color: 0x8800aa, desc: "Invincible for 1 turn" }
+//         ]},
+//         // 30-39: Assassin
+//         { name: "DEATH-DEALER", desc: "Tier 4: Execute", skills: [
+//             { name: "MARKED DEATH", cost: 0, mult: 1.5, color: 0x440044, vfx: 'crit', hits: 2 },
+//             { name: "EXECUTE ORDER", cost: 75, mult: 8.0, color: 0xff0044, vfx: 'heavy', hits: 1 },
+//             { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0xff0044, desc: "+50% Crit DMG for 3 turns" }
+//         ]},
+//         // 40-49: Nightmare
+//         { name: "NIGHTMARE", desc: "Tier 5: Fear", skills: [
+//             { name: "TERROR", cost: 0, mult: 0.7, color: 0x110011, vfx: 'implode', hits: 6 },
+//             { name: "NIGHT TERROR", cost: 90, mult: 6.0, color: 0x330033, vfx: 'blackhole', hits: 3 },
+//             { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0x330033, desc: "+25% Lifesteal for 3 turns" }
+//         ]},
+//         // 50-59: Reaper
+//         { name: "GRIM-REAPER", desc: "Tier 6: Death", skills: [
+//             { name: "SCYTHE SWEEP", cost: 0, mult: 1.2, color: 0x000000, vfx: 'slash', hits: 4 },
+//             { name: "REAP SOULS", cost: 110, mult: 10.0, color: 0x440044, vfx: 'implode', heal: 150 },
+//             { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 3, color: 0x000000, desc: "+35% Crit for 3 turns" }
+//         ]},
+//         // 60-69: Wraith
+//         { name: "WRAITH-LORD", desc: "Tier 7: Ethereal", skills: [
+//             { name: "SPECTRAL BLADES", cost: 0, mult: 0.5, color: 0x6600aa, vfx: 'omni', hits: 10 },
+//             { name: "SOUL SHATTER", cost: 140, mult: 12.0, color: 0xaa00ff, vfx: 'blackhole', hits: 1 },
+//             { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x6600aa, desc: "Invincible for 2 turns" }
+//         ]},
+//         // 70-79: Void Assassin
+//         { name: "VOID-FANG", desc: "Tier 8: Void", skills: [
+//             { name: "VOID FANGS", cost: 0, mult: 0.8, color: 0x220022, vfx: 'multi', hits: 12 },
+//             { name: "ANNIHILATE", cost: 170, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+//             { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0x220022, desc: "+25% All Offense for 3 turns" }
+//         ]},
+//         // 80-89: Entropy
+//         { name: "ENTROPY", desc: "Tier 9: Decay", skills: [
+//             { name: "DECAY", cost: 0, mult: 1.5, color: 0x003300, vfx: 'implode', hits: 8 },
+//             { name: "ENTROPY WAVE", cost: 200, mult: 30.0, color: 0x006600, vfx: 'nova', hits: 1 },
+//             { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 3, color: 0x003300, desc: "+75% Crit DMG for 3 turns" }
+//         ]},
+//         // 90+: Death Incarnate
+//         { name: "OBLIVION", desc: "Tier 10: End", skills: [
+//             { name: "OBLIVION", cost: 0, mult: 0.8, color: 0x000000, vfx: 'blackhole', hits: 20 },
+//             { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1 },
+//             { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 3, color: 0x000000, desc: "+60% All Offense for 3 turns" }
+//         ]}
+//     ],
+
+//     "BRAWLER": [
+//         // 0-9: BASE - Street Fighter (isFrenzy = click speed bonus, doubleAttack = hits twice)
+//         { name: "STREET-PUNK", desc: "Tier 1: Speed", skills: [
+//             { name: "JAB", cost: 0, mult: 0.6, color: 0xff4400, vfx: 'punch', isFrenzy: true },
+//             { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', doubleAttack: true },
+//             { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 3, color: 0xff4400, desc: "+20% ATK Mult for 3 turns" }
+//         ]},
+//         // 10-19: Boxer
+//         { name: "CHROME-BOXER", desc: "Tier 2: Combos", skills: [
+//             { name: "ONE-TWO", cost: 0, mult: 0.5, color: 0xff5500, vfx: 'punch', hits: 2, isFrenzy: true },
+//             { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', doubleAttack: true },
+//             { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atkMult', buffVal: 0.30, duration: 3, color: 0xff5500, desc: "+30% ATK Mult for 3 turns" }
+//         ]},
+//         // 20-29: Kickboxer
+//         { name: "CYBER-KICK", desc: "Tier 3: Kicks", skills: [
+//             { name: "RAPID KICKS", cost: 0, mult: 0.4, color: 0xff6600, vfx: 'punch', hits: 4, isFrenzy: true },
+//             { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', doubleAttack: true },
+//             { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atkMult', buffVal: 0.40, duration: 3, color: 0xff6600, desc: "+40% ATK Mult for 3 turns" }
+//         ]},
+//         // 30-39: Wrestler
+//         { name: "GRAPPLER", desc: "Tier 4: Throws", skills: [
+//             { name: "COMBO STRIKE", cost: 0, mult: 0.5, color: 0xff7700, vfx: 'punch', hits: 5, isFrenzy: true },
+//             { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', doubleAttack: true },
+//             { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atkMult', buffVal: 0.50, duration: 3, color: 0xff7700, desc: "+50% ATK Mult for 3 turns" }
+//         ]},
+//         // 40-49: Berserker
+//         { name: "BERSERKER", desc: "Tier 5: Fury", skills: [
+//             { name: "FRENZY", cost: 0, mult: 0.3, color: 0xff2200, vfx: 'punch', hits: 8, isFrenzy: true },
+//             { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 5, doubleAttack: true },
+//             { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atkMult', buffVal: 0.60, duration: 3, color: 0xff2200, desc: "+60% ATK Mult for 3 turns" }
+//         ]},
+//         // 50-59: Champion
+//         { name: "PIT-CHAMPION", desc: "Tier 6: Glory", skills: [
+//             { name: "FLURRY", cost: 0, mult: 0.25, color: 0xffaa00, vfx: 'punch', hits: 12, isFrenzy: true },
+//             { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', doubleAttack: true },
+//             { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atkMult', buffVal: 0.75, duration: 3, color: 0xffaa00, desc: "+75% ATK Mult for 3 turns" }
+//         ]},
+//         // 60-69: Titan
+//         { name: "IRON-TITAN", desc: "Tier 7: Power", skills: [
+//             { name: "METEOR FISTS", cost: 0, mult: 0.3, color: 0xff5500, vfx: 'punch', hits: 15, isFrenzy: true },
+//             { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', doubleAttack: true },
+//             { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atkMult', buffVal: 1.0, duration: 3, color: 0xff5500, desc: "+100% ATK Mult for 3 turns" }
+//         ]},
+//         // 70-79: God Fist
+//         { name: "GOD-FIST", desc: "Tier 8: Divine", skills: [
+//             { name: "INFINITE COMBO", cost: 0, mult: 0.2, color: 0xffd700, vfx: 'omni', hits: 25, isFrenzy: true },
+//             { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', doubleAttack: true },
+//             { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atkMult', buffVal: 1.25, duration: 3, color: 0xffd700, desc: "+125% ATK Mult for 3 turns" }
+//         ]},
+//         // 80-89: Universe
+//         { name: "STAR-BREAKER", desc: "Tier 9: Cosmic", skills: [
+//             { name: "STAR RUSH", cost: 0, mult: 0.25, color: 0xffff00, vfx: 'omni', hits: 30, isFrenzy: true },
+//             { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', doubleAttack: true },
+//             { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atkMult', buffVal: 1.50, duration: 3, color: 0xffff00, desc: "+150% ATK Mult for 3 turns" }
+//         ]},
+//         // 90+: One Punch
+//         { name: "ONE-PUNCH", desc: "Tier 10: END", skills: [
+//             { name: "SERIOUS PUNCHES", cost: 0, mult: 0.15, color: 0xffffff, vfx: 'omni', hits: 50, isFrenzy: true },
+//             { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1 },
+//             { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 3, color: 0xffffff, desc: "+200% ATK Mult for 3 turns" }
+//         ]}
+//     ]
+// };
 const CLASS_TREES = {
     "RONIN": [
-        // 0-9: BASE
+        // 0-9: BASE - Balanced Speed
         { name: "CYBER-RONIN", desc: "Tier 1: Basics", skills: [
-            { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash' },
+            { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash', hits: 1 },
             { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1 },
-            { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 3, color: 0xaa00ff, desc: "+15% Crit for 3 turns" }
+            { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 3, color: 0xaa00ff, desc: "+15% Crit" }
         ]},
-        // 10-19: ASSASSIN
+        // 10-19
         { name: "VOID-STALKER", desc: "Tier 2: Speed", skills: [
-            { name: "PHANTOM CUT", cost: 0, mult: 1.2, color: 0x9900ff, vfx: 'multi', hits: 3 },
+            { name: "PHANTOM CUT", cost: 0, mult: 0.6, color: 0x9900ff, vfx: 'multi', hits: 3 }, // Total: 1.8x
             { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1 },
-            { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 3, color: 0x9900ff, desc: "+25% Dodge for 3 turns" }
+            { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 3, color: 0x9900ff, desc: "+25% Dodge" }
         ]},
-        // 20-29: TIME
+        // 20-29
         { name: "TIME-SLAYER", desc: "Tier 3: Multi-Hit", skills: [
-            { name: "DIMENSION REND", cost: 0, mult: 0.5, color: 0xffffff, vfx: 'slash', hits: 5 },
-            { name: "OMNI-SLASH", cost: 60, mult: 6.0, color: 0xaa00ff, vfx: 'omni', hits: 10 },
-            { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 3, color: 0xffffff, desc: "+30% Double Strike for 3 turns" }
+            { name: "DIMENSION REND", cost: 0, mult: 0.45, color: 0xffffff, vfx: 'slash', hits: 5 }, // Total: 2.25x
+            { name: "OMNI-SLASH", cost: 60, mult: 0.8, color: 0xaa00ff, vfx: 'omni', hits: 8 }, // Total: 6.4x
+            { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 3, color: 0xffffff, desc: "+30% Double Strike" }
         ]},
-        // 30-39: SHADOW
+        // 30-39
         { name: "SHADOW-LORD", desc: "Tier 4: Dark Arts", skills: [
-            { name: "NIGHTFALL", cost: 0, mult: 0.8, color: 0x330033, vfx: 'implode', hits: 4 },
+            { name: "NIGHTFALL", cost: 0, mult: 0.4, color: 0x330033, vfx: 'implode', hits: 7 }, // Total: 2.8x
             { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1 },
-            { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 3, color: 0x550055, desc: "+20% Lifesteal for 3 turns" }
+            { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 3, color: 0x550055, desc: "+20% Lifesteal" }
         ]},
-        // 40-49: BLOOD
+        // 40-49
         { name: "BLOOD-LETTER", desc: "Tier 5: Lifesteal", skills: [
-            { name: "HEMORRHAGE", cost: 0, mult: 1.0, color: 0xff0000, vfx: 'multi', hits: 6 },
-            { name: "VAMPIRISM", cost: 100, mult: 5.0, color: 0xaa0000, vfx: 'implode', heal: 200 },
-            { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 30, duration: 3, color: 0xff0000, desc: "+30 ATK for 3 turns" }
+            { name: "HEMORRHAGE", cost: 0, mult: 0.35, color: 0xff0000, vfx: 'multi', hits: 9 }, // Total: 3.15x
+            { name: "VAMPIRISM", cost: 100, mult: 2.5, color: 0xaa0000, vfx: 'implode', hits: 4, heal: 200 },
+            { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 30, duration: 3, color: 0xff0000, desc: "+30 ATK" }
         ]},
-        // 50-59: ETHER
+        // 50-59
         { name: "ETHER-BLADE", desc: "Tier 6: Magic Dmg", skills: [
-            { name: "SPIRIT SLASH", cost: 0, mult: 1.5, color: 0x00ffff, vfx: 'beam', hits: 2 },
-            { name: "SOUL REND", cost: 120, mult: 10.0, color: 0x00aaff, vfx: 'crit', hits: 1 },
-            { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 2, color: 0x00ffff, desc: "+40% Dodge for 2 turns" }
+            { name: "SPIRIT SLASH", cost: 0, mult: 0.3, color: 0x00ffff, vfx: 'beam', hits: 12 }, // Total: 3.6x
+            { name: "SOUL REND", cost: 120, mult: 12.0, color: 0x00aaff, vfx: 'crit', hits: 1 },
+            { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 2, color: 0x00ffff, desc: "+40% Dodge" }
         ]},
-        // 60-69: VOID
+        // 60-69
         { name: "VOID-WALKER", desc: "Tier 7: Black Holes", skills: [
-            { name: "GRAVITY WELL", cost: 0, mult: 0.5, color: 0x111111, vfx: 'implode', hits: 8 },
-            { name: "EVENT HORIZON", cost: 150, mult: 12.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-            { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0x111111, desc: "+50% Crit DMG for 3 turns" }
+            { name: "GRAVITY WELL", cost: 0, mult: 0.25, color: 0x111111, vfx: 'implode', hits: 15 }, // Total: 3.75x
+            { name: "EVENT HORIZON", cost: 150, mult: 15.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+            { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0x111111, desc: "+50% Crit DMG" }
         ]},
-        // 70-79: LIGHTSPEED
+        // 70-79
         { name: "FLASH-STEP", desc: "Tier 8: Velocity", skills: [
-            { name: "MACH SLASH", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'omni', hits: 20 },
-            { name: "LIGHTSPEED", cost: 180, mult: 15.0, color: 0xffffff, vfx: 'beam', hits: 1 },
-            { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 3, color: 0xffff00, desc: "+50% Double Strike for 3 turns" }
+            { name: "MACH SLASH", cost: 0, mult: 0.22, color: 0xffff00, vfx: 'omni', hits: 20 }, // Total: 4.4x
+            { name: "LIGHTSPEED", cost: 180, mult: 20.0, color: 0xffffff, vfx: 'beam', hits: 1 },
+            { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 3, color: 0xffff00, desc: "+50% Double Strike" }
         ]},
-        // 80-89: REALITY
+        // 80-89
         { name: "REALITY-BREAKER", desc: "Tier 9: Glitch", skills: [
-            { name: "GLITCH CUT", cost: 0, mult: 1.0, color: 0x00ff00, vfx: 'matrix', hits: 10 },
-            { name: "SYSTEM PURGE", cost: 220, mult: 20.0, color: 0x00ff00, vfx: 'matrix', hits: 1 },
-            { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 3, color: 0x00ff00, desc: "+30% Crit for 3 turns" }
+            { name: "GLITCH CUT", cost: 0, mult: 0.2, color: 0x00ff00, vfx: 'matrix', hits: 25 }, // Total: 5.0x
+            { name: "SYSTEM PURGE", cost: 220, mult: 2.5, color: 0x00ff00, vfx: 'matrix', hits: 10 },
+            { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 3, color: 0x00ff00, desc: "+30% Crit" }
         ]},
-        // 90+: GOD
+        // 90+
         { name: "SINGULARITY", desc: "Tier 10: Cosmic", skills: [
-            { name: "BIG BANG", cost: 0, mult: 1.0, color: 0xffffff, vfx: 'blackhole', hits: 15 },
+            { name: "BIG BANG", cost: 0, mult: 0.18, color: 0xffffff, vfx: 'blackhole', hits: 35 }, // Total: 6.3x
             { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-            { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0xffd700, desc: "+25% All Offense for 3 turns" }
+            { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0xffd700, desc: "+25% All Offense" }
         ]}
     ],
 
     "PRIEST": [
-        // 0-9
+        // 0-9: Low Hit Count / High Utility
         { name: "TECH-PRIEST", desc: "Tier 1: Basics", skills: [
-            { name: "ZAP", cost: 0, mult: 0.8, color: 0xffff00, vfx: 'zap', manaGain: 8 },
-            { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', heal: 30 },
-            { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 20, duration: 3, color: 0x00ff00, desc: "Heal 20 HP for 3 turns" }
+            { name: "ZAP", cost: 0, mult: 0.8, color: 0xffff00, vfx: 'zap', hits: 1, manaGain: 8 },
+            { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', hits: 1, heal: 30 },
+            { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 20, duration: 3, color: 0x00ff00, desc: "Heal 20 HP/Turn" }
         ]},
         // 10-19
         { name: "CYBER-BISHOP", desc: "Tier 2: Holy", skills: [
-            { name: "SIPHON", cost: 0, mult: 1.0, color: 0xffffaa, vfx: 'drain', manaGain: 15 },
-            { name: "HOLY NOVA", cost: 50, mult: 3.5, color: 0x00ffff, vfx: 'nova', heal: 50 },
+            { name: "SIPHON", cost: 0, mult: 0.5, color: 0xffffaa, vfx: 'drain', hits: 2, manaGain: 15 },
+            { name: "HOLY NOVA", cost: 50, mult: 1.0, color: 0x00ffff, vfx: 'nova', hits: 3, heal: 50 },
             { name: "SANCTUARY", cost: 25, isBuff: true, buffType: 'shield', buffVal: 50, duration: 1, color: 0x00ffff, desc: "+50 Shield" }
         ]},
         // 20-29
         { name: "DEUS-EX", desc: "Tier 3: Machine", skills: [
-            { name: "DATA DRAIN", cost: 0, mult: 1.2, color: 0x00ff00, vfx: 'matrix', manaGain: 25 },
-            { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', heal: 100 },
-            { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 15, duration: 3, color: 0x00ff00, desc: "+15 Armor for 3 turns" }
+            { name: "DATA DRAIN", cost: 0, mult: 0.4, color: 0x00ff00, vfx: 'matrix', hits: 3, manaGain: 25 },
+            { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', hits: 1, heal: 100 },
+            { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 15, duration: 3, color: 0x00ff00, desc: "+15 Armor" }
         ]},
         // 30-39
         { name: "ANGEL-MK1", desc: "Tier 4: Flight", skills: [
-            { name: "LASER WING", cost: 0, mult: 0.5, color: 0xffffff, vfx: 'beam', hits: 4, manaGain: 30 },
-            { name: "HEAVENLY RAY", cost: 100, mult: 8.0, color: 0xffffdd, vfx: 'god_beam', heal: 150 },
-            { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 50, duration: 3, color: 0xffffff, desc: "Heal 50 HP for 3 turns" }
+            { name: "LASER WING", cost: 0, mult: 0.35, color: 0xffffff, vfx: 'beam', hits: 4, manaGain: 30 },
+            { name: "HEAVENLY RAY", cost: 100, mult: 2.0, color: 0xffffdd, vfx: 'god_beam', hits: 4, heal: 150 },
+            { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 50, duration: 3, color: 0xffffff, desc: "Heal 50 HP/Turn" }
         ]},
         // 40-49
         { name: "ORACLE", desc: "Tier 5: Sight", skills: [
-            { name: "PREDICTION", cost: 0, mult: 2.0, color: 0xaa00ff, vfx: 'zap', manaGain: 40 },
-            { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', heal: 200 },
-            { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 3, color: 0xaa00ff, desc: "+35% Dodge for 3 turns" }
+            { name: "PREDICTION", cost: 0, mult: 0.3, color: 0xaa00ff, vfx: 'zap', hits: 5, manaGain: 40 },
+            { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', hits: 1, heal: 200 },
+            { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 3, color: 0xaa00ff, desc: "+35% Dodge" }
         ]},
         // 50-59
         { name: "HIGH-TEMPLAR", desc: "Tier 6: Storm", skills: [
-            { name: "PSIONIC STORM", cost: 0, mult: 0.5, color: 0x0000ff, vfx: 'rain', hits: 10, manaGain: 10 },
-            { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', heal: 250 },
+            { name: "PSIONIC STORM", cost: 0, mult: 0.25, color: 0x0000ff, vfx: 'rain', hits: 6, manaGain: 10 },
+            { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', hits: 1, heal: 250 },
             { name: "PSI SHIELD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 100, duration: 1, color: 0x0000ff, desc: "+100 Shield" }
         ]},
         // 60-69
         { name: "SERAPHIM", desc: "Tier 7: Fire", skills: [
-            { name: "HOLY FIRE", cost: 0, mult: 1.5, color: 0xffaa00, vfx: 'beam', hits: 3, manaGain: 50 },
-            { name: "PURGATORY", cost: 180, mult: 15.0, color: 0xff5500, vfx: 'nuke', heal: 300 },
-            { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 3, color: 0xffaa00, desc: "+30% Thorns for 3 turns" }
+            { name: "HOLY FIRE", cost: 0, mult: 0.2, color: 0xffaa00, vfx: 'beam', hits: 8, manaGain: 50 },
+            { name: "PURGATORY", cost: 180, mult: 3.0, color: 0xff5500, vfx: 'nuke', hits: 5, heal: 300 },
+            { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 3, color: 0xffaa00, desc: "+30% Thorns" }
         ]},
         // 70-79
         { name: "ARCHON", desc: "Tier 8: Power", skills: [
-            { name: "POWER OVERWHELM", cost: 0, mult: 1.0, color: 0x00f2ff, vfx: 'omni', hits: 5, manaGain: 60 },
-            { name: "ARCHON BEAM", cost: 220, mult: 20.0, color: 0x00f2ff, vfx: 'god_beam', heal: 400 },
-            { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 3, color: 0x00f2ff, desc: "+25% All Defense for 3 turns" }
+            { name: "POWER OVERWHELM", cost: 0, mult: 0.18, color: 0x00f2ff, vfx: 'omni', hits: 10, manaGain: 60 },
+            { name: "ARCHON BEAM", cost: 220, mult: 2.0, color: 0x00f2ff, vfx: 'god_beam', hits: 10, heal: 400 },
+            { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 3, color: 0x00f2ff, desc: "+25% All Defense" }
         ]},
         // 80-89
         { name: "SOURCE-CODE", desc: "Tier 9: Admin", skills: [
-            { name: "REWRITE", cost: 0, mult: 2.0, color: 0x00ff00, vfx: 'matrix', manaGain: 100 },
-            { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', heal: 500 },
-            { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 150, duration: 3, color: 0x00ff00, desc: "Heal 150 HP for 3 turns" }
+            { name: "REWRITE", cost: 0, mult: 0.15, color: 0x00ff00, vfx: 'matrix', hits: 12, manaGain: 100 },
+            { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', hits: 1, heal: 500 },
+            { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 150, duration: 3, color: 0x00ff00, desc: "Heal 150 HP/Turn" }
         ]},
         // 90+
         { name: "DIGITAL-GOD", desc: "Tier 10: Omni", skills: [
-            { name: "CREATION", cost: 0, mult: 5.0, color: 0xffffff, vfx: 'god_beam', manaGain: 999 },
-            { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', heal: 9999 },
-            { name: "IMMORTALITY", cost: 100, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0xffd700, desc: "Invincible for 2 turns" }
+            { name: "CREATION", cost: 0, mult: 0.4, color: 0xffffff, vfx: 'god_beam', hits: 15, manaGain: 999 }, // High damage sustained beam
+            { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', hits: 1, heal: 9999 },
+            { name: "IMMORTALITY", cost: 100, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0xffd700, desc: "Invincible 2 turns" }
         ]}
     ],
 
     "MECH": [
-        // 0-9
+        // 0-9: High Hit Count Specialist
         { name: "HEAVY-MECH", desc: "Tier 1: Basics", skills: [
             { name: "GATLING", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'gatling', hits: 3 },
             { name: "MISSILE", cost: 30, mult: 3.0, color: 0xff5500, vfx: 'explode', hits: 1 },
-            { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 10, duration: 3, color: 0xaaaaaa, desc: "+10 Armor for 3 turns" }
+            { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 10, duration: 3, color: 0xaaaaaa, desc: "+10 Armor" }
         ]},
         // 10-19
         { name: "WAR-TITAN", desc: "Tier 2: Dakka", skills: [
-            { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6 },
+            { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6 }, // Total 1.2x
             { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1 },
-            { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 20, duration: 3, color: 0xff9900, desc: "+20 ATK for 3 turns" }
+            { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 20, duration: 3, color: 0xff9900, desc: "+20 ATK" }
         ]},
         // 20-29
         { name: "APOCALYPSE", desc: "Tier 3: Barrage", skills: [
-            { name: "BULLET HELL", cost: 0, mult: 0.1, color: 0xffaa00, vfx: 'gatling', hits: 15 },
+            { name: "BULLET HELL", cost: 0, mult: 0.15, color: 0xffaa00, vfx: 'gatling', hits: 12 }, // Total 1.8x
             { name: "BUNKER BUSTER", cost: 80, mult: 7.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-            { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 15, duration: 3, color: 0xffaa00, desc: "+15 Mana Regen for 3 turns" }
+            { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 15, duration: 3, color: 0xffaa00, desc: "+15 Mana Regen" }
         ]},
         // 30-39
         { name: "ARTILLERY", desc: "Tier 4: Long Range", skills: [
-            { name: "HOWITZER", cost: 0, mult: 2.0, color: 0xaa5500, vfx: 'heavy', hits: 1 },
-            { name: "CARPET BOMB", cost: 100, mult: 1.0, color: 0xff5500, vfx: 'rain', hits: 10 },
-            { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 25, duration: 3, color: 0xaa5500, desc: "+25 Armor for 3 turns" }
+            { name: "HOWITZER", cost: 0, mult: 2.0, color: 0xaa5500, vfx: 'heavy', hits: 1 }, // Slow heavy hitter option
+            { name: "CARPET BOMB", cost: 100, mult: 0.5, color: 0xff5500, vfx: 'rain', hits: 20 }, // High hit Nuke
+            { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 25, duration: 3, color: 0xaa5500, desc: "+25 Armor" }
         ]},
         // 40-49
         { name: "LASER-CORE", desc: "Tier 5: Energy", skills: [
-            { name: "PULSE RIFLE", cost: 0, mult: 0.5, color: 0x00f2ff, vfx: 'beam', hits: 5 },
+            { name: "PULSE RIFLE", cost: 0, mult: 0.12, color: 0x00f2ff, vfx: 'beam', hits: 25 }, // Total 3.0x
             { name: "ION CANNON", cost: 120, mult: 12.0, color: 0x00ffff, vfx: 'god_beam', hits: 1 },
-            { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 3, color: 0x00f2ff, desc: "+40% Crit DMG for 3 turns" }
+            { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 3, color: 0x00f2ff, desc: "+40% Crit DMG" }
         ]},
         // 50-59
         { name: "FORTRESS", desc: "Tier 6: Defense", skills: [
-            { name: "FLAK", cost: 0, mult: 0.3, color: 0xffff00, vfx: 'explode', hits: 12 },
+            { name: "FLAK", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'explode', hits: 35 }, // Total 3.5x
             { name: "DOOMSDAY", cost: 150, mult: 15.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
             { name: "BUNKER", cost: 45, isBuff: true, buffType: 'shield', buffVal: 150, duration: 1, color: 0xffff00, desc: "+150 Shield" }
         ]},
         // 60-69
         { name: "GUNDAM-X", desc: "Tier 7: Mobile", skills: [
-            { name: "BEAM SABER", cost: 0, mult: 1.0, color: 0xff00ff, vfx: 'slash', hits: 3 },
-            { name: "FULL BURST", cost: 180, mult: 0.8, color: 0x00ff00, vfx: 'omni', hits: 25 },
-            { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 3, color: 0xff00ff, desc: "+20% All Offense for 3 turns" }
+            { name: "BEAM SABER", cost: 0, mult: 1.0, color: 0xff00ff, vfx: 'slash', hits: 4 },
+            { name: "FULL BURST", cost: 180, mult: 0.08, color: 0x00ff00, vfx: 'omni', hits: 50 }, // Total 4.0x
+            { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 3, color: 0xff00ff, desc: "+20% All Offense" }
         ]},
         // 70-79
         { name: "DREADNOUGHT", desc: "Tier 8: Space", skills: [
-            { name: "MACRO CANNON", cost: 0, mult: 3.0, color: 0xaaaaff, vfx: 'heavy', hits: 2 },
-            { name: "EXTERMINATUS", cost: 220, mult: 25.0, color: 0xffaa00, vfx: 'rain', hits: 15 },
+            { name: "MACRO CANNON", cost: 0, mult: 1.5, color: 0xaaaaff, vfx: 'heavy', hits: 3 },
+            { name: "EXTERMINATUS", cost: 220, mult: 0.4, color: 0xffaa00, vfx: 'rain', hits: 60 }, // Total 24x (Powerful Nuke)
             { name: "VOID SHIELDS", cost: 55, isBuff: true, buffType: 'shield', buffVal: 250, duration: 1, color: 0xaaaaff, desc: "+250 Shield" }
         ]},
         // 80-89
         { name: "WORLD-EATER", desc: "Tier 9: Planetary", skills: [
-            { name: "CRUST CRACK", cost: 0, mult: 2.0, color: 0xff5500, vfx: 'implode', hits: 5 },
+            { name: "CRUST CRACK", cost: 0, mult: 0.07, color: 0xff5500, vfx: 'implode', hits: 75 }, // Total 5.25x
             { name: "CORE DETONATE", cost: 260, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-            { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 100, duration: 3, color: 0xff5500, desc: "+100 ATK for 3 turns" }
+            { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 100, duration: 3, color: 0xff5500, desc: "+100 ATK" }
         ]},
         // 90+
         { name: "ANNIHILATOR", desc: "Tier 10: Universal", skills: [
-            { name: "ZERO POINT", cost: 0, mult: 1.0, color: 0xffffff, vfx: 'gatling', hits: 50 },
+            { name: "ZERO POINT", cost: 0, mult: 0.06, color: 0xffffff, vfx: 'gatling', hits: 100 }, // Total 6.0x
             { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
-            { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 3, color: 0xffd700, desc: "+50% All Offense for 3 turns" }
+            { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 3, color: 0xffd700, desc: "+50% All Offense" }
         ]}
     ],
 
     "SHADOW": [
-        // 0-9: BASE - Stealth Assassin
-        { name: "SHADE", desc: "Tier 1: Stealth", skills: [
-            { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash' },
-            { name: "POISON BLADE", cost: 25, mult: 1.5, color: 0x00ff00, vfx: 'multi', hits: 3 },
-            { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 2, color: 0x220033, desc: "+30% Dodge for 2 turns" }
+        // 0-9: Quick Hits
+        { name: "SHADE", desc: "Tier 2: Stealth", skills: [
+            { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash', hits: 1 },
+            { name: "POISON BLADE", cost: 25, mult: 0.5, color: 0x00ff00, vfx: 'multi', hits: 4 },
+            { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 2, color: 0x220033, desc: "+30% Dodge" }
         ]},
-        // 10-19: Poison Master
-        { name: "VENOM-WEAVER", desc: "Tier 2: Toxins", skills: [
-            { name: "TOXIC SLASH", cost: 0, mult: 0.8, color: 0x00aa00, vfx: 'multi', hits: 4 },
+        // 10-19
+        { name: "VENOM-WEAVER", desc: "Tier 3: Toxins", skills: [
+            { name: "TOXIC SLASH", cost: 0, mult: 0.3, color: 0x00aa00, vfx: 'multi', hits: 5 }, // Total 1.5x
             { name: "VENOM BURST", cost: 45, mult: 4.5, color: 0x00ff00, vfx: 'implode', hits: 1 },
-            { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Crit for 3 turns" }
+            { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Crit" }
         ]},
-        // 20-29: Ghost
-        { name: "PHANTOM", desc: "Tier 3: Intangible", skills: [
-            { name: "PHASE STRIKE", cost: 0, mult: 0.6, color: 0x8800aa, vfx: 'slash', hits: 5 },
-            { name: "SOUL DRAIN", cost: 55, mult: 5.0, color: 0xaa00ff, vfx: 'implode', heal: 80 },
-            { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 1, color: 0x8800aa, desc: "Invincible for 1 turn" }
+        // 20-29
+        { name: "PHANTOM", desc: "Tier 4: Intangible", skills: [
+            { name: "PHASE STRIKE", cost: 0, mult: 0.25, color: 0x8800aa, vfx: 'slash', hits: 7 }, // Total 1.75x
+            { name: "SOUL DRAIN", cost: 55, mult: 2.5, color: 0xaa00ff, vfx: 'implode', hits: 2, heal: 80 },
+            { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 1, color: 0x8800aa, desc: "Invincible 1 turn" }
         ]},
-        // 30-39: Assassin
-        { name: "DEATH-DEALER", desc: "Tier 4: Execute", skills: [
-            { name: "MARKED DEATH", cost: 0, mult: 1.5, color: 0x440044, vfx: 'crit', hits: 2 },
+        // 30-39
+        { name: "DEATH-DEALER", desc: "Tier 5: Execute", skills: [
+            { name: "MARKED DEATH", cost: 0, mult: 0.22, color: 0x440044, vfx: 'crit', hits: 10 }, // Total 2.2x
             { name: "EXECUTE ORDER", cost: 75, mult: 8.0, color: 0xff0044, vfx: 'heavy', hits: 1 },
-            { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0xff0044, desc: "+50% Crit DMG for 3 turns" }
+            { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0xff0044, desc: "+50% Crit DMG" }
         ]},
-        // 40-49: Nightmare
-        { name: "NIGHTMARE", desc: "Tier 5: Fear", skills: [
-            { name: "TERROR", cost: 0, mult: 0.7, color: 0x110011, vfx: 'implode', hits: 6 },
-            { name: "NIGHT TERROR", cost: 90, mult: 6.0, color: 0x330033, vfx: 'blackhole', hits: 3 },
-            { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0x330033, desc: "+25% Lifesteal for 3 turns" }
+        // 40-49
+        { name: "NIGHTMARE", desc: "Tier 6: Fear", skills: [
+            { name: "TERROR", cost: 0, mult: 0.2, color: 0x110011, vfx: 'implode', hits: 12 }, // Total 2.4x
+            { name: "NIGHT TERROR", cost: 90, mult: 3.0, color: 0x330033, vfx: 'blackhole', hits: 3 },
+            { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0x330033, desc: "+25% Lifesteal" }
         ]},
-        // 50-59: Reaper
-        { name: "GRIM-REAPER", desc: "Tier 6: Death", skills: [
-            { name: "SCYTHE SWEEP", cost: 0, mult: 1.2, color: 0x000000, vfx: 'slash', hits: 4 },
-            { name: "REAP SOULS", cost: 110, mult: 10.0, color: 0x440044, vfx: 'implode', heal: 150 },
-            { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 3, color: 0x000000, desc: "+35% Crit for 3 turns" }
+        // 50-59
+        { name: "GRIM-REAPER", desc: "Tier 7: Death", skills: [
+            { name: "SCYTHE SWEEP", cost: 0, mult: 0.18, color: 0x000000, vfx: 'slash', hits: 15 }, // Total 2.7x
+            { name: "REAP SOULS", cost: 110, mult: 2.0, color: 0x440044, vfx: 'implode', hits: 5, heal: 150 },
+            { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 3, color: 0x000000, desc: "+35% Crit" }
         ]},
-        // 60-69: Wraith
-        { name: "WRAITH-LORD", desc: "Tier 7: Ethereal", skills: [
-            { name: "SPECTRAL BLADES", cost: 0, mult: 0.5, color: 0x6600aa, vfx: 'omni', hits: 10 },
+        // 60-69
+        { name: "WRAITH-LORD", desc: "Tier 8: Ethereal", skills: [
+            { name: "SPECTRAL BLADES", cost: 0, mult: 0.16, color: 0x6600aa, vfx: 'omni', hits: 20 }, // Total 3.2x
             { name: "SOUL SHATTER", cost: 140, mult: 12.0, color: 0xaa00ff, vfx: 'blackhole', hits: 1 },
-            { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x6600aa, desc: "Invincible for 2 turns" }
+            { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x6600aa, desc: "Invincible 2 turns" }
         ]},
-        // 70-79: Void Assassin
-        { name: "VOID-FANG", desc: "Tier 8: Void", skills: [
-            { name: "VOID FANGS", cost: 0, mult: 0.8, color: 0x220022, vfx: 'multi', hits: 12 },
+        // 70-79
+        { name: "VOID-FANG", desc: "Tier 9: Void", skills: [
+            { name: "VOID FANGS", cost: 0, mult: 0.15, color: 0x220022, vfx: 'multi', hits: 25 }, // Total 3.75x
             { name: "ANNIHILATE", cost: 170, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-            { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0x220022, desc: "+25% All Offense for 3 turns" }
+            { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0x220022, desc: "+25% All Offense" }
         ]},
-        // 80-89: Entropy
-        { name: "ENTROPY", desc: "Tier 9: Decay", skills: [
-            { name: "DECAY", cost: 0, mult: 1.5, color: 0x003300, vfx: 'implode', hits: 8 },
+        // 80-89
+        { name: "ENTROPY", desc: "Tier 10: Decay", skills: [
+            { name: "DECAY", cost: 0, mult: 0.14, color: 0x003300, vfx: 'implode', hits: 30 }, // Total 4.2x
             { name: "ENTROPY WAVE", cost: 200, mult: 30.0, color: 0x006600, vfx: 'nova', hits: 1 },
-            { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 3, color: 0x003300, desc: "+75% Crit DMG for 3 turns" }
+            { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 3, color: 0x003300, desc: "+75% Crit DMG" }
         ]},
-        // 90+: Death Incarnate
-        { name: "OBLIVION", desc: "Tier 10: End", skills: [
-            { name: "OBLIVION", cost: 0, mult: 0.8, color: 0x000000, vfx: 'blackhole', hits: 20 },
+        // 90+
+        { name: "OBLIVION", desc: "Tier 11: End", skills: [
+            { name: "OBLIVION", cost: 0, mult: 0.12, color: 0x000000, vfx: 'blackhole', hits: 40 }, // Total 4.8x
             { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1 },
-            { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 3, color: 0x000000, desc: "+60% All Offense for 3 turns" }
+            { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 3, color: 0x000000, desc: "+60% All Offense" }
         ]}
     ],
 
     "BRAWLER": [
-        // 0-9: BASE - Street Fighter (isFrenzy = click speed bonus, doubleAttack = hits twice)
-        { name: "STREET-PUNK", desc: "Tier 1: Speed", skills: [
-            { name: "JAB", cost: 0, mult: 0.6, color: 0xff4400, vfx: 'punch', isFrenzy: true },
-            { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', doubleAttack: true },
-            { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 3, color: 0xff4400, desc: "+20% ATK Mult for 3 turns" }
+        // 0-9: BASE
+        { name: "STREET-PUNK", desc: "Tier 3: Speed", skills: [
+            { name: "JAB", cost: 0, mult: 0.5, color: 0xff4400, vfx: 'punch', hits: 2, isFrenzy: true },
+            { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', hits: 1, doubleAttack: true },
+            { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 3, color: 0xff4400, desc: "+20% ATK Mult" }
         ]},
-        // 10-19: Boxer
+        // 10-19
         { name: "CHROME-BOXER", desc: "Tier 2: Combos", skills: [
-            { name: "ONE-TWO", cost: 0, mult: 0.5, color: 0xff5500, vfx: 'punch', hits: 2, isFrenzy: true },
-            { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', doubleAttack: true },
-            { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atkMult', buffVal: 0.30, duration: 3, color: 0xff5500, desc: "+30% ATK Mult for 3 turns" }
+            { name: "ONE-TWO", cost: 0, mult: 0.35, color: 0xff5500, vfx: 'punch', hits: 4, isFrenzy: true }, // Total 1.4x
+            { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', hits: 1, doubleAttack: true },
+            { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atkMult', buffVal: 0.30, duration: 3, color: 0xff5500, desc: "+30% ATK Mult" }
         ]},
-        // 20-29: Kickboxer
+        // 20-29
         { name: "CYBER-KICK", desc: "Tier 3: Kicks", skills: [
-            { name: "RAPID KICKS", cost: 0, mult: 0.4, color: 0xff6600, vfx: 'punch', hits: 4, isFrenzy: true },
-            { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', doubleAttack: true },
-            { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atkMult', buffVal: 0.40, duration: 3, color: 0xff6600, desc: "+40% ATK Mult for 3 turns" }
+            { name: "RAPID KICKS", cost: 0, mult: 0.25, color: 0xff6600, vfx: 'punch', hits: 7, isFrenzy: true }, // Total 1.75x
+            { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', hits: 1, doubleAttack: true },
+            { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atkMult', buffVal: 0.40, duration: 3, color: 0xff6600, desc: "+40% ATK Mult" }
         ]},
-        // 30-39: Wrestler
+        // 30-39
         { name: "GRAPPLER", desc: "Tier 4: Throws", skills: [
-            { name: "COMBO STRIKE", cost: 0, mult: 0.5, color: 0xff7700, vfx: 'punch', hits: 5, isFrenzy: true },
-            { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', doubleAttack: true },
-            { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atkMult', buffVal: 0.50, duration: 3, color: 0xff7700, desc: "+50% ATK Mult for 3 turns" }
+            { name: "COMBO STRIKE", cost: 0, mult: 0.2, color: 0xff7700, vfx: 'punch', hits: 10, isFrenzy: true }, // Total 2.0x
+            { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', hits: 1, doubleAttack: true },
+            { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atkMult', buffVal: 0.50, duration: 3, color: 0xff7700, desc: "+50% ATK Mult" }
         ]},
-        // 40-49: Berserker
+        // 40-49
         { name: "BERSERKER", desc: "Tier 5: Fury", skills: [
-            { name: "FRENZY", cost: 0, mult: 0.3, color: 0xff2200, vfx: 'punch', hits: 8, isFrenzy: true },
-            { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 5, doubleAttack: true },
-            { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atkMult', buffVal: 0.60, duration: 3, color: 0xff2200, desc: "+60% ATK Mult for 3 turns" }
+            { name: "FRENZY", cost: 0, mult: 0.18, color: 0xff2200, vfx: 'punch', hits: 13, isFrenzy: true }, // Total 2.34x
+            { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 2, doubleAttack: true },
+            { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atkMult', buffVal: 0.60, duration: 3, color: 0xff2200, desc: "+60% ATK Mult" }
         ]},
-        // 50-59: Champion
+        // 50-59
         { name: "PIT-CHAMPION", desc: "Tier 6: Glory", skills: [
-            { name: "FLURRY", cost: 0, mult: 0.25, color: 0xffaa00, vfx: 'punch', hits: 12, isFrenzy: true },
-            { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', doubleAttack: true },
-            { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atkMult', buffVal: 0.75, duration: 3, color: 0xffaa00, desc: "+75% ATK Mult for 3 turns" }
+            { name: "FLURRY", cost: 0, mult: 0.16, color: 0xffaa00, vfx: 'punch', hits: 16, isFrenzy: true }, // Total 2.56x
+            { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', hits: 1, doubleAttack: true },
+            { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atkMult', buffVal: 0.75, duration: 3, color: 0xffaa00, desc: "+75% ATK Mult" }
         ]},
-        // 60-69: Titan
+        // 60-69
         { name: "IRON-TITAN", desc: "Tier 7: Power", skills: [
-            { name: "METEOR FISTS", cost: 0, mult: 0.3, color: 0xff5500, vfx: 'punch', hits: 15, isFrenzy: true },
-            { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', doubleAttack: true },
-            { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atkMult', buffVal: 1.0, duration: 3, color: 0xff5500, desc: "+100% ATK Mult for 3 turns" }
+            { name: "METEOR FISTS", cost: 0, mult: 0.15, color: 0xff5500, vfx: 'punch', hits: 20, isFrenzy: true }, // Total 3.0x
+            { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', hits: 1, doubleAttack: true },
+            { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atkMult', buffVal: 1.0, duration: 3, color: 0xff5500, desc: "+100% ATK Mult" }
         ]},
-        // 70-79: God Fist
+        // 70-79
         { name: "GOD-FIST", desc: "Tier 8: Divine", skills: [
-            { name: "INFINITE COMBO", cost: 0, mult: 0.2, color: 0xffd700, vfx: 'omni', hits: 25, isFrenzy: true },
-            { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', doubleAttack: true },
-            { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atkMult', buffVal: 1.25, duration: 3, color: 0xffd700, desc: "+125% ATK Mult for 3 turns" }
+            { name: "INFINITE COMBO", cost: 0, mult: 0.12, color: 0xffd700, vfx: 'omni', hits: 30, isFrenzy: true }, // Total 3.6x
+            { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', hits: 1, doubleAttack: true },
+            { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atkMult', buffVal: 1.25, duration: 3, color: 0xffd700, desc: "+125% ATK Mult" }
         ]},
-        // 80-89: Universe
+        // 80-89
         { name: "STAR-BREAKER", desc: "Tier 9: Cosmic", skills: [
-            { name: "STAR RUSH", cost: 0, mult: 0.25, color: 0xffff00, vfx: 'omni', hits: 30, isFrenzy: true },
-            { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', doubleAttack: true },
-            { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atkMult', buffVal: 1.50, duration: 3, color: 0xffff00, desc: "+150% ATK Mult for 3 turns" }
+            { name: "STAR RUSH", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'omni', hits: 40, isFrenzy: true }, // Total 4.0x
+            { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', hits: 1, doubleAttack: true },
+            { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atkMult', buffVal: 1.50, duration: 3, color: 0xffff00, desc: "+150% ATK Mult" }
         ]},
-        // 90+: One Punch
+        // 90+
         { name: "ONE-PUNCH", desc: "Tier 10: END", skills: [
-            { name: "SERIOUS PUNCHES", cost: 0, mult: 0.15, color: 0xffffff, vfx: 'omni', hits: 50, isFrenzy: true },
+            { name: "SERIOUS PUNCHES", cost: 0, mult: 0.08, color: 0xffffff, vfx: 'omni', hits: 60, isFrenzy: true }, // Total 4.8x
             { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1 },
-            { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 3, color: 0xffffff, desc: "+200% ATK Mult for 3 turns" }
+            { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 3, color: 0xffffff, desc: "+200% ATK Mult" }
         ]}
     ]
 };
@@ -659,6 +975,12 @@ const game = {
     nextFloor() {
         this.floor++;
 
+        if(this.floor % 10 === 0 && this.floor <= 90) {
+            const tier = this.floor / 10;
+            this.offerJobSelection(tier);
+            return;
+        }
+
         // Update floor theme every 5 floors
         if(this.floor % 5 === 0 || this.floor === 1) {
             const themeName = engine.setFloorTheme(this.floor);
@@ -682,11 +1004,6 @@ const game = {
             return;
         }
 
-        if(this.floor % 10 === 0 && this.floor <= 90) {
-            const tier = this.floor / 10;
-            this.offerJobSelection(tier);
-            return;
-        }
         this.state = 'IDLE';
         this.setScreen('hud');
         document.getElementById('battle-controls').classList.add('active');
@@ -1027,7 +1344,7 @@ const game = {
         }
 
         if(isFinalBoss) {
-            hp = 5000000; atk *= 5;
+            hp = 50000000; atk *= 5;
             document.getElementById('enemy-name').innerText = `THE ARCHITECT (FINAL)`;
             document.getElementById('enemy-name').style.color = '#ffd700';
             this.enemy = new Unit(false, hp, hp, atk, 0xffd700, 'architect');
