@@ -598,6 +598,105 @@ const Models = {
 
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
+
+    createHacker(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mDark = new THREE.MeshStandardMaterial({color:0x111111, metalness:0.8, roughness:0.2}); // Black Hoodie
+        const mCode = new THREE.MeshBasicMaterial({color:c || 0x00ff00}); // Matrix Green Code
+        const mScreen = new THREE.MeshBasicMaterial({color:0x000000}); // Screen Black
+
+        // -- BODY --
+        // Legs (Disappear into data at Tier 7+)
+        if(tier < 7) {
+            this.box(0.12,0.5,0.12,mDark,-0.15,0.25,0,g); 
+            this.box(0.12,0.5,0.12,mDark,0.15,0.25,0,g);
+        } else {
+            // Floating Data Tail
+            for(let i=0; i<5; i++) {
+                const bit = this.box(0.15 - (i*0.03), 0.15, 0.15 - (i*0.03), mCode, 0, 0.4 - (i*0.15), 0, g);
+                bit.rotation.y = i * 0.5;
+            }
+        }
+
+        // Torso (Hoodie style)
+        const t = this.box(0.4,0.45,0.25,mDark,0,0.65,0,g);
+        // Matrix lines on chest
+        this.box(0.02,0.3,0.02,mCode,-0.1,0,0.13,t);
+        this.box(0.02,0.3,0.02,mCode,0.1,0,0.13,t);
+        this.box(0.02,0.3,0.02,mCode,0,0,0.13,t);
+
+        // -- HEAD: THE MONITOR --
+        const h = new THREE.Group(); h.position.set(0,0.4,0); t.add(h);
+        
+        // Monitor Bezel
+        this.box(0.35,0.25,0.2,mDark,0,0,0,h);
+        // The Screen
+        this.box(0.3,0.2,0.05,mScreen,0,0,0.08,h);
+        // Face on Screen (Simple Emote)
+        if(tier >= 9) {
+             // God Mode Eye
+             this.box(0.1,0.1,0.06,mCode,0,0,0.08,h);
+        } else {
+             // Binary Eyes
+             this.box(0.05,0.05,0.06,mCode,-0.08,0,0.08,h);
+             this.box(0.05,0.05,0.06,mCode,0.08,0,0.08,h);
+        }
+        
+        // Hood covering the monitor (Tier 0-6)
+        if(tier < 7) {
+            this.box(0.4,0.3,0.25,mDark,0,0.05,-0.05,h);
+        }
+
+        // -- ACCESSORIES --
+        
+        // Data Cables / Tentacles (Tier 4+)
+        if(tier >= 4) {
+            const cable = this.box(0.02,0.6,0.02,mCode,0,-0.3,-0.2,t);
+            cable.rotation.x = 0.5;
+        }
+
+        // Floating Server Rack / Wings (Tier 6+)
+        if(tier >= 6) {
+             this.box(0.1,0.5,0.4,mDark,-0.4,0.2,-0.2,t);
+             this.box(0.1,0.5,0.4,mDark,0.4,0.2,-0.2,t);
+             // Blink lights
+             this.box(0.02,0.05,0.02,mCode,-0.45,0.4,-0.2,t);
+             this.box(0.02,0.05,0.02,mCode,0.45,0.4,-0.2,t);
+        }
+
+        // -- WEAPON: FLOATING KEYBOARD / DATA CUBE --
+        const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
+        
+        // Arms holding it
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.1,0.4,0.1,mDark,0,-0.2,0,arm); return arm;}
+        const leftArm = mkArm(-0.3);
+        const rightArm = mkArm(0.3);
+        
+        // Angle arms forward to type
+        leftArm.rotation.x = -0.5; leftArm.rotation.z = -0.2;
+        rightArm.rotation.x = -0.5; rightArm.rotation.z = 0.2;
+
+        // The "Weapon" Group
+        const rig = new THREE.Group(); rig.position.set(0,-0.3,0.4); t.add(rig);
+
+        if(tier < 5) {
+            // Laptop / Keyboard
+            const board = this.box(0.5,0.02,0.3,mDark,0,0,0,rig);
+            // Holographic keys
+            this.box(0.45,0.02,0.25,mCode,0,0.01,0,rig).material.transparent = true;
+            this.box(0.45,0.02,0.25,mCode,0,0.01,0,rig).material.opacity = 0.5;
+        } else {
+            // Tesseract / Data Cube
+            const cube = this.box(0.25,0.25,0.25,mCode,0,0,0,rig);
+            cube.rotation.y = 0.7;
+            cube.rotation.x = 0.5;
+            // Wireframe effect simulated by inner black box
+            this.box(0.2,0.2,0.2,mScreen,0,0,0,rig);
+        }
+
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
     
     // === ENEMY MODELS ===
     createDrone(c, s=1) {

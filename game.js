@@ -438,6 +438,68 @@ const CLASS_TREES = {
             { name: "AEGIS STRIKE", cost: 400, mult: 80.0, color: 0x00f2ff, vfx: 'god_beam', hits: 1 },
             { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 9999, duration: 2, color: 0xffffff, desc: "+9999 Shield" }
         ]}
+    ],
+    "HACKER": [
+        // 0-9: BASE - Script Kiddie
+        { name: "SCRIPT-KID", desc: "Tier 1: Exploit", skills: [
+            { name: "PING", cost: 0, mult: 0.5, color: 0x00ff00, vfx: 'zap', hits: 3, manaGain: 10 },
+            { name: "DDOS ATTACK", cost: 40, mult: 3.0, color: 0x00ff00, vfx: 'matrix', hits: 1 },
+            { name: "VPN", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Dodge (Lag)" }
+        ]},
+        // 10-19
+        { name: "WHITE-HAT", desc: "Tier 2: Debug", skills: [
+            { name: "COMPILE", cost: 0, mult: 1.0, color: 0x00aa00, vfx: 'beam', hits: 1, manaGain: 20 },
+            { name: "FORCE QUIT", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'heavy', hits: 1 },
+            { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'shield', buffVal: 100, duration: 1, color: 0x00aaff, desc: "+100 Shield" }
+        ]},
+        // 20-29
+        { name: "TROJAN", desc: "Tier 3: Virus", skills: [
+            { name: "INJECT", cost: 0, mult: 0.4, color: 0xaa00ff, vfx: 'multi', hits: 6 }, // Total 2.4x
+            { name: "MALWARE", cost: 65, mult: 5.5, color: 0x8800ff, vfx: 'implode', hits: 1 },
+            { name: "SIPHON DATA", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0xaa00ff, desc: "+25% Lifesteal" }
+        ]},
+        // 30-39
+        { name: "GLITCH", desc: "Tier 4: Bug", skills: [
+            { name: "PACKET LOSS", cost: 0, mult: 0.1, color: 0xff00ff, vfx: 'matrix', hits: 20 }, // Total 2.0x
+            { name: "BSOD", cost: 90, mult: 8.0, color: 0x0000ff, vfx: 'blackhole', hits: 1 },
+            { name: "BUFFER OVRFLW", cost: 40, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 3, color: 0xff00ff, desc: "+40% Double Strike" }
+        ]},
+        // 40-49
+        { name: "BOTNET", desc: "Tier 5: Swarm", skills: [
+            { name: "ZOMBIE PC", cost: 0, mult: 0.5, color: 0x555555, vfx: 'gatling', hits: 8 }, // Total 4.0x
+            { name: "SERVER CRASH", cost: 120, mult: 11.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
+            { name: "ROOT ACCESS", cost: 45, isBuff: true, buffType: 'atk', buffVal: 40, duration: 3, color: 0x00ff00, desc: "+40 ATK" }
+        ]},
+        // 50-59
+        { name: "CYBER-LICH", desc: "Tier 6: Undead", skills: [
+            { name: "NECRO CODE", cost: 0, mult: 0.8, color: 0x00ffaa, vfx: 'omni', hits: 5 }, // Total 4.0x
+            { name: "SOUL.EXE", cost: 150, mult: 13.0, color: 0x00ffaa, vfx: 'implode', hits: 1, heal: 200 },
+            { name: "PHYLACTERY", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x00ffaa, desc: "Invincible 2 turns" }
+        ]},
+        // 60-69
+        { name: "CRYPT-KEEPER", desc: "Tier 7: Blockchain", skills: [
+            { name: "MINING", cost: 0, mult: 1.0, color: 0xffd700, vfx: 'zap', hits: 5, manaGain: 50 },
+            { name: "RUG PULL", cost: 180, mult: 18.0, color: 0xff0000, vfx: 'heavy', hits: 1 },
+            { name: "HODL", cost: 55, isBuff: true, buffType: 'armor', buffVal: 50, duration: 3, color: 0xffd700, desc: "+50 Armor" }
+        ]},
+        // 70-79
+        { name: "AI-OVERLORD", desc: "Tier 8: Sentient", skills: [
+            { name: "NEURAL NET", cost: 0, mult: 0.15, color: 0xff0055, vfx: 'matrix', hits: 30 }, // Total 4.5x
+            { name: "SKYNET", cost: 220, mult: 22.0, color: 0xff0000, vfx: 'god_beam', hits: 1 },
+            { name: "PREDICT", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.50, duration: 3, color: 0xff0055, desc: "+50% Crit Chance" }
+        ]},
+        // 80-89
+        { name: "THE-ARCHITECT", desc: "Tier 9: Matrix", skills: [
+            { name: "DEJA VU", cost: 0, mult: 0.12, color: 0x00ff00, vfx: 'omni', hits: 50 }, // Total 6.0x
+            { name: "REALITY EDIT", cost: 280, mult: 40.0, color: 0xffffff, vfx: 'blackhole', hits: 1 },
+            { name: "BULLET TIME", cost: 70, isBuff: true, buffType: 'dodge', buffVal: 0.60, duration: 3, color: 0x00ff00, desc: "+60% Dodge" }
+        ]},
+        // 90+
+        { name: "SYS-ADMIN", desc: "Tier 10: God Mode", skills: [
+            { name: "CONSOLE LOG", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'matrix', hits: 100 }, // Total 10.0x
+            { name: "SUDO KILL", cost: 500, mult: 200.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
+            { name: "DEV TOOLS", cost: 100, isBuff: true, buffType: 'all_offense', buffVal: 1.0, duration: 3, color: 0x00ff00, desc: "+100% All Offense" }
+        ]}
     ]
 };
 
@@ -1037,7 +1099,7 @@ const game = {
         container.innerHTML = '';
         if(tier === 0) {
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
-            ['RONIN', 'PRIEST', 'MECH','GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0), jobKey));
+            ['RONIN', 'PRIEST', 'MECH','GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER', 'HACKER'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0), jobKey));
         } else {
             document.querySelector('#class-screen h2').innerText = `TIER ${tier+1} ADVANCEMENT`;
             const currentKey = this.player.jobType;
@@ -1047,20 +1109,121 @@ const game = {
     },
 
     createJobCard(container, jobData, onClick, jobKey = '') {
+        // const card = document.createElement('div');
+        // card.className = 'perk-card legendary'; card.style.height = 'auto';
+        // const s3 = jobData.skills[2];
+        // const buffInfo = s3 ? `<br><strong style="color:#ffe600">3:</strong> <span style="color:#ffe600">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
+
+        // // Mark broken classes
+        // const isBroken = jobKey === 'SHADOW' || jobKey === 'BRAWLER' || jobKey === 'HACKER';
+        // const brokenTag = isBroken ? `<div style="background:linear-gradient(90deg,#ff0000,#ff6600);color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px;font-size:12px;margin-bottom:8px;text-shadow:0 0 5px #000;">⚠️ BROKEN ⚠️</div>` : '';
+
+        // card.innerHTML = `${brokenTag}<div class="perk-title">${jobData.name}</div><div class="perk-desc">${jobData.desc}</div>
+        // <div style="font-size:14px;color:#fff;margin-top:10px;"><strong>1:</strong> ${jobData.skills[0].name}<br><span style="color:#aaa">${jobData.skills[0].mult}x / ${jobData.skills[0].hits||1} Hits</span><br><strong>2:</strong> ${jobData.skills[1].name}<br><span style="color:#aaa">${jobData.skills[1].mult}x / ${jobData.skills[1].hits||1} Hits</span>${buffInfo}</div>`;
+        // card.onclick = onClick; container.appendChild(card);
+        
+        // --- 1. DEFINE UNIQUE THEMES PER CLASS ---
+        const JOB_THEMES = {
+            "RONIN": {
+                border: "2px solid #aa00ff",
+                shadow: "0 0 20px rgba(170, 0, 255, 0.6)",
+                bg: "linear-gradient(135deg, rgba(30,0,50,0.9), rgba(60,0,100,0.9))",
+                titleColor: "#dcb3ff"
+            },
+            "PRIEST": {
+                border: "2px solid #00f2ff",
+                shadow: "0 0 20px rgba(0, 242, 255, 0.5)",
+                bg: "linear-gradient(135deg, rgba(0,20,30,0.9), rgba(0,50,60,0.9))",
+                titleColor: "#ccffff"
+            },
+            "MECH": {
+                border: "2px solid #ff6600",
+                shadow: "0 0 20px rgba(255, 102, 0, 0.5)",
+                bg: "linear-gradient(135deg, rgba(40,15,0,0.9), rgba(80,30,0,0.9))",
+                titleColor: "#ffccaa"
+            },
+            "SHADOW": {
+                border: "2px solid #00ff00",
+                shadow: "0 0 20px rgba(0, 255, 0, 0.4)",
+                bg: "linear-gradient(135deg, #050505, #112211)",
+                titleColor: "#aaffaa"
+            },
+            "BRAWLER": {
+                border: "2px solid #ff0000",
+                shadow: "0 0 20px rgba(255, 0, 0, 0.5)",
+                bg: "linear-gradient(135deg, #220000, #440000)",
+                titleColor: "#ffaaaa"
+            },
+            "GUNSLINGER": {
+                border: "2px solid #ffaa00",
+                shadow: "0 0 20px rgba(255, 170, 0, 0.6)",
+                bg: "linear-gradient(135deg, #221100, #442200)",
+                titleColor: "#ffeeb0"
+            },
+            "KNIGHT": {
+                border: "2px solid #ffffff",
+                shadow: "0 0 20px rgba(255, 255, 255, 0.4)",
+                bg: "linear-gradient(135deg, #111, #333)",
+                titleColor: "#ffffff"
+            },
+            "HACKER": {
+                border: "2px solid #00ff00",
+                shadow: "0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 10px rgba(0,255,0,0.2)",
+                bg: "repeating-linear-gradient(45deg, #000 0px, #001100 10px, #000 20px)",
+                titleColor: "#00ff00"
+            }
+        };
+
+        // Fallback style if key is missing
+        const theme = JOB_THEMES[jobKey] || { border: "2px solid #fff", shadow: "0 0 10px #fff", bg: "#222", titleColor: "#fff" };
+
         const card = document.createElement('div');
-        card.className = 'perk-card legendary'; card.style.height = 'auto';
+        // We remove 'legendary' class to override with custom styles, keep 'perk-card' for layout
+        card.className = 'perk-card'; 
+        
+        // --- 2. APPLY THE CUSTOM STYLES ---
+        Object.assign(card.style, {
+            height: 'auto',
+            border: theme.border,
+            boxShadow: theme.shadow,
+            background: theme.bg,
+            transition: "transform 0.2s, box-shadow 0.2s"
+        });
+
+        // Add hover effect via JS since we are using inline styles
+        card.onmouseover = () => { card.style.transform = "scale(1.05)"; card.style.boxShadow = `${theme.shadow}, 0 0 40px ${theme.border.split(' ')[2]}`; };
+        card.onmouseout = () => { card.style.transform = "scale(1)"; card.style.boxShadow = theme.shadow; };
+
+        // --- 3. BUILD CONTENT ---
         const s3 = jobData.skills[2];
-        const buffInfo = s3 ? `<br><strong style="color:#ffe600">3:</strong> <span style="color:#ffe600">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
+        const buffInfo = s3 ? `<br><strong style="color:${theme.titleColor}">3:</strong> <span style="color:#fff">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
 
         // Mark broken classes
-        const isBroken = jobKey === 'SHADOW' || jobKey === 'BRAWLER';
-        const brokenTag = isBroken ? `<div style="background:linear-gradient(90deg,#ff0000,#ff6600);color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px;font-size:12px;margin-bottom:8px;text-shadow:0 0 5px #000;">⚠️ BROKEN ⚠️</div>` : '';
+        const isBroken = jobKey === 'SHADOW' || jobKey === 'BRAWLER' || jobKey === 'HACKER';
+        const brokenTag = isBroken ? `<div style="background:linear-gradient(90deg,#ff0000,#ff6600);color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px;font-size:12px;margin-bottom:8px;text-align:center;box-shadow:0 0 10px #ff0000;">⚠️ EXPERIMENTAL ⚠️</div>` : '';
 
-        card.innerHTML = `${brokenTag}<div class="perk-title">${jobData.name}</div><div class="perk-desc">${jobData.desc}</div>
-        <div style="font-size:14px;color:#fff;margin-top:10px;"><strong>1:</strong> ${jobData.skills[0].name}<br><span style="color:#aaa">${jobData.skills[0].mult}x / ${jobData.skills[0].hits||1} Hits</span><br><strong>2:</strong> ${jobData.skills[1].name}<br><span style="color:#aaa">${jobData.skills[1].mult}x / ${jobData.skills[1].hits||1} Hits</span>${buffInfo}</div>`;
-        card.onclick = onClick; container.appendChild(card);
+        card.innerHTML = `
+            ${brokenTag}
+            <div class="perk-title" style="color:${theme.titleColor}; text-shadow:0 0 10px ${theme.titleColor}; margin-bottom:5px; font-size: 22px;">${jobData.name}</div>
+            <div class="perk-desc" style="color:#ddd; font-style:italic; margin-bottom:10px;">${jobData.desc}</div>
+            <div style="background:rgba(0,0,0,0.5); padding:10px; border-radius:5px; border:1px solid rgba(255,255,255,0.1);">
+                <div style="font-size:14px;color:#fff;margin-top:5px;">
+                    <strong style="color:${theme.titleColor}">1:</strong> ${jobData.skills[0].name}<br>
+                    <span style="color:#aaa; font-size:12px">${jobData.skills[0].mult}x / ${jobData.skills[0].hits||1} Hits</span>
+                </div>
+                <div style="font-size:14px;color:#fff;margin-top:8px;">
+                    <strong style="color:${theme.titleColor}">2:</strong> ${jobData.skills[1].name}<br>
+                    <span style="color:#aaa; font-size:12px">${jobData.skills[1].mult}x / ${jobData.skills[1].hits||1} Hits</span>
+                </div>
+                ${buffInfo ? `<div style="font-size:14px;color:#fff;margin-top:8px;">${buffInfo}</div>` : ''}
+            </div>
+        `;
+        
+        card.onclick = onClick; 
+        container.appendChild(card);
+    
     },
-
+    
     setJob(type, tier) {
         this.player.jobType = type; this.player.jobTier = tier; this.player.skills = CLASS_TREES[type][tier].skills;
 
@@ -1108,6 +1271,8 @@ const game = {
             this.player.model = Models.createGunslinger(color, 1.5, tier);  
         } else  if (type === 'KNIGHT') {
             this.player.model = Models.createKnight(color, 1.5, tier);
+        } else if (type === 'HACKER') {
+            this.player.model = Models.createHacker(color, 1.5, tier);
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }
