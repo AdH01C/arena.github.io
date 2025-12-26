@@ -162,32 +162,63 @@
         </p>
         <div style="background:rgba(0,0,0,0.5); border:2px solid #ffd700; padding:20px; margin:20px auto; max-width:400px; border-radius:10px;">
             <h3 style="color:#ffd700; margin-bottom:15px;">UNLOCKED ABILITIES:</h3>
-            <p style="color:#ff00ff; margin:10px 0;">⚡ BREACH: Deal 0.5% of enemy Max HP per hit</p>
-            <p style="color:#ffaa00; margin:10px 0;">🔥 MOMENTUM: +2% damage per combo hit</p>
-            <p style="color:#ff5500; margin:10px 0;">💀 ENHANCED CRITS: +50% crit damage</p>
-            <p style="color:#00ff00; margin:10px 0;">📈 STAT BOOST: +50% ATK, HP, and Mana</p>
+            <p style="color:#ff00ff; margin:10px 0;">BREACH: Deal 0.5% of enemy Max HP per hit</p>
+            <p style="color:#ffaa00; margin:10px 0;">MOMENTUM: +2% damage per combo hit</p>
+            <p style="color:#ff5500; margin:10px 0;">ENHANCED CRITS: +50% crit damage</p>
+            <p style="color:#00ff00; margin:10px 0;">STAT BOOST: +50% ATK, HP, and Mana</p>
         </div>
         <p style="color:#aaa; font-size:14px;">New shop items are now available!</p>
         <button class="btn" style="background:linear-gradient(180deg, #ffd700, #ff8800); color:#000;" onclick="game.completeAwakening()">EMBRACE POWER</button>
     </div>
 
     <div id="rebirth-screen" class="screen">
-        <h1 style="color:#ff00ff; text-shadow: 0 0 30px #ff00ff, 0 0 60px #aa00ff;">✦ REBIRTH ✦</h1>
-        <p style="color:#fff; font-size:22px; margin:20px auto;">
+        <h1 style="color:#ff00ff; text-shadow: 0 0 20px #ff00ff, 0 0 40px #aa00ff; margin-bottom: 10px;">✦ REBIRTH ✦</h1>
+        
+        <p style="color:#fff; font-size:18px; margin:0 auto 15px auto;">
             THE ARCHITECT HAS FALLEN
         </p>
-        <div style="background:rgba(0,0,0,0.6); border:2px solid #ff00ff; padding:25px; margin:20px auto; max-width:450px; border-radius:10px;">
-            <h2 style="color:#ff00ff; margin-bottom:20px;">REBIRTH LEVEL: <span id="rebirth-level" style="color:#fff;">1</span></h2>
-            <p style="color:#00ff00; margin:12px 0; font-size:16px;">💰 +<span id="rebirth-bonus">10000</span> CREDITS BONUS</p>
-            <p style="color:#ff5500; margin:12px 0; font-size:16px;">📈 +50% ATK, HP, MANA</p>
-            <p style="color:#ffaa00; margin:12px 0; font-size:16px;">⚡ +0.5% Breach Damage</p>
-            <p style="color:#00f2ff; margin:12px 0; font-size:16px;">🔥 +1% Combo Multiplier</p>
-            <hr style="border-color:#ff00ff; margin:20px 0;">
-            <p style="color:#ff0000; margin:12px 0; font-size:14px;">⚠️ ENEMIES: 2.5x HP PER REBIRTH</p>
-            <p style="color:#ffd700; margin:12px 0; font-size:14px;">✨ ALL PERKS NOW LEGENDARY</p>
-            <p style="color:#00ff00; margin:12px 0; font-size:14px;">💎 3x GOLD PER REBIRTH</p>
+
+        <div style="
+            background:rgba(0,0,0,0.7); 
+            border:2px solid #ff00ff; 
+            padding:20px; 
+            margin:0 auto 20px auto; 
+            max-width:800px; 
+            border-radius:15px; 
+            display: flex; 
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+        ">
+            
+            <div style="flex: 1; text-align: left; border-right: 1px solid rgba(255,0,255,0.3); padding-right: 20px;">
+                <h2 style="color:#ff00ff; margin:0 0 10px 0; font-size: 24px;">LVL <span id="rebirth-level" style="color:#fff;">1</span></h2>
+                <p style="color:#00ff00; margin:5px 0; font-size:16px; font-weight:bold;"> +<span id="rebirth-bonus">10000</span> CREDITS</p>
+                <p style="color:#ff5500; margin:5px 0; font-size:15px;">+50% ATK, HP, MANA</p>
+                <p style="color:#ffaa00; margin:5px 0; font-size:15px;">+0.5% Breach Damage</p>
+                <p style="color:#00f2ff; margin:5px 0; font-size:15px;">+1% Combo Multiplier</p>
+            </div>
+
+            <div style="flex: 1; text-align: left;">
+                <h2 style="color:#aaa; margin:0 0 10px 0; font-size: 18px;">WORLD CHANGES</h2>
+                <p style="color:#ff0000; margin:5px 0; font-size:14px;">⚠ ENEMIES: 2.5x HP</p>
+                <p style="color:#ffd700; margin:5px 0; font-size:14px;">★ ALL PERKS LEGENDARY</p>
+                <p style="color:#00ff00; margin:5px 0; font-size:14px;">$ 3x GOLD DROPS</p>
+                <p style="color:#ff00ff; margin:5px 0; font-size:14px;">↺ FLOORS RESET TO 1</p>
+            </div>
+
         </div>
-        <button class="btn" style="background:linear-gradient(180deg, #ff00ff, #aa00ff); font-size:20px;" onclick="game.completeRebirth()">BEGIN NEW CYCLE</button>
+
+        <button class="btn" style="
+            background:linear-gradient(90deg, #aa00ff, #ff00ff, #aa00ff); 
+            font-size:18px; 
+            padding: 12px 40px; 
+            width: 400px; 
+            letter-spacing: 2px;
+            font-weight: bold;
+        " onclick="game.completeRebirth()">BEGIN NEW CYCLE</button>
     </div>
 
     <script src="engine.js"></script>
