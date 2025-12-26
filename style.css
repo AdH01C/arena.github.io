@@ -123,9 +123,10 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
 /* --- CONTROLS --- */
 #battle-controls {
     position: absolute; bottom: 30px; width: 100%; text-align: center;
-    pointer-events: auto; opacity: 0; transition: 0.3s; transform: translateY(20px);
+    pointer-events: none; opacity: 0; transition: 0.3s; transform: translateY(20px);
+    z-index: 15; /* Above HUD, below screens */
 }
-#battle-controls.active { opacity: 1; transform: translateY(0); }
+#battle-controls.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
 .btn {
     background: rgba(0,0,0,0.8); border: 2px solid #fff; color: #fff;

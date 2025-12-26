@@ -392,8 +392,12 @@ const game = {
         this.rebirth = 0; // Reset rebirth on new run
         this.buffs = {}; // Reset buffs
         this.battleCombo = 0;
+        // Reset IAP boosts
+        this.iapBoosts = { rareBonus: 0, epicBonus: 0, legendaryBonus: 0, guaranteedLegendary: false, boostFloors: 0, reviveToken: false };
         this.resetShop();
         this.renderBuffs(); // Clear buff display
+        // Reset to initial floor theme
+        engine.setFloorTheme(1);
         if(this.player) engine.scene.remove(this.player.mesh);
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
         this.player = new Unit(true, 150, 150, 20, 0x00f2ff);
@@ -655,6 +659,12 @@ const game = {
     nextFloor() {
         this.floor++;
 
+        // Update floor theme every 5 floors
+        if(this.floor % 5 === 0 || this.floor === 1) {
+            const themeName = engine.setFloorTheme(this.floor);
+            this.showText(themeName, {x: 0, y: 3, z: 0}, '#ff0055');
+        }
+
         // Decrement IAP luck boost floors
         if(this.iapBoosts.boostFloors > 0) {
             this.iapBoosts.boostFloors--;
@@ -728,14 +738,29 @@ const game = {
 
     // --- IAP PREMIUM SHOP ---
     openIAPShop() {
-        this.previousState = this.state;
+        // Don't open during animations
+        if(this.state === 'ANIMATING' || this.state === 'FRENZY_MASH') return;
+
+        // Only save state if we're in a playable state
+        if(this.state === 'IDLE' || this.state === 'REWARD' || this.state === 'SHOP') {
+            this.previousState = this.state;
+        } else {
+            this.previousState = 'IDLE'; // Default to IDLE
+        }
         this.state = 'IAP_SHOP';
         document.getElementById('iap-screen').classList.add('active');
+        // Hide battle controls while in IAP shop
+        document.getElementById('battle-controls').classList.remove('active');
     },
 
     closeIAPShop() {
         document.getElementById('iap-screen').classList.remove('active');
+        // Restore to previous state, ensuring it's a valid state
         this.state = this.previousState || 'IDLE';
+        // If we were in battle (IDLE state with enemy alive), show controls again
+        if(this.state === 'IDLE' && this.enemy && this.enemy.hp > 0) {
+            document.getElementById('battle-controls').classList.add('active');
+        }
     },
 
     buyCredits(amount, price) {
@@ -1146,6 +1171,9 @@ const game = {
         this.rebirth++;
         this.floor = 1; // Reset to floor 1
 
+        // Reset floor theme back to floor 1
+        engine.setFloorTheme(1);
+
         // Keep player stats but boost them
         this.player.atk = Math.floor(this.player.atk * 1.5);
         this.player.maxHp = Math.floor(this.player.maxHp * 1.5);
@@ -1175,7 +1203,7 @@ const game = {
         this.state = 'IDLE';
         this.setScreen('hud');
         document.getElementById('battle-controls').classList.add('active');
-        this.spawnEnemy();
+        this.spawnEnemy(); // This will now use floor=1 with rebirth multiplier
         this.updateButtons();
         this.updateUI();
     },

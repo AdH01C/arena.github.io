@@ -1,38 +1,95 @@
 const engine = {
-    // ... (Keep existing scene, camera, renderer, particles logic) ... 
+    // ... (Keep existing scene, camera, renderer, particles logic) ...
     scene: null, camera: null, renderer: null, particles: [], shakeIntensity: 0,
+    grid: null, ambientLight: null, dirLight: null, // Store references for theme changes
+
+    // FLOOR THEMES - Increasingly scary every 5 floors
+    floorThemes: [
+        { floor: 1,  bg: 0x15151a, fog: 0x15151a, grid1: 0x444444, grid2: 0x222222, ambient: 0.8, name: 'NEON DISTRICT' },
+        { floor: 5,  bg: 0x0a0a12, fog: 0x0a0a15, grid1: 0x003366, grid2: 0x001133, ambient: 0.7, name: 'DEEP NETWORK' },
+        { floor: 10, bg: 0x0d0008, fog: 0x150010, grid1: 0x440022, grid2: 0x220011, ambient: 0.6, name: 'BLOODCORE' },
+        { floor: 15, bg: 0x080808, fog: 0x0a0a0a, grid1: 0x333333, grid2: 0x111111, ambient: 0.5, name: 'THE VOID' },
+        { floor: 20, bg: 0x0a0005, fog: 0x150008, grid1: 0x550033, grid2: 0x330011, ambient: 0.5, name: 'CRIMSON HELL' },
+        { floor: 25, bg: 0x000a08, fog: 0x001510, grid1: 0x003322, grid2: 0x001a11, ambient: 0.4, name: 'TOXIC ABYSS' },
+        { floor: 30, bg: 0x050008, fog: 0x080010, grid1: 0x220044, grid2: 0x110022, ambient: 0.4, name: 'NIGHTMARE REALM' },
+        { floor: 35, bg: 0x080500, fog: 0x100800, grid1: 0x442200, grid2: 0x221100, ambient: 0.4, name: 'INFERNO CORE' },
+        { floor: 40, bg: 0x030303, fog: 0x050505, grid1: 0x220000, grid2: 0x110000, ambient: 0.3, name: 'DEATH\'S DOMAIN' },
+        { floor: 45, bg: 0x020002, fog: 0x030003, grid1: 0x330033, grid2: 0x110011, ambient: 0.3, name: 'THE SINGULARITY' },
+        { floor: 50, bg: 0x000000, fog: 0x000000, grid1: 0xff0055, grid2: 0x550022, ambient: 0.3, name: '⚡ AWAKENING ⚡' },
+        { floor: 55, bg: 0x050000, fog: 0x080000, grid1: 0x880000, grid2: 0x440000, ambient: 0.25, name: 'BLOOD SANCTUM' },
+        { floor: 60, bg: 0x000005, fog: 0x000008, grid1: 0x000088, grid2: 0x000044, ambient: 0.25, name: 'FROZEN ABYSS' },
+        { floor: 65, bg: 0x020000, fog: 0x030000, grid1: 0x660022, grid2: 0x330011, ambient: 0.2, name: 'DEMON\'S MAW' },
+        { floor: 70, bg: 0x010101, fog: 0x020202, grid1: 0x444400, grid2: 0x222200, ambient: 0.2, name: 'PURGATORY' },
+        { floor: 75, bg: 0x000102, fog: 0x000204, grid1: 0x004466, grid2: 0x002233, ambient: 0.2, name: 'DEAD SEA' },
+        { floor: 80, bg: 0x020001, fog: 0x030002, grid1: 0x550055, grid2: 0x220022, ambient: 0.15, name: 'ELDRITCH VOID' },
+        { floor: 85, bg: 0x010000, fog: 0x020000, grid1: 0x660000, grid2: 0x330000, ambient: 0.15, name: 'HELL\'S HEART' },
+        { floor: 90, bg: 0x000001, fog: 0x000002, grid1: 0x003355, grid2: 0x001122, ambient: 0.1, name: 'OBLIVION' },
+        { floor: 95, bg: 0x000000, fog: 0x010001, grid1: 0x440044, grid2: 0x110011, ambient: 0.1, name: 'THE END' },
+        { floor: 100, bg: 0x000000, fog: 0x000000, grid1: 0xff0000, grid2: 0x880000, ambient: 0.2, name: '💀 FINAL BOSS 💀' },
+    ],
 
     init() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
         this.renderer = new THREE.WebGLRenderer({antialias:true});
-        this.renderer.setPixelRatio(window.devicePixelRatio); // ADD THIS LINE
+        this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
-        
-        // --- FIX: RESTORE LIGHTER BACKGROUND ---
-        // Was 0x050508 (Black), changing back to 0x15151a (Dark Slate Blue)
-        this.scene.background = new THREE.Color(0x15151a); 
+
+        // Initial background
+        this.scene.background = new THREE.Color(0x15151a);
         this.scene.fog = new THREE.Fog(0x15151a, 10, 50);
-        
-        // Increase Ambient Light slightly to ensure models pop against the background
-        const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-        const dir = new THREE.DirectionalLight(0xffffff, 1.2);
-        dir.position.set(5, 15, 5);
-        this.scene.add(ambient, dir);
-        
-        const grid = new THREE.GridHelper(100, 100, 0x444444, 0x222222);
-        this.scene.add(grid);
-        
+
+        // Store light references for theme changes
+        this.ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        this.dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        this.dirLight.position.set(5, 15, 5);
+        this.scene.add(this.ambientLight, this.dirLight);
+
+        this.grid = new THREE.GridHelper(100, 100, 0x444444, 0x222222);
+        this.scene.add(this.grid);
+
         this.camera.position.set(0, 5, 13);
         this.camera.lookAt(0, 2, 0);
-        
+
         window.addEventListener('resize', () => {
             this.camera.aspect = window.innerWidth/window.innerHeight;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         });
         this.animate();
+    },
+
+    // Update background/theme based on floor
+    setFloorTheme(floor) {
+        // Find the appropriate theme (highest floor threshold <= current floor)
+        let theme = this.floorThemes[0];
+        for(let i = this.floorThemes.length - 1; i >= 0; i--) {
+            if(floor >= this.floorThemes[i].floor) {
+                theme = this.floorThemes[i];
+                break;
+            }
+        }
+
+        // Animate background color transition
+        const targetBg = new THREE.Color(theme.bg);
+        const targetFog = new THREE.Color(theme.fog);
+
+        this.scene.background = targetBg;
+        this.scene.fog.color = targetFog;
+
+        // Update ambient light intensity
+        this.ambientLight.intensity = theme.ambient;
+
+        // Update grid colors
+        this.scene.remove(this.grid);
+        this.grid = new THREE.GridHelper(100, 100, theme.grid1, theme.grid2);
+        this.scene.add(this.grid);
+
+        // Update CSS body background to match
+        document.body.style.background = '#' + theme.bg.toString(16).padStart(6, '0');
+
+        return theme.name;
     },
 
     animate() {
