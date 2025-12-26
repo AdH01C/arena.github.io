@@ -54,6 +54,9 @@
         </div>
     </div>
 
+    <!-- IAP SHOP BUTTON (Always visible) -->
+    <button id="iap-btn" onclick="game.openIAPShop()">💎</button>
+
     <div id="battle-controls">
         <button id="btn-skill-1" class="btn" onclick="game.useSkill(0)">
             <span class="btn-name">STRIKE</span><br><span class="btn-cost" id="cost-0">0 MP</span>
@@ -64,6 +67,61 @@
         <button id="btn-skill-3" class="btn btn-buff" onclick="game.useSkill(2)">
             <span class="btn-name">BUFF</span><br><span class="btn-cost" id="cost-2">0 MP</span>
         </button>
+    </div>
+
+    <!-- IAP SHOP SCREEN -->
+    <div id="iap-screen" class="screen">
+        <h2 class="screen-title">💎 PREMIUM SHOP 💎</h2>
+        <p style="color:#aaa; margin-bottom:20px;">Support the developer & power up!</p>
+
+        <div class="iap-grid">
+            <div class="iap-section">
+                <h3>💰 CREDIT PACKS</h3>
+                <div class="iap-item" onclick="game.buyCredits(500, 0.99)">
+                    <span>500 Credits</span><span class="iap-price">$0.99</span>
+                </div>
+                <div class="iap-item" onclick="game.buyCredits(2500, 3.99)">
+                    <span>2,500 Credits</span><span class="iap-price">$3.99</span>
+                </div>
+                <div class="iap-item" onclick="game.buyCredits(10000, 9.99)">
+                    <span>10,000 Credits</span><span class="iap-price">$9.99</span>
+                </div>
+                <div class="iap-item best-value" onclick="game.buyCredits(50000, 24.99)">
+                    <span>50,000 Credits<br><small style="color:#0f0">⭐ BEST VALUE</small></span><span class="iap-price">$24.99</span>
+                </div>
+            </div>
+
+            <div class="iap-section">
+                <h3>🎰 LUCK BOOSTERS</h3>
+                <div class="iap-item" onclick="game.buyLuckBoost('rare', 0.99)">
+                    <span>+20% Rare Chance<br><small style="color:#0088ff">3 Floors</small></span><span class="iap-price">$0.99</span>
+                </div>
+                <div class="iap-item" onclick="game.buyLuckBoost('epic', 1.99)">
+                    <span>+15% Epic Chance<br><small style="color:#aa00ff">3 Floors</small></span><span class="iap-price">$1.99</span>
+                </div>
+                <div class="iap-item" onclick="game.buyLuckBoost('legendary', 4.99)">
+                    <span>+10% Legendary<br><small style="color:#ffe600">3 Floors</small></span><span class="iap-price">$4.99</span>
+                </div>
+                <div class="iap-item best-value" onclick="game.buyLuckBoost('guaranteed', 9.99)">
+                    <span>GUARANTEED LEGENDARY<br><small style="color:#ff0">Next perk only!</small></span><span class="iap-price">$9.99</span>
+                </div>
+            </div>
+
+            <div class="iap-section">
+                <h3>🔄 CLASS CHANGE</h3>
+                <div class="iap-item" onclick="game.buyClassChange()">
+                    <span>Change Class<br><small style="color:#aaa">Keep all stats!</small></span><span class="iap-price">$2.99</span>
+                </div>
+                <div class="iap-item" onclick="game.buyInstantHeal()">
+                    <span>⚡ Full Heal + Mana<br><small style="color:#0f0">Instant!</small></span><span class="iap-price">$0.99</span>
+                </div>
+                <div class="iap-item" onclick="game.buyRevive()">
+                    <span>💀 Revive Token<br><small style="color:#ff5">Continue on death</small></span><span class="iap-price">$1.99</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn next-btn" onclick="game.closeIAPShop()" style="margin-top:20px;">CLOSE</button>
     </div>
 
     <div id="start-screen" class="screen active">

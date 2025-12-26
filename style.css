@@ -169,9 +169,84 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
     position: absolute; font-size: 40px; font-weight: bold; pointer-events: none;
     animation: floatUp 0.6s forwards; text-shadow: 0 0 5px #000; z-index: 20;
 }
-@keyframes floatUp { 
-    0%{opacity:1; transform:translateY(0) scale(0.5);} 
-    100%{opacity:0; transform:translateY(-80px) scale(1.2);} 
+@keyframes floatUp {
+    0%{opacity:1; transform:translateY(0) scale(0.5);}
+    100%{opacity:0; transform:translateY(-80px) scale(1.2);}
+}
+
+/* --- IAP SHOP STYLES --- */
+#iap-btn {
+    position: fixed;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6600ff, #ff00aa);
+    border: 2px solid #fff;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 0 15px rgba(255,0,170,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: iapPulse 2s infinite;
+}
+#iap-btn:hover, #iap-btn:active {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 25px rgba(255,0,170,0.8);
+}
+@keyframes iapPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255,0,170,0.5); }
+    50% { box-shadow: 0 0 25px rgba(255,0,170,0.8); }
+}
+
+.iap-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+.iap-section {
+    background: rgba(20,20,30,0.9);
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 250px;
+}
+.iap-section h3 {
+    color: #ffe600;
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    text-align: center;
+}
+.iap-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 8px 0;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid #555;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+.iap-item:hover, .iap-item:active {
+    background: linear-gradient(90deg, #6600ff, #ff00aa);
+    border-color: #fff;
+    transform: scale(1.02);
+}
+.iap-item.best-value {
+    border-color: #0f0;
+    box-shadow: 0 0 10px rgba(0,255,0,0.3);
+}
+.iap-price {
+    color: #0f0;
+    font-weight: bold;
+    font-size: 18px;
 }
 
 /* --- RARITY STYLES --- */
@@ -257,10 +332,25 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
     .bar-container { height: 14px; }
     .overlay-text { font-size: 12px; }
 
+    /* IAP Button on mobile - move up to avoid overlap */
+    #iap-btn {
+        top: 40%;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    /* IAP Shop on mobile */
+    .iap-grid { flex-direction: column; gap: 10px; padding: 10px; }
+    .iap-section { min-width: auto; width: 100%; padding: 10px; }
+    .iap-section h3 { font-size: 16px; }
+    .iap-item { padding: 10px; font-size: 14px; }
+    .iap-price { font-size: 14px; }
+
     /* Make Combat Buttons BIGGER for thumbs - MOVED TO RIGHT */
     #battle-controls {
         bottom: 10px;
-        right: 10px;
+        right: 60px; /* Leave room for IAP button */
         left: auto;
         width: auto;
         display: flex;

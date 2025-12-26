@@ -349,6 +349,17 @@ const game = {
     frenzySkill: null, // Current frenzy skill being mashed
     frenzyMashHits: 0, // Bonus hits from mashing
 
+    // --- IAP PREMIUM SHOP ---
+    iapBoosts: {
+        rareBonus: 0,      // Extra rare chance
+        epicBonus: 0,      // Extra epic chance
+        legendaryBonus: 0, // Extra legendary chance
+        guaranteedLegendary: false, // Next perk is legendary
+        boostFloors: 0,    // Floors remaining for luck boost
+        reviveToken: false // Can revive on death
+    },
+    previousState: 'IDLE', // Store state before opening IAP shop
+
     // --- PROGRESSIVE SHOP DATA (Persistent) ---
     shopData: {
         heal: { level: 1, baseCost: 50, costMult: 1.5, baseVal: 50, valInc: 25 },
@@ -644,6 +655,17 @@ const game = {
     nextFloor() {
         this.floor++;
 
+        // Decrement IAP luck boost floors
+        if(this.iapBoosts.boostFloors > 0) {
+            this.iapBoosts.boostFloors--;
+            if(this.iapBoosts.boostFloors === 0) {
+                // Reset luck bonuses when boost expires
+                this.iapBoosts.rareBonus = 0;
+                this.iapBoosts.epicBonus = 0;
+                this.iapBoosts.legendaryBonus = 0;
+            }
+        }
+
         // AWAKENING at floor 50 - major power boost
         if(this.floor === 50 && !this.player.awakened) {
             this.triggerAwakening();
@@ -702,6 +724,74 @@ const game = {
         this.setScreen('shop-screen');
         this.generateShop();
         this.updateUI();
+    },
+
+    // --- IAP PREMIUM SHOP ---
+    openIAPShop() {
+        this.previousState = this.state;
+        this.state = 'IAP_SHOP';
+        document.getElementById('iap-screen').classList.add('active');
+    },
+
+    closeIAPShop() {
+        document.getElementById('iap-screen').classList.remove('active');
+        this.state = this.previousState || 'IDLE';
+    },
+
+    buyCredits(amount, price) {
+        // Simulate purchase (in real app, this would go through payment processor)
+        if(confirm(`Purchase ${amount.toLocaleString()} Credits for $${price}?`)) {
+            this.gold += amount;
+            this.showText(`+${amount.toLocaleString()} 💰`, this.player?.mesh?.position || {x:0,y:1,z:0}, '#ffe600');
+            this.updateUI();
+            alert(`✅ Purchased ${amount.toLocaleString()} Credits!`);
+        }
+    },
+
+    buyLuckBoost(type, price) {
+        const boostName = type === 'guaranteed' ? 'GUARANTEED LEGENDARY' : `${type.toUpperCase()} BOOST`;
+        if(confirm(`Purchase ${boostName} for $${price}?`)) {
+            if(type === 'guaranteed') {
+                this.iapBoosts.guaranteedLegendary = true;
+            } else if(type === 'rare') {
+                this.iapBoosts.rareBonus += 0.20;
+                this.iapBoosts.boostFloors += 3;
+            } else if(type === 'epic') {
+                this.iapBoosts.epicBonus += 0.15;
+                this.iapBoosts.boostFloors += 3;
+            } else if(type === 'legendary') {
+                this.iapBoosts.legendaryBonus += 0.10;
+                this.iapBoosts.boostFloors += 3;
+            }
+            this.showText(`🎰 ${boostName}!`, this.player?.mesh?.position || {x:0,y:1,z:0}, '#ff00aa');
+            alert(`✅ ${boostName} activated!`);
+        }
+    },
+
+    buyClassChange() {
+        if(confirm('Change Class for $2.99? (Keep all stats!)')) {
+            this.closeIAPShop();
+            this.showJobSelect(0); // Show base class selection
+            alert('✅ Select your new class!');
+        }
+    },
+
+    buyInstantHeal() {
+        if(!this.player) { alert('Start a run first!'); return; }
+        if(confirm('Full Heal + Mana for $0.99?')) {
+            this.player.hp = this.player.maxHp;
+            this.player.mana = this.player.maxMana;
+            this.showText('FULL RESTORE!', this.player.mesh.position, '#00ff00');
+            this.updateUI();
+            alert('✅ Fully restored!');
+        }
+    },
+
+    buyRevive() {
+        if(confirm('Purchase Revive Token for $1.99?')) {
+            this.iapBoosts.reviveToken = true;
+            alert('✅ Revive Token acquired! You will auto-revive on death.');
+        }
     },
 
     // --- RENDER SHOP UI ---
@@ -990,10 +1080,20 @@ const game = {
             this.updateUI();
 
             if(this.player.hp <= 0) {
-                this.state = 'GAMEOVER';
-                document.getElementById('final-floor').innerText = this.floor;
-                this.setScreen('gameover-screen');
-                document.getElementById('battle-controls').classList.remove('active');
+                // Check for revive token
+                if(this.iapBoosts.reviveToken) {
+                    this.iapBoosts.reviveToken = false;
+                    this.player.hp = Math.floor(this.player.maxHp * 0.5); // Revive at 50% HP
+                    this.player.mana = this.player.maxMana;
+                    this.showText('💀 REVIVED!', this.player.mesh.position, '#ff00ff');
+                    this.updateUI();
+                    this.state = 'IDLE';
+                } else {
+                    this.state = 'GAMEOVER';
+                    document.getElementById('final-floor').innerText = this.floor;
+                    this.setScreen('gameover-screen');
+                    document.getElementById('battle-controls').classList.remove('active');
+                }
             } else {
                 this.state = 'IDLE';
             }
@@ -1126,11 +1226,22 @@ const game = {
                     prob: 1.0
                 };
             } else {
-                const rand = Math.random();
-                tier = RARITY.COMMON;
-                if (rand < RARITY.LEGENDARY.prob) tier = RARITY.LEGENDARY;
-                else if (rand < RARITY.EPIC.prob) tier = RARITY.EPIC;
-                else if (rand < RARITY.RARE.prob) tier = RARITY.RARE;
+                // Check for IAP guaranteed legendary
+                if(this.iapBoosts.guaranteedLegendary) {
+                    tier = RARITY.LEGENDARY;
+                    this.iapBoosts.guaranteedLegendary = false; // Use up the boost
+                } else {
+                    const rand = Math.random();
+                    // Apply IAP luck boosts
+                    const legendaryChance = RARITY.LEGENDARY.prob + this.iapBoosts.legendaryBonus;
+                    const epicChance = RARITY.EPIC.prob + this.iapBoosts.epicBonus;
+                    const rareChance = RARITY.RARE.prob + this.iapBoosts.rareBonus;
+
+                    tier = RARITY.COMMON;
+                    if (rand < legendaryChance) tier = RARITY.LEGENDARY;
+                    else if (rand < epicChance) tier = RARITY.EPIC;
+                    else if (rand < rareChance) tier = RARITY.RARE;
+                }
             }
 
             const template = PERK_POOL[Math.floor(Math.random() * PERK_POOL.length)];
