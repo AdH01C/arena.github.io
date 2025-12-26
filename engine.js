@@ -459,6 +459,146 @@ const Models = {
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
 
+    createGunslinger(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({color:0x332211, metalness:0.3, roughness:0.8}); // Brown leather coat
+        const mG = new THREE.MeshBasicMaterial({color:c || 0xffaa00}); // Glow color
+        const mS = new THREE.MeshStandardMaterial({color:0x222222, metalness:0.2, roughness:0.9}); // Dark undersuit
+        const mGun = new THREE.MeshStandardMaterial({color:0x888888, metalness:0.9, roughness:0.2}); // Gun metal
+
+        // Legs (Pants)
+        this.box(0.12,0.5,0.14,mS,-0.15,0.25,0,g); this.box(0.12,0.5,0.14,mS,0.15,0.25,0,g);
+        // Holsters
+        this.box(0.05,0.15,0.1,mB,-0.23,0.35,0,g); this.box(0.05,0.15,0.1,mB,0.23,0.35,0,g);
+
+        // Torso - Duster Coat
+        const t = this.box(0.4,0.45,0.25,mS,0,0.65,0,g); // Undershirt
+        this.box(0.42,0.5,0.1,mB,0,0.3,-0.15,t); // Coat tails
+
+        // Head - Cowboy Hat / Tac Visor
+        const h = this.box(0.2,0.22,0.2,mS,0,0.35,0,t);
+        // Hat Brim
+        this.box(0.5,0.02,0.5,mB,0,0.1,0,h);
+        // Hat Top
+        this.box(0.25,0.15,0.25,mB,0,0.18,0,h);
+        // Cyber Eye (Monocle)
+        this.box(0.08,0.05,0.02,mG,0.05,0.05,0.11,h);
+
+        // Poncho / Shoulder Cape (Tier dependent)
+        if(tier >= 2) {
+            const poncho = this.box(0.45,0.2,0.3,mB,0,0.15,0,t);
+            poncho.rotation.z = -0.1;
+        }
+
+        // Arms
+        const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.1,0.4,0.1,mB,0,-0.2,0,arm); return arm;}
+        const leftArm = mkArm(-0.3);
+        const rightArm = mkArm(0.3);
+
+        // Gun (Right Hand) - Revolver style
+        const gun = new THREE.Group(); gun.position.set(0,-0.35,0.1); rightArm.add(gun);
+        this.box(0.04,0.1,0.03,mB,0,-0.05,0,gun); // Handle
+        this.box(0.05,0.05,0.25,mGun,0,0,0.1,gun); // Barrel
+        this.box(0.06,0.06,0.08,mS,0,0,0,gun); // Cylinder
+
+        // Second Gun (Left Hand) at Tier 4+
+        if(tier >= 4) {
+            const gun2 = gun.clone();
+            leftArm.add(gun2);
+        }
+
+        // Cybernetic Arm at Tier 6+
+        if(tier >= 6) {
+            // Re-render right arm as metal
+            rightArm.children[0].material = mGun;
+            // Add glowing lines
+            this.box(0.11,0.3,0.02,mG,0,-0.2,0.05,rightArm);
+        }
+
+        // Floating Drones / Orbs at Tier 8+
+        if(tier >= 8) {
+            const drone = new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8), mG);
+            drone.position.set(0.5, 0.5, -0.3);
+            t.add(drone);
+        }
+
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
+
+    createKnight(c, s=1, tier=0) {
+        const g = new THREE.Group();
+        const mArmor = new THREE.MeshStandardMaterial({color:0x888888, metalness:0.8, roughness:0.2}); // Shiny steel
+        const mGold = new THREE.MeshStandardMaterial({color:0xffd700, metalness:1.0, roughness:0.3}); // Gold trim
+        const mG = new THREE.MeshBasicMaterial({color:c || 0x00aaff}); // Energy color
+        const mDark = new THREE.MeshStandardMaterial({color:0x222222, metalness:0.5, roughness:0.5}); // Joints
+
+        // Heavy Boots
+        this.box(0.18,0.5,0.18,mArmor,-0.2,0.25,0,g); this.box(0.18,0.5,0.18,mArmor,0.2,0.25,0,g);
+
+        // Chestplate
+        const t = this.box(0.6,0.5,0.35,mArmor,0,0.7,0,g);
+        this.box(0.2,0.2,0.1,mG,0,0.05,0.18,t); // Energy Core
+
+        // Helmet (Bucket style)
+        const h = this.box(0.25,0.3,0.25,mArmor,0,0.45,0,t);
+        // Visor slit
+        this.box(0.26,0.04,0.1,mG,0,0,0.1,h);
+        // Plume / Crest (Tier 2+)
+        if(tier >= 2) {
+            this.box(0.02,0.15,0.2,mG,0,0.22,0,h);
+        }
+
+        // Pauldrons (Shoulders) - Scale with tier
+        const pSize = 0.2 + (tier * 0.02);
+        this.box(pSize,pSize,pSize,mArmor,-0.45,0.25,0,t);
+        this.box(pSize,pSize,pSize,mArmor,0.45,0.25,0,t);
+
+        // Cape (Tier 4+)
+        if(tier >= 4) {
+            const cape = this.box(0.5,0.7,0.05,mG,0,-0.1,-0.2,t);
+            cape.rotation.x = 0.2;
+        }
+
+        // Arms
+        const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
+            this.box(0.15,0.4,0.15,mDark,0,-0.2,0,arm); return arm;}
+        const leftArm = mkArm(-0.4);
+        const rightArm = mkArm(0.4);
+
+        // Weapon: Heavy Sword (Right Arm)
+        const sword = new THREE.Group(); sword.position.set(0,-0.3,0.1); rightArm.add(sword);
+        this.box(0.04,0.15,0.04,mDark,0,-0.07,0,sword); // Hilt
+        this.box(0.15,0.02,0.08,mGold,0,0,0,sword); // Crossguard
+        const bladeLen = 0.8 + (tier * 0.05);
+        this.box(0.08,bladeLen,0.02,mArmor,0,bladeLen/2,0,sword); // Blade
+        if(tier >= 6) this.box(0.02,bladeLen,0.03,mG,0,bladeLen/2,0,sword); // Energy edge
+
+        // Shield (Left Arm)
+        const shieldGroup = new THREE.Group(); shieldGroup.position.set(0,-0.2,0.2); leftArm.add(shieldGroup);
+        const shieldW = 0.4 + (tier * 0.03);
+        const shieldH = 0.5 + (tier * 0.03);
+        
+        // Base Shield
+        this.box(shieldW,shieldH,0.05,mArmor,0,0,0,shieldGroup);
+        
+        // Energy Shield Layer (Tier 3+)
+        if(tier >= 3) {
+            this.box(shieldW*0.8,shieldH*0.8,0.06,mG,0,0,0.02,shieldGroup);
+        }
+        
+        // Floating Holographic Shield (Tier 8+)
+        if(tier >= 8) {
+            const holo = this.box(0.8,1.0,0.02,mG,0,0,0.2,shieldGroup);
+            holo.material.transparent = true;
+            holo.material.opacity = 0.5;
+        }
+
+        g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
+    },
+    
     // === ENEMY MODELS ===
     createDrone(c, s=1) {
         const g = new THREE.Group();

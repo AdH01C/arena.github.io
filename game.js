@@ -314,6 +314,130 @@ const CLASS_TREES = {
             { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1 },
             { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 3, color: 0xffffff, desc: "+200% ATK Mult" }
         ]}
+    ],
+    "GUNSLINGER": [
+        // 0-9: BASE - High Noon Style
+        { name: "DRIFTER", desc: "Tier 1: Revolver", skills: [
+            { name: "QUICK DRAW", cost: 0, mult: 1.1, color: 0xffaa00, vfx: 'beam', hits: 1 },
+            { name: "MAGNUM OPUS", cost: 35, mult: 2.8, color: 0xff4400, vfx: 'heavy', hits: 1 },
+            { name: "DEADEYE", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0xffaa00, desc: "+20% Crit Chance" }
+        ]},
+        // 10-19
+        { name: "OUTLAW", desc: "Tier 2: Dual Wield", skills: [
+            { name: "FAN HAMMER", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'multi', hits: 6 }, // Total 1.8x
+            { name: "POINT BLANK", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'explode', hits: 1 },
+            { name: "LUCKY COIN", cost: 25, isBuff: true, buffType: 'critDamage', buffVal: 0.30, duration: 3, color: 0xffff00, desc: "+30% Crit DMG" }
+        ]},
+        // 20-29
+        { name: "DESPERADO", desc: "Tier 3: Ricochet", skills: [
+            { name: "TRICK SHOT", cost: 0, mult: 0.4, color: 0x00ffff, vfx: 'beam', hits: 5 }, // Total 2.0x
+            { name: "EXPLOSIVE ROUND", cost: 65, mult: 6.0, color: 0xff5500, vfx: 'nuke', hits: 1 },
+            { name: "ADRENALINE", cost: 30, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 3, color: 0x00ffff, desc: "+30% Dodge" }
+        ]},
+        // 30-39
+        { name: "VIGILANTE", desc: "Tier 4: Sniper", skills: [
+            { name: "HEADSHOT", cost: 0, mult: 2.5, color: 0xff0000, vfx: 'crit', hits: 1 }, // Slow, heavy single hit
+            { name: "PENETRATOR", cost: 90, mult: 8.5, color: 0xff0000, vfx: 'god_beam', hits: 1 },
+            { name: "LASER SIGHT", cost: 35, isBuff: true, buffType: 'crit', buffVal: 0.40, duration: 3, color: 0xff0000, desc: "+40% Crit Chance" }
+        ]},
+        // 40-49
+        { name: "COMMANDO", desc: "Tier 5: Heavy", skills: [
+            { name: "SUPPRESSION", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'gatling', hits: 15 }, // Total 3.0x
+            { name: "RPG", cost: 110, mult: 5.0, color: 0xffaa00, vfx: 'nuke', hits: 2 },
+            { name: "GUERRILLA", cost: 40, isBuff: true, buffType: 'armor', buffVal: 20, duration: 3, color: 0x55aa00, desc: "+20 Armor" }
+        ]},
+        // 50-59
+        { name: "CYBER-COWBOY", desc: "Tier 6: Neon", skills: [
+            { name: "PLASMA WHIP", cost: 0, mult: 0.4, color: 0xff00ff, vfx: 'slash', hits: 8 }, // Total 3.2x
+            { name: "NEON NOON", cost: 140, mult: 13.0, color: 0xff00ff, vfx: 'god_beam', hits: 1 },
+            { name: "HIGH NOON", cost: 45, isBuff: true, buffType: 'atk', buffVal: 50, duration: 3, color: 0xff00ff, desc: "+50 ATK" }
+        ]},
+        // 60-69
+        { name: "GUN-KATA", desc: "Tier 7: Martial", skills: [
+            { name: "BULLET DANCE", cost: 0, mult: 0.15, color: 0xffffff, vfx: 'omni', hits: 25 }, // Total 3.75x
+            { name: "EQUILIBRIUM", cost: 170, mult: 16.0, color: 0xffffff, vfx: 'implode', hits: 1 },
+            { name: "FLOW STATE", cost: 50, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 3, color: 0xffffff, desc: "+40% Double Strike" }
+        ]},
+        // 70-79
+        { name: "RAIL-GUNNER", desc: "Tier 8: Magnetic", skills: [
+            { name: "GAUSS RIFLE", cost: 0, mult: 1.0, color: 0x00aaff, vfx: 'beam', hits: 4 }, // Total 4.0x
+            { name: "HYPER VELOCITY", cost: 200, mult: 20.0, color: 0x00aaff, vfx: 'god_beam', hits: 1 },
+            { name: "MAGNETIC FIELD", cost: 55, isBuff: true, buffType: 'shield', buffVal: 300, duration: 1, color: 0x00aaff, desc: "+300 Shield" }
+        ]},
+        // 80-89
+        { name: "EXECUTIONER", desc: "Tier 9: Orbital", skills: [
+            { name: "LOCK-ON", cost: 0, mult: 0.1, color: 0xff0000, vfx: 'matrix', hits: 50 }, // Total 5.0x
+            { name: "ORBITAL STRIKE", cost: 250, mult: 35.0, color: 0xff4400, vfx: 'nuke', hits: 1 },
+            { name: "KILL PROTOCOL", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 1.0, duration: 3, color: 0xff0000, desc: "+100% Crit DMG" }
+        ]},
+        // 90+
+        { name: "BALLISTIC-GOD", desc: "Tier 10: Infinite", skills: [
+            { name: "BULLET HELL", cost: 0, mult: 0.1, color: 0xffd700, vfx: 'gatling', hits: 80 }, // Total 8.0x (Insane hit count)
+            { name: "THE BIG IRON", cost: 400, mult: 100.0, color: 0xffd700, vfx: 'god_beam', hits: 1 },
+            { name: "TRIGGER HAPPY", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.75, duration: 3, color: 0xffd700, desc: "+75% All Offense" }
+        ]}
+    ],
+    "KNIGHT": [
+        // 0-9: BASE - Tank
+        { name: "SQUIRE", desc: "Tier 1: Defense", skills: [
+            { name: "SLASH", cost: 0, mult: 1.0, color: 0xcccccc, vfx: 'slash', hits: 1 },
+            { name: "SHIELD BASH", cost: 30, mult: 2.0, color: 0x00aaff, vfx: 'heavy', hits: 1 },
+            { name: "SHIELD UP", cost: 20, isBuff: true, buffType: 'shield', buffVal: 50, duration: 1, color: 0x00aaff, desc: "+50 Shield" }
+        ]},
+        // 10-19
+        { name: "IRON-CLAD", desc: "Tier 2: Armor", skills: [
+            { name: "HEAVY SWING", cost: 0, mult: 1.2, color: 0xaaaaaa, vfx: 'slash', hits: 1 },
+            { name: "IRON STRIKE", cost: 45, mult: 3.5, color: 0x888888, vfx: 'heavy', hits: 1 },
+            { name: "FORTIFY", cost: 25, isBuff: true, buffType: 'armor', buffVal: 20, duration: 3, color: 0xaaaaaa, desc: "+20 Armor" }
+        ]},
+        // 20-29
+        { name: "GUARDIAN", desc: "Tier 3: Protector", skills: [
+            { name: "JUSTICE", cost: 0, mult: 0.5, color: 0xffd700, vfx: 'beam', hits: 4 }, // Total 2.0x
+            { name: "SMITE", cost: 60, mult: 5.0, color: 0xffd700, vfx: 'god_beam', hits: 1 },
+            { name: "HOLY WALL", cost: 35, isBuff: true, buffType: 'shield', buffVal: 150, duration: 1, color: 0xffd700, desc: "+150 Shield" }
+        ]},
+        // 30-39
+        { name: "CRUSADER", desc: "Tier 4: Holy", skills: [
+            { name: "DIVINE CUT", cost: 0, mult: 0.8, color: 0xffffff, vfx: 'slash', hits: 3 }, // Total 2.4x
+            { name: "JUDGEMENT", cost: 90, mult: 7.0, color: 0xffffff, vfx: 'heavy', hits: 1 },
+            { name: "DIVINE SHIELD", cost: 40, isBuff: true, buffType: 'shield', buffVal: 250, duration: 1, color: 0xffffff, desc: "+250 Shield" }
+        ]},
+        // 40-49
+        { name: "ROYAL-GUARD", desc: "Tier 5: Elite", skills: [
+            { name: "ROYAL SLASH", cost: 0, mult: 0.6, color: 0xff0055, vfx: 'multi', hits: 5 }, // Total 3.0x
+            { name: "EXECUTION", cost: 110, mult: 10.0, color: 0xff0000, vfx: 'crit', hits: 1 },
+            { name: "KINGS ARMOR", cost: 45, isBuff: true, buffType: 'all_defense', buffVal: 0.30, duration: 3, color: 0xff0055, desc: "+30% All Defense" }
+        ]},
+        // 50-59
+        { name: "CYBER-PALADIN", desc: "Tier 6: Energy", skills: [
+            { name: "LASER SWORD", cost: 0, mult: 0.4, color: 0x00f2ff, vfx: 'beam', hits: 8 }, // Total 3.2x
+            { name: "PLASMA BASH", cost: 140, mult: 12.0, color: 0x00f2ff, vfx: 'implode', hits: 1 },
+            { name: "FORCE FIELD", cost: 50, isBuff: true, buffType: 'shield', buffVal: 500, duration: 1, color: 0x00f2ff, desc: "+500 Shield" }
+        ]},
+        // 60-69
+        { name: "JUGGERNAUT", desc: "Tier 7: Unstoppable", skills: [
+            { name: "EARTHQUAKE", cost: 0, mult: 0.3, color: 0x552200, vfx: 'heavy', hits: 12 }, // Total 3.6x
+            { name: "AVALANCHE", cost: 160, mult: 15.0, color: 0x884400, vfx: 'nuke', hits: 1 },
+            { name: "IRON SKIN", cost: 55, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x888888, desc: "Invincible 2 turns" }
+        ]},
+        // 70-79
+        { name: "VOID-KEEPER", desc: "Tier 8: Null", skills: [
+            { name: "VOID SLASH", cost: 0, mult: 0.2, color: 0x220044, vfx: 'slash', hits: 20 }, // Total 4.0x
+            { name: "BLACK HOLE", cost: 200, mult: 20.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
+            { name: "VOID BARRIER", cost: 60, isBuff: true, buffType: 'shield', buffVal: 1000, duration: 1, color: 0x220044, desc: "+1000 Shield" }
+        ]},
+        // 80-89
+        { name: "TITAN-SLAYER", desc: "Tier 9: Colossal", skills: [
+            { name: "GOD KILLER", cost: 0, mult: 0.15, color: 0xffd700, vfx: 'god_beam', hits: 30 }, // Total 4.5x
+            { name: "HEAVENS FALL", cost: 250, mult: 40.0, color: 0xffffff, vfx: 'nuke', hits: 1 },
+            { name: "TITAN FORM", cost: 70, isBuff: true, buffType: 'all_defense', buffVal: 0.60, duration: 3, color: 0xffd700, desc: "+60% All Defense" }
+        ]},
+        // 90+
+        { name: "OMNI-KNIGHT", desc: "Tier 10: Invincible", skills: [
+            { name: "REALITY SLASH", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'omni', hits: 60 }, // Total 6.0x
+            { name: "AEGIS STRIKE", cost: 400, mult: 80.0, color: 0x00f2ff, vfx: 'god_beam', hits: 1 },
+            { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 9999, duration: 2, color: 0xffffff, desc: "+9999 Shield" }
+        ]}
     ]
 };
 
@@ -913,7 +1037,7 @@ const game = {
         container.innerHTML = '';
         if(tier === 0) {
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
-            ['RONIN', 'PRIEST', 'MECH', 'SHADOW', 'BRAWLER'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0), jobKey));
+            ['RONIN', 'PRIEST', 'MECH','GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0), jobKey));
         } else {
             document.querySelector('#class-screen h2').innerText = `TIER ${tier+1} ADVANCEMENT`;
             const currentKey = this.player.jobType;
@@ -967,7 +1091,7 @@ const game = {
         engine.scene.remove(this.player.mesh);
 
         // Create new model based on class
-        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600, 'SHADOW': 0x220033, 'BRAWLER': 0xff4400 };
+        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600, 'SHADOW': 0x220033, 'BRAWLER': 0xff4400, 'GUNSLINGER': 0xffaa00, 'KNIGHT': 0x00aaff };
         const color = colors[type] || 0x00f2ff;
 
         if(type === 'RONIN') {
@@ -980,6 +1104,10 @@ const game = {
             this.player.model = Models.createShadow(color, 1.5, tier);
         } else if(type === 'BRAWLER') {
             this.player.model = Models.createBrawler(color, 1.5, tier);
+        } else if (type === 'GUNSLINGER') {
+            this.player.model = Models.createGunslinger(color, 1.5, tier);  
+        } else  if (type === 'KNIGHT') {
+            this.player.model = Models.createKnight(color, 1.5, tier);
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }
