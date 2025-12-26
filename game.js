@@ -973,6 +973,7 @@ const game = {
     },
 
     nextFloor() {
+        if(this.floor >= 100) return;
         this.floor++;
 
         if(this.floor % 10 === 0 && this.floor <= 90) {
@@ -1446,7 +1447,7 @@ const game = {
         this.state = 'REWARD';
 
         // Floor 100 victory - trigger REBIRTH instead of ending
-        if(this.floor === 100) {
+        if(this.floor >= 100) {
             this.triggerRebirth();
             return;
         }
