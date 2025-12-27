@@ -1273,6 +1273,7 @@ const game = {
             this.player.model = Models.createKnight(color, 1.5, tier);
         } else if (type === 'HACKER') {
             this.player.model = Models.createHacker(color, 1.5, tier);
+            // this.player.model = Models.createArchitect(3);
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }
@@ -1320,15 +1321,15 @@ const game = {
             this.enemy = new Unit(false, hp, hp, atk, 0xffd700, 'architect');
         }
         else if (isMidBoss) {
-            hp *= 3; atk *= 1.5;
+            hp *= 3; atk *= 3.5;
             const names = {25:"WARDEN", 50:"EXECUTIONER", 75:"OVERLORD"};
             const variants = {25: 0, 50: 1, 75: 2};
-            document.getElementById('enemy-name').innerText = `${names[this.floor]} (MID BOSS)`;
+            document.getElementById('enemy-name').innerText = `${names[this.floor]}`;
             document.getElementById('enemy-name').style.color = '#ff5500';
             this.enemy = new Unit(false, hp, hp, atk, 0xff5500, 'midboss', variants[this.floor]);
         }
         else if(isFloorBoss) {
-            hp *= 2.0; atk *= 1.2;
+            hp *= 2.0; atk *= 2.5;
             document.getElementById('enemy-name').innerText = `SECTOR BOSS - ${this.floor}`;
             document.getElementById('enemy-name').style.color = '#ff0000';
             this.enemy = new Unit(false, hp, hp, atk, 0xff0000, 'boss');
