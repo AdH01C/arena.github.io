@@ -1125,7 +1125,7 @@ const game = {
     },
 
     startRun() {
-        this.floor = 0; this.gold = 0;
+        this.floor = 1; this.gold = 0;
         this.rebirth = 0; // Reset rebirth on new run
         this.buffs = {}; // Reset buffs
         this.battleCombo = 0;
