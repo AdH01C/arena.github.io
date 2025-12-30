@@ -291,9 +291,326 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
     font-size: 14px; margin-top: auto; text-transform: uppercase;
 }
 
-/* =========================================
-   MOBILE & RESPONSIVE UPGRADES
-   ========================================= */
+/* --- CLASSES VIEWER STYLES --- */
+.classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+#classes-screen { z-index: 300; }
+
+/* MAP LAYOUT */
+.class-map {
+    display: grid;
+    grid-auto-rows: 80px;
+    gap: 18px;
+    width: 100%;
+    align-items: center;
+}
+
+.class-map.single-column { grid-auto-rows: 96px; grid-template-columns: 1fr; justify-items: center; }
+
+/* Horizontal single-class layout */
+.class-map.horizontal { display: grid; grid-auto-flow: column; grid-auto-columns: 140px; gap: 22px; align-items: center; width: max-content; padding: 12px 20px; }
+.class-map.horizontal .map-column { display:flex; align-items:center; justify-content:center; }
+.class-map.horizontal .map-node { width: 92px; height: 92px; }
+.class-map.horizontal .map-node::after { content: ''; position: absolute; top: 50%; left: 100%; transform: translateY(-50%); width: 18px; height: 6px; background: rgba(255,255,255,0.03); border-radius: 3px; }
+.class-map.horizontal .map-node:last-child::after { display: none; }
+.map-column { position: relative; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+.map-node {
+    width: 72px; height: 72px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.55); border: 2px solid rgba(255,255,255,0.06); transition: transform 0.18s, box-shadow 0.18s, opacity 0.2s;
+}
+.map-node.unlocked { background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.45)); border-color: rgba(0,242,255,0.25); box-shadow: 0 6px 20px rgba(0,242,255,0.06); }
+.map-node.locked { opacity: 0.35; filter: grayscale(70%); border-color: #444; }
+.map-node.current-node { transform: scale(1.18); box-shadow: 0 8px 40px rgba(255,170,0,0.45); border-color: #ffaa00; }
+
+@keyframes nodePulse {
+    0% { box-shadow: 0 8px 20px rgba(255,170,0,0.25); transform: scale(1.12); }
+    50% { box-shadow: 0 12px 56px rgba(255,170,0,0.45); transform: scale(1.2); }
+    100% { box-shadow: 0 8px 20px rgba(255,170,0,0.25); transform: scale(1.12); }
+}
+.map-node.current-node { animation: nodePulse 2s infinite; }
+.node-title { font-size: 11px; color: #fff; font-weight: 700; letter-spacing: 0.6px; }
+.node-sub { font-size: 11px; color: #aaa; margin-top: 4px; }
+.map-column.current { outline: 3px solid rgba(255,170,0,0.08); box-shadow: inset 0 0 40px rgba(255,170,0,0.03); }
+
+/* small connecting line for visual flow */
+.map-node::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 4px; height: 18px; background: rgba(255,255,255,0.03); bottom: -26px; border-radius: 2px; }
+.map-node:last-child::after { display: none; }
+
+/* big highlight for player's column */
+.class-column-highlight { position: absolute; top: -10px; bottom: -10px; left: -8px; right: -8px; border-radius: 14px; pointer-events: none; box-shadow: 0 0 40px rgba(255,170,0,0.06); border: 1px dashed rgba(255,170,0,0.1); }
+
+/* map wrapper (draggable) */
+#classes-map-wrapper {
+    width: 100%;
+    height: 520px; /* fixed viewport height for map */
+    overflow: auto;
+    position: relative;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+    touch-action: none; /* allow pointer drag panning without native scroll interference */
+}
+#classes-map-wrapper.dragging { cursor: grabbing; }
+
+#classes-map-wrapper svg { position: absolute; left: 0; top: 0; z-index: 5; pointer-events: none; }
+
+/* Classes toggle button - integrated into HUD */
+#classes-btn {
+    border-color: #00f2ff !important;
+    color: #00f2ff !important;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 15px !important;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#classes-btn:hover {
+    background: #00f2ff !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px #00f2ff !important;
+}
+@media (max-width: 800px) {
+    #classes-btn { padding: 4px 10px !important; font-size: 12px !important; }
+}
+
+.class-map-links path.link-unlocked {
+    stroke: rgba(0,242,255,0.18);
+    stroke-width: 3;
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: linkDash 1.8s linear infinite;
+}
+.class-map-links path.link-locked {
+    stroke: rgba(255,255,255,0.04);
+    stroke-width: 2;
+}
+
+@keyframes linkDash {
+    from { stroke-dashoffset: 200; }
+    to { stroke-dashoffset: 0; }
+}
+
+/* MOBILE / RESPONSIVE */
+@media (max-width: 800px) {
+    #classes-map-wrapper { height: calc(100vh - 140px); }
+    .map-node { width: 92px; height: 92px; border-radius: 14px; }
+    .node-title { font-size: 13px; }
+    .node-sub { display: none; }
+    .class-map { gap: 12px; }
+    .class-column-highlight { display: none; }
+    /* Make modal full screen on mobile */
+    #class-tier-modal { width: 95vw !important; padding: 12px !important; border-radius: 8px !important; }
+    #class-tier-modal .modal-3d { display: block; width: 100%; height: 180px; margin-top: 10px; }
+    .btn { padding: 12px 18px; }
+}
+
+.map-node { z-index: 10; position: relative; }
+
+.class-card {
+    background: linear-gradient(135deg, rgba(20,20,30,0.95), rgba(30,30,50,0.95));
+    border: 2px solid #00f2ff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0,242,255,0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.class-card.unlocked {
+    box-shadow: 0 0 30px rgba(0,242,255,0.6), inset 0 0 15px rgba(0,242,255,0.1);
+}
+
+.class-card.unlocked::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(0,242,255,0.1) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+}
+
+.class-card.locked {
+    opacity: 0.5;
+    border-color: #555;
+    box-shadow: 0 0 15px rgba(85,85,85,0.3);
+}
+
+.class-card.current {
+    border-color: #ffaa00;
+    box-shadow: 0 0 40px rgba(255,170,0,0.8), inset 0 0 20px rgba(255,170,0,0.2);
+    background: linear-gradient(135deg, rgba(50,30,0,0.95), rgba(60,40,0,0.95));
+}
+
+/* Modal / Tier preview */
+.class-tier-overlay {
+    position: fixed; left:0; top:0; right:0; bottom:0; background: rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:999;
+}
+.class-tier-modal {
+    background: rgba(10,10,18,0.98); border: 2px solid #00f2ff; padding: 20px; width: 520px; max-width: 92vw; border-radius: 10px; box-shadow: 0 10px 60px rgba(0,0,0,0.8);
+}
+.class-tier-modal .modal-header { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.class-tier-modal .modal-title { font-size:20px; color:#00f2ff; font-weight:700; }
+.class-tier-modal .modal-tier { font-size:13px; color:#aaa; }
+.class-tier-modal .modal-body { display:flex; gap:16px; margin-top:12px; }
+.class-tier-modal .modal-info { flex:1; color:#ccc; }
+.class-tier-modal .modal-preview { width:220px; display:flex; align-items:center; justify-content:center; }
+.modal-desc { margin-bottom:8px; color:#ddd; }
+.modal-skills { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+.skill-row { background: rgba(0,0,0,0.35); padding:8px; border-radius:6px; }
+.skill-name { color:#ffe600; font-weight:700; }
+.skill-meta { color:#aaa; font-size:13px; margin-top:6px; }
+.modal-3d { width: 100%; height: 160px; display:block; border-radius:6px; }
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.class-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.class-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00f2ff;
+    letter-spacing: 2px;
+    flex-grow: 1;
+}
+
+.class-card.current .class-name {
+    color: #ffaa00;
+    text-shadow: 0 0 10px #ffaa00;
+}
+
+.class-card.locked .class-name {
+    color: #aaa;
+}
+
+.unlock-status {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.unlock-status.unlocked {
+    background: rgba(0,255,0,0.3);
+    color: #00ff00;
+    border: 1px solid #00ff00;
+}
+
+.unlock-status.locked {
+    background: rgba(170,170,170,0.3);
+    color: #aaa;
+    border: 1px solid #555;
+}
+
+.unlock-status.current {
+    background: rgba(255,170,0,0.3);
+    color: #ffaa00;
+    border: 1px solid #ffaa00;
+}
+
+.class-desc {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.class-card.locked .class-desc {
+    color: #777;
+}
+
+.skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skill-item {
+    background: rgba(0,0,0,0.4);
+    border-left: 4px solid #00f2ff;
+    padding: 10px 12px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.skill-item:hover {
+    background: rgba(0,242,255,0.1);
+    transform: translateX(5px);
+}
+
+.class-card.locked .skill-item {
+    border-left-color: #555;
+}
+
+.class-card.locked .skill-item:hover {
+    background: rgba(0,0,0,0.4);
+    transform: translateX(0);
+}
+
+.skill-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00f2ff;
+    margin-bottom: 3px;
+}
+
+.class-card.current .skill-name {
+    color: #ffaa00;
+}
+
+.class-card.locked .skill-name {
+    color: #888;
+}
+
+.skill-details {
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+}
+
+.class-card.locked .skill-details {
+    color: #666;
+}
+
+.skill-stats {
+    color: #00f2ff;
+}
+
+.skill-cost {
+    color: #ffaa00;
+}
+
+.class-card.locked .skill-stats,
+.class-card.locked .skill-cost {
+    color: #666;
+}
+
+/* Responsive grid for mobile */
+@media screen and (max-height: 700px) {
+    .classes-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
 /* 1. FORCE LANDSCAPE OVERLAY */
 #rotate-warning {
@@ -421,9 +738,109 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
         padding: 10px;
         box-sizing: border-box;
     }
+}
 
-    /* Shop header smaller */
-    .shop-header { font-size: 20px; margin: 5px 0; }
+/* TUTORIAL SYSTEM STYLES */
+#tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+#tutorial-spotlight {
+    position: fixed;
+    border: 3px solid #00f2ff;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(0, 242, 255, 0.3);
+    border-radius: 8px;
+    z-index: 1001;
+    pointer-events: none;
+    animation: spotlightPulse 2s infinite;
+}
+
+@keyframes spotlightPulse {
+    0%, 100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(0, 242, 255, 0.3); }
+    50% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), inset 0 0 40px rgba(0, 242, 255, 0.6); }
+}
+
+#tutorial-panel {
+    position: fixed;
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.98), rgba(20, 20, 40, 0.98));
+    border: 2px solid #00f2ff;
+    border-radius: 10px;
+    padding: 24px;
+    z-index: 1002;
+    width: auto;
+    min-width: 320px;
+    max-width: 420px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 255, 0.3);
+    color: #fff;
+}
+
+.tutorial-title {
+    font-size: 24px;
+    color: #00f2ff;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-shadow: 0 0 10px #00f2ff;
+    letter-spacing: 1px;
+}
+
+.tutorial-content {
+    font-size: 15px;
+    color: #ddd;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.tutorial-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.tutorial-btn {
+    flex: 1;
+    padding: 10px 16px;
+    background: rgba(0, 242, 255, 0.15);
+    border: 2px solid #00f2ff;
+    color: #00f2ff;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Teko', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.tutorial-btn:hover {
+    background: #00f2ff;
+    color: #000;
+    box-shadow: 0 0 15px #00f2ff;
+}
+
+.tutorial-btn-skip {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #888;
+    color: #888;
+}
+
+.tutorial-btn-skip:hover {
+    background: #888;
+    color: #fff;
+    box-shadow: 0 0 10px #888;
+}
+
+.tutorial-highlight {
+    background: rgba(0, 242, 255, 0.1);
+    border-left: 3px solid #00f2ff;
+    padding: 10px 12px;
+    margin: 10px 0;
+    border-radius: 4px;
 }
 
 /* 3. EXTRA SMALL SCREENS (very small phones) */

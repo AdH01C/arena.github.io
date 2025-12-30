@@ -192,61 +192,61 @@ const CLASS_TREES = {
 
     "SHADOW": [
         // 0-9: Quick Hits
-        { name: "SHADE", desc: "Tier 2: Stealth", skills: [
+        { name: "SHADE", desc: "Tier 1: Stealth", skills: [
             { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash', hits: 1 },
             { name: "POISON BLADE", cost: 25, mult: 0.5, color: 0x00ff00, vfx: 'multi', hits: 4 },
             { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 2, color: 0x220033, desc: "+30% Dodge" }
         ]},
         // 10-19
-        { name: "VENOM-WEAVER", desc: "Tier 3: Toxins", skills: [
+        { name: "VENOM-WEAVER", desc: "Tier 2: Toxins", skills: [
             { name: "TOXIC SLASH", cost: 0, mult: 0.3, color: 0x00aa00, vfx: 'multi', hits: 5 }, // Total 1.5x
             { name: "VENOM BURST", cost: 45, mult: 4.5, color: 0x00ff00, vfx: 'implode', hits: 1 },
             { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Crit" }
         ]},
         // 20-29
-        { name: "PHANTOM", desc: "Tier 4: Intangible", skills: [
+        { name: "PHANTOM", desc: "Tier 3: Intangible", skills: [
             { name: "PHASE STRIKE", cost: 0, mult: 0.25, color: 0x8800aa, vfx: 'slash', hits: 7 }, // Total 1.75x
             { name: "SOUL DRAIN", cost: 55, mult: 2.5, color: 0xaa00ff, vfx: 'implode', hits: 2, heal: 80 },
             { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 1, color: 0x8800aa, desc: "Invincible 1 turn" }
         ]},
         // 30-39
-        { name: "DEATH-DEALER", desc: "Tier 5: Execute", skills: [
+        { name: "DEATH-DEALER", desc: "Tier 4: Execute", skills: [
             { name: "MARKED DEATH", cost: 0, mult: 0.22, color: 0x440044, vfx: 'crit', hits: 10 }, // Total 2.2x
             { name: "EXECUTE ORDER", cost: 75, mult: 8.0, color: 0xff0044, vfx: 'heavy', hits: 1 },
             { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0xff0044, desc: "+50% Crit DMG" }
         ]},
         // 40-49
-        { name: "NIGHTMARE", desc: "Tier 6: Fear", skills: [
+        { name: "NIGHTMARE", desc: "Tier 5: Fear", skills: [
             { name: "TERROR", cost: 0, mult: 0.2, color: 0x110011, vfx: 'implode', hits: 12 }, // Total 2.4x
             { name: "NIGHT TERROR", cost: 90, mult: 3.0, color: 0x330033, vfx: 'blackhole', hits: 3 },
             { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0x330033, desc: "+25% Lifesteal" }
         ]},
         // 50-59
-        { name: "GRIM-REAPER", desc: "Tier 7: Death", skills: [
+        { name: "GRIM-REAPER", desc: "Tier 6: Death", skills: [
             { name: "SCYTHE SWEEP", cost: 0, mult: 0.18, color: 0x000000, vfx: 'slash', hits: 15 }, // Total 2.7x
             { name: "REAP SOULS", cost: 110, mult: 2.0, color: 0x440044, vfx: 'implode', hits: 5, heal: 150 },
             { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 3, color: 0x000000, desc: "+35% Crit" }
         ]},
         // 60-69
-        { name: "WRAITH-LORD", desc: "Tier 8: Ethereal", skills: [
+        { name: "WRAITH-LORD", desc: "Tier 7: Ethereal", skills: [
             { name: "SPECTRAL BLADES", cost: 0, mult: 0.16, color: 0x6600aa, vfx: 'omni', hits: 20 }, // Total 3.2x
             { name: "SOUL SHATTER", cost: 140, mult: 12.0, color: 0xaa00ff, vfx: 'blackhole', hits: 1 },
             { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x6600aa, desc: "Invincible 2 turns" }
         ]},
         // 70-79
-        { name: "VOID-FANG", desc: "Tier 9: Void", skills: [
+        { name: "VOID-FANG", desc: "Tier 8: Void", skills: [
             { name: "VOID FANGS", cost: 0, mult: 0.15, color: 0x220022, vfx: 'multi', hits: 25 }, // Total 3.75x
             { name: "ANNIHILATE", cost: 170, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
             { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0x220022, desc: "+25% All Offense" }
         ]},
         // 80-89
-        { name: "ENTROPY", desc: "Tier 10: Decay", skills: [
+        { name: "ENTROPY", desc: "Tier 9: Decay", skills: [
             { name: "DECAY", cost: 0, mult: 0.14, color: 0x003300, vfx: 'implode', hits: 30 }, // Total 4.2x
             { name: "ENTROPY WAVE", cost: 200, mult: 30.0, color: 0x006600, vfx: 'nova', hits: 1 },
             { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 3, color: 0x003300, desc: "+75% Crit DMG" }
         ]},
         // 90+
-        { name: "OBLIVION", desc: "Tier 11: End", skills: [
+        { name: "OBLIVION", desc: "Tier 10: End", skills: [
             { name: "OBLIVION", cost: 0, mult: 0.12, color: 0x000000, vfx: 'blackhole', hits: 40 }, // Total 4.8x
             { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1 },
             { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 3, color: 0x000000, desc: "+60% All Offense" }
@@ -255,7 +255,7 @@ const CLASS_TREES = {
 
     "BRAWLER": [
         // 0-9: BASE
-        { name: "STREET-PUNK", desc: "Tier 3: Speed", skills: [
+        { name: "STREET-PUNK", desc: "Tier 1: Speed", skills: [
             { name: "JAB", cost: 0, mult: 0.5, color: 0xff4400, vfx: 'punch', hits: 2, isFrenzy: true },
             { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', hits: 1, doubleAttack: true },
             { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 3, color: 0xff4400, desc: "+20% ATK Mult" }
@@ -543,6 +543,178 @@ const game = {
         boostFloors: 0,    // Floors remaining for luck boost
         reviveToken: false // Can revive on death
     },
+
+    _initMapDrag(wrapper, redraw) {
+        let isDown = false, startX = 0, startY = 0, scrollLeft = 0, scrollTop = 0;
+        wrapper.addEventListener('pointerdown', (e) => {
+            isDown = true;
+            wrapper.classList.add('dragging');
+            startX = e.clientX; startY = e.clientY;
+            scrollLeft = wrapper.scrollLeft; scrollTop = wrapper.scrollTop;
+            try { wrapper.setPointerCapture(e.pointerId); } catch (err) {}
+        });
+        wrapper.addEventListener('pointermove', (e) => {
+            if(!isDown) return;
+            const dx = e.clientX - startX; const dy = e.clientY - startY;
+            wrapper.scrollLeft = scrollLeft - dx; wrapper.scrollTop = scrollTop - dy;
+            if(redraw) redraw();
+            e.preventDefault();
+        });
+        const end = (e) => { isDown = false; wrapper.classList.remove('dragging'); try { wrapper.releasePointerCapture && wrapper.releasePointerCapture(e.pointerId); } catch(err) {} };
+        wrapper.addEventListener('pointerup', end);
+        wrapper.addEventListener('pointercancel', end);
+    },
+
+    _drawClassMapLinks(wrapper, svg) {
+        // clear existing paths
+        while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+        const content = wrapper.querySelector('.class-map');
+        const isHorizontal = content && content.classList.contains('horizontal');
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const cols = wrapper.querySelectorAll('.map-column');
+
+        // vertical links inside a column (only when NOT horizontal)
+        if(!isHorizontal) {
+            cols.forEach((col) => {
+                const nodes = Array.from(col.querySelectorAll('.map-node'));
+                for(let i=0; i<nodes.length-1; i++) {
+                    const a = nodes[i]; const b = nodes[i+1];
+                    const aRect = a.getBoundingClientRect(); const bRect = b.getBoundingClientRect();
+                    const x1 = aRect.left - wrapperRect.left + aRect.width/2 + wrapper.scrollLeft;
+                    const y1 = aRect.top - wrapperRect.top + aRect.height/2 + wrapper.scrollTop;
+                    const x2 = bRect.left - wrapperRect.left + bRect.width/2 + wrapper.scrollLeft;
+                    const y2 = bRect.top - wrapperRect.top + bRect.height/2 + wrapper.scrollTop;
+
+                    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+                    const midY = (y1 + y2) / 2;
+                    const d = `M ${x1} ${y1} C ${x1} ${midY} ${x2} ${midY} ${x2} ${y2}`;
+                    path.setAttribute('d', d);
+                    if(a.classList.contains('unlocked') && b.classList.contains('unlocked')) {
+                        path.classList.add('link-unlocked');
+                    } else {
+                        path.classList.add('link-locked');
+                    }
+                    path.setAttribute('fill','none'); path.setAttribute('stroke-linecap','round'); path.setAttribute('stroke-linejoin','round');
+                    svg.appendChild(path);
+                }
+            });
+        }
+
+        // horizontal links between adjacent columns (left->right progression)
+        for(let ci=0; ci<cols.length-1; ci++) {
+            const aCol = cols[ci]; const bCol = cols[ci+1];
+            // pick representative node (middle) for each column
+            const aNodes = Array.from(aCol.querySelectorAll('.map-node'));
+            const bNodes = Array.from(bCol.querySelectorAll('.map-node'));
+            const a = aNodes[Math.floor(aNodes.length/2)]; const b = bNodes[Math.floor(bNodes.length/2)];
+            if(!a || !b) continue;
+            const aRect = a.getBoundingClientRect(); const bRect = b.getBoundingClientRect();
+            const x1 = aRect.left - wrapperRect.left + aRect.width/2 + wrapper.scrollLeft;
+            const y1 = aRect.top - wrapperRect.top + aRect.height/2 + wrapper.scrollTop;
+            const x2 = bRect.left - wrapperRect.left + bRect.width/2 + wrapper.scrollLeft;
+            const y2 = bRect.top - wrapperRect.top + bRect.height/2 + wrapper.scrollTop;
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+            const midX = (x1 + x2) / 2;
+            const d = `M ${x1} ${y1} C ${midX} ${y1} ${midX} ${y2} ${x2} ${y2}`;
+            path.setAttribute('d', d);
+            if(a.classList.contains('unlocked') && b.classList.contains('unlocked')) path.classList.add('link-unlocked'); else path.classList.add('link-locked');
+            path.setAttribute('fill','none'); path.setAttribute('stroke-linecap','round'); path.setAttribute('stroke-linejoin','round');
+            svg.appendChild(path);
+        }
+
+        // adjust svg canvas size to content size (content variable defined above)
+        svg.setAttribute('width', Math.max(wrapper.clientWidth, content.scrollWidth));
+        svg.setAttribute('height', Math.max(wrapper.clientHeight, content.scrollHeight));
+    },
+
+    showClassTierModal(classKey, tierIndex) {
+        // Remove existing modal
+        const existing = document.getElementById('class-tier-modal'); if(existing) existing.remove();
+        const existingOverlay = document.getElementById('class-tier-overlay'); if(existingOverlay) existingOverlay.remove();
+        const data = CLASS_TREES[classKey][tierIndex];
+
+        // overlay
+        const overlay = document.createElement('div'); overlay.id = 'class-tier-overlay'; overlay.className = 'class-tier-overlay';
+
+        const modal = document.createElement('div'); modal.id = 'class-tier-modal'; modal.className = 'class-tier-modal';
+        modal.innerHTML = `
+            <div class="modal-header">
+                <div class="modal-title">${classKey} — ${data.name}</div>
+                <div class="modal-tier">Tier ${tierIndex+1}</div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <div class="modal-desc">${data.desc}</div>
+                    <div class="modal-skills">
+                        ${data.skills.map((s,i)=>`<div class="skill-row"><div class="skill-name">${i+1}. ${s.name}</div><div class="skill-meta">${s.isBuff? s.desc : (s.mult+"x / "+(s.hits||1)+" hits") } — ${s.cost>0? s.cost+" MP":"FREE"}</div></div>`).join('')}
+                    </div>
+                    <div style="text-align:right;margin-top:12px;"><button class="btn" id="close-modal-btn">CLOSE</button></div>
+                </div>
+                <div class="modal-preview">
+                    <canvas id="class-preview-canvas" class="modal-3d"></canvas>
+                </div>
+            </div>
+        `;
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // Close logic & cleanup
+        const closeModal = () => {
+            // dispose 3D preview if active
+            if(this._classPreview && this._classPreview.dispose) {
+                try { this._classPreview.dispose(); } catch (err) {}
+                this._classPreview = null;
+            }
+            overlay.remove(); document.removeEventListener('keydown', keyFn);
+        };
+        document.getElementById('close-modal-btn').onclick = closeModal;
+        overlay.onclick = (e) => { if(e.target === overlay) closeModal(); };
+
+        const keyFn = (e) => { if(e.key === 'Escape') closeModal(); };
+        document.addEventListener('keydown', keyFn);
+
+        // Initialize a simple Three.js preview inside the modal if available
+        const canvas = document.getElementById('class-preview-canvas');
+        if(window.THREE && canvas) {
+            const THREE = window.THREE;
+            const preview = { raf: null };
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / Math.max(canvas.clientHeight,1), 0.1, 100);
+            camera.position.set(0, 0, 3);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setPixelRatio(window.devicePixelRatio || 1);
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+
+            const light = new THREE.DirectionalLight(0xffffff, 0.9); light.position.set(5,5,5);
+            const amb = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(light, amb);
+
+            // simple geometry to represent the class; color derived from first skill or default
+            const colorHex = (data.skills && data.skills[0] && data.skills[0].color) ? data.skills[0].color : 0x888888;
+            const mat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.3, roughness: 0.4 });
+            const geo = new THREE.IcosahedronGeometry(0.7, 1);
+            const mesh = new THREE.Mesh(geo, mat);
+            scene.add(mesh);
+
+            const onResize = () => { if(!canvas) return; renderer.setSize(canvas.clientWidth, canvas.clientHeight, false); camera.aspect = canvas.clientWidth / Math.max(canvas.clientHeight,1); camera.updateProjectionMatrix(); };
+            window.addEventListener('resize', onResize);
+
+            const animate = () => {
+                mesh.rotation.x += 0.01; mesh.rotation.y += 0.02;
+                renderer.render(scene, camera);
+                preview.raf = requestAnimationFrame(animate);
+            };
+            preview.dispose = () => { cancelAnimationFrame(preview.raf); window.removeEventListener('resize', onResize); try { renderer.dispose(); geo.dispose(); mat.dispose(); } catch(e){} };
+            preview.animate = animate;
+            preview.renderer = renderer;
+            this._classPreview = preview;
+            // kick off
+            setTimeout(() => { if(this._classPreview && this._classPreview.animate) this._classPreview.animate(); }, 50);
+        }
+    },
     previousState: 'IDLE', // Store state before opening IAP shop
 
     // --- PROGRESSIVE SHOP DATA (Persistent) ---
@@ -586,7 +758,180 @@ const game = {
         if(this.player) engine.scene.remove(this.player.mesh);
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
         this.player = new Unit(true, 150, 150, 20, 0x00f2ff);
+        this.gameStarted = null;
+        
         this.offerJobSelection(0);
+        // this.showTutorialStep(0);
+        
+            
+
+        // // Check if tutorial has been completed
+        // if(!localStorage.getItem('tutorialCompleted')) {
+        this.initTutorial();
+        // } else {
+        //     this.offerJobSelection(0);
+        // }
+    },
+
+    // Tutorial System
+    tutorialStep: 0,
+    tutorialState: 'INACTIVE',
+
+    initTutorial() {
+        this.tutorialState = 'ACTIVE';
+        this.tutorialStep = 0;
+        this.showTutorialStep(0);
+    },
+
+    tutorialSteps: [
+        {
+            title: 'WELCOME TO NEON TOWER',
+            content: 'This is a rogue-lite battle arena. Your goal is to survive enemy encounters and climb to the top of the tower.',
+            target: null,
+            action: 'Pick your first class to begin.'
+        },
+        {
+            title: 'SELECT YOUR CLASS',
+            content: 'Choose a class that matches your playstyle. Each class has unique skills that grow stronger as you progress.',
+            target: 'job-selection',
+            action: 'Select a class to continue.'
+        },
+        {
+            title: 'PREPARE FOR BATTLE',
+            content: 'You now have 3 basic skills. The first is always free, others cost MANA. Build your strategy. Deal damage with STRIKE. (You can attack more than once with a striker class) Use HEAVY for stronger attacks. Use BUFF to enhance yourself. The enemy will counter-attack.',
+            target: 'battle-controls',
+            action: 'Click a skill to attack.'
+        },
+        {
+            title: 'COMBAT MECHANICS',
+            content: 'These are your health and mana bars. Your health regenerates over time. Mana is used for skills.',
+            target: 'p-wrapper',
+            action: 'Attack until the enemy is defeated.'
+        },
+        {
+            title: 'PERK SYSTEM',
+            content: 'After each battle, you\'ll choose a PERK to boost your stats. Combine perks wisely to create powerful builds.',
+            target: null,
+            action: 'Choose your first perk after this battle.'
+        },
+        {
+            title: 'FLOOR PROGRESSION',
+            content: 'Each floor increases enemy difficulty. Reach higher floors to unlock new classes and perks.',
+            target: 'floor-display',
+            action: 'Continue climbing.'
+        },
+        {
+            title: 'REBIRTH MECHANIC',
+            content: 'When you clear the top floor (100), you can REBIRTH and keep permanent bonuses. The next run will be exponentially harder.',
+            target: null,
+            action: 'Good luck, warrior!'
+        }
+    ],
+
+    showTutorialStep(stepIndex) {
+        const step = this.tutorialSteps[stepIndex];
+        if(!step) { this.completeTutorial(); return; }
+
+        const overlay = document.getElementById('tutorial-overlay');
+        const spotlight = document.getElementById('tutorial-spotlight');
+        const panel = document.getElementById('tutorial-panel');
+
+        overlay.style.display = 'block';
+        panel.style.display = 'block';
+
+        // Spotlight on target element
+        if(step.target) {
+            const target = document.getElementById(step.target);
+            if(target) {
+                const rect = target.getBoundingClientRect();
+                const padding = 12;
+                spotlight.style.display = 'block';
+                spotlight.style.top = (rect.top - padding) + 'px';
+                spotlight.style.left = (rect.left - padding) + 'px';
+                spotlight.style.width = (rect.width + padding * 2) + 'px';
+                spotlight.style.height = (rect.height + padding * 2) + 'px';
+
+                // Position panel near target, with smart positioning
+                let panelTop = rect.bottom + 30;
+                let panelLeft = Math.max(20, rect.left - 100);
+                
+                // Check if panel would go off-screen to the right
+                const panelWidth = 420;
+                if(panelLeft + panelWidth > window.innerWidth - 20) {
+                    panelLeft = Math.max(20, window.innerWidth - panelWidth - 20);
+                }
+                
+                // Check if panel would go off-screen at bottom, position above instead
+                if(panelTop + 300 > window.innerHeight - 20) {
+                    panelTop = Math.max(20, rect.top - 330);
+                }
+                
+                panel.style.top = panelTop + 'px';
+                panel.style.left = panelLeft + 'px';
+                panel.style.transform = 'none';
+            } else {
+                spotlight.style.display = 'none';
+                panel.style.top = '50%';
+                panel.style.left = '50%';
+                panel.style.transform = 'translate(-50%, -50%)';
+            }
+        } else {
+            spotlight.style.display = 'none';
+            panel.style.top = '50%';
+            panel.style.left = '50%';
+            panel.style.transform = 'translate(-50%, -50%)';
+        }
+
+        panel.innerHTML = `
+            <div class="tutorial-title">${step.title}</div>
+            <div class="tutorial-content">${step.content}</div>
+            <div class="tutorial-highlight" style="background: rgba(0,242,255,0.15); border-left: 3px solid #00f2ff; padding: 10px 12px; margin-top: 12px; border-radius: 4px;">
+                <strong style="color: #00f2ff;">➤ ${step.action}</strong>
+            </div>
+            <div class="tutorial-actions">
+                <button class="tutorial-btn" onclick="game.nextTutorialStep()">NEXT</button>
+                <button class="tutorial-btn tutorial-btn-skip" onclick="game.completeTutorial()">SKIP TUTORIAL</button>
+            </div>
+        `;
+    },
+
+    nextTutorialStep() {
+        if (this.tutorialStep === 1) {
+            this.hideTutorialOverlay();
+            return;
+        }
+
+        this.tutorialStep++;
+        if(this.tutorialStep >= this.tutorialSteps.length) {
+            this.completeTutorial();
+        } else {
+            this.showTutorialStep(this.tutorialStep);
+        }
+    },
+
+
+    completeTutorial() {
+        localStorage.setItem('tutorialCompleted', 'true');
+        this.tutorialState = 'INACTIVE';
+        
+        const overlay = document.getElementById('tutorial-overlay');
+        const spotlight = document.getElementById('tutorial-spotlight');
+        const panel = document.getElementById('tutorial-panel');
+        
+        overlay.style.display = 'none';
+        spotlight.style.display = 'none';
+        panel.style.display = 'none';
+
+    },
+
+    hideTutorialOverlay() {
+        const overlay = document.getElementById('tutorial-overlay');
+        const spotlight = document.getElementById('tutorial-spotlight');
+        const panel = document.getElementById('tutorial-panel');
+        
+        overlay.style.display = 'none';
+        spotlight.style.display = 'none';
+        panel.style.display = 'none';
     },
 
     resetShop() {
@@ -846,6 +1191,7 @@ const game = {
         this.floor++;
 
         if(this.floor % 10 === 0 && this.floor <= 90) {
+            if (this.rebirth === 1) return;
             const tier = this.floor / 10;
             this.offerJobSelection(tier);
             return;
@@ -877,6 +1223,12 @@ const game = {
         this.state = 'IDLE';
         this.setScreen('hud');
         document.getElementById('battle-controls').classList.add('active');
+        
+        // Tutorial: Advance to step 6 (rebirth) when advancing to next floor
+        if(this.tutorialState === 'ACTIVE' && this.tutorialStep === 5) {
+            this.nextTutorialStep();
+        }
+        
         this.spawnEnemy();
         this.updateButtons();
         this.updateUI();
@@ -918,6 +1270,11 @@ const game = {
 
     // --- NAVIGATION TO SHOP ---
     goToShop() {
+        // Tutorial: Advance to step 5 (rebirth mechanic) when going to shop
+        if(this.tutorialState === 'ACTIVE' && this.tutorialStep === 4) {
+            this.nextTutorialStep();
+        }
+        
         this.setScreen('shop-screen');
         this.generateShop();
         this.updateUI();
@@ -1094,17 +1451,53 @@ const game = {
     },
 
     offerJobSelection(tier) {
+        // Hide tutorial overlay when showing job selection
+        // if(this.tutorialState === 'ACTIVE') {
+        //     // this.hideTutorialOverlay();
+        //     // Show tutorial step 1 (class selection) if we're just starting
+        //     if(this.tutorialStep === 0) {
+        //         setTimeout(() => this.showTutorialStep(1), 300);
+        //     }
+        // }
+        
         this.setScreen('class-screen');
         const container = document.getElementById('class-container');
         container.innerHTML = '';
+        
         if(tier === 0) {
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
-            ['RONIN', 'PRIEST', 'MECH','GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER', 'HACKER'].forEach(jobKey => this.createJobCard(container, CLASS_TREES[jobKey][0], () => this.setJob(jobKey, 0), jobKey));
+            
+            // 1. Define all available classes
+            const allJobs = ['RONIN', 'PRIEST', 'MECH', 'GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER', 'HACKER'];
+            
+            // 2. Shuffle and pick 3 random classes
+            const randomJobs = allJobs
+                .sort(() => 0.5 - Math.random()) // Shuffle
+                .slice(0, 3); // Take top 3
+
+            // 3. Create cards for the lucky 3
+            randomJobs.forEach(jobKey => {
+                this.createJobCard(container, CLASS_TREES[jobKey][0], 
+                    onClick = () => {
+                        this.setJob(jobKey, 0);
+                        if (this.tutorialState === 'ACTIVE') {
+                            this.showTutorialStep(2);
+                            this.tutorialStep = 2;
+                        }
+                        
+                    }
+                    , jobKey);
+            });
+
         } else {
+            // Existing logic for upgrades
             document.querySelector('#class-screen h2').innerText = `TIER ${tier+1} ADVANCEMENT`;
             const currentKey = this.player.jobType;
-            if(CLASS_TREES[currentKey][tier]) this.createJobCard(container, CLASS_TREES[currentKey][tier], () => this.setJob(currentKey, tier), currentKey);
-            else this.nextFloor();
+            if(CLASS_TREES[currentKey][tier]) {
+                this.createJobCard(container, CLASS_TREES[currentKey][tier], () => this.setJob(currentKey, tier), currentKey);
+            } else {
+                this.nextFloor();
+            }
         }
     },
 
@@ -1199,7 +1592,7 @@ const game = {
         const buffInfo = s3 ? `<br><strong style="color:${theme.titleColor}">3:</strong> <span style="color:#fff">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
 
         // Mark broken classes
-        const isBroken = jobKey === 'SHADOW' || jobKey === 'BRAWLER' || jobKey === 'HACKER';
+        const isBroken = jobKey === 'BRAWLER'
         const brokenTag = isBroken ? `<div style="background:linear-gradient(90deg,#ff0000,#ff6600);color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px;font-size:12px;margin-bottom:8px;text-align:center;box-shadow:0 0 10px #ff0000;">⚠️ EXPERIMENTAL ⚠️</div>` : '';
 
         card.innerHTML = `
@@ -1241,8 +1634,15 @@ const game = {
             this.showText("ASCENDED!", this.player.mesh.position, "#ffe600");
         }
         this.updateButtons(); this.state = 'IDLE'; this.setScreen('hud'); document.getElementById('battle-controls').classList.add('active');
+        // Reveal class viewer button now that player has a class
+        const cb = document.getElementById('classes-btn'); if(cb) cb.style.display = 'block';
         if(!this.enemy || this.enemy.hp <= 0) this.spawnEnemy();
         this.updateUI();
+
+        // Show next tutorial step if active (step 2: combat)
+        if(this.tutorialState === 'ACTIVE' && tier === 0) {
+            setTimeout(() => { this.showTutorialStep(2); }, 500);
+        }
     },
 
     updatePlayerModel(type, tier) {
@@ -1452,6 +1852,11 @@ const game = {
         this.generatePerks();
         this.setScreen('reward-screen');
         document.getElementById('battle-controls').classList.remove('active');
+
+        // Tutorial: After first battle, show perk selection step
+        if(this.tutorialState === 'ACTIVE' && this.tutorialStep === 2) {
+            this.nextTutorialStep(); // Advance to step 3 (floor progression)
+        }
     },
 
     // --- REBIRTH SYSTEM ---
@@ -1571,6 +1976,12 @@ const game = {
             card.onclick = () => {
                 template.func(this.player, finalVal);
                 this.trackBuff(template, finalVal);
+                
+                // Tutorial: After selecting first perk, advance to step 4 (floor progression)
+                if(this.tutorialState === 'ACTIVE' && this.tutorialStep === 3) {
+                    this.nextTutorialStep();
+                }
+                
                 this.goToShop();
             };
             container.appendChild(card);
@@ -1644,6 +2055,295 @@ const game = {
             document.getElementById('btn-skill-3').style.display = 'none';
         }
     },
+
+    // --- CLASS VIEWER SYSTEM ---
+    openClassesViewer() {
+        // Prevent opening until player has chosen a class
+        if(!this.player || !this.player.jobType) return;
+
+        // Already open -> toggle close
+        const screen = document.getElementById('classes-screen');
+        if(screen.classList.contains('active')) { this.closeClassesViewer(); return; }
+
+        // Store current state
+        this.previousState = this.state;
+        this.state = 'CLASSES_VIEWER';
+        document.getElementById('classes-screen').classList.add('active');
+        this.renderClassMap();
+
+        // Add Escape key to close
+        this._classesKeyHandler = (e) => { if(e.key === 'Escape') { if(document.getElementById('class-tier-overlay')) return; this.closeClassesViewer(); } };
+        document.addEventListener('keydown', this._classesKeyHandler);
+    },
+
+    closeClassesViewer() {
+        document.getElementById('classes-screen').classList.remove('active');
+        this.state = this.previousState || 'IDLE';
+        if(this._classesKeyHandler) {
+            document.removeEventListener('keydown', this._classesKeyHandler);
+            this._classesKeyHandler = null;
+        }
+    },
+
+    toggleClassesViewer() {
+        const screen = document.getElementById('classes-screen');
+        if(screen.classList.contains('active')) this.closeClassesViewer();
+        else this.openClassesViewer();
+    },
+
+    isClassUnlocked(classKey) {
+        // A class is unlocked if player currently has it or has reached the tier it appears in
+        if(!this.player) return false;
+        
+        // Player's current class is always unlocked
+        if(this.player.jobType === classKey) return true;
+        
+        // Check if player has reached a tier where this class appears
+        // Each tier is 10 floors, classes appear at their tier index
+        const classTiers = Object.keys(CLASS_TREES);
+        const classIndex = classTiers.indexOf(classKey);
+        if(classIndex === -1) return false;
+        
+        // Base classes (tier 0) are available from floor 1
+        // Tier 1 classes at floor 10, tier 2 at floor 20, etc.
+        const unlockedFloor = (classIndex + 1) * 10;
+        return this.floor >= unlockedFloor || this.rebirth > 0;
+    },
+
+    // Is a specific tier unlocked for a class? (tierIndex 0-based)
+    isClassTierUnlocked(classKey, tierIndex) {
+        // If player has rebirthed or progressed past the floor threshold it's unlocked
+        const requiredFloor = tierIndex * 10; // tier 0 -> 0 (available from start), tier 1 -> 10, tier 2 -> 20
+        return this.floor >= requiredFloor || this.rebirth > 0 || (this.player && this.player.jobType === classKey && this.player.jobTier >= tierIndex);
+    },
+
+    // Render as a tiered map: columns are classes, rows are tiers
+    renderClassMap() {
+        const container = document.getElementById('classes-viewer-container');
+        container.innerHTML = '';
+
+        // Only show the player's current class (do not show other classes)
+        let classNames = Object.keys(CLASS_TREES);
+        if(this.player && this.player.jobType) classNames = [this.player.jobType];
+        const cols = classNames.length;
+        const tiers = 10; // Show 10 tiers vertically
+
+        const map = document.createElement('div');
+        map.className = 'class-map';
+        map.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+        // If we are only showing a single class, render horizontally: columns == tiers
+        const horizontal = (cols === 1);
+        if(horizontal) {
+            map.classList.add('horizontal');
+            // create one column per tier (left -> right progression)
+            for(let t = 0; t < tiers; t++) {
+                const col = document.createElement('div');
+                col.className = 'map-column';
+
+                // single node for this tier
+                const node = document.createElement('div'); node.className = 'map-node';
+                const isUnlocked = this.isClassTierUnlocked(classNames[0], t);
+                if(isUnlocked) node.classList.add('unlocked'); else node.classList.add('locked');
+
+                // current node highlight if matches
+                if(this.player && this.player.jobType === classNames[0] && this.player.jobTier === t) node.classList.add('current-node');
+
+                // label
+                const tierLabel = document.createElement('div'); tierLabel.className = 'node-title'; tierLabel.innerText = `T${t+1}`;
+                const tierDesc = document.createElement('div'); tierDesc.className = 'node-sub'; tierDesc.innerText = CLASS_TREES[classNames[0]][t] ? CLASS_TREES[classNames[0]][t].name : '—';
+                node.appendChild(tierLabel); node.appendChild(tierDesc);
+
+                node.onclick = () => { if(!isUnlocked) return; this.showClassTierModal(classNames[0], t); };
+                node.tabIndex = 0;
+                node.onkeydown = (e) => {
+                    if(e.key === 'Enter' || e.key === ' ') { if(isUnlocked) this.showClassTierModal(classNames[0], t); e.preventDefault(); }
+                    if(e.key === 'ArrowRight') { const nextCol = col.nextElementSibling; if(nextCol) { const next = nextCol.querySelector('.map-node'); if(next) next.focus(); } }
+                    if(e.key === 'ArrowLeft') { const prevCol = col.previousElementSibling; if(prevCol) { const prev = prevCol.querySelector('.map-node'); if(prev) prev.focus(); } }
+                };
+
+                col.appendChild(node);
+                map.appendChild(col);
+            }
+        } else {
+            // For each class (column)
+            classNames.forEach(classKey => {
+                const col = document.createElement('div');
+                col.className = 'map-column';
+                if(this.player && this.player.jobType === classKey) col.classList.add('current');
+
+                // optional column highlight
+                if(this.player && this.player.jobType === classKey) {
+                    const hl = document.createElement('div'); hl.className = 'class-column-highlight'; col.appendChild(hl);
+                }
+
+                // Create nodes per tier (top = tier 9 -> highest)
+                for(let t = tiers - 1; t >= 0; t--) {
+                    const node = document.createElement('div'); node.className = 'map-node';
+                    const isUnlocked = this.isClassTierUnlocked(classKey, t);
+                    if(isUnlocked) node.classList.add('unlocked'); else node.classList.add('locked');
+
+                    // current node highlight if player's class and tier match
+                    if(this.player && this.player.jobType === classKey && this.player.jobTier === t) node.classList.add('current-node');
+
+                    // add text (tier label + maybe short skill name)
+                    const tierLabel = document.createElement('div'); tierLabel.className = 'node-title'; tierLabel.innerText = `T${t+1}`;
+                    const tierDesc = document.createElement('div'); tierDesc.className = 'node-sub'; tierDesc.innerText = CLASS_TREES[classKey][t] ? CLASS_TREES[classKey][t].name : '—';
+                    node.appendChild(tierLabel); node.appendChild(tierDesc);
+
+                    // click behavior: if unlocked, show a small modal with tier details
+                    node.onclick = () => { if(!isUnlocked) return; this.showClassTierModal(classKey, t); };
+                    // accessibility: focusable and keyboard interaction
+                    node.tabIndex = 0;
+                    node.onkeydown = (e) => {
+                        if(e.key === 'Enter' || e.key === ' ') { if(isUnlocked) this.showClassTierModal(classKey, t); e.preventDefault(); }
+                        if(e.key === 'ArrowDown') { const next = node.nextElementSibling; if(next) next.focus(); }
+                        if(e.key === 'ArrowUp') { const prev = node.previousElementSibling; if(prev) prev.focus(); }
+                    };
+
+                    col.appendChild(node);
+                }
+
+                map.appendChild(col);
+            });
+        }
+
+        // Add small legend and instructions
+        const legend = document.createElement('div');
+        legend.style.width = '100%'; legend.style.margin = '18px 0 6px 0'; legend.style.color = '#ccc'; legend.style.fontSize = '13px';
+        if(cols === 1 && this.player && this.player.jobType) {
+            legend.innerHTML = `<strong>${this.player.jobType} — CLASS TREE</strong> — Horizontal progression (left → right).
+                <span style="float:right;">Press <kbd>Esc</kbd> or CLOSE to exit</span>`;
+        } else {
+            legend.innerHTML = `<strong>CLASS MAP</strong> — Columns are classes (left→right). Nodes are tiers (top = Tier 10).
+                <span style="float:right;">Press <kbd>Esc</kbd> or CLOSE to exit</span>`;
+        }
+
+        // wrap map into scrollable wrapper and add svg overlay for links
+        const wrapper = document.createElement('div'); wrapper.id = 'classes-map-wrapper';
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(svgNS, 'svg'); svg.setAttribute('class','class-map-links');
+        svg.style.width = '100%'; svg.style.height = '100%';
+
+        if(cols === 1) map.classList.add('single-column');
+        // adjust wrapper height for horizontal single-class layout
+        if(map.classList.contains('horizontal')) {
+            wrapper.style.height = '220px';
+        } else {
+            wrapper.style.height = '';
+        }
+        wrapper.appendChild(map);
+        wrapper.appendChild(svg);
+
+        container.appendChild(legend);
+        container.appendChild(wrapper);
+
+        // draw connections after layout
+        const drawLinks = () => { this._drawClassMapLinks(wrapper, svg); };
+
+        // initialize draggable pan once
+        if(!this._mapDragInitialized) { this._initMapDrag(wrapper, drawLinks); this._mapDragInitialized = true; }
+
+        // After layout/update, draw links
+        setTimeout(drawLinks, 50);
+
+        // Center on player's current node for better mobile UX
+        setTimeout(() => {
+            if(this.player) {
+                const current = wrapper.querySelector('.current-node');
+                const mapEl = wrapper.querySelector('.class-map');
+                const isHorizontal = mapEl && mapEl.classList.contains('horizontal');
+                if(current) {
+                    if(isHorizontal) {
+                        wrapper.scrollLeft = current.offsetLeft - (wrapper.clientWidth/2) + (current.clientWidth/2);
+                        // vertically center the single-row content
+                        wrapper.scrollTop = Math.max(0, (mapEl.clientHeight - wrapper.clientHeight) / 2);
+                    } else {
+                        wrapper.scrollTop = current.offsetTop - (wrapper.clientHeight/2) + (current.clientHeight/2);
+                        wrapper.scrollLeft = current.offsetLeft - (wrapper.clientWidth/2) + (current.clientWidth/2);
+                    }
+                    setTimeout(drawLinks, 60);
+                }
+            }
+        }, 90);
+
+        // Also redraw on resize or scroll
+        wrapper.addEventListener('scroll', drawLinks);
+        window.addEventListener('resize', drawLinks);
+    },
+
+    createClassViewerCard(classKey, classData) {
+        const card = document.createElement('div');
+        const isUnlocked = this.isClassUnlocked(classKey);
+        const isCurrent = this.player && this.player.jobType === classKey;
+        
+        card.className = 'class-card';
+        if(isUnlocked) card.classList.add('unlocked');
+        if(isCurrent) card.classList.add('current');
+        if(!isUnlocked) card.classList.add('locked');
+
+        const currentSkills = this.player ? this.player.skills : [];
+        const highestTier = classData.length - 1;
+
+        // Determine class tier level description
+        const allTierDescriptions = [];
+        classData.forEach((tier, idx) => {
+            allTierDescriptions.push(tier.desc);
+        });
+
+        // Get header info
+        let statusBadge = '';
+        if(isCurrent) {
+            statusBadge = '<div class="unlock-status current">CURRENT</div>';
+        } else if(isUnlocked) {
+            statusBadge = '<div class="unlock-status unlocked">UNLOCKED</div>';
+        } else {
+            const nextTierIndex = Math.min(this.player ? Math.floor((this.floor - 1) / 10) : 0, highestTier);
+            statusBadge = `<div class="unlock-status locked">LOCKED</div>`;
+        }
+
+        // Build skill descriptions
+        let skillsHTML = '<div class="skills-list">';
+        classData.forEach((tierData, tierIndex) => {
+            if(tierData.skills) {
+                tierData.skills.forEach((skill, skillIdx) => {
+                    const skillNum = skillIdx + 1;
+                    const skillCost = skill.cost > 0 ? `${skill.cost} MP` : 'FREE';
+                    const skillType = skill.isBuff ? 'BUFF' : 'DMG';
+                    
+                    let statsInfo = '';
+                    if(skill.isBuff) {
+                        statsInfo = `<span class="skill-stats">${skillType}</span> | <span class="skill-cost">${skill.desc}</span>`;
+                    } else {
+                        const hitsInfo = skill.hits && skill.hits > 1 ? `x${skill.hits}HIT` : '1HIT';
+                        statsInfo = `<span class="skill-stats">${skill.mult}x ${hitsInfo}</span> | <span class="skill-cost">${skillCost}</span>`;
+                    }
+
+                    skillsHTML += `
+                        <div class="skill-item">
+                            <div class="skill-name">SKILL ${skillNum}: ${skill.name}</div>
+                            <div class="skill-details">${statsInfo}</div>
+                        </div>
+                    `;
+                });
+            }
+        });
+        skillsHTML += '</div>';
+
+        const tierRange = `Tiers 1-${classData.length}`;
+
+        card.innerHTML = `
+            <div class="class-header">
+                <div class="class-name">${classKey}</div>
+                ${statusBadge}
+            </div>
+            <div class="class-desc">AVAILABLE TIERS: ${tierRange} | Progression: ${allTierDescriptions.map(d => d.split(':')[0]).join(' • ')}</div>
+            ${skillsHTML}
+        `;
+
+        return card;
+    },
+
     updateUI() {
         // Show rebirth level in floor display
         const floorDisplay = this.rebirth > 0 ? `${this.floor} ★${this.rebirth}` : this.floor;
