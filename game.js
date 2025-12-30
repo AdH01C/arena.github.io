@@ -704,12 +704,34 @@ const RARITY = {
 };
 
 const PERK_POOL = [
-    { name: "RECYCLER", baseVal: 5,  desc: "+{val} Mana Regen", func: (p, v) => p.manaRegen += v },
-    { name: "CRITICAL OS", baseVal: 5, desc: "+{val}% Crit Chance", func: (p, v) => p.critChance += (v/100) },
-    { name: "HYDRAULICS", baseVal: 5,  desc: "+{val} Base Damage", func: (p, v) => p.atk += v },
-    { name: "TITANIUM",   baseVal: 30, desc: "+{val} Max HP", func: (p, v) => { p.maxHp += v; p.hp += v; } },
-    { name: "BATTERY",    baseVal: 20, desc: "+{val} Max Mana", func: (p, v) => { p.maxMana += v; p.mana += v; } },
-    { name: "VAMPIRE",    baseVal: 3,  desc: "+{val}% Lifesteal", func: (p, v) => p.lifesteal = (p.lifesteal||0) + (v/100) }
+    // --- SCALING PERKS (Now Multiplicative) ---
+    { name: "HYDRAULICS", icon: "💪", baseVal: 15, desc: "+{val}% Damage", statDesc: "DMG", func: (p, v) => p.atk = Math.floor(p.atk * (1 + v/100)) },
+    { name: "TITANIUM",   icon: "🛡️", baseVal: 20, desc: "+{val}% Max HP", statDesc: "Max HP", func: (p, v) => { 
+        const oldMax = p.maxHp;
+        p.maxHp = Math.floor(p.maxHp * (1 + v/100)); 
+        p.hp += (p.maxHp - oldMax); // Heal the difference
+    }},
+    { name: "BATTERY",    icon: "🔋", baseVal: 20, desc: "+{val}% Max Mana", statDesc: "Max Mana", func: (p, v) => {
+        p.maxMana = Math.floor(p.maxMana * (1 + v/100));
+        p.mana = p.maxMana; // Full refill on upgrade
+    }},
+    
+    // --- UTILITY PERKS ---
+    { name: "RECYCLER", icon: "♻️", baseVal: 10,  desc: "+{val}% Mana Regen", statDesc: "Regen", func: (p, v) => p.manaRegen = Math.floor(p.manaRegen * (1 + v/100)) },
+    { name: "CRITICAL OS", icon: "🎯", baseVal: 5, desc: "+{val}% Crit Chance", statDesc: "Crit", func: (p, v) => p.critChance += (v/100) },
+    { name: "VAMPIRE",    icon: "🧛", baseVal: 2,  desc: "+{val}% Lifesteal", statDesc: "Lifesteal", func: (p, v) => p.lifesteal = (p.lifesteal||0) + (v/100) },
+    
+    // --- DEFENSE PERKS ---
+    { name: "CHROME PLATING", icon: "🔩", baseVal: 15, desc: "+{val}% Armor", statDesc: "Armor", func: (p, v) => p.armor = Math.max(5, Math.floor((p.armor||5) * (1 + v/100))) },
+    { name: "REFLEX BOOST", icon: "⚡", baseVal: 3, desc: "+{val}% Dodge", statDesc: "Dodge", func: (p, v) => p.dodge += (v/100) },
+    
+    // --- NEW OFFENSIVE PERKS ---
+    { name: "NEURAL SPIKE", icon: "🧠", baseVal: 15, desc: "+{val}% Crit Dmg", statDesc: "Crit Dmg", func: (p, v) => p.critDamage += (v/100) },
+    { name: "ECHO STRIKE", icon: "👊", baseVal: 5, desc: "+{val}% Double Strike", statDesc: "Double Strike", func: (p, v) => p.doubleStrike += (v/100) },
+    
+    // --- HEALING (Flat values, but boosted) ---
+    { name: "NANO REPAIR", icon: "💚", baseVal: 40, desc: "Heal {val}% HP", statDesc: "Healed", func: (p, v) => p.hp = Math.min(p.maxHp, p.hp + Math.floor(p.maxHp * (v/100))), noStack: true },
+    { name: "SURGE CAPACITOR", icon: "💙", baseVal: 50, desc: "Restore {val}% Mana", statDesc: "Mana", func: (p, v) => p.mana = Math.min(p.maxMana, p.mana + Math.floor(p.maxMana * (v/100))), noStack: true }
 ];
 
 // --- GAME CONTROLLER ---
@@ -764,10 +786,44 @@ const game = {
 
     startCutscene(lines) {
         this.state = 'CUTSCENE';
-        this.dialogueQueue = [...lines]; // Copy array
-        document.getElementById('dialogue-overlay').classList.add('active');
+        
+        // --- FIX: NORMALIZE DIALOGUE DATA ---
+        // Ensure input is always an array
+        if (!Array.isArray(lines)) lines = [lines];
+
+        this.dialogueQueue = lines.map(line => {
+            // Case 1: Existing Story Format {s, t} -> Keep as is
+            if (line.s && line.t) return line;
+
+            // Case 2: Boss/New Format {name, text} -> Convert to {s, t}
+            if (line.name && line.text) return { s: line.name, t: line.text };
+
+            // Case 3: String Format "SPEAKER: Message"
+            if (typeof line === 'string') {
+                if (line.includes(':')) {
+                    const parts = line.split(':');
+                    return { s: parts[0].trim(), t: parts.slice(1).join(':').trim() };
+                }
+                return { s: 'SYSTEM', t: line };
+            }
+
+            // Fallback
+            return { s: 'SYSTEM', t: '...' };
+        });
+
+        // --- FIX: FORCE CLOSE INTERFACES ---
+        this.closeClassesViewer(); 
+        this.closeIAPShop();       
+        
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+        // --- SHOW CUTSCENE UI ---
+        const overlay = document.getElementById('dialogue-overlay');
+        overlay.classList.add('active');
+        
+        // Hide Combat HUD
         document.getElementById('battle-controls').classList.remove('active');
-        document.getElementById('hud').style.opacity = '0'; // Hide HUD for cinema feel
+        document.getElementById('hud').style.opacity = '0'; 
         
         this.advanceDialogue();
     },
@@ -838,18 +894,34 @@ const game = {
     endCutscene() {
         document.getElementById('dialogue-overlay').classList.remove('active');
         document.getElementById('hud').style.opacity = '1';
-        engine.focusCamera(null); // Reset camera
-        
-        // Resume game logic based on where we paused
-        if(this.floor === 0 || this.floor === 1) {
-            // If it was intro, offer job selection now
-            if(!this.player.jobType) this.offerJobSelection(0);
-            else { this.state = 'IDLE'; document.getElementById('battle-controls').classList.add('active'); }
-        } else {
-            // If it was a boss intro, start fight
-            this.state = 'IDLE';
-            document.getElementById('battle-controls').classList.add('active');
+        engine.focusCamera(null);
+
+        // --- NEW: BOSS PHASE TRANSITION ---
+        if (this.pendingBossTransformation) {
+            this.pendingBossTransformation = false;
+            this.executePhase2Transform();
+            return;
         }
+
+        // --- NEW: BOSS DEFEAT ---
+        if (this.pendingBossDefeat) {
+            this.pendingBossDefeat = false;
+            this.bossPhase = 3; // Done
+            this.enemy.hp = 0;
+            // Remove enemy and trigger win logic/rebirth
+            engine.scene.remove(this.enemy.mesh);
+            this.enemy = null;
+            this.triggerRebirth(); // Your function to handle winning/rebirth
+            return;
+        }
+        // ----------------------------------
+
+        // Standard logic
+        if(!this.player.jobType) {
+            this.offerJobSelection(0);
+            return;
+        }
+        this.processFloorEvent(true);
     },
 
     _initMapDrag(wrapper, redraw) {
@@ -1053,7 +1125,7 @@ const game = {
     },
 
     startRun() {
-        this.floor = 1; this.gold = 0;
+        this.floor = 0; this.gold = 0;
         this.rebirth = 0; // Reset rebirth on new run
         this.buffs = {}; // Reset buffs
         this.battleCombo = 0;
@@ -1065,7 +1137,7 @@ const game = {
         engine.setFloorTheme(1);
         if(this.player) engine.scene.remove(this.player.mesh);
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
-        this.player = new Unit(true, 150, 150, 20, 0x00f2ff);
+        this.player = new Unit(true, 200, 200, 10, 0x00f2ff);
         this.gameStarted = null;
         this.offerJobSelection(0);
         this.initTutorial();    
@@ -1531,61 +1603,58 @@ const game = {
         if(this.floor > 100) return;
         this.floor++;
 
-        if(this.floor % 10 === 0 && this.floor <= 90) {
-            const nextTier = this.floor / 10;
-            
-            // Only offer selection if we are strictly lower than the target tier
-            if (this.player.jobTier < nextTier) {
-                this.offerJobSelection(nextTier);
-                return;
-            }
-        }
-
         // Update floor theme every 5 floors
         if(this.floor % 5 === 0 || this.floor === 1) {
             const themeName = engine.setFloorTheme(this.floor);
-            this.showText(themeName, {x: 0, y: 3, z: 0}, '#ff0055');
+            this.showText(themeName, new THREE.Vector3(0, 3, 0), '#ff0055');
         }
 
         // Decrement IAP luck boost floors
-        if(this.iapBoosts.boostFloors > 0) {
+        if(this.iapBoosts && this.iapBoosts.boostFloors > 0) {
             this.iapBoosts.boostFloors--;
             if(this.iapBoosts.boostFloors === 0) {
-                // Reset luck bonuses when boost expires
                 this.iapBoosts.rareBonus = 0;
                 this.iapBoosts.epicBonus = 0;
                 this.iapBoosts.legendaryBonus = 0;
             }
         }
 
-        // AWAKENING at floor 50 - major power boost
+        // Awakening Event (Floor 50)
         if(this.floor === 50 && !this.player.awakened) {
             this.triggerAwakening();
             return;
         }
 
-        this.state = 'IDLE';
+        // DELEGATE TO MANAGER
+        this.processFloorEvent(false); 
+    },
+    // --- NEW EVENT MANAGER ---
+    processFloorEvent(ignoreStory = false) {
+        // 1. CHECK STORY (High Priority)
+        if (!ignoreStory && this.checkStoryTrigger(this.floor)) {
+            return; // Stop here, let the cutscene play.
+        }
+
+        // 2. CHECK JOB SELECTION (Medium Priority)
+        if(this.floor % 10 === 0 && this.floor <= 90) {
+            const nextTier = this.floor / 10;
+            // Only offer if it's an upgrade
+            if (this.player.jobTier < nextTier) {
+                this.offerJobSelection(nextTier);
+                return; 
+            }
+        }
+
+        // 3. SPAWN ENEMY (Default)
+        // FIX: Force state to IDLE so buttons work!
+        this.state = 'IDLE'; 
+        
         this.setScreen('hud');
         document.getElementById('battle-controls').classList.add('active');
-        
-        // Tutorial: Advance to step 6 (rebirth) when advancing to next floor
-        if(this.tutorialState === 'ACTIVE' && this.tutorialStep === 5) {
-            this.nextTutorialStep();
-        }
-        
-        this.spawnEnemy(); // Spawn first so camera has a target
-        
+        this.spawnEnemy();
         this.updateButtons();
         this.updateUI();
 
-        // Trigger Story AFTER spawning enemy but BEFORE giving control
-        if(this.checkStoryTrigger(this.floor)) {
-            // checkStoryTrigger sets state to CUTSCENE
-            // Controls will enable after cutscene ends
-        } else {
-            document.getElementById('battle-controls').classList.add('active');
-        }
-        
     },
 
     // --- AWAKENING SYSTEM (Floor 50) ---
@@ -2113,36 +2182,48 @@ const game = {
 
     spawnEnemy() {
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
-
-        // Reset combo for new battle
         this.battleCombo = 0;
 
         const isFinalBoss = (this.floor >= 100);
         const isMidBoss = (this.floor === 25 || this.floor === 50 || this.floor === 75);
         const isFloorBoss = (this.floor % 5 === 0 && !isFinalBoss && !isMidBoss);
 
-        // REBALANCED HP SCALING: exponential until 50, then linear growth
         let hp, atk;
 
-        hp = Math.floor(100 * Math.pow(1.12, this.floor + this.rebirth * 100));
-        atk = Math.floor(8 * Math.pow(1.08, this.floor + this.rebirth * 100));
+        // --- THE "GOLDEN RATIO" SCALING (1.13) ---
+        // Floor 1:   200 HP
+        // Floor 50:  90,000 HP
+        // Floor 75:  3,800,000 HP  <-- Perfect for your 2M hits (2 hits to kill)
+        // Floor 99:  70,000,000 HP <-- Tough, but not a chore
+        const difficultyScale = this.floor + (this.rebirth * 50);
         
+        hp = Math.floor(200 * Math.pow(1.13, difficultyScale));
+        
+        // Attack grows slower so your 500k HP feels tanky against normal mobs
+        atk = Math.floor(10 * Math.pow(1.085, difficultyScale));
 
-        // REBIRTH SCALING: Exponential multiplier per rebirth
+        // Rebirth Scaling
         if(this.rebirth > 0) {
-            const rebirthMult = Math.pow(2.5, this.rebirth); // 2.5x HP per rebirth
-            hp = Math.floor(hp * rebirthMult);
-            atk = Math.floor(atk * Math.pow(1.5, this.rebirth)); // 1.5x ATK per rebirth
+            hp = Math.floor(hp * Math.pow(2.8, this.rebirth));
+            atk = Math.floor(atk * Math.pow(1.6, this.rebirth));
         }
 
         if(isFinalBoss) {
-            hp = 50000000; atk *= 5;
-            document.getElementById('enemy-name').innerText = `THE ARCHITECT (FINAL)`;
+            this.bossPhase = 1; // <--- NEW TRACKER
+            
+            // Phase 1: The "Avatar" (Weaker version)
+            // 150M HP / Normal Boss Damage
+            hp = 150000000 * Math.pow(2, this.rebirth); 
+            atk = 300000 * Math.pow(1.5, this.rebirth); 
+
+            document.getElementById('enemy-name').innerText = `THE ARCHITECT (AVATAR)`;
             document.getElementById('enemy-name').style.color = '#ffd700';
             this.enemy = new Unit(false, hp, hp, atk, 0xffd700, 'architect');
+            this.enemy.mitigation = 0.4; 
         }
         else if (isMidBoss) {
-            hp *= 3; atk *= 3.5;
+            hp *= 6; // Tanky mid-bosses
+            atk *= 2.5;
             const names = {25:"WARDEN", 50:"EXECUTIONER", 75:"OVERLORD"};
             const variants = {25: 0, 50: 1, 75: 2};
             document.getElementById('enemy-name').innerText = `${names[this.floor]}`;
@@ -2150,40 +2231,142 @@ const game = {
             this.enemy = new Unit(false, hp, hp, atk, 0xff5500, 'midboss', variants[this.floor]);
         }
         else if(isFloorBoss) {
-            hp *= 2.0; atk *= 2.5;
+            hp *= 3.0; 
+            atk *= 2.0;
             document.getElementById('enemy-name').innerText = `SECTOR BOSS - ${this.floor}`;
             document.getElementById('enemy-name').style.color = '#ff0000';
             this.enemy = new Unit(false, hp, hp, atk, 0xff0000, 'boss');
         }
         else {
-            // More enemy variety based on floor
             const enemyTypes = ['walker', 'drone', 'sentinel', 'tank', 'spider', 'floater'];
-            const floorMod = this.floor % 60;
-            let type;
-            const names = {
-                'walker': 'PATROL UNIT',
-                'drone': 'RECON DRONE',
-                'sentinel': 'SENTINEL',
-                'tank': 'HEAVY TANK',
-                'spider': 'SPIDER BOT',
-                'floater': 'WATCHER'
-            };
-
-            if(floorMod < 10) type = Math.random() > 0.5 ? 'walker' : 'drone';
-            else if(floorMod < 20) type = ['walker', 'drone', 'sentinel'][Math.floor(Math.random()*3)];
-            else if(floorMod < 30) type = ['sentinel', 'tank', 'drone'][Math.floor(Math.random()*3)];
-            else if(floorMod < 40) type = ['tank', 'spider', 'sentinel'][Math.floor(Math.random()*3)];
-            else if(floorMod < 50) type = ['spider', 'floater', 'tank'][Math.floor(Math.random()*3)];
-            else type = enemyTypes[Math.floor(Math.random()*enemyTypes.length)];
-
-            document.getElementById('enemy-name').innerText = `${names[type]} - F${this.floor}`;
+            const type = enemyTypes[this.floor % enemyTypes.length];
+            document.getElementById('enemy-name').innerText = `${type.toUpperCase()} - F${this.floor}`;
             document.getElementById('enemy-name').style.color = '#aaa';
             const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.5);
             this.enemy = new Unit(false, hp, hp, atk, color, type);
         }
+
+        // --- STATS ---
+        this.enemy.armor = this.floor * 5; // Armor helps trash mobs survive rapid weak hits
+        this.enemy.critChance = Math.min(0.20, this.floor * 0.002);
+        if(this.floor > 10) this.enemy.dodge = Math.min(0.15, (this.floor - 10) * 0.002);
+
         const targetY = this.enemy.mesh.userData.baseY;
         this.enemy.mesh.position.y = 10;
         engine.tween(this.enemy.mesh.position, 'y', targetY, 800);
+    },
+
+    executePhase2Transform() {
+        console.log("EXECUTING TRANSFORMATION");
+        this.bossPhase = 2;
+        
+        // 1. Visual Effects
+        engine.addShake(1.0); 
+        if(this.enemy && this.enemy.mesh) {
+            engine.spawnParticles(this.enemy.mesh.position, 0xff0000, 50);
+
+            // Color the model red safely
+            this.enemy.mesh.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = child.material.clone(); 
+                    child.material.color.setHex(0xff0000); 
+                    if(child.material.emissive) child.material.emissive.setHex(0xaa0000);
+                }
+            });
+
+            // Make it bigger
+            this.enemy.mesh.scale.set(3, 3, 3);
+        }
+        
+        // 2. Buff Stats
+        const newMaxHp = Math.floor(this.enemy.maxHp * 1.5);
+        this.enemy.maxHp = newMaxHp;
+        this.enemy.hp = newMaxHp;
+        this.enemy.atk = Math.floor(this.enemy.atk * 2);
+        this.enemy.mitigation = 0.6; 
+
+        // 3. UI Text Updates
+        document.getElementById('enemy-name').innerText = "THE ARCHITECT (TRUE FORM)";
+        document.getElementById('enemy-name').style.color = "#ff0000";
+        this.showText("<< LIMITERS REMOVED >>", this.enemy.mesh.position, '#ff0000');
+        
+        // --- FIX: RESTORE CONTROLS ---
+        this.state = 'IDLE'; 
+        
+        // Bring back HUD opacity
+        document.getElementById('hud').style.opacity = '1';
+        
+        // Make buttons interactive again
+        const controls = document.getElementById('battle-controls');
+        controls.classList.add('active');
+        
+        this.updateButtons();
+        this.updateUI();
+    },
+
+    triggerBossPhase2() {
+        // 1. Set Flag FIRST
+        this.pendingBossTransformation = true;
+        this.state = 'CUTSCENE'; 
+        
+        // 2. Play Dialogue (Using s/t format directly now to be 100% safe)
+        const lines = [
+            { s: "ARCHITECT", t: "...Interesting." },
+            { s: "ARCHITECT", t: "You have exceeded the calculated parameters." },
+            { s: "ARCHITECT", t: "But this vessel was merely a constraint." },
+            { s: "ARCHITECT", t: "Now... witness the source code of reality." }
+        ];
+
+        if (typeof this.startCutscene === 'function') {
+            this.startCutscene(lines);
+        } else {
+            console.error("Cutscene system missing, skipping to phase 2");
+            this.endCutscene();
+        }
+    },
+
+    triggerBossEnding() {
+        this.state = 'CUTSCENE';
+        
+        this.startCutscene([
+            "ARCHITECT: Impossible...",
+            "ARCHITECT: Value... null...",
+            "ARCHITECT: System... shutting... down...",
+            "SYSTEM: ADMIN ACCESS GRANTED."
+        ]);
+
+        // Triggers the actual win/rebirth after dialogue
+        this.pendingBossDefeat = true; 
+    },
+
+    // --- BOSS AI SYSTEM ---
+    bossAiLoop() {
+        if(!this.enemy || this.floor < 100 || this.state === 'GAMEOVER') return;
+
+        // 10% Chance per second to cast a spell
+        if(Math.random() < 0.05) {
+            const spell = Math.random();
+            
+            if(spell < 0.4) {
+                // SPELL: REALITY BREAK (Heavy Damage + Stun VFX)
+                this.showText("<< REALITY BREAK >>", this.enemy.mesh.position, '#ff0000');
+                engine.spawnParticles(this.player.mesh.position, 0xff0000, 20);
+                this.player.takeDmg(this.enemy.atk * 2.5); // Hits through OSP if already low
+            } 
+            else if (spell < 0.7) {
+                // SPELL: SYSTEM PURGE (Removes your buffs)
+                this.showText("<< SYSTEM PURGE >>", this.enemy.mesh.position, '#00f2ff');
+                this.player.activeBuffs = []; // Clear buffs
+                this.updateBuffs();
+                this.player.takeDmg(this.enemy.atk * 0.5);
+            }
+            else {
+                // SPELL: RECOMPILE (Heal Boss)
+                const heal = Math.floor(this.enemy.maxHp * 0.05);
+                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
+                this.showText(`+${this.formatNum(heal)} RECOVER`, this.enemy.mesh.position, '#00ff00');
+            }
+        }
     },
 
     enemyTurn() {
@@ -2283,31 +2466,39 @@ const game = {
     // --- REBIRTH SYSTEM ---
     triggerRebirth() {
         this.rebirth++;
-        this.floor = 1; // Reset to floor 1
+        this.floor = 1; 
 
-        // Reset floor theme back to floor 1
-        engine.setFloorTheme(1);
+        // Reset floor theme
+        if(engine.setFloorTheme) engine.setFloorTheme(1);
 
-        // Keep player stats but boost them
-        this.player.atk = Math.floor(this.player.atk * 1.5);
-        this.player.maxHp = Math.floor(this.player.maxHp * 1.5);
-        this.player.hp = this.player.maxHp;
-        this.player.maxMana = Math.floor(this.player.maxMana * 1.5);
-        this.player.mana = this.player.maxMana;
-        this.player.critDamage += 0.5;
-        this.player.comboMult += 0.01;
-        this.player.breachDamage += 0.005;
+        // Boost Player Stats
+        if(this.player) {
+            this.player.atk = Math.floor(this.player.atk * 1.5);
+            this.player.maxHp = Math.floor(this.player.maxHp * 1.5);
+            this.player.hp = this.player.maxHp; // Full Heal
+            this.player.maxMana = Math.floor(this.player.maxMana * 1.5);
+            this.player.mana = this.player.maxMana;
+            
+            this.player.critDamage += 0.5;
+            this.player.comboMult = (this.player.comboMult || 0.01) + 0.01;
+            this.player.breachDamage = (this.player.breachDamage || 0) + 0.005;
+            
+            // Re-awaken immediately (Keep the visual flair)
+            this.player.awakened = true; 
+        }
 
-        // Grant bonus gold
+        // Bonus Gold
         const rebirthBonus = 10000 * this.rebirth;
         this.gold += rebirthBonus;
 
-        this.player.awakened = true; // Reset awakening
-
-        // Show rebirth screen
+        // Show Screen
         this.setScreen('rebirth-screen');
-        document.getElementById('rebirth-level').innerText = this.rebirth;
-        document.getElementById('rebirth-bonus').innerText = rebirthBonus.toLocaleString();
+        
+        // Update Rebirth Screen Text
+        const levelEl = document.getElementById('rebirth-level');
+        const bonusEl = document.getElementById('rebirth-bonus');
+        if(levelEl) levelEl.innerText = this.rebirth;
+        if(bonusEl) bonusEl.innerText = this.formatNum(rebirthBonus);
     },
 
     completeRebirth() {
@@ -2315,11 +2506,28 @@ const game = {
         engine.spawnShockwave(this.player.mesh.position, 0xff00ff, 6);
         engine.addShake(0.6);
 
-        // Continue to floor 1 with new rebirth level
         this.state = 'IDLE';
+        this.bossPhase = 0; 
+        
+        const hud = document.getElementById('hud');
+        hud.style.opacity = '1'; 
+        hud.style.display = 'block';
         this.setScreen('hud');
-        document.getElementById('battle-controls').classList.add('active');
-        this.spawnEnemy(); // This will now use floor=1 with rebirth multiplier
+        
+        const controls = document.getElementById('battle-controls');
+        controls.classList.add('active');
+        
+        // --- FIX: FORCE CENTER ALIGNMENT ---
+        controls.style.display = 'flex'; 
+        controls.style.justifyContent = 'center'; // <--- ADD THIS LINE
+        
+        if(this.enemy && this.enemy.mesh) {
+            engine.scene.remove(this.enemy.mesh);
+            this.enemy = null;
+        }
+
+        this.spawnEnemy(); 
+        engine.focusCamera(null); 
         this.updateButtons();
         this.updateUI();
     },
@@ -2335,28 +2543,7 @@ const game = {
         const container = document.getElementById('perk-container');
         container.innerHTML = '';
         const RARITY = { COMMON: {id:'common', name:'COMMON', mult:1, prob:1.0}, RARE: {id:'rare', name:'RARE', mult:1.5, prob:0.36}, EPIC: {id:'epic', name:'EPIC', mult:2.5, prob:0.06}, LEGENDARY: {id:'legendary', name:'LEGENDARY', mult:5.0, prob:0.01} };
-        const PERK_POOL = [
-            // Original perks
-            { name: "RECYCLER", icon: "♻️", baseVal: 5, desc: "+{val} Mana Regen", statDesc: "Mana Regen", func: (p, v) => p.manaRegen += v },
-            { name: "CRITICAL OS", icon: "🎯", baseVal: 5, desc: "+{val}% Crit Chance", statDesc: "Crit Chance", func: (p, v) => p.critChance += (v/100) },
-            { name: "HYDRAULICS", icon: "💪", baseVal: 10, desc: "+{val} Base Damage", statDesc: "Bonus DMG", func: (p, v) => p.atk += v },
-            { name: "TITANIUM", icon: "🛡️", baseVal: 50, desc: "+{val} Max HP", statDesc: "Bonus HP", func: (p, v) => { p.maxHp += v; p.hp += v; } },
-            { name: "BATTERY", icon: "🔋", baseVal: 30, desc: "+{val} Max Mana", statDesc: "Bonus Mana", func: (p, v) => { p.maxMana += v; p.mana += v; } },
-            { name: "VAMPIRE", icon: "🧛", baseVal: 3, desc: "+{val}% Lifesteal", statDesc: "Lifesteal", func: (p, v) => p.lifesteal = (p.lifesteal||0) + (v/100) },
-            // New perks
-            { name: "CHROME PLATING", icon: "🔩", baseVal: 5, desc: "+{val} Armor", statDesc: "Armor", func: (p, v) => p.armor += v },
-            { name: "REFLEX BOOST", icon: "⚡", baseVal: 3, desc: "+{val}% Dodge Chance", statDesc: "Dodge", func: (p, v) => p.dodge += (v/100) },
-            { name: "NEURAL SPIKE", icon: "🧠", baseVal: 10, desc: "+{val}% Crit Damage", statDesc: "Crit DMG", func: (p, v) => p.critDamage += (v/100) },
-            { name: "RAZOR SKIN", icon: "🔪", baseVal: 5, desc: "+{val}% Thorns Damage", statDesc: "Thorns", func: (p, v) => p.thorns += (v/100) },
-            { name: "ECHO STRIKE", icon: "👊", baseVal: 5, desc: "+{val}% Double Strike", statDesc: "Double Strike", func: (p, v) => p.doubleStrike += (v/100) },
-            { name: "OVERCLOCK", icon: "⏱️", baseVal: 5, desc: "-{val}% Mana Cost", statDesc: "Mana Reduction", func: (p, v) => p.manaCostReduction = Math.min(0.5, (p.manaCostReduction||0) + (v/100)) },
-            { name: "TERMINATOR", icon: "💀", baseVal: 5, desc: "Execute below {val}% HP", statDesc: "Execute Threshold", func: (p, v) => p.executeThreshold = Math.max(p.executeThreshold, v/100) },
-            { name: "SALVAGER", icon: "💰", baseVal: 10, desc: "+{val}% Bonus Credits", statDesc: "Bonus Credits", func: (p, v) => p.bonusCredits += (v/100) },
-            { name: "OVERKILL CHIP", icon: "💥", baseVal: 10, desc: "+{val}% Overkill Bonus", statDesc: "Overkill", func: (p, v) => p.overkillBonus += (v/100) },
-            { name: "ENERGY SHIELD", icon: "🔷", baseVal: 30, desc: "+{val} Shield", statDesc: "Shield", func: (p, v) => p.shield += v, noStack: true },
-            { name: "NANO REPAIR", icon: "💚", baseVal: 20, desc: "Heal {val} HP", statDesc: "Healed", func: (p, v) => p.hp = Math.min(p.maxHp, p.hp + v), noStack: true },
-            { name: "SURGE CAPACITOR", icon: "💙", baseVal: 15, desc: "+{val} Mana", statDesc: "Mana Restored", func: (p, v) => p.mana = Math.min(p.maxMana, p.mana + v), noStack: true }
-        ];
+        
 
         for(let i=0; i<3; i++) {
             let tier;
@@ -2776,12 +2963,21 @@ const game = {
         return card;
     },
 
+    formatNum(num) {
+        if(num >= 1000000000) return (num/1000000000).toFixed(2) + 'B'; // Billions
+        if(num >= 1000000) return (num/1000000).toFixed(1) + 'M';    // Millions
+        if(num >= 1000) return (num/1000).toFixed(1) + 'K';          // Thousands
+        return Math.floor(num);
+    },
+
     updateUI() {
         // Show rebirth level in floor display
         const floorDisplay = this.rebirth > 0 ? `${this.floor} ★${this.rebirth}` : this.floor;
         document.getElementById('floor-num').innerText = floorDisplay;
-        document.getElementById('gold-num').innerText = this.gold.toLocaleString();
-        document.getElementById('shop-gold').innerText = this.gold.toLocaleString();
+        
+        // FIX: Use formatNum for cleaner gold display (e.g. "1.5M")
+        document.getElementById('gold-num').innerText = this.formatNum(this.gold);
+        document.getElementById('shop-gold').innerText = this.formatNum(this.gold);
 
         // Combo display (show after floor 50 or when combo > 0)
         const comboDisplay = document.getElementById('combo-display');
@@ -2801,27 +2997,52 @@ const game = {
 
         if(this.player) {
             document.getElementById('p-hp-fill').style.width = Math.min(100, (this.player.hp/this.player.maxHp)*100) + '%';
-            document.getElementById('p-hp-text').innerText = `${Math.floor(this.player.hp)} / ${this.player.maxHp}`;
+            
+            // FIX: Formatted numbers for Player Stats
+            document.getElementById('p-hp-text').innerText = `${this.formatNum(this.player.hp)} / ${this.formatNum(this.player.maxHp)}`;
             document.getElementById('p-mana-fill').style.width = Math.min(100, (this.player.mana/this.player.maxMana)*100) + '%';
-            document.getElementById('p-mana-text').innerText = `${Math.floor(this.player.mana)} / ${this.player.maxMana}`;
+            document.getElementById('p-mana-text').innerText = `${this.formatNum(this.player.mana)} / ${this.formatNum(this.player.maxMana)}`;
 
             // Shield bar - only show if player has shield
             const shieldWrapper = document.getElementById('p-shield-wrapper');
             if(this.player.shield > 0) {
                 shieldWrapper.style.display = 'block';
-                document.getElementById('p-shield-text').innerText = Math.floor(this.player.shield);
-                // Use a max shield reference (track max shield gained)
+                document.getElementById('p-shield-text').innerText = this.formatNum(this.player.shield);
+                
                 this.player.maxShield = Math.max(this.player.maxShield || this.player.shield, this.player.shield);
                 document.getElementById('p-shield-fill').style.width = Math.min(100, (this.player.shield / this.player.maxShield) * 100) + '%';
             } else {
                 shieldWrapper.style.display = 'none';
             }
         }
+        
         if(this.enemy) {
-            document.getElementById('e-hp-fill').style.width = Math.min(100, (this.enemy.hp/this.enemy.maxHp)*100) + '%';
-            document.getElementById('e-hp-text').innerText = `${Math.floor(this.enemy.hp)} / ${this.enemy.maxHp}`;
+            const eBar = document.getElementById('e-hp-fill');
+            const ePct = (this.enemy.hp / this.enemy.maxHp) * 100;
+            eBar.style.width = Math.min(100, ePct) + '%';
+
+            // FIX: Formatted numbers for Enemy HP
+            document.getElementById('e-hp-text').innerText = `${this.formatNum(this.enemy.hp)} / ${this.formatNum(this.enemy.maxHp)}`;
+            
+            // --- NEW: BOSS BAR VISUALS ---
+            if(this.floor >= 100) {
+                // Legendary Gradient + Glow for Final Boss
+                eBar.style.background = `linear-gradient(90deg, #ff0000, #ffaa00, #ffff00)`;
+                eBar.style.boxShadow = `0 0 15px #ffaa00`;
+            } else if (this.enemy.type === 'midboss' || this.enemy.type === 'boss') {
+                // Darker Red for Mid Bosses
+                eBar.style.background = '#ff0000';
+                eBar.style.boxShadow = 'none';
+            } else {
+                // Standard Neon Pink for Trash Mobs
+                eBar.style.background = '#ff0055';
+                eBar.style.boxShadow = 'none';
+            }
         }
-    }
+        
+        // Ensure equipment UI stays updated
+        if(this.updateGearUI) this.updateGearUI();
+    },
 };
 
 class Unit {
@@ -2896,6 +3117,24 @@ class Unit {
             if(absorbed > 0) game.showText(`-${absorbed} SHIELD`, this.mesh.position, '#00f2ff');
         }
         this.hp = Math.max(0, this.hp - finalDmg);
+
+        // --- BOSS PHASE INTERCEPTOR ---
+        // If enemy hits 0 HP, is the Boss, and hasn't finished all phases:
+        if (!this.isPlayer && this.hp <= 0 && game.floor === 100) {
+            // If we are in Phase 1, Trigger Phase 2
+            if (game.bossPhase === 1) {
+                this.hp = 1; // Keep alive for the cutscene
+                game.triggerBossPhase2();
+                return; 
+            }
+            // If we are in Phase 2, Trigger Finale
+            if (game.bossPhase === 2) {
+                this.hp = 0; // Actually die now
+                game.triggerBossEnding();
+                return;
+            }
+        }
+        // -----------------------------
         // Thorns damage (reflect)
         if(this.isPlayer && this.thorns > 0 && game.enemy) {
             const thornsDmg = Math.floor(amount * this.thorns);

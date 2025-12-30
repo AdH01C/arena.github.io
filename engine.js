@@ -153,6 +153,11 @@ const engine = {
             }
         }
         this.updateParticles();
+
+        if(typeof game !== 'undefined' && game.enemy && game.floor >= 100) {
+            game.bossAiLoop();
+        }
+
         this.renderer.render(this.scene, this.camera);
     },
 
