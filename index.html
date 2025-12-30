@@ -24,7 +24,19 @@
 
         <div id="buff-container"></div>
 
+        
+
         <div id="p-wrapper" class="unit-hud">
+            <div id="gear-container">
+                <div class="gear-slot" id="slot-weapon" onclick="game.showGearTooltip('weapon')">
+                    <div class="gear-icon">⚔️</div>
+                    <div class="gear-empty">EMPTY</div>
+                </div>
+                <div class="gear-slot" id="slot-accessory" onclick="game.showGearTooltip('accessory')">
+                    <div class="gear-icon">💍</div>
+                    <div class="gear-empty">EMPTY</div>
+                </div>
+            </div>
             <div class="hp-label">HULL INTEGRITY</div>
             <div class="bar-container" id="p-hp-bar">
                 <div class="bar-fill hp-fill" id="p-hp-fill"></div>
@@ -234,6 +246,16 @@
         <h1 style="color: #00f2ff; text-shadow: 0 0 30px #00f2ff; text-align: center; font-size: 48px; margin-bottom: 30px; margin-top: 20px; letter-spacing: 3px;">JOB ADVANCEMENT</h1>
         <div id="classes-viewer-container" style="max-width: 1400px; width: 100%;"></div>
         
+    </div>
+
+    <!-- DIALOGUE OVERLAY -->
+    <div id="dialogue-overlay" class="screen" onclick="game.advanceDialogue()">
+        <div id="cinematic-bars"></div>
+        <div id="dialogue-box">
+            <div id="dialogue-name">NAME</div>
+            <div id="dialogue-text"></div>
+            <div id="dialogue-prompt">TAP TO CONTINUE ▼</div>
+        </div>
     </div>
 
     <!-- TUTORIAL OVERLAY & PANELS -->

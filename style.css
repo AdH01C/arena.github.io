@@ -1,7 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap');
 
-body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sans-serif; color: white; user-select: none; }
-
+body { 
+    margin: 0; 
+    overflow: hidden; 
+    background: #15151a; 
+    font-family: 'Teko', sans-serif; 
+    color: white; 
+    
+    /* DISABLE SELECTION - COMPATIBILITY FIXES */
+    -webkit-user-select: none; /* Safari / Chrome */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE / Edge */
+    user-select: none;         /* Standard */
+    
+    /* PREVENT BLUE TAP HIGHLIGHT ON MOBILE */
+    -webkit-tap-highlight-color: transparent;
+}
 /* --- HUD LAYOUT --- */
 .screen {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -852,3 +866,90 @@ body { margin: 0; overflow: hidden; background: #15151a; font-family: 'Teko', sa
     .perk-desc { font-size: 12px; }
     .next-btn { padding: 12px 30px !important; font-size: 20px !important; }
 }
+/* --- CINEMATIC SYSTEM --- */
+#dialogue-overlay {
+    z-index: 2000; display: none; /* Hidden by default */
+    background: transparent; pointer-events: auto;
+}
+#dialogue-overlay.active { display: flex; }
+
+/* Cinematic black bars */
+#cinematic-bars {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    box-shadow: inset 0 100px 0 black, inset 0 -100px 0 black;
+    pointer-events: none; transition: 0.5s;
+}
+
+#dialogue-box {
+    position: absolute; bottom: 20px; width: 90%; max-width: 800px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #fff; border-left: 10px solid #fff;
+    padding: 20px; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    transform: translateY(20px); opacity: 0; animation: slideUp 0.3s forwards 0.5s;
+}
+
+@keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
+
+#dialogue-name {
+    font-size: 28px; font-weight: bold; text-transform: uppercase;
+    margin-bottom: 10px; text-shadow: 0 0 10px currentColor;
+}
+
+#dialogue-text {
+    font-size: 24px; /* Teko needs to be bigger to be readable */
+    line-height: 1.4; 
+    color: #ddd; 
+    min-height: 60px;
+    
+    font-family: 'Teko', sans-serif; /* Keep the cool font */
+    white-space: pre-wrap;
+    word-spacing: 6px; /* FORCE wide spaces between words */
+    letter-spacing: 1px; /* Slight spacing between letters */
+}
+
+#dialogue-prompt {
+    position: absolute; bottom: 10px; right: 20px;
+    font-size: 14px; color: #888; animation: blink 1s infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Speaker Colors */
+.speaker-player { color: #00f2ff; border-color: #00f2ff !important; border-left-color: #00f2ff !important; }
+.speaker-enemy { color: #ff0055; border-color: #ff0055 !important; border-left-color: #ff0055 !important; }
+.speaker-system { color: #ffe600; border-color: #ffe600 !important; border-left-color: #ffe600 !important; }
+
+@media (max-width: 800px) {
+    #cinematic-bars { box-shadow: inset 0 50px 0 black, inset 0 -50px 0 black; }
+    #dialogue-box { bottom: 10px; width: 95%; padding: 15px; }
+    #dialogue-text { font-size: 16px; }
+}
+
+/* --- GEAR SLOTS --- */
+#gear-container {
+    position: absolute; bottom: 140px; left: 20px;
+    display: flex; gap: 10px; z-index: 10;
+}
+
+.gear-slot {
+    width: 50px; height: 50px;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid #555;
+    border-radius: 6px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; position: relative;
+    transition: 0.2s;
+}
+
+.gear-slot.equipped { border-color: #ffe600; box-shadow: 0 0 10px rgba(255, 230, 0, 0.3); }
+.gear-slot:hover { transform: scale(1.1); border-color: #fff; }
+
+.gear-icon { font-size: 20px; }
+.gear-empty { font-size: 8px; color: #555; margin-top: -2px; }
+.gear-name { font-size: 8px; color: #fff; text-align: center; line-height: 1; width: 100%; overflow: hidden; white-space: nowrap; }
+
+/* Rarity Colors for Borders */
+.gear-slot.common { border-color: #888; }
+.gear-slot.rare { border-color: #0088ff; box-shadow: 0 0 10px rgba(0,136,255,0.4); }
+.gear-slot.epic { border-color: #aa00ff; box-shadow: 0 0 10px rgba(170,0,255,0.4); }
+.gear-slot.legendary { border-color: #ffe600; box-shadow: 0 0 15px rgba(255,230,0,0.6); animation: pulse 2s infinite; }

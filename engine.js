@@ -50,7 +50,9 @@ const engine = {
         this.scene.add(this.grid);
 
         this.camera.position.set(0, 5, 13);
-        this.camera.lookAt(0, 2, 0);
+        // Inside animate(), replace the static lookAt
+        const target = this.cameraTarget || {x:0, y:2, z:0};
+        this.camera.lookAt(target.x, target.y, target.z);
 
         window.addEventListener('resize', () => {
             this.camera.aspect = window.innerWidth/window.innerHeight;
@@ -58,6 +60,36 @@ const engine = {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         });
         this.animate();
+    },
+
+    // Add this inside the engine object
+    focusCamera(targetPos, offset = {x:0, y:2, z:6}, duration = 800) {
+        // If targetPos is null, reset to default view
+        const tPos = targetPos ? targetPos : {x:0, y:2, z:0};
+        const endPos = { 
+            x: tPos.x + offset.x, 
+            y: tPos.y + offset.y, 
+            z: tPos.z + offset.z 
+        };
+        
+        this.tween(this.camera.position, 'x', endPos.x, duration);
+        this.tween(this.camera.position, 'y', endPos.y, duration);
+        this.tween(this.camera.position, 'z', endPos.z, duration);
+        
+        // Slight rotation tween for dramatic effect
+        const startRot = this.camera.rotation.clone();
+        this.camera.lookAt(tPos.x, tPos.y, tPos.z);
+        const endRot = this.camera.rotation.clone();
+        this.camera.rotation.copy(startRot); // Reset to tween it
+
+        // Simple lookAt interpolation helper could go here, 
+        // but for now the position tween + standard lookAt in animate loop is sufficient
+        // if we update the lookAt target.
+        if (targetPos) {
+            this.cameraTarget = { x: targetPos.x, y: targetPos.y + 1.2, z: targetPos.z };
+        } else {
+            this.cameraTarget = { x: 0, y: 1, z: 0 };
+        }
     },
 
     // Update background/theme based on floor
@@ -309,7 +341,7 @@ const Models = {
         this.box(0.25,0.15,0.3,mDark,-0.22,0.08,0,g); this.box(0.25,0.15,0.3,mDark,0.22,0.08,0,g);
         // Heavy torso
         const t = this.box(0.7,0.55,0.45,mB,0,0.75,0,g);
-        this.box(0.25,0.2,0.1,mG,0,0,0.23,t); // Chest reactor
+        this.box(0.25,0.2,0.1,mG,0,0,0.23,t); 
         // Head - visor style
         const h = this.box(0.28,0.22,0.25,mDark,0,0.45,0,t); this.box(0.24,0.08,0.05,mG,0,0,0.13,h);
         // Shoulder cannons (tier dependent)
@@ -336,365 +368,174 @@ const Models = {
     createShadow(c, s=1, tier=0) {
         const g = new THREE.Group();
         const mB = new THREE.MeshStandardMaterial({color:c || 0x110011, metalness:0.3, roughness:0.8});
-        const mG = new THREE.MeshBasicMaterial({color:0x00ff00}); // Poison green glow
+        const mG = new THREE.MeshBasicMaterial({color:0x00ff00}); 
         const mD = new THREE.MeshStandardMaterial({color:0x000000, metalness:0.5, roughness:0.5});
-        const mP = new THREE.MeshBasicMaterial({color:0xaa00ff}); // Purple accents
-
+        const mP = new THREE.MeshBasicMaterial({color:0xaa00ff}); 
         // Slim legs
         this.box(0.1,0.5,0.1,mB,-0.12,0.25,0,g); this.box(0.1,0.5,0.1,mB,0.12,0.25,0,g);
-
-        // Torso - slim and hooded
+        // Torso
         const t = this.box(0.35,0.4,0.2,mB,0,0.7,0,g);
-        this.box(0.1,0.1,0.05,mG,0,0,0.11,t); // Small chest glow
-
+        this.box(0.1,0.1,0.05,mG,0,0,0.11,t);
         // Hood
         const hood = this.box(0.3,0.25,0.28,mD,0,0.45,0,t);
-        this.box(0.25,0.15,0.05,mG,0,-0.02,0.14,hood); // Glowing eyes in hood
-
-        // Tattered cloak (tier dependent)
-        if(tier >= 1) {
-            this.box(0.4,0.5,0.05,mD,0,-0.15,-0.12,t); // Back cloak
-        }
-        if(tier >= 3) {
-            this.box(0.45,0.6,0.05,mD,0,-0.2,-0.14,t); // Longer cloak
-        }
-
+        this.box(0.25,0.15,0.05,mG,0,-0.02,0.14,hood);
+        // Cloak
+        if(tier >= 1) { this.box(0.4,0.5,0.05,mD,0,-0.15,-0.12,t); }
+        if(tier >= 3) { this.box(0.45,0.6,0.05,mD,0,-0.2,-0.14,t); }
         // Arms
         const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
         const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
             this.box(0.08,0.35,0.08,mB,0,-0.18,0,arm); return arm;}
         mkArm(-0.25);
         const rightArm = mkArm(0.25);
-
-        // Dual daggers
+        // Daggers
         const dagger1 = new THREE.Group(); dagger1.position.set(0,-0.3,0.1); rightArm.add(dagger1);
-        this.box(0.02,0.02,0.25,mD,0,0,0.1,dagger1);
-        this.box(0.01,0.01,0.2,mG,0,0,0.15,dagger1); // Poison edge
-
-        // Smoke/shadow particles at higher tiers
+        this.box(0.02,0.02,0.25,mD,0,0,0.1,dagger1); this.box(0.01,0.01,0.2,mG,0,0,0.15,dagger1);
+        // Smoke
         if(tier >= 4) {
             for(let i=0;i<3;i++) {
                 const smoke = new THREE.Mesh(new THREE.SphereGeometry(0.08,6,6), mP);
-                smoke.position.set((Math.random()-0.5)*0.4, -0.1 + i*0.15, -0.2);
-                t.add(smoke);
+                smoke.position.set((Math.random()-0.5)*0.4, -0.1 + i*0.15, -0.2); t.add(smoke);
             }
         }
-
-        // Spectral wings at high tier
         if(tier >= 6) {
-            const wing1 = this.box(0.02,0.4,0.3,mP,-0.25,0.3,-0.2,t);
-            wing1.rotation.z = -0.3;
-            const wing2 = this.box(0.02,0.4,0.3,mP,0.25,0.3,-0.2,t);
-            wing2.rotation.z = 0.3;
+            const wing1 = this.box(0.02,0.4,0.3,mP,-0.25,0.3,-0.2,t); wing1.rotation.z = -0.3;
+            const wing2 = this.box(0.02,0.4,0.3,mP,0.25,0.3,-0.2,t); wing2.rotation.z = 0.3;
         }
-
-        // Death aura at max tier
         if(tier >= 8) {
             const aura = new THREE.Mesh(new THREE.TorusGeometry(0.4,0.03,8,16), mG);
-            aura.rotation.x = Math.PI/2;
-            aura.position.y = 0;
-            g.add(aura);
+            aura.rotation.x = Math.PI/2; aura.position.y = 0; g.add(aura);
         }
-
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
 
     createBrawler(c, s=1, tier=0) {
         const g = new THREE.Group();
         const mB = new THREE.MeshStandardMaterial({color:c || 0xff4400, metalness:0.4, roughness:0.6});
-        const mG = new THREE.MeshBasicMaterial({color:0xff6600}); // Orange glow
+        const mG = new THREE.MeshBasicMaterial({color:0xff6600}); 
         const mD = new THREE.MeshStandardMaterial({color:0x333333, metalness:0.7, roughness:0.3});
-        const mW = new THREE.MeshBasicMaterial({color:0xffcc00}); // Golden highlights
-
-        // Strong legs
+        const mW = new THREE.MeshBasicMaterial({color:0xffcc00}); 
+        // Legs
         this.box(0.14,0.5,0.14,mB,-0.15,0.25,0,g); this.box(0.14,0.5,0.14,mB,0.15,0.25,0,g);
-
-        // Muscular torso
-        const t = this.box(0.45,0.45,0.25,mB,0,0.72,0,g);
-        this.box(0.15,0.08,0.05,mG,0,0.1,0.13,t); // Chest emblem
-
-        // Head - fighter style
-        const h = this.box(0.2,0.22,0.2,mB,0,0.38,0,t);
-        this.box(0.22,0.06,0.05,mG,0,0,0.1,h); // Eye visor
-
-        // Shoulder pads (tier dependent)
-        if(tier >= 2) {
-            this.box(0.12,0.1,0.12,mD,-0.32,0.25,0,t);
-            this.box(0.12,0.1,0.12,mD,0.32,0.25,0,t);
-        }
-
-        // Championship belt at mid tier
-        if(tier >= 4) {
-            this.box(0.5,0.08,0.28,mW,0,-0.15,0,t);
-        }
-
-        // Arms - muscular
+        // Torso
+        const t = this.box(0.45,0.45,0.25,mB,0,0.72,0,g); this.box(0.15,0.08,0.05,mG,0,0.1,0.13,t);
+        // Head
+        const h = this.box(0.2,0.22,0.2,mB,0,0.38,0,t); this.box(0.22,0.06,0.05,mG,0,0,0.1,h);
+        // Pads
+        if(tier >= 2) { this.box(0.12,0.1,0.12,mD,-0.32,0.25,0,t); this.box(0.12,0.1,0.12,mD,0.32,0.25,0,t); }
+        // Belt
+        if(tier >= 4) { this.box(0.5,0.08,0.28,mW,0,-0.15,0,t); }
+        // Arms
         const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
         const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
             this.box(0.12,0.4,0.12,mB,0,-0.2,0,arm); return arm;}
-        const leftArm = mkArm(-0.32);
-        const rightArm = mkArm(0.32);
-
-        // Boxing gloves / fighting fists
-        this.box(0.14,0.12,0.14,mG,0,-0.35,0.05,leftArm);
-        this.box(0.14,0.12,0.14,mG,0,-0.35,0.05,rightArm);
-
-        // Flame aura at high tier
+        const leftArm = mkArm(-0.32); const rightArm = mkArm(0.32);
+        // Gloves
+        this.box(0.14,0.12,0.14,mG,0,-0.35,0.05,leftArm); this.box(0.14,0.12,0.14,mG,0,-0.35,0.05,rightArm);
+        // Aura
         if(tier >= 6) {
             for(let i=0;i<5;i++) {
                 const flame = new THREE.Mesh(new THREE.ConeGeometry(0.05,0.15,4), mG);
-                flame.position.set((Math.random()-0.5)*0.4, 0.5 + Math.random()*0.2, -0.15);
-                t.add(flame);
+                flame.position.set((Math.random()-0.5)*0.4, 0.5 + Math.random()*0.2, -0.15); t.add(flame);
             }
         }
-
-        // Golden aura ring at max tier
         if(tier >= 8) {
             const aura = new THREE.Mesh(new THREE.TorusGeometry(0.5,0.04,8,16), mW);
-            aura.rotation.x = Math.PI/2;
-            aura.position.y = 0;
-            g.add(aura);
+            aura.rotation.x = Math.PI/2; aura.position.y = 0; g.add(aura);
         }
-
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
 
     createGunslinger(c, s=1, tier=0) {
         const g = new THREE.Group();
-        const mB = new THREE.MeshStandardMaterial({color:0x332211, metalness:0.3, roughness:0.8}); // Brown leather coat
-        const mG = new THREE.MeshBasicMaterial({color:c || 0xffaa00}); // Glow color
-        const mS = new THREE.MeshStandardMaterial({color:0x222222, metalness:0.2, roughness:0.9}); // Dark undersuit
-        const mGun = new THREE.MeshStandardMaterial({color:0x888888, metalness:0.9, roughness:0.2}); // Gun metal
-
-        // Legs (Pants)
+        const mB = new THREE.MeshStandardMaterial({color:0x332211, metalness:0.3, roughness:0.8});
+        const mG = new THREE.MeshBasicMaterial({color:c || 0xffaa00});
+        const mS = new THREE.MeshStandardMaterial({color:0x222222, metalness:0.2, roughness:0.9});
+        const mGun = new THREE.MeshStandardMaterial({color:0x888888, metalness:0.9, roughness:0.2});
+        // Legs
         this.box(0.12,0.5,0.14,mS,-0.15,0.25,0,g); this.box(0.12,0.5,0.14,mS,0.15,0.25,0,g);
-        // Holsters
         this.box(0.05,0.15,0.1,mB,-0.23,0.35,0,g); this.box(0.05,0.15,0.1,mB,0.23,0.35,0,g);
-
-        // Torso - Duster Coat
-        const t = this.box(0.4,0.45,0.25,mS,0,0.65,0,g); // Undershirt
-        this.box(0.42,0.5,0.1,mB,0,0.3,-0.15,t); // Coat tails
-
-        // Head - Cowboy Hat / Tac Visor
+        // Torso
+        const t = this.box(0.4,0.45,0.25,mS,0,0.65,0,g); this.box(0.42,0.5,0.1,mB,0,0.3,-0.15,t);
+        // Head
         const h = this.box(0.2,0.22,0.2,mS,0,0.35,0,t);
-        // Hat Brim
-        this.box(0.5,0.02,0.5,mB,0,0.1,0,h);
-        // Hat Top
-        this.box(0.25,0.15,0.25,mB,0,0.18,0,h);
-        // Cyber Eye (Monocle)
+        this.box(0.5,0.02,0.5,mB,0,0.1,0,h); this.box(0.25,0.15,0.25,mB,0,0.18,0,h);
         this.box(0.08,0.05,0.02,mG,0.05,0.05,0.11,h);
-
-        // Poncho / Shoulder Cape (Tier dependent)
-        if(tier >= 2) {
-            const poncho = this.box(0.45,0.2,0.3,mB,0,0.15,0,t);
-            poncho.rotation.z = -0.1;
-        }
-
+        if(tier >= 2) { const poncho = this.box(0.45,0.2,0.3,mB,0,0.15,0,t); poncho.rotation.z = -0.1; }
         // Arms
         const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
         const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
             this.box(0.1,0.4,0.1,mB,0,-0.2,0,arm); return arm;}
-        const leftArm = mkArm(-0.3);
-        const rightArm = mkArm(0.3);
-
-        // Gun (Right Hand) - Revolver style
+        const leftArm = mkArm(-0.3); const rightArm = mkArm(0.3);
+        // Gun
         const gun = new THREE.Group(); gun.position.set(0,-0.35,0.1); rightArm.add(gun);
-        this.box(0.04,0.1,0.03,mB,0,-0.05,0,gun); // Handle
-        this.box(0.05,0.05,0.25,mGun,0,0,0.1,gun); // Barrel
-        this.box(0.06,0.06,0.08,mS,0,0,0,gun); // Cylinder
-
-        // Second Gun (Left Hand) at Tier 4+
-        if(tier >= 4) {
-            const gun2 = gun.clone();
-            leftArm.add(gun2);
-        }
-
-        // Cybernetic Arm at Tier 6+
-        if(tier >= 6) {
-            // Re-render right arm as metal
-            rightArm.children[0].material = mGun;
-            // Add glowing lines
-            this.box(0.11,0.3,0.02,mG,0,-0.2,0.05,rightArm);
-        }
-
-        // Floating Drones / Orbs at Tier 8+
-        if(tier >= 8) {
-            const drone = new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8), mG);
-            drone.position.set(0.5, 0.5, -0.3);
-            t.add(drone);
-        }
-
+        this.box(0.04,0.1,0.03,mB,0,-0.05,0,gun); this.box(0.05,0.05,0.25,mGun,0,0,0.1,gun); this.box(0.06,0.06,0.08,mS,0,0,0,gun);
+        if(tier >= 4) { const gun2 = gun.clone(); leftArm.add(gun2); }
+        if(tier >= 6) { rightArm.children[0].material = mGun; this.box(0.11,0.3,0.02,mG,0,-0.2,0.05,rightArm); }
+        if(tier >= 8) { const drone = new THREE.Mesh(new THREE.SphereGeometry(0.1,8,8), mG); drone.position.set(0.5, 0.5, -0.3); t.add(drone); }
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
 
     createKnight(c, s=1, tier=0) {
         const g = new THREE.Group();
-        const mArmor = new THREE.MeshStandardMaterial({color:0x888888, metalness:0.8, roughness:0.2}); // Shiny steel
-        const mGold = new THREE.MeshStandardMaterial({color:0xffd700, metalness:1.0, roughness:0.3}); // Gold trim
-        const mG = new THREE.MeshBasicMaterial({color:c || 0x00aaff}); // Energy color
-        const mDark = new THREE.MeshStandardMaterial({color:0x222222, metalness:0.5, roughness:0.5}); // Joints
-
-        // Heavy Boots
+        const mArmor = new THREE.MeshStandardMaterial({color:0x888888, metalness:0.8, roughness:0.2});
+        const mGold = new THREE.MeshStandardMaterial({color:0xffd700, metalness:1.0, roughness:0.3});
+        const mG = new THREE.MeshBasicMaterial({color:c || 0x00aaff});
+        const mDark = new THREE.MeshStandardMaterial({color:0x222222, metalness:0.5, roughness:0.5});
+        // Body
         this.box(0.18,0.5,0.18,mArmor,-0.2,0.25,0,g); this.box(0.18,0.5,0.18,mArmor,0.2,0.25,0,g);
-
-        // Chestplate
-        const t = this.box(0.6,0.5,0.35,mArmor,0,0.7,0,g);
-        this.box(0.2,0.2,0.1,mG,0,0.05,0.18,t); // Energy Core
-
-        // Helmet (Bucket style)
-        const h = this.box(0.25,0.3,0.25,mArmor,0,0.45,0,t);
-        // Visor slit
-        this.box(0.26,0.04,0.1,mG,0,0,0.1,h);
-        // Plume / Crest (Tier 2+)
-        if(tier >= 2) {
-            this.box(0.02,0.15,0.2,mG,0,0.22,0,h);
-        }
-
-        // Pauldrons (Shoulders) - Scale with tier
+        const t = this.box(0.6,0.5,0.35,mArmor,0,0.7,0,g); this.box(0.2,0.2,0.1,mG,0,0.05,0.18,t);
+        const h = this.box(0.25,0.3,0.25,mArmor,0,0.45,0,t); this.box(0.26,0.04,0.1,mG,0,0,0.1,h);
+        if(tier >= 2) { this.box(0.02,0.15,0.2,mG,0,0.22,0,h); }
         const pSize = 0.2 + (tier * 0.02);
-        this.box(pSize,pSize,pSize,mArmor,-0.45,0.25,0,t);
-        this.box(pSize,pSize,pSize,mArmor,0.45,0.25,0,t);
-
-        // Cape (Tier 4+)
-        if(tier >= 4) {
-            const cape = this.box(0.5,0.7,0.05,mG,0,-0.1,-0.2,t);
-            cape.rotation.x = 0.2;
-        }
-
+        this.box(pSize,pSize,pSize,mArmor,-0.45,0.25,0,t); this.box(pSize,pSize,pSize,mArmor,0.45,0.25,0,t);
+        if(tier >= 4) { const cape = this.box(0.5,0.7,0.05,mG,0,-0.1,-0.2,t); cape.rotation.x = 0.2; }
         // Arms
         const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
         const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
             this.box(0.15,0.4,0.15,mDark,0,-0.2,0,arm); return arm;}
-        const leftArm = mkArm(-0.4);
-        const rightArm = mkArm(0.4);
-
-        // Weapon: Heavy Sword (Right Arm)
+        const leftArm = mkArm(-0.4); const rightArm = mkArm(0.4);
+        // Sword
         const sword = new THREE.Group(); sword.position.set(0,-0.3,0.1); rightArm.add(sword);
-        this.box(0.04,0.15,0.04,mDark,0,-0.07,0,sword); // Hilt
-        this.box(0.15,0.02,0.08,mGold,0,0,0,sword); // Crossguard
-        const bladeLen = 0.8 + (tier * 0.05);
-        this.box(0.08,bladeLen,0.02,mArmor,0,bladeLen/2,0,sword); // Blade
-        if(tier >= 6) this.box(0.02,bladeLen,0.03,mG,0,bladeLen/2,0,sword); // Energy edge
-
-        // Shield (Left Arm)
+        this.box(0.04,0.15,0.04,mDark,0,-0.07,0,sword); this.box(0.15,0.02,0.08,mGold,0,0,0,sword);
+        const bladeLen = 0.8 + (tier * 0.05); this.box(0.08,bladeLen,0.02,mArmor,0,bladeLen/2,0,sword);
+        if(tier >= 6) this.box(0.02,bladeLen,0.03,mG,0,bladeLen/2,0,sword);
+        // Shield
         const shieldGroup = new THREE.Group(); shieldGroup.position.set(0,-0.2,0.2); leftArm.add(shieldGroup);
-        const shieldW = 0.4 + (tier * 0.03);
-        const shieldH = 0.5 + (tier * 0.03);
-        
-        // Base Shield
-        this.box(shieldW,shieldH,0.05,mArmor,0,0,0,shieldGroup);
-        
-        // Energy Shield Layer (Tier 3+)
-        if(tier >= 3) {
-            this.box(shieldW*0.8,shieldH*0.8,0.06,mG,0,0,0.02,shieldGroup);
-        }
-        
-        // Floating Holographic Shield (Tier 8+)
-        if(tier >= 8) {
-            const holo = this.box(0.8,1.0,0.02,mG,0,0,0.2,shieldGroup);
-            holo.material.transparent = true;
-            holo.material.opacity = 0.5;
-        }
-
+        const sW = 0.4+(tier*0.03), sH=0.5+(tier*0.03);
+        this.box(sW,sH,0.05,mArmor,0,0,0,shieldGroup);
+        if(tier >= 3) this.box(sW*0.8,sH*0.8,0.06,mG,0,0,0.02,shieldGroup);
+        if(tier >= 8) { const holo = this.box(0.8,1.0,0.02,mG,0,0,0.2,shieldGroup); holo.material.transparent = true; holo.material.opacity = 0.5; }
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
 
     createHacker(c, s=1, tier=0) {
         const g = new THREE.Group();
-        const mDark = new THREE.MeshStandardMaterial({color:0x111111, metalness:0.8, roughness:0.2}); // Black Hoodie
-        const mCode = new THREE.MeshBasicMaterial({color:c || 0x00ff00}); // Matrix Green Code
-        const mScreen = new THREE.MeshBasicMaterial({color:0x000000}); // Screen Black
-
-        // -- BODY --
-        // Legs (Disappear into data at Tier 7+)
-        if(tier < 7) {
-            this.box(0.12,0.5,0.12,mDark,-0.15,0.25,0,g); 
-            this.box(0.12,0.5,0.12,mDark,0.15,0.25,0,g);
-        } else {
-            // Floating Data Tail
-            for(let i=0; i<5; i++) {
-                const bit = this.box(0.15 - (i*0.03), 0.15, 0.15 - (i*0.03), mCode, 0, 0.4 - (i*0.15), 0, g);
-                bit.rotation.y = i * 0.5;
-            }
-        }
-
-        // Torso (Hoodie style)
+        const mDark = new THREE.MeshStandardMaterial({color:0x111111, metalness:0.8, roughness:0.2});
+        const mCode = new THREE.MeshBasicMaterial({color:c || 0x00ff00});
+        const mScreen = new THREE.MeshBasicMaterial({color:0x000000});
+        // Legs
+        if(tier < 7) { this.box(0.12,0.5,0.12,mDark,-0.15,0.25,0,g); this.box(0.12,0.5,0.12,mDark,0.15,0.25,0,g); }
+        else { for(let i=0; i<5; i++) { const bit = this.box(0.15-(i*0.03), 0.15, 0.15-(i*0.03), mCode, 0, 0.4-(i*0.15), 0, g); bit.rotation.y = i * 0.5; } }
+        // Torso
         const t = this.box(0.4,0.45,0.25,mDark,0,0.65,0,g);
-        // Matrix lines on chest
-        this.box(0.02,0.3,0.02,mCode,-0.1,0,0.13,t);
-        this.box(0.02,0.3,0.02,mCode,0.1,0,0.13,t);
-        this.box(0.02,0.3,0.02,mCode,0,0,0.13,t);
-
-        // -- HEAD: THE MONITOR --
+        this.box(0.02,0.3,0.02,mCode,-0.1,0,0.13,t); this.box(0.02,0.3,0.02,mCode,0.1,0,0.13,t); this.box(0.02,0.3,0.02,mCode,0,0,0.13,t);
+        // Head
         const h = new THREE.Group(); h.position.set(0,0.4,0); t.add(h);
-        
-        // Monitor Bezel
-        this.box(0.35,0.25,0.2,mDark,0,0,0,h);
-        // The Screen
-        this.box(0.3,0.2,0.05,mScreen,0,0,0.08,h);
-        // Face on Screen (Simple Emote)
-        if(tier >= 9) {
-             // God Mode Eye
-             this.box(0.1,0.1,0.06,mCode,0,0,0.08,h);
-        } else {
-             // Binary Eyes
-             this.box(0.05,0.05,0.06,mCode,-0.08,0,0.08,h);
-             this.box(0.05,0.05,0.06,mCode,0.08,0,0.08,h);
-        }
-        
-        // Hood covering the monitor (Tier 0-6)
-        if(tier < 7) {
-            this.box(0.4,0.3,0.25,mDark,0,0.05,-0.05,h);
-        }
-
-        // -- ACCESSORIES --
-        
-        // Data Cables / Tentacles (Tier 4+)
-        if(tier >= 4) {
-            const cable = this.box(0.02,0.6,0.02,mCode,0,-0.3,-0.2,t);
-            cable.rotation.x = 0.5;
-        }
-
-        // Floating Server Rack / Wings (Tier 6+)
-        if(tier >= 6) {
-             this.box(0.1,0.5,0.4,mDark,-0.4,0.2,-0.2,t);
-             this.box(0.1,0.5,0.4,mDark,0.4,0.2,-0.2,t);
-             // Blink lights
-             this.box(0.02,0.05,0.02,mCode,-0.45,0.4,-0.2,t);
-             this.box(0.02,0.05,0.02,mCode,0.45,0.4,-0.2,t);
-        }
-
-        // -- WEAPON: FLOATING KEYBOARD / DATA CUBE --
+        this.box(0.35,0.25,0.2,mDark,0,0,0,h); this.box(0.3,0.2,0.05,mScreen,0,0,0.08,h);
+        if(tier >= 9) this.box(0.1,0.1,0.06,mCode,0,0,0.08,h); else { this.box(0.05,0.05,0.06,mCode,-0.08,0,0.08,h); this.box(0.05,0.05,0.06,mCode,0.08,0,0.08,h); }
+        if(tier < 7) this.box(0.4,0.3,0.25,mDark,0,0.05,-0.05,h);
+        // Extras
+        if(tier >= 4) { const cable = this.box(0.02,0.6,0.02,mCode,0,-0.3,-0.2,t); cable.rotation.x = 0.5; }
+        if(tier >= 6) { this.box(0.1,0.5,0.4,mDark,-0.4,0.2,-0.2,t); this.box(0.1,0.5,0.4,mDark,0.4,0.2,-0.2,t); }
+        // Arms & Rig
         const ag = new THREE.Group(); ag.position.y=0.25; t.add(ag);
-        
-        // Arms holding it
-        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm);
-            this.box(0.1,0.4,0.1,mDark,0,-0.2,0,arm); return arm;}
-        const leftArm = mkArm(-0.3);
-        const rightArm = mkArm(0.3);
-        
-        // Angle arms forward to type
-        leftArm.rotation.x = -0.5; leftArm.rotation.z = -0.2;
-        rightArm.rotation.x = -0.5; rightArm.rotation.z = 0.2;
-
-        // The "Weapon" Group
+        const mkArm = (x)=>{const arm=new THREE.Group(); arm.position.set(x,0,0); ag.add(arm); this.box(0.1,0.4,0.1,mDark,0,-0.2,0,arm); return arm;}
+        const leftArm = mkArm(-0.3); const rightArm = mkArm(0.3);
+        leftArm.rotation.x = -0.5; leftArm.rotation.z = -0.2; rightArm.rotation.x = -0.5; rightArm.rotation.z = 0.2;
         const rig = new THREE.Group(); rig.position.set(0,-0.3,0.4); t.add(rig);
-
-        if(tier < 5) {
-            // Laptop / Keyboard
-            const board = this.box(0.5,0.02,0.3,mDark,0,0,0,rig);
-            // Holographic keys
-            this.box(0.45,0.02,0.25,mCode,0,0.01,0,rig).material.transparent = true;
-            this.box(0.45,0.02,0.25,mCode,0,0.01,0,rig).material.opacity = 0.5;
-        } else {
-            // Tesseract / Data Cube
-            const cube = this.box(0.25,0.25,0.25,mCode,0,0,0,rig);
-            cube.rotation.y = 0.7;
-            cube.rotation.x = 0.5;
-            // Wireframe effect simulated by inner black box
-            this.box(0.2,0.2,0.2,mScreen,0,0,0,rig);
-        }
-
+        if(tier < 5) { this.box(0.5,0.02,0.3,mDark,0,0,0,rig); const keys=this.box(0.45,0.02,0.25,mCode,0,0.01,0,rig); keys.material.transparent=true; keys.material.opacity=0.5; }
+        else { const cube=this.box(0.25,0.25,0.25,mCode,0,0,0,rig); cube.rotation.y=0.7; cube.rotation.x=0.5; this.box(0.2,0.2,0.2,mScreen,0,0,0,rig); }
         g.scale.set(s,s,s); return {mesh:g, weapon:rightArm};
     },
     

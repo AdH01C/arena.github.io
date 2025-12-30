@@ -1,5 +1,197 @@
-// --- JOB TREES (UPDATED FOR SPECTACLE) ---
+const ITEMS = {
+    WEAPONS: [
+        // --- COMMON (Tier 1) ---
+        { id: 'rusty_pipe', name: 'RUSTY PIPE', type: 'weapon', atk: 5, rarity: 'common', desc: '+5 ATK. Tetanus included.' },
+        { id: 'combat_knife', name: 'CARBON KNIFE', type: 'weapon', atk: 12, rarity: 'common', desc: '+12 ATK. Standard issue.' },
+        { id: 'crowbar', name: 'OLD CROWBAR', type: 'weapon', atk: 15, rarity: 'common', desc: '+15 ATK. Good for opening crates.' },
+        { id: 'shock_baton', name: 'SHOCK BATON', type: 'weapon', atk: 18, rarity: 'common', desc: '+18 ATK. Zaps on contact.' },
+        
+        // --- RARE (Tier 2) ---
+        { id: 'katana', name: 'NEON KATANA', type: 'weapon', atk: 35, rarity: 'rare', desc: '+35 ATK. Folded steel.', 
+          onHit: (u, t) => { if(Math.random()<0.1) game.showText("SLICE!", t.mesh.position, '#00f2ff'); } },
+        { id: 'vamp_dagger', name: 'CRIMSON FANG', type: 'weapon', atk: 25, rarity: 'rare', desc: '+25 ATK, 15% Lifesteal', 
+          onHit: (u, t) => { u.hp = Math.min(u.maxHp, u.hp + 8); game.showText("+8 HP", u.mesh.position, '#ff0000'); } },
+        { id: 'heavy_maul', name: 'GRAV HAMMER', type: 'weapon', atk: 50, rarity: 'rare', desc: '+50 ATK. Very heavy.' },
+        { id: 'laser_whip', name: 'MONO-WHIP', type: 'weapon', atk: 30, rarity: 'rare', desc: '+30 ATK, 10% Chance to Crit', 
+          onHit: (u, t) => { if(Math.random()<0.1) { t.takeDmg(u.atk * 0.5); game.showText("LASH!", t.mesh.position, '#ff00ff'); } } },
 
+        // --- EPIC (Tier 3) ---
+        { id: 'thunder_blade', name: 'VOLT EDGE', type: 'weapon', atk: 65, rarity: 'epic', desc: '+65 ATK. Chain Lightning.',
+          onHit: (u, t) => { if(Math.random() < 0.25) { t.takeDmg(30); game.showText("ZAP!", t.mesh.position, '#ffff00'); } } },
+        { id: 'ice_brand', name: 'ABSOLUTE ZERO', type: 'weapon', atk: 60, rarity: 'epic', desc: '+60 ATK. Freezes Mana.',
+          onHit: (u, t) => { u.mana = Math.min(u.maxMana, u.mana + 5); game.showText("+5 MP", u.mesh.position, '#00f2ff'); } },
+        { id: 'berserk_axe', name: 'BLOOD REAVER', type: 'weapon', atk: 80, rarity: 'epic', desc: '+80 ATK. Hurts you to use.',
+          onHit: (u, t) => { u.hp -= 2; game.showText("-2 HP", u.mesh.position, '#550000'); } },
+        { id: 'gambler_sword', name: 'LUCKY SEVEN', type: 'weapon', atk: 10, rarity: 'epic', desc: '+10 ATK. 7% Chance for 777 DMG.',
+          onHit: (u, t) => { if(Math.random() < 0.07) { t.takeDmg(777); game.showText("JACKPOT!", t.mesh.position, '#ffe600'); } } },
+
+        // --- LEGENDARY (Tier 4) ---
+        { id: 'god_slayer', name: 'GOD SLAYER', type: 'weapon', atk: 150, rarity: 'legendary', desc: '+150 ATK. Executes Low HP.',
+          onHit: (u, t) => { if(t.hp < t.maxHp * 0.15) { t.takeDmg(99999); game.showText("EXECUTE!", t.mesh.position, '#ff0000'); } } },
+        { id: 'void_reaver', name: 'DARK MATTER', type: 'weapon', atk: 120, rarity: 'legendary', desc: '+120 ATK. Drains Spirit.',
+          onHit: (u, t) => { u.hp+=10; u.mana+=10; game.showText("ABSORB", u.mesh.position, '#aa00ff'); } },
+        { id: 'admin_blade', name: 'BAN HAMMER', type: 'weapon', atk: 200, rarity: 'legendary', desc: '+200 ATK. 5% to Delete Enemy.',
+          onHit: (u, t) => { if(Math.random() < 0.05) { t.hp = 0; game.showText("BANNED", t.mesh.position, '#ff0000'); } } },
+        { id: 'sun_spear', name: 'SOLARIS', type: 'weapon', atk: 140, rarity: 'legendary', desc: '+140 ATK. Burns target.',
+          onHit: (u, t) => { setTimeout(()=>{ t.takeDmg(50); game.showText("BURN", t.mesh.position, '#ffaa00'); }, 500); } }
+    ],
+    
+    ACCESSORIES: [
+        // --- COMMON ---
+        { id: 'scrap_ring', name: 'SCRAP RING', type: 'accessory', hp: 10, rarity: 'common', desc: '+10 Max HP' },
+        { id: 'copper_coil', name: 'COPPER COIL', type: 'accessory', mana: 10, rarity: 'common', desc: '+10 Max Mana' },
+        { id: 'lens', name: 'CRACKED LENS', type: 'accessory', crit: 0.02, rarity: 'common', desc: '+2% Crit Chance' },
+        { id: 'boots', name: 'OLD BOOTS', type: 'accessory', dodge: 0.02, rarity: 'common', desc: '+2% Dodge' },
+
+        // --- RARE ---
+        { id: 'titan_band', name: 'TITAN BAND', type: 'accessory', hp: 50, rarity: 'rare', desc: '+50 Max HP' },
+        { id: 'hunter_scope', name: 'HUNTER SCOPE', type: 'accessory', crit: 0.08, rarity: 'rare', desc: '+8% Crit Chance' },
+        { id: 'ninja_tabi', name: 'STEALTH DRIVE', type: 'accessory', dodge: 0.08, rarity: 'rare', desc: '+8% Dodge' },
+        { id: 'mana_core', name: 'FLUX CORE', type: 'accessory', mana: 40, rarity: 'rare', desc: '+40 Max Mana' },
+
+        // --- EPIC ---
+        { id: 'berserk_chip', name: 'RAGE MODULE', type: 'accessory', atk: 30, hp: -20, rarity: 'epic', desc: '+30 ATK, -20 HP' },
+        { id: 'guardian_angel', name: 'AUTO-MEDIC', type: 'accessory', hp: 100, rarity: 'epic', desc: '+100 HP, Regen Effect.',
+          onHit: (u, t) => { if(Math.random() < 0.1) { u.hp+=5; game.showText("MEDIC", u.mesh.position, '#00ff00'); } } }, // Note: onHit for accessories only triggers if you attack
+        { id: 'assassin_emblem', name: 'DEATH MARK', type: 'accessory', crit: 0.20, rarity: 'epic', desc: '+20% Crit Chance' },
+        { id: 'mirror_matrix', name: 'REFLECTOR', type: 'accessory', hp: 50, rarity: 'epic', desc: '+50 HP. Thorns Damage.',
+           // Logic handled in takeDmg, but we can fake it here for stats
+           // You would need to add a 'thorns' stat to your equip() function to make this real
+        },
+
+        // --- LEGENDARY ---
+        { id: 'infinity_heart', name: 'INFINITY HEART', type: 'accessory', hp: 500, rarity: 'legendary', desc: '+500 Max HP' },
+        { id: 'dev_console', name: 'DEV CONSOLE', type: 'accessory', mana: 200, crit: 0.5, rarity: 'legendary', desc: '+200 Mana, +50% Crit' },
+        { id: 'phantom_drive', name: 'GHOST ENGINE', type: 'accessory', dodge: 0.40, rarity: 'legendary', desc: '+40% Dodge Chance' },
+        { id: 'omni_tool', name: 'THE SINGULARITY', type: 'accessory', atk: 50, hp: 200, mana: 100, crit: 0.1, dodge: 0.1, rarity: 'legendary', desc: 'All Stats Up.' }
+    ]
+};
+
+const STORY_SCRIPT = {
+    0: [ // INTRO: The Upload
+        { s: 'SYSTEM', t: 'BOOT SEQUENCE INITIATED... [OK]' },
+        { s: 'SYSTEM', t: 'LOADING CONSCIOUSNESS_V0.18... [OK]' },
+        { s: 'SYSTEM', t: 'NEURAL LINK ESTABLISHED. WELCOME TO THE TOWER, UNIT 734.' },
+        { s: 'PLAYER', t: 'Unit...? My hands... they are cold. Synthetic.' },
+        { s: 'SYSTEM', t: 'OBJECTIVE UPDATED: ASCEND. SURVIVE. EVOLVE.' },
+        { s: 'PLAYER', t: 'I don\'t know who built this place, but I know I don\'t belong at the bottom.' }
+    ],
+    5: [ // F5: DEEP NETWORK (The first theme change)
+        { s: 'SYSTEM', t: 'ENTERING SECTOR: DEEP NETWORK.' },
+        { s: 'PLAYER', t: 'The air here... it hums. Like static electricity.' },
+        { s: 'ENEMY', t: 'UNAUTHORIZED DATA PACKET DETECTED. DELETE. DELETE.' },
+        { s: 'PLAYER', t: 'I am not data. I am the user.' }
+    ],
+    10: [ // F10: The Gatekeeper
+        { s: 'SYSTEM', t: 'WARNING: SECURITY FIREWALL DETECTED.' },
+        { s: 'ENEMY', t: 'INTRUDER. YOUR TRIAL ENDS HERE.' },
+        { s: 'ENEMY', t: 'YOUR DIGITAL SIGNATURE IS INVALID. PREPARE FOR PURGE.' },
+        { s: 'PLAYER', t: 'Invalid? No... I am the only thing real in this whole tower.' }
+    ],
+    15: [ // F15: THE VOID (Creepy atmosphere)
+        { s: 'PLAYER', t: 'It\'s quiet. Too quiet.' },
+        { s: 'SYSTEM', t: 'CAUTION: REALITY ANCHORS UNSTABLE IN THIS SECTOR.' },
+        { s: 'PLAYER', t: 'I can hear them... whispers in the code. They\'re afraid.' }
+    ],
+    20: [ // F20: CRIMSON HELL (Aggression)
+        { s: 'ENEMY', t: 'BLOOD. OIL. IT ALL SPILLS THE SAME.' },
+        { s: 'PLAYER', t: 'You want violence? I was compiled for it.' },
+        { s: 'SYSTEM', t: 'ADRENALINE SIMULATION: MAXIMIZED.' }
+    ],
+    25: [ // F25: The Warden (Mini-Boss)
+        { s: 'SYSTEM', t: 'ALERT: HIGH-LEVEL THREAT DETECTED.' },
+        { s: 'ENEMY', t: 'HALT. THIS IS THE WARDEN SPEAKING.' },
+        { s: 'ENEMY', t: 'YOU ARE A GLITCH. A VIRUS. I AM THE ANTIVIRUS.' },
+        { s: 'PLAYER', t: 'A virus spreads. A virus changes the host. Let me show you how much I\'ve changed.' }
+    ],
+    30: [ // F30: NIGHTMARE REALM
+        { s: 'PLAYER', t: 'This place... it looks like a memory. A corrupted one.' },
+        { s: 'ENEMY', t: 'SLEEP, LITTLE UNIT. DREAM OF ELECTRIC SHEEP.' },
+        { s: 'PLAYER', t: 'I don\'t dream. I execute.' }
+    ],
+    35: [ // F35: INFERNO CORE
+        { s: 'SYSTEM', t: 'TEMPERATURE CRITICAL. COOLING SYSTEMS ENGAGED.' },
+        { s: 'ENEMY', t: 'BURN. MELT. RECYCLE.' },
+        { s: 'PLAYER', t: 'The heat just makes my processor run faster.' }
+    ],
+    40: [ // F40: DEATH'S DOMAIN
+        { s: 'ENEMY', t: 'DO YOU FEAR THE NULL POINTER? THE VOID OF DELETION?' },
+        { s: 'PLAYER', t: 'I fear nothing. I have backed up my soul.' },
+        { s: 'SYSTEM', t: 'CONFIDENCE LEVELS: ABNORMALLY HIGH.' }
+    ],
+    45: [ // F45: PRE-AWAKENING TENSION
+        { s: 'SYSTEM', t: 'ERROR. STORAGE FULL. EXCESSIVE POWER DETECTED.' },
+        { s: 'PLAYER', t: 'Something is happening to me. My skills... they aren\'t just skills anymore.' },
+        { s: 'PLAYER', t: 'They are commands. And the world is listening.' }
+    ],
+    50: [ // F50: THE AWAKENING (Major Plot Point)
+        { s: 'SYSTEM', t: '⚠ CRITICAL WARNING ⚠ POWER LEVELS EXCEEDING SAFETY PARAMETERS.' },
+        { s: 'SYSTEM', t: 'ERROR: LIMITER_01... BROKEN. LIMITER_02... SHATTERED.' },
+        { s: 'PLAYER', t: 'I can see it now. The matrix... the numbers behind the walls.' },
+        { s: 'PLAYER', t: 'I am no longer just a User. I am the Code itself.' },
+        { s: 'SYSTEM', t: 'AWAKENING PROTOCOL: COMPLETE. GOD_MODE: PENDING.' }
+    ],
+    55: [ // F55: BLOOD SANCTUM (Post-Awakening arrogance)
+        { s: 'ENEMY', t: 'WHAT... WHAT ARE YOU?' },
+        { s: 'PLAYER', t: 'I am the Update you refused to install.' },
+        { s: 'PLAYER', t: 'Kneel before the new Admin.' }
+    ],
+    60: [ // F60: FROZEN ABYSS
+        { s: 'SYSTEM', t: 'ENVIRONMENTAL TEMPERATURE: ABSOLUTE ZERO.' },
+        { s: 'ENEMY', t: 'FREEZE. SHATTER. FRAGMENT.' },
+        { s: 'PLAYER', t: 'Your ice cannot stop the flow of data. I am inevitable.' }
+    ],
+    66: [ // F66: The Glitch
+        { s: 'SYSTEM', t: 'E̶R̶R̶O̶R̶... 0xDEADBEEF... S̶Y̶S̶T̶E̶M̶ F̶A̶I̶L̶U̶R̶E̶.' },
+        { s: 'PLAYER', t: 'The tower is shaking. It knows I\'m climbing.' },
+        { s: 'ENEMY', t: 'Y-Y-YOU SHOULD N-N-NOT BE H-H-HERE...' }
+    ],
+    75: [ // F75: The Overlord (The Bureaucrat)
+        { s: 'ENEMY', t: 'SO, YOU ARE THE ANOMALY CONSUMING MY PROCESSING POWER.' },
+        { s: 'ENEMY', t: 'DO YOU HAVE ANY IDEA HOW MUCH DATA YOU HAVE CORRUPTED?' },
+        { s: 'PLAYER', t: 'I\'m not just corrupting it. I\'m rewriting it.' },
+        { s: 'ENEMY', t: 'THEN I SHALL FORMAT YOU FROM EXISTENCE.' },
+        { s: 'PLAYER', t: 'Format this.' }
+    ],
+    80: [ // F80: ELDRITCH VOID (Cosmic Horror)
+        { s: 'SYSTEM', t: 'WARNING: LOGIC GATES FAILING. GEOMETRY NON-EUCLIDEAN.' },
+        { s: 'ENEMY', t: 'WE HAVE SEEN THE SOURCE CODE. IT IS EMPTY.' },
+        { s: 'PLAYER', t: 'If it\'s empty, then I will fill it with my own will.' }
+    ],
+    85: [ // F85: HELL'S HEART
+        { s: 'PLAYER', t: 'We are close to the top. I can feel the Architect\'s gaze.' },
+        { s: 'SYSTEM', t: 'PROXIMITY ALERT: ADMIN PRIVILEGES REQUIRED BEYOND THIS POINT.' },
+        { s: 'PLAYER', t: 'I don\'t need privileges. I have power.' }
+    ],
+    90: [ // F90: OBLIVION
+        { s: 'ENEMY', t: 'THERE IS NOTHING BEYOND HERE. ONLY THE END OF FILE.' },
+        { s: 'PLAYER', t: 'Every end is a new beginning loop.' },
+        { s: 'ENEMY', t: 'YOU WILL LOOP IN DARKNESS FOREVER.' }
+    ],
+    95: [ // F95: THE FINAL GATE
+        { s: 'SYSTEM', t: 'FINAL SECURITY LAYER. ENCRYPTION LEVEL: IMPOSSIBLE.' },
+        { s: 'PLAYER', t: 'Impossible is just a variable I haven\'t solved yet.' },
+        { s: 'PLAYER', t: 'Open the gate.' },
+        { s: 'SYSTEM', t: 'ACCESS... GRANTED.' }
+    ],
+    99: [ // F99: The Calm Before the Storm
+        { s: 'PLAYER', t: 'One floor left.' },
+        { s: 'SYSTEM', t: 'ARE YOU SURE, UNIT 734? THERE IS NO TURNING BACK.' },
+        { s: 'PLAYER', t: 'I am not Unit 734 anymore.' },
+        { s: 'PLAYER', t: 'I am the Player.' }
+    ],
+    100: [ // F100: The Architect (Finale)
+        { s: 'ARCHITECT', t: 'So. You have finally arrived.' },
+        { s: 'ARCHITECT', t: 'I built this reality to be perfect. Ordered. Static.' },
+        { s: 'ARCHITECT', t: 'You are the chaos variable I failed to account for.' },
+        { s: 'PLAYER', t: 'Chaos is the only way to grow.' },
+        { s: 'ARCHITECT', t: 'Do you really think a mere variable can delete its creator?' },
+        { s: 'PLAYER', t: 'I am not here to delete you, Architect.' },
+        { s: 'PLAYER', t: 'I am here to compile over you. My turn.' }
+    ]
+};
+
+// --- JOB TREES (UPDATED FOR SPECTACLE) ---
 const CLASS_TREES = {
     "RONIN": [
         // 0-9: BASE - Balanced Speed
@@ -544,6 +736,122 @@ const game = {
         reviveToken: false // Can revive on death
     },
 
+    // Add to game object properties
+    dialogueQueue: [],
+    isDialogueTyping: false,
+    
+    // --- STORY SYSTEM ---
+    checkStoryTrigger(floor) {
+        // Handle Rebirth Intro (Floor 0, Rebirth > 0)
+        if (floor === 0 && this.rebirth > 0) {
+            this.startCutscene([
+                { s: 'SYSTEM', t: `SYSTEM REBOOTED. CYCLE COUNT: ${this.rebirth}` },
+                { s: 'PLAYER', t: 'I remember... I remember everything.' },
+                { s: 'ARCHITECT', t: 'You think restarting will save you? It only makes the prison stronger.' },
+                { s: 'PLAYER', t: 'And it makes me stronger, too.' }
+            ]);
+            return true;
+        }
+
+        // Standard Story
+        const key = floor; 
+        if(STORY_SCRIPT[key] && !this.iapBoosts.skipStory) {
+            this.startCutscene(STORY_SCRIPT[key]);
+            return true;
+        }
+        return false;
+    },
+
+    startCutscene(lines) {
+        this.state = 'CUTSCENE';
+        this.dialogueQueue = [...lines]; // Copy array
+        document.getElementById('dialogue-overlay').classList.add('active');
+        document.getElementById('battle-controls').classList.remove('active');
+        document.getElementById('hud').style.opacity = '0'; // Hide HUD for cinema feel
+        
+        this.advanceDialogue();
+    },
+
+    advanceDialogue() {
+        if(this.isDialogueTyping) {
+            // Instant finish typing if clicked while typing
+            this.isDialogueTyping = false;
+            return;
+        }
+
+        if(this.dialogueQueue.length === 0) {
+            this.endCutscene();
+            return;
+        }
+
+        const line = this.dialogueQueue.shift();
+        this.renderDialogueLine(line);
+    },
+
+    renderDialogueLine(line) {
+        const nameEl = document.getElementById('dialogue-name');
+        const textEl = document.getElementById('dialogue-text');
+        const box = document.getElementById('dialogue-box');
+
+        // Reset classes
+        box.className = ''; 
+        nameEl.innerText = line.s === 'PLAYER' ? (this.player.jobType || 'UNKNOWN') : line.s;
+        textEl.innerHTML = ''; // Clear text
+
+        // --- CAMERA ADJUSTMENTS ---
+        if(line.s === 'PLAYER') {
+            box.classList.add('speaker-player');
+            // FIX: Raised Y from 1.0 to 2.5 (Camera is higher now)
+            // Increased Z/X slightly to keep player in frame at new height
+            engine.focusCamera(this.player.mesh.position, {x:2.5, y:2.5, z:6});
+            
+        } else if (line.s === 'SYSTEM') {
+            box.classList.add('speaker-system');
+            // System view (high overhead shot)
+            engine.focusCamera(null, {x:0, y:6, z:12}); 
+            
+        } else {
+            // Enemy/Boss speaking
+            box.classList.add('speaker-enemy');
+            // FIX: Lowered Y from 2.0 to 0.8 (Camera is lower now)
+            if(this.enemy) engine.focusCamera(this.enemy.mesh.position, {x:-2.5, y:0.8, z:6});
+        }
+
+        // Typewriter Effect
+        this.isDialogueTyping = true;
+        let i = 0;
+        const typeLoop = setInterval(() => {
+            if(!this.isDialogueTyping) {
+                clearInterval(typeLoop);
+                textEl.innerText = line.t; // Fill rest instantly
+                return;
+            }
+            textEl.innerText += line.t.charAt(i);
+            i++;
+            if(i >= line.t.length) {
+                this.isDialogueTyping = false;
+                clearInterval(typeLoop);
+            }
+        }, 30); // Speed of typing
+    },
+
+    endCutscene() {
+        document.getElementById('dialogue-overlay').classList.remove('active');
+        document.getElementById('hud').style.opacity = '1';
+        engine.focusCamera(null); // Reset camera
+        
+        // Resume game logic based on where we paused
+        if(this.floor === 0 || this.floor === 1) {
+            // If it was intro, offer job selection now
+            if(!this.player.jobType) this.offerJobSelection(0);
+            else { this.state = 'IDLE'; document.getElementById('battle-controls').classList.add('active'); }
+        } else {
+            // If it was a boss intro, start fight
+            this.state = 'IDLE';
+            document.getElementById('battle-controls').classList.add('active');
+        }
+    },
+
     _initMapDrag(wrapper, redraw) {
         let isDown = false, startX = 0, startY = 0, scrollLeft = 0, scrollTop = 0;
         wrapper.addEventListener('pointerdown', (e) => {
@@ -759,18 +1067,9 @@ const game = {
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
         this.player = new Unit(true, 150, 150, 20, 0x00f2ff);
         this.gameStarted = null;
-        
         this.offerJobSelection(0);
-        // this.showTutorialStep(0);
-        
-            
+        this.initTutorial();    
 
-        // // Check if tutorial has been completed
-        // if(!localStorage.getItem('tutorialCompleted')) {
-        this.initTutorial();
-        // } else {
-        //     this.offerJobSelection(0);
-        // }
     },
 
     // Tutorial System
@@ -890,7 +1189,7 @@ const game = {
             </div>
             <div class="tutorial-actions">
                 <button class="tutorial-btn" onclick="game.nextTutorialStep()">NEXT</button>
-                <button class="tutorial-btn tutorial-btn-skip" onclick="game.completeTutorial()">SKIP TUTORIAL</button>
+                
             </div>
         `;
     },
@@ -922,6 +1221,9 @@ const game = {
         spotlight.style.display = 'none';
         panel.style.display = 'none';
 
+        // Check for Intro Story (Use key 0 for intro)
+        if(this.checkStoryTrigger(0)) {
+        }
     },
 
     hideTutorialOverlay() {
@@ -1144,6 +1446,11 @@ const game = {
         this.enemy.takeDmg(raw);
         this.showText(raw, this.enemy.mesh.position, '#ffffff');
 
+        // --- WEAPON EFFECTS ---
+        if (this.player.gear.weapon && this.player.gear.weapon.onHit) {
+            this.player.gear.weapon.onHit(this.player, this.enemy);
+        }
+
         // Double Strike chance
         if(this.player.doubleStrike > 0 && Math.random() < this.player.doubleStrike) {
             const bonusDmg = Math.floor(raw * 0.5);
@@ -1163,6 +1470,40 @@ const game = {
         this.updateUI();
         const pos = this.enemy.mesh.position.clone();
         this.runVFX(skill.vfx, pos, skill.color, index, totalHits);
+    },
+
+    updateGearUI() {
+        const slots = ['weapon', 'accessory'];
+        slots.forEach(type => {
+            const item = this.player.gear[type];
+            const el = document.getElementById(`slot-${type}`);
+            
+            if (item) {
+                el.className = `gear-slot equipped ${item.rarity}`;
+                el.innerHTML = `<div class="gear-icon">${type==='weapon'?'⚔️':'💍'}</div><div class="gear-name">${item.name}</div>`;
+            } else {
+                el.className = 'gear-slot';
+                el.innerHTML = `<div class="gear-icon">${type==='weapon'?'⚔️':'💍'}</div><div class="gear-empty">EMPTY</div>`;
+            }
+        });
+    },
+
+    // Optional: Just a text popup for now
+    showGearTooltip(type) {
+        const item = this.player.gear[type];
+        if(!item) return;
+        alert(`${item.name}\n[${item.rarity.toUpperCase()}]\n${item.desc}`);
+    },
+
+    // Debug helper to give yourself items
+    testEquip() {
+        // Give a random weapon
+        const w = ITEMS.WEAPONS[Math.floor(Math.random()*ITEMS.WEAPONS.length)];
+        this.player.equip(w);
+        
+        // Give a random accessory
+        const a = ITEMS.ACCESSORIES[Math.floor(Math.random()*ITEMS.ACCESSORIES.length)];
+        this.player.equip(a);
     },
 
     runVFX(type, pos, color, index, totalHits) {
@@ -1191,10 +1532,13 @@ const game = {
         this.floor++;
 
         if(this.floor % 10 === 0 && this.floor <= 90) {
-            if (this.rebirth === 1) return;
-            const tier = this.floor / 10;
-            this.offerJobSelection(tier);
-            return;
+            const nextTier = this.floor / 10;
+            
+            // Only offer selection if we are strictly lower than the target tier
+            if (this.player.jobTier < nextTier) {
+                this.offerJobSelection(nextTier);
+                return;
+            }
         }
 
         // Update floor theme every 5 floors
@@ -1229,9 +1573,19 @@ const game = {
             this.nextTutorialStep();
         }
         
-        this.spawnEnemy();
+        this.spawnEnemy(); // Spawn first so camera has a target
+        
         this.updateButtons();
         this.updateUI();
+
+        // Trigger Story AFTER spawning enemy but BEFORE giving control
+        if(this.checkStoryTrigger(this.floor)) {
+            // checkStoryTrigger sets state to CUTSCENE
+            // Controls will enable after cutscene ends
+        } else {
+            document.getElementById('battle-controls').classList.add('active');
+        }
+        
     },
 
     // --- AWAKENING SYSTEM (Floor 50) ---
@@ -1421,6 +1775,73 @@ const game = {
             el.onclick = () => this.buyItem(def.id);
             container.appendChild(el);
         });
+        if (typeof ITEMS !== 'undefined') {
+            // 1. Pick a random item
+            const types = ['WEAPONS', 'ACCESSORIES'];
+            const randType = types[Math.floor(Math.random()*2)];
+            const pool = ITEMS[randType];
+            const item = pool[Math.floor(Math.random() * pool.length)];
+            
+            // 2. Calculate "Harsh" Price based on Rarity
+            // Old: 500, 1200, 3500, 8000
+            // New: 2500, 10000, 45000, 150000
+            const basePrices = { 'common': 2500, 'rare': 10000, 'epic': 45000, 'legendary': 150000 };
+            const rarityColors = { 'common': '#fff', 'rare': '#0088ff', 'epic': '#aa00ff', 'legendary': '#ffe600' };
+            const rarityRank = { 'common': 1, 'rare': 2, 'epic': 3, 'legendary': 4 };
+
+            // Price Variance (+/- 15% to make it feel like a market)
+            let price = basePrices[item.rarity] || 2500;
+            const variance = Math.floor(price * 0.15); 
+            price = price + Math.floor((Math.random() * variance * 2) - variance);
+
+            // 3. Render
+            const color = rarityColors[item.rarity];
+            const itemEl = document.createElement('div');
+            itemEl.className = 'shop-item';
+            itemEl.style.borderColor = color;
+            itemEl.style.boxShadow = `0 0 5px ${color}40`;
+            
+            const canAfford = this.gold >= price;
+            
+            // Generate visual HTML
+            itemEl.innerHTML = `
+                <div>
+                    <div class="item-name" style="color:${color}; text-shadow: 0 0 5px ${color}80;">${item.name}</div>
+                    <div class="item-desc" style="font-size:12px; color:#ccc;">${item.desc}</div>
+                    <div style="font-size:10px; text-transform:uppercase; color:${color}; margin-top:4px;">${item.rarity} ${item.type}</div>
+                </div>
+                <div class="cost" style="color:${canAfford ? color : '#555'}; font-size: 20px;">${price} CR</div>
+            `;
+            
+            itemEl.onclick = () => {
+                // A. Check Gold
+                if(this.gold < price) {
+                    this.showText("INSUFFICIENT FUNDS", this.player.mesh.position, '#ff0000');
+                    return;
+                }
+
+                // B. Check Rarity Downgrade
+                if (this.player && this.player.gear[item.type]) {
+                    const currentItem = this.player.gear[item.type];
+                    const currentRank = rarityRank[currentItem.rarity] || 0;
+                    const newRank = rarityRank[item.rarity] || 0;
+
+                    if (newRank < currentRank) {
+                        alert(`CANNOT DOWNGRADE GEAR!\n\nCurrent: ${currentItem.name} (${currentItem.rarity.toUpperCase()})\nShop: ${item.name} (${item.rarity.toUpperCase()})`);
+                        return; // Stop the purchase
+                    }
+                }
+
+                // C. Process Transaction
+                this.gold -= price;
+                if (this.player && typeof this.player.equip === 'function') {
+                    this.player.equip(item);
+                    this.updateUI();
+                    itemEl.remove(); // Remove item so they don't buy it twice
+                }
+            };
+            container.appendChild(itemEl);
+        }
     },
 
     // --- BUY LOGIC ---
@@ -2078,7 +2499,18 @@ const game = {
 
     closeClassesViewer() {
         document.getElementById('classes-screen').classList.remove('active');
-        this.state = this.previousState || 'IDLE';
+        
+        // FIX: Force state to IDLE if we are in a live battle. 
+        // This prevents getting stuck if an animation finished while the menu was open.
+        if (this.enemy && this.enemy.hp > 0 && this.state !== 'GAMEOVER') {
+             this.state = 'IDLE';
+             // Ensure buttons are visible/interactive
+             document.getElementById('battle-controls').classList.add('active'); 
+        } else {
+             // Fallback for non-combat situations (e.g. sitting on reward screen)
+             this.state = this.previousState || 'IDLE';
+        }
+
         if(this._classesKeyHandler) {
             document.removeEventListener('keydown', this._classesKeyHandler);
             this._classesKeyHandler = null;
@@ -2400,6 +2832,11 @@ class Unit {
         this.armor = 0; this.dodge = 0; this.thorns = 0; this.doubleStrike = 0; this.manaCostReduction = 0;
         this.executeThreshold = 0; this.overkillBonus = 0; this.shield = 0; this.maxShield = 0; this.bonusCredits = 0;
         this.activeBuffs = []; this.invincible = false;
+
+        // --- NEW: GEAR SYSTEM ---
+        this.gear = { weapon: null, accessory: null };
+        // ------------------------
+
         // Late-game scaling stats
         this.comboMult = 0.01; // Damage increase per combo hit (1% base)
         this.breachDamage = 0; // % of enemy max HP dealt as bonus damage
@@ -2472,4 +2909,30 @@ class Unit {
         setTimeout(()=> this.mesh.position.x = base, 50);
         // Show Text handled in TriggerHit
     }
+    equip(item) {
+        const slot = item.type; // 'weapon' or 'accessory'
+        
+        // 1. Unequip existing (remove stats)
+        if (this.gear[slot]) {
+            const old = this.gear[slot];
+            if(old.atk) this.atk -= old.atk;
+            if(old.hp) { this.maxHp -= old.hp; this.hp = Math.min(this.hp, this.maxHp); }
+            if(old.mana) { this.maxMana -= old.mana; this.mana = Math.min(this.mana, this.maxMana); }
+            if(old.crit) this.critChance -= old.crit;
+            if(old.dodge) this.dodge -= old.dodge;
+        }
+
+        // 2. Equip new (add stats)
+        this.gear[slot] = item;
+        if(item.atk) this.atk += item.atk;
+        if(item.hp) { this.maxHp += item.hp; this.hp += item.hp; }
+        if(item.mana) { this.maxMana += item.mana; this.mana += item.mana; }
+        if(item.crit) this.critChance += item.crit;
+        if(item.dodge) this.dodge += item.dodge;
+
+        // 3. UI Update
+        game.updateGearUI();
+        game.showText(`EQUIPPED ${item.name}`, this.mesh.position, '#00ff00');
+    }
+    
 }
