@@ -1137,7 +1137,7 @@ const game = {
         engine.setFloorTheme(1);
         if(this.player) engine.scene.remove(this.player.mesh);
         if(this.enemy) engine.scene.remove(this.enemy.mesh);
-        this.player = new Unit(true, 200, 200, 10, 0x00f2ff);
+        this.player = new Unit(true, 200, 200, 100, 0x00f2ff);
         this.gameStarted = null;
         this.offerJobSelection(0);
         this.initTutorial();    
