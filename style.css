@@ -428,18 +428,38 @@ body {
     animation: floatUp 0.6s forwards;
     text-shadow: 0 0 5px #000;
     z-index: 20;
+    text-align: center;
+    white-space: nowrap;
 }
 
 @keyframes floatUp {
     0% {
         opacity: 1;
-        transform: translateY(0) scale(0.5);
+        transform: translate(-50%, 0) scale(0.5);
     }
 
     100% {
         opacity: 0;
-        transform: translateY(-80px) scale(1.2);
+        transform: translate(-50%, -80px) scale(1.2);
     }
+}
+
+@keyframes mutationFlash {
+
+    0%,
+    100% {
+        background: rgba(255, 0, 0, 0.2);
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    }
+
+    50% {
+        background: rgba(255, 0, 0, 0.5);
+        box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+    }
+}
+
+.mutation-active {
+    animation: mutationFlash 2s infinite ease-in-out;
 }
 
 /* --- IAP SHOP STYLES --- */

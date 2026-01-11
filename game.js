@@ -521,80 +521,80 @@ const CLASS_TREES = {
         // 0-9: BASE
         {
             name: "STREET-PUNK", desc: "Tier 1: Speed", skills: [
-                { name: "JAB", cost: 0, mult: 0.5, color: 0xff4400, vfx: 'punch', hits: 2, isFrenzy: true, desc: "Send a flurry of rapid-fire punches. Mash to keep the heat coming!" },
-                { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', hits: 1, doubleAttack: true, desc: "A massive, double-swinging hook that delivers twice the power." },
+                { name: "JAB", cost: 0, mult: 0.1, color: 0xff4400, vfx: 'punch', hits: 5, desc: "Deliver 5 rapid punches that pummel the target's core." },
+                { name: "HAYMAKER", cost: 25, mult: 0.25, color: 0xff6600, vfx: 'heavy', hits: 8, desc: "A sweeping barrage of 8 heavy-duty strikes." },
                 { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atk', buffVal: 0.20, duration: 8, color: 0xff4400, desc: "Flood your actuators with combat-stims for 20% more ATK Power." }
             ]
         },
         // 10-19
         {
             name: "CHROME-BOXER", desc: "Tier 2: Combos", skills: [
-                { name: "ONE-TWO", cost: 0, mult: 0.35, color: 0xff5500, vfx: 'punch', hits: 4, isFrenzy: true, desc: "A technical combo that leads to a mashing frenzy of 4+ hits." },
-                { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', hits: 1, doubleAttack: true, desc: "A bone-shattering vertical strike that hits twice on the way up." },
+                { name: "ONE-TWO", cost: 0, mult: 0.08, color: 0xff5500, vfx: 'punch', hits: 10, desc: "A technical combo consisting of 10 lightning-fast strikes." },
+                { name: "UPPERCUT", cost: 40, mult: 0.2, color: 0xff7700, vfx: 'heavy', hits: 12, desc: "Launch the enemy with a 12-hit vertical assault." },
                 { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atk', buffVal: 0.30, duration: 8, color: 0xff5500, desc: "Tap into your primal fury to boost ATK by 30%." }
             ]
         },
         // 20-29
         {
             name: "CYBER-KICK", desc: "Tier 3: Kicks", skills: [
-                { name: "RAPID KICKS", cost: 0, mult: 0.25, color: 0xff6600, vfx: 'punch', hits: 7, isFrenzy: true, desc: "A 7-kick hydraulic sequence. Mash to continue the barrage!" },
-                { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', hits: 1, doubleAttack: true, desc: "A spinning kick that delivers double-impact force to the head." },
+                { name: "RAPID KICKS", cost: 0, mult: 0.06, color: 0xff6600, vfx: 'punch', hits: 15, desc: "A 15-kick hydraulic sequence that shatters steel." },
+                { name: "ROUNDHOUSE", cost: 55, mult: 0.15, color: 0xff8800, vfx: 'slash', hits: 18, desc: "A spinning kick that delivers 18 continuous impacts." },
                 { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atk', buffVal: 0.40, duration: 8, color: 0xff6600, desc: "Ignite your internal fire for a sustained 40% ATK boost." }
             ]
         },
         // 30-39
         {
             name: "GRAPPLER", desc: "Tier 4: Throws", skills: [
-                { name: "COMBO STRIKE", cost: 0, mult: 0.2, color: 0xff7700, vfx: 'punch', hits: 10, isFrenzy: true, desc: "A 10-hit technical sequence. Overclock your mashing to the limit!" },
-                { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', hits: 1, doubleAttack: true, desc: "Grab the target and deliver a double-impact seismic slam." },
+                { name: "COMBO STRIKE", cost: 0, mult: 0.05, color: 0xff7700, vfx: 'punch', hits: 20, desc: "A 20-hit technical sequence involving every limb." },
+                { name: "PILEDRIVER", cost: 70, mult: 0.1, color: 0xff9900, vfx: 'heavy', hits: 25, desc: "A sustained 25-hit wrestling sequence into a seismic slam." },
                 { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atk', buffVal: 0.50, duration: 8, color: 0xff7700, desc: "Harden your resolve and your metal for a permanent 50% ATK boost." }
             ]
         },
         // 40-49
         {
             name: "BERSERKER", desc: "Tier 5: Fury", skills: [
-                { name: "FRENZY", cost: 0, mult: 0.18, color: 0xff2200, vfx: 'punch', hits: 13, isFrenzy: true, desc: "A 13-hit wild barrage. Mash as if your chassis depends on it!" },
-                { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 2, doubleAttack: true, desc: "Tear through the enemy with a double-hit omni-directional assault." },
+                { name: "BARRAGE", cost: 0, mult: 0.04, color: 0xff2200, vfx: 'punch', hits: 30, desc: "30 punches delivered in a wild, unhinged barrage." },
+                { name: "RAMPAGE", cost: 85, mult: 0.08, color: 0xff0000, vfx: 'omni', hits: 35, desc: "Tear through the enemy with 35 omni-directional blows." },
                 { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atk', buffVal: 0.60, duration: 8, color: 0xff2200, desc: "Enter a state of total combat madness, gaining 60% extra ATK Power." }
             ]
         },
         // 50-59
         {
             name: "PIT-CHAMPION", desc: "Tier 6: Glory", skills: [
-                { name: "FLURRY", cost: 0, mult: 0.16, color: 0xffaa00, vfx: 'punch', hits: 16, isFrenzy: true, desc: "A professional 16-hit flurry. Keep the pressure on with mashing!" },
-                { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', hits: 1, doubleAttack: true, desc: "Focus all momentum into one double-impact, match-ending blow." },
+                { name: "FLURRY", cost: 0, mult: 0.035, color: 0xffaa00, vfx: 'punch', hits: 40, desc: "A professional 40-hit flurry that leaves no openings." },
+                { name: "FINISHER", cost: 100, mult: 0.07, color: 0xffcc00, vfx: 'crit', hits: 45, desc: "A final 45-hit sequence to end any simulation." },
                 { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atk', buffVal: 0.75, duration: 8, color: 0xffaa00, desc: "The determination to win, manifesting as a 75% ATK boost." }
             ]
         },
         // 60-69
         {
             name: "IRON-TITAN", desc: "Tier 7: Power", skills: [
-                { name: "METEOR FISTS", cost: 0, mult: 0.15, color: 0xff5500, vfx: 'punch', hits: 20, isFrenzy: true, desc: "20 punches as heavy as falling stars. Mash for orbital velocity!" },
-                { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', hits: 1, doubleAttack: true, desc: "A double-impact strike with the force of a tectonic shift." },
+                { name: "METEOR FISTS", cost: 0, mult: 0.03, color: 0xff5500, vfx: 'punch', hits: 50, desc: "50 punches as heavy as falling stars." },
+                { name: "TITAN SMASH", cost: 130, mult: 0.06, color: 0xff8800, vfx: 'nuke', hits: 60, desc: "A double-impact sequence of 60 hits causing tectonic shifts." },
                 { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atk', buffVal: 1.0, duration: 8, color: 0xff5500, desc: "Become a juggernaut of pure force, doubling your current ATK power." }
             ]
         },
         // 70-79
         {
             name: "GOD-FIST", desc: "Tier 8: Divine", skills: [
-                { name: "INFINITE COMBO", cost: 0, mult: 0.12, color: 0xffd700, vfx: 'omni', hits: 30, isFrenzy: true, desc: "A 30-hit sequence that defies physics. Mash for eternity!" },
-                { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', hits: 1, doubleAttack: true, desc: "A double-impact holy punch delivered with the speed of light." },
+                { name: "OMNI-STRIKE", cost: 0, mult: 0.025, color: 0xffd700, vfx: 'omni', hits: 75, desc: "A 75-hit sequence that defies divine physics." },
+                { name: "DIVINE STRIKE", cost: 160, mult: 0.05, color: 0xffffff, vfx: 'god_beam', hits: 90, desc: "90 holy punches delivered with the speed of light." },
                 { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atk', buffVal: 1.25, duration: 8, color: 0xffd700, desc: "Ascend to the pinnacle of martial prowess, +125% to all ATK Power." }
             ]
         },
         // 80-89
         {
             name: "STAR-BREAKER", desc: "Tier 9: Cosmic", skills: [
-                { name: "STAR RUSH", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'omni', hits: 40, isFrenzy: true, desc: "40 strikes inspired by the birth of galaxies. Mash for cosmic glory!" },
-                { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', hits: 1, doubleAttack: true, desc: "A double-hit collapse that crushes entire star systems." },
+                { name: "STAR RUSH", cost: 0, mult: 0.02, color: 0xffff00, vfx: 'omni', hits: 120, desc: "120 strikes inspired by the collision of galaxies." },
+                { name: "GALAXY CRUSHER", cost: 200, mult: 0.04, color: 0xffffff, vfx: 'blackhole', hits: 150, desc: "A 150-hit collapse that crushes entire star systems." },
                 { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atk', buffVal: 1.50, duration: 8, color: 0xffff00, desc: "Remove your physical shackles for a massive 150% ATK boost." }
             ]
         },
         // 90+
         {
             name: "ONE-PUNCH", desc: "Tier 10: END", skills: [
-                { name: "SERIOUS PUNCHES", cost: 0, mult: 0.08, color: 0xffffff, vfx: 'omni', hits: 60, isFrenzy: true, desc: "60 absolute punches. Mash for total victory!" },
-                { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1, desc: "This is the end. One punch is all I need. (999x Damage)" },
+                { name: "SERIOUS PUNCHES", cost: 0, mult: 0.015, color: 0xffffff, vfx: 'omni', hits: 250, desc: "250 absolute punches that guarantee total victory." },
+                { name: "THOUSAND PUNCHES", cost: 500, mult: 0.01, color: 0xffd700, vfx: 'nuke', hits: 1000, desc: "The absolute end. 1000 punches in a single blink." },
                 { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atk', buffVal: 2.0, duration: 8, color: 0xffffff, desc: "Tap into an infinite well of power, tripling your base ATK Power." }
             ]
         }
@@ -844,6 +844,88 @@ const CLASS_TREES = {
                 { name: "DEV TOOLS", cost: 100, isBuff: true, buffType: 'all_offense', buffVal: 1.0, duration: 8, color: 0x00ff00, desc: "Equip the tools of the creators for 100% more offense." }
             ]
         }
+    ],
+    "REAPER": [
+        // 0-9: BASE
+        {
+            name: "SOUL-COLLECTOR", desc: "Tier 1: Harvest", skills: [
+                { name: "REAP", cost: 0, mult: 1.2, color: 0x440066, vfx: 'slash', hits: 1, desc: "A sweeping scythe strike that harvests the first layer of data." },
+                { name: "SOUL REND", cost: 30, mult: 3.0, color: 0x8800ff, vfx: 'heavy', hits: 1, desc: "Tear through the enemy's logic for 3.0x damage." },
+                { name: "SHADOW VEIL", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.15, duration: 8, color: 0x440066, desc: "Step into the shadows to gain +15% Dodge." }
+            ]
+        },
+        // 10-19
+        {
+            name: "CRYPT-WALKER", desc: "Tier 2: Shadows", skills: [
+                { name: "PHASE CUT", cost: 0, mult: 0.8, color: 0x6600aa, vfx: 'multi', hits: 3, desc: "Rapidly phase through the target, striking 3 times with spectral steel." },
+                { name: "SOUL SIPHON", cost: 45, mult: 2.0, color: 0x00ffcc, vfx: 'implode', hits: 1, healPercent: 0.15, desc: "Steal 15% Max HP from the enemy's core process." },
+                { name: "VOID ARMOR", cost: 25, isBuff: true, buffType: 'armor', buffVal: 0.20, duration: 8, color: 0x6600aa, desc: "Envelop yourself in void energy for +20% Armor." }
+            ]
+        },
+        // 20-29
+        {
+            name: "BONE-SHAPER", desc: "Tier 3: Remains", skills: [
+                { name: "BONE SPIKE", cost: 0, mult: 0.5, color: 0xcccccc, vfx: 'zap', hits: 6, desc: "Launch 6 calcified code-spikes at the target." },
+                { name: "OSSEOUS BLAST", cost: 60, mult: 6.0, color: 0xffffff, vfx: 'nova', hits: 1, desc: "Detonate the remains of deleted data for a massive 6x explosion." },
+                { name: "CALCIUM CORE", cost: 30, isBuff: true, buffType: 'shield', buffVal: 0.30, duration: 8, color: 0xcccccc, desc: "Create a bone-wall shield worth 30% of your Max HP." }
+            ]
+        },
+        // 30-39
+        {
+            name: "BLOOD-STALKER", desc: "Tier 4: Vitals", skills: [
+                { name: "RED RUSH", cost: 0, mult: 0.3, color: 0xff0000, vfx: 'multi', hits: 10, desc: "A 10-hit frenzy that leaves the target bleeding data." },
+                { name: "BLOOD COIL", cost: 80, mult: 8.0, color: 0xaa0000, vfx: 'implode', hits: 1, healPercent: 0.20, desc: "Coil the enemy's life-force around you for 8x damage and 20% heal." },
+                { name: "HEMOPHILIA", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 8, color: 0xff0000, desc: "Target the weakest systems for +40% Crit DMG." }
+            ]
+        },
+        // 40-49
+        {
+            name: "HADES-ENGINE", desc: "Tier 5: Underworld", skills: [
+                { name: "GHOST FIRE", cost: 0, mult: 0.25, color: 0x00ffff, vfx: 'rain', hits: 12, desc: "Rain down spectral fire from the machine-hell." },
+                { name: "STYX BEAM", cost: 100, mult: 12.0, color: 0x0088ff, vfx: 'beam', hits: 1, desc: "A concentrated beam of pure data-corruption dealing 12x damage." },
+                { name: "CERBERUS OS", cost: 40, isBuff: true, buffType: 'atk', buffVal: 0.35, duration: 8, color: 0x00ffff, desc: "Three-headed processing for 35% more ATK." }
+            ]
+        },
+        // 50-59
+        {
+            name: "SOUL-FORGER", desc: "Tier 6: Creation", skills: [
+                { name: "FORGE CUT", cost: 0, mult: 1.0, color: 0xffaa00, vfx: 'omni', hits: 5, desc: "Shape reality into 5 heavy blows." },
+                { name: "SOUL ANVIL", cost: 130, mult: 15.0, color: 0xff5500, vfx: 'heavy', hits: 1, desc: "Crush the enemy with the weight of every soul ever deleted." },
+                { name: "ETERNAL CORE", cost: 45, isBuff: true, buffType: 'regen', buffVal: 0.10, duration: 8, color: 0xffaa00, desc: "Draw power from the forge for 10% HP regen per turn." }
+            ]
+        },
+        // 60-69
+        {
+            name: "VOID-ARCHON", desc: "Tier 7: Mastery", skills: [
+                { name: "EVENT HORIZON", cost: 0, mult: 0.2, color: 0x000000, vfx: 'nova', hits: 20, desc: "A 20-hit vortex that pulls the enemy toward deletion." },
+                { name: "SINGULARITY", cost: 180, mult: 25.0, color: 0x4400cc, vfx: 'blackhole', hits: 1, desc: "Generate a point of infinite gravity for 25x damage." },
+                { name: "NULL FIELD", cost: 55, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x000000, desc: "Desynchronize from the simulation to become invincible for 1 turn." }
+            ]
+        },
+        // 70-79
+        {
+            name: "DEATH-DEALER", desc: "Tier 8: Finality", skills: [
+                { name: "REAPING WIND", cost: 0, mult: 0.15, color: 0xaa00ff, vfx: 'multi', hits: 30, desc: "A 30-hit tempest of spectral scythes." },
+                { name: "FINAL HARVEST", cost: 250, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1, desc: "The ultimate 40x reaping strike. None survive." },
+                { name: "SADISM", cost: 65, isBuff: true, buffType: 'lifesteal', buffVal: 0.50, duration: 8, color: 0xaa00ff, desc: "Thrive on the enemy's deletion, gaining +50% Lifesteal." }
+            ]
+        },
+        // 80-89
+        {
+            name: "THANATOS-UNIT", desc: "Tier 9: Myth", skills: [
+                { name: "GOD-SLAYER", cost: 0, mult: 0.1, color: 0xffd700, vfx: 'omni', hits: 60, desc: "Strike 60 times at the enemy's divinity." },
+                { name: "OBLIVION", cost: 350, mult: 80.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "Erase the target from the Tower's memory for 80x damage." },
+                { name: "MEMENTO MORI", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.80, duration: 8, color: 0xffd700, desc: "The ultimate reminder of death: +80% to all offensive stats." }
+            ]
+        },
+        // 90+
+        {
+            name: "THE-REAPER", desc: "Tier 10: Transcendence", skills: [
+                { name: "APOCALYPSE", cost: 0, mult: 0.05, color: 0xff0000, vfx: 'matrix', hits: 200, desc: "200 hits toward the end of all things." },
+                { name: "OMEGA REAP", cost: 999, mult: 500.0, color: 0xffffff, vfx: 'nuke', hits: 1, desc: "The absolute end. 500x damage to everything that exists." },
+                { name: "GOD OF DEATH", cost: 150, isBuff: true, buffType: 'all_offense', buffVal: 1.5, duration: 8, color: 0x000000, desc: "Ascend to godhood for 150% more offensive power." }
+            ]
+        }
     ]
 };
 
@@ -908,12 +990,23 @@ const PERK_POOL = [
 // --- GAME CONTROLLER ---
 const game = {
     floor: 1, gold: 0, player: null, enemy: null, state: 'IDLE',
+    lastBossAiTick: 0, bossStarted: false,
 
     // --- REBIRTH SYSTEM ---
     rebirth: 0, // Rebirth level (0 = first playthrough)
+    currentMutation: null,
 
     // --- BUFF TRACKING ---
     buffs: {}, // { perkName: { count: N, totalValue: V, icon: '🔧', desc: 'description' } }
+
+    // --- MUTATION POOL ---
+    mutations: {
+        'overclocked': { name: 'OVERCLOCKED', desc: 'All units deal +50% DMG', icon: '⚡' },
+        'data_leak': { name: 'DATA LEAK', desc: 'Skills cost -50% Mana, but skills deal 5% Max HP self-dmg', icon: '💧' },
+        'encryption': { name: 'ENCRYPTION', desc: 'Enemies have +100 Armor but -40% Health', icon: '🔐' },
+        'feedback': { name: 'FEEDBACK LOOP', desc: 'Taking damage restores 10% Mana', icon: '🔄' },
+        'glitch': { name: 'GLITCHED REALITY', desc: 'Crit Chance +20%, but Dodge -10%', icon: '👾' }
+    },
 
     // --- BRAWLER FRENZY MASH SYSTEM ---
     frenzySkill: null, // Current frenzy skill being mashed
@@ -926,7 +1019,7 @@ const game = {
         legendaryBonus: 0, // Extra legendary chance
         guaranteedLegendary: false, // Next perk is legendary
         boostFloors: 0,    // Floors remaining for luck boost
-        reviveToken: false // Can revive on death
+        reviveTokens: 0    // Number of revives available
     },
 
     // Add to game object properties
@@ -1000,6 +1093,7 @@ const game = {
         document.getElementById('battle-controls').classList.remove('active');
         document.getElementById('hud').style.opacity = '0';
 
+        this.updateMutationUI(); // Hide mutation display
         this.advanceDialogue();
     },
 
@@ -1069,6 +1163,7 @@ const game = {
     endCutscene() {
         document.getElementById('dialogue-overlay').classList.remove('active');
         document.getElementById('hud').style.opacity = '1';
+        this.updateMutationUI(); // Re-show mutation display
 
         const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'flex';
         // Inv button removed by user request, but if present logic:
@@ -1320,7 +1415,7 @@ const game = {
         this.buffs = {}; // Reset buffs
         this.battleCombo = 0;
         // Reset IAP boosts
-        this.iapBoosts = { rareBonus: 0, epicBonus: 0, legendaryBonus: 0, guaranteedLegendary: false, boostFloors: 0, reviveToken: false };
+        this.iapBoosts = { rareBonus: 0, epicBonus: 0, legendaryBonus: 0, guaranteedLegendary: false, boostFloors: 0, reviveTokens: 0 };
         this.resetShop();
         this.renderBuffs(); // Clear buff display
         // Reset to initial floor theme
@@ -1529,11 +1624,18 @@ const game = {
         }
 
         if (!skill) return;
-        const actualCost = Math.max(0, Math.floor(skill.cost * (1 - this.player.manaCostReduction)));
+        const actualCost = Math.max(0, Math.floor(skill.cost * this.player.manaCostMult * (1 - this.player.manaCostReduction)));
         if (this.player.mana < actualCost) { this.showText("NO MANA", this.player.mesh.position, '#00f2ff'); return; }
 
         this.state = 'ANIMATING';
         this.player.mana -= actualCost;
+
+        // --- MUTATION: DATA LEAK ---
+        if (this.currentMutation === 'data_leak') {
+            const selfDmg = Math.floor(this.player.maxHp * 0.05);
+            this.player.hp = Math.max(1, this.player.hp - selfDmg);
+            this.showText(`-${selfDmg} DATA LEAK`, this.player.mesh.position, '#ff0000');
+        }
 
         // Handle buff skills
         if (skill.isBuff) {
@@ -1923,6 +2025,11 @@ const game = {
         if (this.floor % 5 === 0 || this.floor === 1) {
             const themeName = engine.setFloorTheme(this.floor);
             this.showText(themeName, new THREE.Vector3(0, 3, 0), '#ff0055');
+
+            // Rebirth: Roll Mutation every 5 floors
+            if (this.rebirth > 0 && this.floor % 5 === 0) {
+                this.rollMutation();
+            }
         }
 
         // Decrement IAP luck boost floors
@@ -2048,6 +2155,8 @@ const game = {
         if (iapBtn) iapBtn.style.display = 'none';
         const invBtn = document.getElementById('inv-btn');
         if (invBtn) invBtn.style.display = 'none';
+
+        this.updateMutationUI();
     },
 
     closeIAPShop() {
@@ -2062,6 +2171,8 @@ const game = {
         if (iapBtn) iapBtn.style.display = 'flex';
         const invBtn = document.getElementById('inv-btn');
         if (invBtn) invBtn.style.display = 'flex';
+
+        this.updateMutationUI();
     },
 
     // --- NEW IAP LOGIC ---
@@ -2251,6 +2362,7 @@ const game = {
         this.selectedInvIndex = -1; // Reset selection
         this.renderInventory();
         this.updateDetailsPanel();
+        this.updateMutationUI();
     },
 
     closeInventory() {
@@ -2262,6 +2374,7 @@ const game = {
         if (this.state === 'IDLE' && this.enemy && this.enemy.hp > 0) {
             document.getElementById('battle-controls').classList.add('active');
         }
+        this.updateMutationUI();
     },
 
     renderInventory() {
@@ -2778,24 +2891,30 @@ const game = {
     },
 
     offerJobSelection(tier) {
-        // Hide tutorial overlay when showing job selection
-        // if(this.tutorialState === 'ACTIVE') {
-        //     // this.hideTutorialOverlay();
-        //     // Show tutorial step 1 (class selection) if we're just starting
-        //     if(this.tutorialStep === 0) {
-        //         setTimeout(() => this.showTutorialStep(1), 300);
-        //     }
-        // }
-
         this.setScreen('class-screen');
         const container = document.getElementById('class-container');
         container.innerHTML = '';
 
+        // Add Re-roll button if tier 0
+        let rerollBtn = document.getElementById('job-reroll-btn');
+        if (!rerollBtn) {
+            rerollBtn = document.createElement('button');
+            rerollBtn.id = 'job-reroll-btn';
+            rerollBtn.className = 'btn';
+            rerollBtn.style.marginTop = '20px';
+            rerollBtn.style.background = 'linear-gradient(180deg, #555, #222)';
+            rerollBtn.style.border = '1px solid #444';
+            rerollBtn.innerText = '↺ RE-ROLL CLASSES';
+            rerollBtn.onclick = () => this.offerJobSelection(0);
+            document.getElementById('class-screen').appendChild(rerollBtn);
+        }
+
         if (tier === 0) {
+            rerollBtn.style.display = 'block';
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
 
             // 1. Define all available classes
-            const allJobs = ['RONIN', 'PRIEST', 'MECH', 'GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER', 'HACKER'];
+            const allJobs = ['RONIN', 'PRIEST', 'MECH', 'GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER', 'HACKER', 'REAPER'];
 
             // 2. Shuffle and pick 3 random classes
             const randomJobs = allJobs
@@ -2804,19 +2923,18 @@ const game = {
 
             // 3. Create cards for the lucky 3
             randomJobs.forEach(jobKey => {
-                this.createJobCard(container, CLASS_TREES[jobKey][0],
-                    onClick = () => {
-                        this.setJob(jobKey, 0);
-                        if (this.tutorialState === 'ACTIVE') {
-                            this.showTutorialStep(2);
-                            this.tutorialStep = 2;
-                        }
-
+                this.createJobCard(container, CLASS_TREES[jobKey][0], () => {
+                    rerollBtn.style.display = 'none'; // Hide on selection
+                    this.setJob(jobKey, 0);
+                    if (this.tutorialState === 'ACTIVE') {
+                        this.showTutorialStep(2);
+                        this.tutorialStep = 2;
                     }
-                    , jobKey);
+                }, jobKey);
             });
 
         } else {
+            rerollBtn.style.display = 'none';
             // New Logic: Choose 1 Skill from the new Tier
             document.querySelector('#class-screen h2').innerText = `TIER ${tier + 1} ADVANCEMENT - CHOOSE S.K.I.L.L.`;
             const currentKey = this.player.jobType;
@@ -2893,12 +3011,8 @@ const game = {
                 bg: "linear-gradient(135deg, #111, #333)",
                 titleColor: "#ffffff"
             },
-            "HACKER": {
-                border: "2px solid #00ff00",
-                shadow: "0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 10px rgba(0,255,0,0.2)",
-                bg: "repeating-linear-gradient(45deg, #000 0px, #001100 10px, #000 20px)",
-                titleColor: "#00ff00"
-            }
+            "HACKER": { border: "2px solid #00ff00", shadow: "0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 10px rgba(0,255,0,0.2)", bg: "repeating-linear-gradient(45deg, #000 0px, #001100 10px, #000 20px)", titleColor: "#00ff00" },
+            "REAPER": { border: "2px solid #5500aa", shadow: "0 0 20px rgba(85, 0, 170, 0.6)", bg: "linear-gradient(135deg, rgba(20,0,40,0.9), rgba(40,0,80,0.9))", titleColor: "#9933ff" }
         };
 
         // Fallback style if key is missing
@@ -2926,7 +3040,7 @@ const game = {
         const buffInfo = s3 ? `<br><strong style="color:${theme.titleColor}">3:</strong> <span style="color:#fff">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
 
         // Mark broken classes
-        const isBroken = jobKey === 'BRAWLER'
+        const isBroken = false;
         const brokenTag = isBroken ? `<div style="background:linear-gradient(90deg,#ff0000,#ff6600);color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px;font-size:12px;margin-bottom:8px;text-align:center;box-shadow:0 0 10px #ff0000;">⚠️ EXPERIMENTAL ⚠️</div>` : '';
 
         card.innerHTML = `
@@ -3045,7 +3159,7 @@ const game = {
         engine.scene.remove(this.player.mesh);
 
         // Create new model based on class
-        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600, 'SHADOW': 0x220033, 'BRAWLER': 0xff4400, 'GUNSLINGER': 0xffaa00, 'KNIGHT': 0x00aaff };
+        const colors = { 'RONIN': 0xaa00ff, 'PRIEST': 0x00f2ff, 'MECH': 0xff6600, 'SHADOW': 0x220033, 'BRAWLER': 0xff4400, 'GUNSLINGER': 0xffaa00, 'KNIGHT': 0x00aaff, 'REAPER': 0x5500aa };
         const color = colors[type] || 0x00f2ff;
 
         if (type === 'RONIN') {
@@ -3064,7 +3178,8 @@ const game = {
             this.player.model = Models.createKnight(color, 1.5, tier);
         } else if (type === 'HACKER') {
             this.player.model = Models.createHacker(color, 1.5, tier);
-            // this.player.model = Models.createArchitect(3);
+        } else if (type === 'REAPER') {
+            this.player.model = Models.createReaper(color, 1.5, tier);
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }
@@ -3085,6 +3200,7 @@ const game = {
         if (this.enemy) engine.scene.remove(this.enemy.mesh);
         this.battleCombo = 0;
         this.clearAllBuffs(); // FRESH START
+        this.bossStarted = false; // Reset boss AI gate
 
         const isFinalBoss = (this.floor >= 100);
         const isMidBoss = (this.floor === 25 || this.floor === 50 || this.floor === 75);
@@ -3140,12 +3256,22 @@ const game = {
             this.enemy = new Unit(false, hp, hp, atk, 0xff0000, 'boss');
         }
         else {
+            // Apply Mutation Scaling
+            if (this.currentMutation === 'encryption') {
+                hp = Math.floor(hp * 0.6);
+            }
             const enemyTypes = ['drone', 'sentinel', 'construct', 'tank', 'spider', 'wraith', 'floater'];
             const type = enemyTypes[this.floor % enemyTypes.length];
             document.getElementById('enemy-name').innerText = `${type.toUpperCase()} - F${this.floor}`;
             document.getElementById('enemy-name').style.color = '#aaa';
             const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.5);
             this.enemy = new Unit(false, hp, hp, atk, color, type);
+        }
+
+        // Apply Mutation Instance Effects
+        if (this.currentMutation === 'encryption' && this.enemy) {
+            this.enemy.baseArmor += 100;
+            this.enemy.recalculateStats();
         }
 
         // --- STATS ---
@@ -3208,6 +3334,7 @@ const game = {
     },
 
     triggerBossPhase2() {
+        if (this.pendingBossTransformation) return; // Prevent double trigger
         // 1. Set Flag FIRST
         this.pendingBossTransformation = true;
         this.state = 'CUTSCENE';
@@ -3229,6 +3356,7 @@ const game = {
     },
 
     triggerBossEnding() {
+        if (this.pendingBossDefeat) return; // Prevent double trigger
         this.state = 'CUTSCENE';
 
         this.startCutscene([
@@ -3244,35 +3372,40 @@ const game = {
 
     // --- BOSS AI SYSTEM ---
     bossAiLoop() {
-        if (!this.enemy || this.floor < 100 || this.state === 'GAMEOVER') return;
+        if (!this.enemy || this.floor < 100 || this.state === 'GAMEOVER' || this.state === 'CUTSCENE') return;
+        if (!this.bossStarted) return; // Wait for first regular turn
 
-        // 10% Chance per second to cast a spell
-        if (Math.random() < 0.05) {
-            const spell = Math.random();
+        const now = performance.now();
+        if (now - this.lastBossAiTick < 2000) return; // 2s Cooldown
+        this.lastBossAiTick = now;
 
-            if (spell < 0.4) {
-                // SPELL: REALITY BREAK (Heavy Damage + Stun VFX)
-                this.showText("<< REALITY BREAK >>", this.enemy.mesh.position, '#ff0000');
-                engine.spawnParticles(this.player.mesh.position, 0xff0000, 20);
-                this.player.takeDmg(this.enemy.atk * 2.5); // Hits through OSP if already low
-            }
-            else if (spell < 0.7) {
-                // SPELL: SYSTEM PURGE (Removes your buffs)
-                this.showText("<< SYSTEM PURGE >>", this.enemy.mesh.position, '#00f2ff');
-                this.player.activeBuffs = []; // Clear buffs
-                this.updateBuffs();
-                this.player.takeDmg(this.enemy.atk * 0.5);
-            }
-            else {
-                // SPELL: RECOMPILE (Heal Boss)
-                const heal = Math.floor(this.enemy.maxHp * 0.05);
-                this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
-                this.showText(`+${this.formatNum(heal)} RECOVER`, this.enemy.mesh.position, '#00ff00');
-            }
+        // Boss spells are now guaranteed to check every 2s
+        const spell = Math.random();
+
+        if (spell < 0.4) {
+            // SPELL: REALITY BREAK (Reduced from 2.5x to 1.5x damage)
+            this.showText("<< REALITY BREAK >>", this.enemy.mesh.position, '#ff0000');
+            engine.spawnParticles(this.player.mesh.position, 0xff0000, 20);
+            this.player.takeDmg(this.enemy.atk * 1.5);
+        }
+        else if (spell < 0.7) {
+            // SPELL: SYSTEM PURGE (Removes your buffs)
+            this.showText("<< SYSTEM PURGE >>", this.enemy.mesh.position, '#00f2ff');
+            this.player.activeBuffs = []; // Clear buffs
+            this.updateBuffs();
+            this.player.takeDmg(this.enemy.atk * 0.5);
+        }
+        else {
+            // SPELL: RECOMPILE (Heal Boss)
+            const heal = Math.floor(this.enemy.maxHp * 0.05);
+            this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
+            this.showText(`+${this.formatNum(heal)} RECOVER`, this.enemy.mesh.position, '#00ff00');
         }
     },
 
     enemyTurn() {
+        if (this.floor >= 100) this.bossStarted = true;
+
         this.enemy.attackAnim(() => {
             const dmg = Math.floor(this.enemy.atk * (0.8 + Math.random() * 0.4));
             this.player.takeDmg(dmg);
@@ -3301,8 +3434,8 @@ const game = {
 
             if (this.player.hp <= 0) {
                 // Check for revive token
-                if (this.iapBoosts.reviveToken) {
-                    this.iapBoosts.reviveToken = false;
+                if (this.iapBoosts.reviveTokens > 0) {
+                    this.iapBoosts.reviveTokens--;
                     this.player.hp = Math.floor(this.player.maxHp * 0.5); // Revive at 50% HP
                     this.player.mana = this.player.maxMana;
                     this.showText('💀 REVIVED!', this.player.mesh.position, '#ff00ff');
@@ -3402,6 +3535,12 @@ const game = {
         this.rebirth++;
         this.floor = 1;
 
+        // Reset all boss flags to prevent premature triggers on next run
+        this.pendingBossDefeat = false;
+        this.pendingBossTransformation = false;
+        this.bossPhase = 0;
+        this.bossStarted = false;
+
         // Reset floor theme
         if (engine.setFloorTheme) engine.setFloorTheme(1);
 
@@ -3442,6 +3581,9 @@ const game = {
 
         this.state = 'IDLE';
         this.bossPhase = 0;
+        this.pendingBossDefeat = false;
+        this.pendingBossTransformation = false;
+        this.bossStarted = false;
 
         const hud = document.getElementById('hud');
         hud.style.opacity = '1';
@@ -3476,47 +3618,74 @@ const game = {
     generatePerks() {
         const container = document.getElementById('perk-container');
         container.innerHTML = '';
-        const RARITY = { COMMON: { id: 'common', name: 'COMMON', mult: 1, prob: 1.0 }, RARE: { id: 'rare', name: 'RARE', mult: 1.5, prob: 0.36 }, EPIC: { id: 'epic', name: 'EPIC', mult: 2.5, prob: 0.06 }, LEGENDARY: { id: 'legendary', name: 'LEGENDARY', mult: 5.0, prob: 0.01 } };
+        const RARITY = {
+            COMMON: { id: 'common', name: 'COMMON', mult: 1, prob: 1.0 },
+            RARE: { id: 'rare', name: 'RARE', mult: 1.5, prob: 0.36 },
+            EPIC: { id: 'epic', name: 'EPIC', mult: 2.5, prob: 0.06 },
+            LEGENDARY: { id: 'legendary', name: 'LEGENDARY', mult: 5.0, prob: 0.01 }
+        };
 
+        const scaling = 1 + (this.rebirth * 0.5);
 
         for (let i = 0; i < 3; i++) {
             let tier;
+            const rand = Math.random();
 
-            // REBIRTH MODE: All perks are LEGENDARY with additional scaling
-            if (this.rebirth > 0) {
-                tier = {
-                    id: 'legendary',
-                    name: `LEGENDARY ★${this.rebirth}`,
-                    mult: 5.0 * (1 + this.rebirth * 0.5), // +50% value per rebirth
-                    prob: 1.0
-                };
+            // Check for IAP guaranteed legendary
+            if (this.iapBoosts.guaranteedLegendary) {
+                tier = RARITY.LEGENDARY;
+                this.iapBoosts.guaranteedLegendary = false;
             } else {
-                // Check for IAP guaranteed legendary
-                if (this.iapBoosts.guaranteedLegendary) {
-                    tier = RARITY.LEGENDARY;
-                    this.iapBoosts.guaranteedLegendary = false; // Use up the boost
-                } else {
-                    const rand = Math.random();
-                    // Apply IAP luck boosts
-                    const legendaryChance = RARITY.LEGENDARY.prob + this.iapBoosts.legendaryBonus;
-                    const epicChance = RARITY.EPIC.prob + this.iapBoosts.epicBonus;
-                    const rareChance = RARITY.RARE.prob + this.iapBoosts.rareBonus;
+                const legendaryChance = RARITY.LEGENDARY.prob + this.iapBoosts.legendaryBonus;
+                const epicChance = RARITY.EPIC.prob + this.iapBoosts.epicBonus;
+                const rareChance = RARITY.RARE.prob + this.iapBoosts.rareBonus;
 
-                    tier = RARITY.COMMON;
-                    if (rand < legendaryChance) tier = RARITY.LEGENDARY;
-                    else if (rand < epicChance) tier = RARITY.EPIC;
-                    else if (rand < rareChance) tier = RARITY.RARE;
-                }
+                tier = RARITY.COMMON;
+                if (rand < legendaryChance) tier = RARITY.LEGENDARY;
+                else if (rand < epicChance) tier = RARITY.EPIC;
+                else if (rand < rareChance) tier = RARITY.RARE;
             }
 
             const template = PERK_POOL[Math.floor(Math.random() * PERK_POOL.length)];
-            const finalVal = Math.floor(template.baseVal * tier.mult);
+            let finalVal = Math.floor(template.baseVal * tier.mult * scaling);
+
+            // Corrupted Logic (25% chance in rebirth)
+            let isCorrupted = (this.rebirth > 0 && Math.random() < 0.25);
+            let penaltyDesc = "";
+            let penaltyFunc = null;
+
+            if (isCorrupted) {
+                finalVal *= 3;
+                const penalties = [
+                    { name: "RECOIL", desc: "-20% Max HP", func: (p) => { p.baseMaxHp = Math.floor(p.baseMaxHp * 0.8); p.recalculateStats(); } },
+                    { name: "BLOAT", desc: "+50% Mana Cost", func: (p) => { p.manaCostMult *= 1.5; } },
+                    { name: "EXPOSED", desc: "-50% Armor", func: (p) => { p.baseArmor = Math.floor(p.baseArmor * 0.5); p.recalculateStats(); } },
+                    { name: "STATIC", desc: "-10% Dodge", func: (p) => { p.dodge = Math.max(0, p.dodge - 0.1); } }
+                ];
+                const penalty = penalties[Math.floor(Math.random() * penalties.length)];
+                penaltyDesc = `<div style="color:#ff0000; font-size:12px; margin-top:5px; font-weight:bold;">[CORRUPTED: ${penalty.desc}]</div>`;
+                penaltyFunc = penalty.func;
+            }
+
             const desc = template.desc.replace('{val}', finalVal);
             const card = document.createElement('div');
             card.className = `perk-card ${tier.id}`;
-            card.innerHTML = `<div class="perk-title">${template.name}</div><div class="perk-desc">${desc}</div><div class="rarity-tag">${tier.name}</div>`;
+
+            if (isCorrupted) {
+                card.style.background = 'linear-gradient(135deg, #200, #000)';
+                card.style.border = '2px solid #f00';
+                card.style.boxShadow = '0 0 15px #f00';
+            }
+
+            card.innerHTML = `
+                <div class="perk-title" style="${isCorrupted ? 'color:#ff4444' : ''}">${isCorrupted ? '[CORRUPTED] ' : ''}${template.name}</div>
+                <div class="perk-desc">${desc}${penaltyDesc}</div>
+                <div class="rarity-tag">${tier.name}</div>
+            `;
+
             card.onclick = () => {
                 template.func(this.player, finalVal);
+                if (penaltyFunc) penaltyFunc(this.player);
                 this.trackBuff(template, finalVal);
 
                 // Tutorial: After selecting first perk, advance to step 4 (floor progression)
@@ -3563,6 +3732,81 @@ const game = {
         }
     },
 
+    // --- MUTATION SYSTEM ---
+    rollMutation() {
+        if (this.rebirth === 0) {
+            this.clearMutation();
+            return;
+        }
+
+        const keys = Object.keys(this.mutations);
+        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        this.applyMutation(randomKey);
+    },
+
+    applyMutation(id) {
+        this.clearMutation();
+        this.currentMutation = id;
+        const mut = this.mutations[id];
+        if (!mut) return;
+
+        // Visual notification
+        this.showText(`MUTATION: ${mut.name}`, new THREE.Vector3(0, 4, 0), '#ff0000');
+
+        // Instant stat modifications (recalculated stats handles others)
+        if (id === 'glitch' && this.player) {
+            this.player.critChance += 0.2;
+            this.player.dodge -= 0.1;
+        }
+
+        this.updateMutationUI();
+    },
+
+    clearMutation() {
+        if (!this.currentMutation) return;
+
+        // Reverse instant effects
+        if (this.currentMutation === 'glitch' && this.player) {
+            this.player.critChance -= 0.2;
+            this.player.dodge += 0.1;
+        }
+
+        this.currentMutation = null;
+        this.updateMutationUI();
+    },
+
+    updateMutationUI() {
+        const display = document.getElementById('mutation-display');
+        const nameEl = document.getElementById('mutation-name');
+        const descEl = document.getElementById('mutation-desc');
+
+        if (!this.currentMutation) {
+            if (display) display.style.display = 'none';
+            return;
+        }
+
+        // Hide if any screen overlay (except HUD) is active or in dialogue
+        const activeScreen = document.querySelector('.screen.active');
+        const isDialogueActive = this.state === 'CUTSCENE';
+        const isShopOrPerk = activeScreen && (activeScreen.id === 'shop-screen' || activeScreen.id === 'reward-screen' || activeScreen.id === 'class-screen' || activeScreen.id === 'iap-screen' || activeScreen.id === 'inventory-screen');
+
+        if (activeScreen || isDialogueActive) {
+            if (display) {
+                display.style.display = 'none';
+                display.classList.remove('mutation-active');
+            }
+            return;
+        }
+
+        const mut = this.mutations[this.currentMutation];
+        if (display) {
+            display.style.display = 'block';
+            display.classList.add('mutation-active');
+        }
+        if (nameEl) nameEl.innerText = mut.name;
+        if (descEl) descEl.innerText = mut.desc;
+    },
+
     showText(txt, pos, color) {
         const div = document.createElement('div');
         div.className = 'dmg-float'; div.innerText = txt; div.style.color = color;
@@ -3576,7 +3820,11 @@ const game = {
         setTimeout(() => div.remove(), 600);
     },
 
-    setScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if (id !== 'hud') document.getElementById(id).classList.add('active'); },
+    setScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        if (id !== 'hud') document.getElementById(id).classList.add('active');
+        this.updateMutationUI(); // Re-check visibility
+    },
     updateButtons() {
         if (!this.player) return;
         const s1 = this.player.pinnedSkills?.[0];
@@ -4219,6 +4467,7 @@ class Unit {
         this.dodge = 0; this.thorns = 0; this.doubleStrike = 0; this.manaCostReduction = 0;
         this.executeThreshold = 0; this.overkillBonus = 0; this.shield = 0; this.maxShield = 0; this.bonusCredits = 0;
         this.activeBuffs = []; this.invincible = false;
+        this.manaCostMult = 1.0; // Added for corrupted penalties
 
         // --- NEW: SKILL SYSTEM ---
         this.unlockedSkills = []; // Stores all known skills
@@ -4283,6 +4532,12 @@ class Unit {
         }
         // Armor reduces damage
         let finalDmg = Math.max(1, amount - this.armor);
+
+        // --- MUTATION: OVERCLOCKED ---
+        if (game.currentMutation === 'overclocked') {
+            finalDmg = Math.floor(finalDmg * 1.5);
+        }
+
         // Shield absorbs damage first
         if (this.shield > 0) {
             const absorbed = Math.min(this.shield, finalDmg);
@@ -4292,9 +4547,17 @@ class Unit {
         }
         this.hp = Math.max(0, this.hp - finalDmg);
 
+        // --- MUTATION: FEEDBACK LOOP ---
+        if (game.currentMutation === 'feedback' && this.isPlayer && finalDmg > 0) {
+            this.mana = Math.min(this.maxMana, this.mana + Math.floor(this.maxMana * 0.1));
+            game.showText("+10% MANA", this.mesh.position, '#00f2ff');
+        }
+
         // --- BOSS PHASE INTERCEPTOR ---
         // If enemy hits 0 HP, is the Boss, and hasn't finished all phases:
-        if (!this.isPlayer && this.hp <= 0 && game.floor === 100) {
+        // GATED: Don't trigger if already in a cutscene or a phase is pending
+        if (!this.isPlayer && this.hp <= 0 && game.floor === 100 &&
+            game.state !== 'CUTSCENE' && !game.pendingBossTransformation && !game.pendingBossDefeat) {
             // If we are in Phase 1, Trigger Phase 2
             if (game.bossPhase === 1) {
                 this.hp = 1; // Keep alive for the cutscene

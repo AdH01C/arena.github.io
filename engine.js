@@ -1269,6 +1269,61 @@ const Models = {
         g.scale.set(s, s, s); return { mesh: g, weapon: g };
     },
 
+    createReaper(c, s = 1, tier = 0) {
+        const g = new THREE.Group();
+        const mB = new THREE.MeshStandardMaterial({ color: 0x111, metalness: 0.9, roughness: 0.1 });
+        const mG = new THREE.MeshBasicMaterial({ color: c });
+        const mScythe = new THREE.MeshStandardMaterial({ color: 0x5500aa, metalness: 1, roughness: 0.1, emissive: 0x220044 });
+
+        // Floating/Bobbing spectral body
+        g.userData.idle = true; g.userData.float = true; g.userData.baseY = 0.2; g.userData.idleSpeed = 2; g.userData.idleAmp = 0.1;
+
+        // Torso (Tattered cloak look)
+        const t = this.box(0.4, 0.6, 0.3, mB, 0, 0.7, 0, g);
+        this.box(0.1, 0.1, 0.1, mG, 0, 0.1, 0.16, t); // Soul heart
+        t.userData.idle = true; t.userData.pulse = { speed: 3, amp: 0.05, base: 1 };
+
+        // Head (Hooded)
+        const h = this.box(0.3, 0.35, 0.35, mB, 0, 0.55, -0.05, t);
+        this.box(0.15, 0.04, 0.05, mG, 0, 0, 0.16, h); // Spectral eyes
+
+        // Cape/Rags
+        const cape = this.box(0.5, 0.8, 0.05, mB, 0, -0.2, -0.2, t);
+        cape.rotation.x = 0.2;
+        cape.userData.idle = true; cape.userData.swing = { axis: 'x', speed: 2, amp: 0.15, base: 0.2 };
+
+        // Arms
+        const ag = new THREE.Group(); ag.position.y = 0.2; t.add(ag);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0.1); ag.add(leftArm);
+        this.box(0.1, 0.45, 0.1, mB, 0, -0.2, 0, leftArm);
+
+        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0.1); ag.add(rightArm);
+        this.box(0.1, 0.45, 0.1, mB, 0, -0.2, 0, rightArm);
+        rightArm.rotation.x = -0.8; // Holding scythe forward
+
+        // SCYTHE
+        const scythe = new THREE.Group(); scythe.position.set(0, -0.4, 0.1); rightArm.add(scythe);
+        this.box(0.05, 1.8, 0.05, mB, 0, 0.4, 0, scythe); // Staff
+        const blade = new THREE.Group(); blade.position.y = 1.2; scythe.add(blade);
+        this.box(0.8, 0.15, 0.03, mScythe, 0.3, 0, 0, blade); // Main blade
+        blade.rotation.z = -0.4;
+
+        // Tier effects
+        if (tier >= 4) {
+            const crown = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.02, 8, 16), mG);
+            crown.position.set(0, 0.3, 0); crown.rotation.x = Math.PI / 2; h.add(crown);
+        }
+        if (tier >= 7) {
+            // Spectral "Wings" (Wisps)
+            for (let i = 0; i < 2; i++) {
+                const wisp = this.box(0.1, 0.8, 0.1, mG, i === 0 ? -0.4 : 0.4, 0, -0.3, t);
+                wisp.userData.idle = true; wisp.userData.swing = { axis: 'y', speed: 4, amp: 0.5, base: 0 };
+            }
+        }
+
+        g.scale.set(s, s, s); return { mesh: g, weapon: rightArm };
+    },
+
     // NEW: THE ARCHITECT (Floor 100)
     createArchitect(s = 1) {
         const g = new THREE.Group();
