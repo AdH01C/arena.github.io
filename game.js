@@ -1448,6 +1448,9 @@ const game = {
     },
 
     retryFloor() {
+        // Clear GAMEOVER state immediately
+        this.state = 'IDLE';
+
         // Rollback current floor
         this.floor = Math.max(1, this.floor - 5);
 
@@ -1463,8 +1466,7 @@ const game = {
         this.floor--;
         this.nextFloor();
 
-        // Close screen
-        this.setScreen('hud'); // Back to game
+        // NO LONGER setScreen('hud') here, let processFloorEvent handle it
     },
 
     // Tutorial System
@@ -2943,6 +2945,7 @@ const game = {
     },
 
     offerJobSelection(tier) {
+        this.state = 'SHOP'; // Lock state during selection
         this.setScreen('class-screen');
         const container = document.getElementById('class-container');
         container.innerHTML = '';
