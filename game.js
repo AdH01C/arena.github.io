@@ -1,94 +1,61 @@
 const ITEMS = {
     WEAPONS: [
-        // --- COMMON (Tier 1) ---
-        { id: 'rusty_pipe', name: 'RUSTY PIPE', type: 'weapon', atk: 5, rarity: 'common', desc: '+5 ATK. Tetanus included.' },
-        { id: 'combat_knife', name: 'CARBON KNIFE', type: 'weapon', atk: 12, rarity: 'common', desc: '+12 ATK. Standard issue.' },
-        { id: 'crowbar', name: 'OLD CROWBAR', type: 'weapon', atk: 15, rarity: 'common', desc: '+15 ATK. Good for opening crates.' },
-        { id: 'shock_baton', name: 'SHOCK BATON', type: 'weapon', atk: 18, rarity: 'common', desc: '+18 ATK. Zaps on contact.' },
+        // --- COMMON (Early Game Viability) ---
+        { id: 'shard_blade', name: 'GLASS SHARD', type: 'weapon', atkMult: 0.15, rarity: 'common', desc: '+15% ATK. Fragile but sharp.' },
+        { id: 'pipe_wrench', name: 'PIPE WRENCH', type: 'weapon', atkMult: 0.20, hpMult: 0.05, rarity: 'common', desc: '+20% ATK, +5% HP. Blunt and reliable.' },
+        { id: 'stun_rod', name: 'STUN ROD', type: 'weapon', atkMult: 0.12, critChance: 0.03, rarity: 'common', desc: '+12% ATK, +3% Crit. Shocks on crit.' },
+        { id: 'scrap_blade', name: 'SCRAP BLADE', type: 'weapon', atkMult: 0.18, critDamage: 0.10, rarity: 'common', desc: '+18% ATK, +10% Crit DMG. Salvaged tech.' },
 
-        // --- RARE (Tier 2) ---
-        {
-            id: 'katana', name: 'NEON KATANA', type: 'weapon', atk: 35, rarity: 'rare', desc: '+35 ATK. Folded steel.',
-            onHit: (u, t) => { if (Math.random() < 0.1) game.showText("SLICE!", t.mesh.position, '#00f2ff'); }
-        },
-        {
-            id: 'vamp_dagger', name: 'CRIMSON FANG', type: 'weapon', atk: 25, rarity: 'rare', desc: '+25 ATK, 15% Lifesteal',
-            onHit: (u, t) => { u.hp = Math.min(u.maxHp, u.hp + 8); game.showText("+8 HP", u.mesh.position, '#ff0000'); }
-        },
-        { id: 'heavy_maul', name: 'GRAV HAMMER', type: 'weapon', atk: 50, rarity: 'rare', desc: '+50 ATK. Very heavy.' },
-        {
-            id: 'laser_whip', name: 'MONO-WHIP', type: 'weapon', atk: 30, rarity: 'rare', desc: '+30 ATK, 10% Chance to Crit',
-            onHit: (u, t) => { if (Math.random() < 0.1) { t.takeDmg(u.atk * 0.5); game.showText("LASH!", t.mesh.position, '#ff00ff'); } }
-        },
+        // --- RARE (Mid Game Power Spike) ---
+        { id: 'plasma_edge', name: 'PLASMA EDGE', type: 'weapon', atkMult: 0.35, critChance: 0.05, rarity: 'rare', desc: '+35% ATK, +5% Crit. Superheated blade.' },
+        { id: 'blood_drinker', name: 'CRIMSON REAPER', type: 'weapon', atkMult: 0.30, lifesteal: 0.12, rarity: 'rare', desc: '+30% ATK, +12% Lifesteal. Drains essence.' },
+        { id: 'heavy_cannon', name: 'IMPACT DRIVER', type: 'weapon', atkMult: 0.50, critChance: -0.05, rarity: 'rare', desc: '+50% ATK, -5% Crit. Raw power.' },
+        { id: 'storm_caller', name: 'ARC LANCE', type: 'weapon', atkMult: 0.25, manaMult: 0.15, rarity: 'rare', desc: '+25% ATK, +15% Mana. Lightning surges.' },
+        { id: 'twin_daggers', name: 'DUAL EDGES', type: 'weapon', atkMult: 0.20, critChance: 0.12, critDamage: 0.15, rarity: 'rare', desc: '+20% ATK, +12% Crit, +15% Crit DMG. Swift strikes.' },
 
-        // --- EPIC (Tier 3) ---
-        {
-            id: 'thunder_blade', name: 'VOLT EDGE', type: 'weapon', atk: 65, rarity: 'epic', desc: '+65 ATK. Chain Lightning.',
-            onHit: (u, t) => { if (Math.random() < 0.25) { t.takeDmg(30); game.showText("ZAP!", t.mesh.position, '#ffff00'); } }
-        },
-        {
-            id: 'ice_brand', name: 'ABSOLUTE ZERO', type: 'weapon', atk: 60, rarity: 'epic', desc: '+60 ATK. Freezes Mana.',
-            onHit: (u, t) => { u.mana = Math.min(u.maxMana, u.mana + 5); game.showText("+5 MP", u.mesh.position, '#00f2ff'); }
-        },
-        {
-            id: 'berserk_axe', name: 'BLOOD REAVER', type: 'weapon', atk: 80, rarity: 'epic', desc: '+80 ATK. Hurts you to use.',
-            onHit: (u, t) => { u.hp -= 2; game.showText("-2 HP", u.mesh.position, '#550000'); }
-        },
-        {
-            id: 'gambler_sword', name: 'LUCKY SEVEN', type: 'weapon', atk: 10, rarity: 'epic', desc: '+10 ATK. 7% Chance for 777 DMG.',
-            onHit: (u, t) => { if (Math.random() < 0.07) { t.takeDmg(777); game.showText("JACKPOT!", t.mesh.position, '#ffe600'); } }
-        },
+        // --- EPIC (Late Game Specialization) ---
+        { id: 'void_ripper', name: 'VOID RIPPER', type: 'weapon', atkMult: 0.60, hpMult: -0.10, rarity: 'epic', desc: '+60% ATK, -10% HP. Cuts through reality.' },
+        { id: 'executioner', name: 'THE EXECUTIONER', type: 'weapon', atkMult: 0.45, critDamage: 0.50, rarity: 'epic', desc: '+45% ATK, +50% Crit DMG. Mercy is weakness.' },
+        { id: 'life_blade', name: 'SOUL RENDER', type: 'weapon', atkMult: 0.40, lifesteal: 0.25, hpMult: 0.10, rarity: 'epic', desc: '+40% ATK, +25% Lifesteal, +10% HP. Claims vitality.' },
+        { id: 'frozen_end', name: 'ABSOLUTE ZERO', type: 'weapon', atkMult: 0.50, manaMult: 0.25, critChance: 0.08, rarity: 'epic', desc: '+50% ATK, +25% Mana, +8% Crit. Freezing power.' },
+        { id: 'berserker', name: 'BLOOD FRENZY', type: 'weapon', atkMult: 0.80, hpMult: -0.15, lifesteal: 0.15, rarity: 'epic', desc: '+80% ATK, -15% HP, +15% Lifesteal. Rage incarnate.' },
+        { id: 'perfect_strike', name: 'PRECISION BLADE', type: 'weapon', atkMult: 0.30, critChance: 0.25, critDamage: 0.30, rarity: 'epic', desc: '+30% ATK, +25% Crit, +30% Crit DMG. Surgical precision.' },
 
-        // --- LEGENDARY (Tier 4) ---
-        {
-            id: 'god_slayer', name: 'GOD SLAYER', type: 'weapon', atk: 150, rarity: 'legendary', desc: '+150 ATK. Executes Low HP.',
-            onHit: (u, t) => { if (t.hp < t.maxHp * 0.15) { t.takeDmg(99999); game.showText("EXECUTE!", t.mesh.position, '#ff0000'); } }
-        },
-        {
-            id: 'void_reaver', name: 'DARK MATTER', type: 'weapon', atk: 120, rarity: 'legendary', desc: '+120 ATK. Drains Spirit.',
-            onHit: (u, t) => { u.hp += 10; u.mana += 10; game.showText("ABSORB", u.mesh.position, '#aa00ff'); }
-        },
-        {
-            id: 'admin_blade', name: 'BAN HAMMER', type: 'weapon', atk: 200, rarity: 'legendary', desc: '+200 ATK. 5% to Delete Enemy.',
-            onHit: (u, t) => { if (Math.random() < 0.05) { t.hp = 0; game.showText("BANNED", t.mesh.position, '#ff0000'); } }
-        },
-        {
-            id: 'sun_spear', name: 'SOLARIS', type: 'weapon', atk: 140, rarity: 'legendary', desc: '+140 ATK. Burns target.',
-            onHit: (u, t) => { setTimeout(() => { t.takeDmg(50); game.showText("BURN", t.mesh.position, '#ffaa00'); }, 500); }
-        }
+        // --- LEGENDARY (End Game Dominance) ---
+        { id: 'god_killer', name: 'DEICIDE', type: 'weapon', atkMult: 1.00, critChance: 0.15, critDamage: 0.75, rarity: 'legendary', desc: '+100% ATK, +15% Crit, +75% Crit DMG. Slays immortals.' },
+        { id: 'infinity_edge', name: 'INFINITY EDGE', type: 'weapon', atkMult: 0.75, critChance: 0.30, critDamage: 1.00, rarity: 'legendary', desc: '+75% ATK, +30% Crit, +100% Crit DMG. Endless sharpness.' },
+        { id: 'dark_matter', name: 'DARK MATTER', type: 'weapon', atkMult: 0.90, lifesteal: 0.30, manaMult: 0.20, rarity: 'legendary', desc: '+90% ATK, +30% Lifesteal, +20% Mana. Consumes all.' },
+        { id: 'titan_breaker', name: 'WORLDBREAKER', type: 'weapon', atkMult: 1.50, critChance: -0.10, hpMult: 0.25, rarity: 'legendary', desc: '+150% ATK, -10% Crit, +25% HP. Shatters mountains.' },
+        { id: 'omni_blade', name: 'THE SINGULARITY', type: 'weapon', atkMult: 0.60, hpMult: 0.15, manaMult: 0.15, critChance: 0.10, critDamage: 0.30, lifesteal: 0.10, rarity: 'legendary', desc: 'Balanced perfection. All stats elevated' }
     ],
 
     ACCESSORIES: [
-        // --- COMMON ---
-        { id: 'scrap_ring', name: 'SCRAP RING', type: 'accessory', hp: 10, rarity: 'common', desc: '+10 Max HP' },
-        { id: 'copper_coil', name: 'COPPER COIL', type: 'accessory', mana: 10, rarity: 'common', desc: '+10 Max Mana' },
-        { id: 'lens', name: 'CRACKED LENS', type: 'accessory', crit: 0.02, rarity: 'common', desc: '+2% Crit Chance' },
-        { id: 'boots', name: 'OLD BOOTS', type: 'accessory', dodge: 0.02, rarity: 'common', desc: '+2% Dodge' },
+        // --- COMMON (Foundational Builds) ---
+        { id: 'iron_ring', name: 'IRON BAND', type: 'accessory', hpMult: 0.10, armor: 2, rarity: 'common', desc: '+10% HP, +2 Armor. Basic protection.' },
+        { id: 'flux_coil', name: 'FLUX COIL', type: 'accessory', manaMult: 0.15, rarity: 'common', desc: '+15% Mana. Energy overflow.' },
+        { id: 'scope_chip', name: 'TARGETING CHIP', type: 'accessory', critChance: 0.05, rarity: 'common', desc: '+5% Crit. Better aim.' },
+        { id: 'dodge_boots', name: 'DASH BOOTS', type: 'accessory', dodge: 0.05, rarity: 'common', desc: '+5% Dodge. Quick feet.' },
 
-        // --- RARE ---
-        { id: 'titan_band', name: 'TITAN BAND', type: 'accessory', hp: 50, rarity: 'rare', desc: '+50 Max HP' },
-        { id: 'hunter_scope', name: 'HUNTER SCOPE', type: 'accessory', crit: 0.08, rarity: 'rare', desc: '+8% Crit Chance' },
-        { id: 'ninja_tabi', name: 'STEALTH DRIVE', type: 'accessory', dodge: 0.08, rarity: 'rare', desc: '+8% Dodge' },
-        { id: 'mana_core', name: 'FLUX CORE', type: 'accessory', mana: 40, rarity: 'rare', desc: '+40 Max Mana' },
+        // --- RARE (Build Defining) ---
+        { id: 'titan_core', name: 'TITAN CORE', type: 'accessory', hpMult: 0.25, armor: 5, rarity: 'rare', desc: '+25% HP, +5 Armor. Unbreakable.' },
+        { id: 'predator_lens', name: 'PREDATOR LENS', type: 'accessory', critChance: 0.15, critDamage: 0.20, rarity: 'rare', desc: '+15% Crit, +20% Crit DMG. Precision optics.' },
+        { id: 'phantom_cloak', name: 'PHANTOM CLOAK', type: 'accessory', dodge: 0.15, atkMult: 0.10, rarity: 'rare', desc: '+15% Dodge, +10% ATK. Invisible death.' },
+        { id: 'arcane_battery', name: 'ARCANE BATTERY', type: 'accessory', manaMult: 0.30, regen: 2, rarity: 'rare', desc: '+30% Mana, +2HP/Turn. Energy regeneration.' },
+        { id: 'vampiric_ring', name: 'BLOOD SIGIL', type: 'accessory', lifesteal: 0.10, hpMult: 0.15, rarity: 'rare', desc: '+10% Lifesteal, +15% HP. Blood magic.' },
 
-        // --- EPIC ---
-        { id: 'berserk_chip', name: 'RAGE MODULE', type: 'accessory', atk: 30, hp: -20, rarity: 'epic', desc: '+30 ATK, -20 HP' },
-        {
-            id: 'guardian_angel', name: 'AUTO-MEDIC', type: 'accessory', hp: 100, rarity: 'epic', desc: '+100 HP, Regen Effect.',
-            onHit: (u, t) => { if (Math.random() < 0.1) { u.hp += 5; game.showText("MEDIC", u.mesh.position, '#00ff00'); } }
-        }, // Note: onHit for accessories only triggers if you attack
-        { id: 'assassin_emblem', name: 'DEATH MARK', type: 'accessory', crit: 0.20, rarity: 'epic', desc: '+20% Crit Chance' },
-        {
-            id: 'mirror_matrix', name: 'REFLECTOR', type: 'accessory', hp: 50, rarity: 'epic', desc: '+50 HP. Thorns Damage.',
-            // Logic handled in takeDmg, but we can fake it here for stats
-            // You would need to add a 'thorns' stat to your equip() function to make this real
-        },
+        // --- EPIC (Advanced Synergies) ---
+        { id: 'fortress_plating', name: 'FORTRESS MODULE', type: 'accessory', hpMult: 0.40, armor: 10, dodge: -0.05, rarity: 'epic', desc: '+40% HP, +10 Armor, -5% Dodge. Immovable.' },
+        { id: 'assassin_mark', name: 'DEATH MARK', type: 'accessory', critChance: 0.25, critDamage: 0.40, hpMult: -0.10, rarity: 'epic', desc: '+25% Crit, +40% Crit DMG, -10% HP. High risk, high reward.' },
+        { id: 'ghost_matrix', name: 'GHOST MATRIX', type: 'accessory', dodge: 0.25, atkMult: 0.15, critChance: 0.10, rarity: 'epic', desc: '+25% Dodge, +15% ATK, +10% Crit. Untouchable.' },
+        { id: 'eternal_font', name: 'ETERNAL FONT', type: 'accessory', manaMult: 0.50, regen: 5, lifesteal: 0.05, rarity: 'epic', desc: '+50% Mana, +5HP/Turn, +5% Lifesteal. Infinite sustain.' },
+        { id: 'thorns_core', name: '反射 CORE', type: 'accessory', hpMult: 0.30, thorns: 0.25, armor: 8, rarity: 'epic', desc: '+30% HP, +25% Thorns, +8 Armor. Pain reflects.' },
 
-        // --- LEGENDARY ---
-        { id: 'infinity_heart', name: 'INFINITY HEART', type: 'accessory', hp: 500, rarity: 'legendary', desc: '+500 Max HP' },
-        { id: 'dev_console', name: 'DEV CONSOLE', type: 'accessory', mana: 200, crit: 0.5, rarity: 'legendary', desc: '+200 Mana, +50% Crit' },
-        { id: 'phantom_drive', name: 'GHOST ENGINE', type: 'accessory', dodge: 0.40, rarity: 'legendary', desc: '+40% Dodge Chance' },
-        { id: 'omni_tool', name: 'THE SINGULARITY', type: 'accessory', atk: 50, hp: 200, mana: 100, crit: 0.1, dodge: 0.1, rarity: 'legendary', desc: 'All Stats Up.' }
+        // --- LEGENDARY (Build Capstones) ---
+        { id: 'infinity_heart', name: 'INFINITY HEART', type: 'accessory', hpMult: 0.80, regen: 10, armor: 15, rarity: 'legendary', desc: '+80% HP, +10HP/Turn, +15 Armor. Eternal life.' },
+        { id: 'dev_console', name: 'ADMIN CONSOLE', type: 'accessory', critChance: 0.40, critDamage: 0.80, manaMult: 0.40, rarity: 'legendary', desc: '+40% Crit, +80% Crit DMG, +40% Mana. Developer mode.' },
+        { id: 'phantom_engine', name: 'GHOST ENGINE', type: 'accessory', dodge: 0.45, atkMult: 0.25, critChance: 0.15, rarity: 'legendary', desc: '+45% Dodge, +25% ATK, +15% Crit. Never hit.' },
+        { id: 'perfect_core', name: 'OMNIPOTENT ORB', type: 'accessory', atkMult: 0.30, hpMult: 0.30, manaMult: 0.30, critChance: 0.15, dodge: 0.15, lifesteal: 0.15, armor: 10, rarity: 'legendary', desc: 'Ascension complete. All stats massively increased.' },
+        { id: 'chaos_relic', name: 'CHAOS ENGINE', type: 'accessory', atkMult: 1.00, hpMult: -0.30, critChance: 0.35, critDamage: 1.00, lifesteal: 0.20, rarity: 'legendary', desc: '+100% ATK, -30% HP, +35% Crit, +100% Crit DMG, +20% Lifesteal. Live fast, die never.' }
     ]
 };
 
@@ -224,7 +191,7 @@ const CLASS_TREES = {
             name: "CYBER-RONIN", desc: "Tier 1: Basics", skills: [
                 { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash', hits: 1 },
                 { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1 },
-                { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 3, color: 0xaa00ff, desc: "+15% Crit" }
+                { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 8, color: 0xaa00ff, desc: "+15% Crit" }
             ]
         },
         // 10-19
@@ -232,7 +199,7 @@ const CLASS_TREES = {
             name: "VOID-STALKER", desc: "Tier 2: Speed", skills: [
                 { name: "PHANTOM CUT", cost: 0, mult: 0.6, color: 0x9900ff, vfx: 'multi', hits: 3 }, // Total: 1.8x
                 { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1 },
-                { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 3, color: 0x9900ff, desc: "+25% Dodge" }
+                { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 8, color: 0x9900ff, desc: "+25% Dodge" }
             ]
         },
         // 20-29
@@ -240,7 +207,7 @@ const CLASS_TREES = {
             name: "TIME-SLAYER", desc: "Tier 3: Multi-Hit", skills: [
                 { name: "DIMENSION REND", cost: 0, mult: 0.45, color: 0xffffff, vfx: 'slash', hits: 5 }, // Total: 2.25x
                 { name: "OMNI-SLASH", cost: 60, mult: 0.8, color: 0xaa00ff, vfx: 'omni', hits: 8 }, // Total: 6.4x
-                { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 3, color: 0xffffff, desc: "+30% Double Strike" }
+                { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 8, color: 0xffffff, desc: "+30% Double Strike" }
             ]
         },
         // 30-39
@@ -248,7 +215,7 @@ const CLASS_TREES = {
             name: "SHADOW-LORD", desc: "Tier 4: Dark Arts", skills: [
                 { name: "NIGHTFALL", cost: 0, mult: 0.4, color: 0x330033, vfx: 'implode', hits: 7 }, // Total: 2.8x
                 { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1 },
-                { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 3, color: 0x550055, desc: "+20% Lifesteal" }
+                { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 8, color: 0x550055, desc: "+20% Lifesteal" }
             ]
         },
         // 40-49
@@ -256,7 +223,7 @@ const CLASS_TREES = {
             name: "BLOOD-LETTER", desc: "Tier 5: Lifesteal", skills: [
                 { name: "HEMORRHAGE", cost: 0, mult: 0.35, color: 0xff0000, vfx: 'multi', hits: 9 }, // Total: 3.15x
                 { name: "VAMPIRISM", cost: 100, mult: 2.5, color: 0xaa0000, vfx: 'implode', hits: 4, heal: 200 },
-                { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 30, duration: 3, color: 0xff0000, desc: "+30 ATK" }
+                { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 30, duration: 8, color: 0xff0000, desc: "+30 ATK" }
             ]
         },
         // 50-59
@@ -264,7 +231,7 @@ const CLASS_TREES = {
             name: "ETHER-BLADE", desc: "Tier 6: Magic Dmg", skills: [
                 { name: "SPIRIT SLASH", cost: 0, mult: 0.3, color: 0x00ffff, vfx: 'beam', hits: 12 }, // Total: 3.6x
                 { name: "SOUL REND", cost: 120, mult: 12.0, color: 0x00aaff, vfx: 'crit', hits: 1 },
-                { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 2, color: 0x00ffff, desc: "+40% Dodge" }
+                { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 8, color: 0x00ffff, desc: "+40% Dodge" }
             ]
         },
         // 60-69
@@ -272,7 +239,7 @@ const CLASS_TREES = {
             name: "VOID-WALKER", desc: "Tier 7: Black Holes", skills: [
                 { name: "GRAVITY WELL", cost: 0, mult: 0.25, color: 0x111111, vfx: 'implode', hits: 15 }, // Total: 3.75x
                 { name: "EVENT HORIZON", cost: 150, mult: 15.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0x111111, desc: "+50% Crit DMG" }
+                { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 8, color: 0x111111, desc: "+50% Crit DMG" }
             ]
         },
         // 70-79
@@ -280,7 +247,7 @@ const CLASS_TREES = {
             name: "FLASH-STEP", desc: "Tier 8: Velocity", skills: [
                 { name: "MACH SLASH", cost: 0, mult: 0.22, color: 0xffff00, vfx: 'omni', hits: 20 }, // Total: 4.4x
                 { name: "LIGHTSPEED", cost: 180, mult: 20.0, color: 0xffffff, vfx: 'beam', hits: 1 },
-                { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 3, color: 0xffff00, desc: "+50% Double Strike" }
+                { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 8, color: 0xffff00, desc: "+50% Double Strike" }
             ]
         },
         // 80-89
@@ -288,7 +255,7 @@ const CLASS_TREES = {
             name: "REALITY-BREAKER", desc: "Tier 9: Glitch", skills: [
                 { name: "GLITCH CUT", cost: 0, mult: 0.2, color: 0x00ff00, vfx: 'matrix', hits: 25 }, // Total: 5.0x
                 { name: "SYSTEM PURGE", cost: 220, mult: 2.5, color: 0x00ff00, vfx: 'matrix', hits: 10 },
-                { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 3, color: 0x00ff00, desc: "+30% Crit" }
+                { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 8, color: 0x00ff00, desc: "+30% Crit" }
             ]
         },
         // 90+
@@ -296,7 +263,7 @@ const CLASS_TREES = {
             name: "SINGULARITY", desc: "Tier 10: Cosmic", skills: [
                 { name: "BIG BANG", cost: 0, mult: 0.18, color: 0xffffff, vfx: 'blackhole', hits: 35 }, // Total: 6.3x
                 { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0xffd700, desc: "+25% All Offense" }
+                { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 8, color: 0xffd700, desc: "+25% All Offense" }
             ]
         }
     ],
@@ -307,7 +274,7 @@ const CLASS_TREES = {
             name: "TECH-PRIEST", desc: "Tier 1: Basics", skills: [
                 { name: "ZAP", cost: 0, mult: 0.8, color: 0xffff00, vfx: 'zap', hits: 1, manaGain: 8 },
                 { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', hits: 1, heal: 30 },
-                { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 20, duration: 3, color: 0x00ff00, desc: "Heal 20 HP/Turn" }
+                { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 20, duration: 8, color: 0x00ff00, desc: "Heal 20 HP/Turn" }
             ]
         },
         // 10-19
@@ -315,7 +282,7 @@ const CLASS_TREES = {
             name: "CYBER-BISHOP", desc: "Tier 2: Holy", skills: [
                 { name: "SIPHON", cost: 0, mult: 0.5, color: 0xffffaa, vfx: 'drain', hits: 2, manaGain: 15 },
                 { name: "HOLY NOVA", cost: 50, mult: 1.0, color: 0x00ffff, vfx: 'nova', hits: 3, heal: 50 },
-                { name: "SANCTUARY", cost: 25, isBuff: true, buffType: 'shield', buffVal: 50, duration: 1, color: 0x00ffff, desc: "+50 Shield" }
+                { name: "SANCTUARY", cost: 25, isBuff: true, buffType: 'shield', buffVal: 50, duration: 8, color: 0x00ffff, desc: "+50 Shield" }
             ]
         },
         // 20-29
@@ -323,7 +290,7 @@ const CLASS_TREES = {
             name: "DEUS-EX", desc: "Tier 3: Machine", skills: [
                 { name: "DATA DRAIN", cost: 0, mult: 0.4, color: 0x00ff00, vfx: 'matrix', hits: 3, manaGain: 25 },
                 { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', hits: 1, heal: 100 },
-                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 15, duration: 3, color: 0x00ff00, desc: "+15 Armor" }
+                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 15, duration: 8, color: 0x00ff00, desc: "+15 Armor" }
             ]
         },
         // 30-39
@@ -331,7 +298,7 @@ const CLASS_TREES = {
             name: "ANGEL-MK1", desc: "Tier 4: Flight", skills: [
                 { name: "LASER WING", cost: 0, mult: 0.35, color: 0xffffff, vfx: 'beam', hits: 4, manaGain: 30 },
                 { name: "HEAVENLY RAY", cost: 100, mult: 2.0, color: 0xffffdd, vfx: 'god_beam', hits: 4, heal: 150 },
-                { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 50, duration: 3, color: 0xffffff, desc: "Heal 50 HP/Turn" }
+                { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 50, duration: 8, color: 0xffffff, desc: "Heal 50 HP/Turn" }
             ]
         },
         // 40-49
@@ -339,7 +306,7 @@ const CLASS_TREES = {
             name: "ORACLE", desc: "Tier 5: Sight", skills: [
                 { name: "PREDICTION", cost: 0, mult: 0.3, color: 0xaa00ff, vfx: 'zap', hits: 5, manaGain: 40 },
                 { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', hits: 1, heal: 200 },
-                { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 3, color: 0xaa00ff, desc: "+35% Dodge" }
+                { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 8, color: 0xaa00ff, desc: "+35% Dodge" }
             ]
         },
         // 50-59
@@ -347,7 +314,7 @@ const CLASS_TREES = {
             name: "HIGH-TEMPLAR", desc: "Tier 6: Storm", skills: [
                 { name: "PSIONIC STORM", cost: 0, mult: 0.25, color: 0x0000ff, vfx: 'rain', hits: 6, manaGain: 10 },
                 { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', hits: 1, heal: 250 },
-                { name: "PSI SHIELD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 100, duration: 1, color: 0x0000ff, desc: "+100 Shield" }
+                { name: "PSI SHIELD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 100, duration: 8, color: 0x0000ff, desc: "+100 Shield" }
             ]
         },
         // 60-69
@@ -355,7 +322,7 @@ const CLASS_TREES = {
             name: "SERAPHIM", desc: "Tier 7: Fire", skills: [
                 { name: "HOLY FIRE", cost: 0, mult: 0.2, color: 0xffaa00, vfx: 'beam', hits: 8, manaGain: 50 },
                 { name: "PURGATORY", cost: 180, mult: 3.0, color: 0xff5500, vfx: 'nuke', hits: 5, heal: 300 },
-                { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 3, color: 0xffaa00, desc: "+30% Thorns" }
+                { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 8, color: 0xffaa00, desc: "+30% Thorns" }
             ]
         },
         // 70-79
@@ -363,7 +330,7 @@ const CLASS_TREES = {
             name: "ARCHON", desc: "Tier 8: Power", skills: [
                 { name: "POWER OVERWHELM", cost: 0, mult: 0.18, color: 0x00f2ff, vfx: 'omni', hits: 10, manaGain: 60 },
                 { name: "ARCHON BEAM", cost: 220, mult: 2.0, color: 0x00f2ff, vfx: 'god_beam', hits: 10, heal: 400 },
-                { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 3, color: 0x00f2ff, desc: "+25% All Defense" }
+                { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 8, color: 0x00f2ff, desc: "+25% All Defense" }
             ]
         },
         // 80-89
@@ -371,7 +338,7 @@ const CLASS_TREES = {
             name: "SOURCE-CODE", desc: "Tier 9: Admin", skills: [
                 { name: "REWRITE", cost: 0, mult: 0.15, color: 0x00ff00, vfx: 'matrix', hits: 12, manaGain: 100 },
                 { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', hits: 1, heal: 500 },
-                { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 150, duration: 3, color: 0x00ff00, desc: "Heal 150 HP/Turn" }
+                { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 150, duration: 8, color: 0x00ff00, desc: "Heal 150 HP/Turn" }
             ]
         },
         // 90+
@@ -379,7 +346,7 @@ const CLASS_TREES = {
             name: "DIGITAL-GOD", desc: "Tier 10: Omni", skills: [
                 { name: "CREATION", cost: 0, mult: 0.4, color: 0xffffff, vfx: 'god_beam', hits: 15, manaGain: 999 }, // High damage sustained beam
                 { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', hits: 1, heal: 9999 },
-                { name: "IMMORTALITY", cost: 100, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0xffd700, desc: "Invincible 2 turns" }
+                { name: "IMMORTALITY", cost: 100, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0xffd700, desc: "Invincible 2 turns" }
             ]
         }
     ],
@@ -390,7 +357,7 @@ const CLASS_TREES = {
             name: "HEAVY-MECH", desc: "Tier 1: Basics", skills: [
                 { name: "GATLING", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'gatling', hits: 3 },
                 { name: "MISSILE", cost: 30, mult: 3.0, color: 0xff5500, vfx: 'explode', hits: 1 },
-                { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 10, duration: 3, color: 0xaaaaaa, desc: "+10 Armor" }
+                { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 10, duration: 8, color: 0xaaaaaa, desc: "+10 Armor" }
             ]
         },
         // 10-19
@@ -398,7 +365,7 @@ const CLASS_TREES = {
             name: "WAR-TITAN", desc: "Tier 2: Dakka", skills: [
                 { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6 }, // Total 1.2x
                 { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1 },
-                { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 20, duration: 3, color: 0xff9900, desc: "+20 ATK" }
+                { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 20, duration: 8, color: 0xff9900, desc: "+20 ATK" }
             ]
         },
         // 20-29
@@ -406,7 +373,7 @@ const CLASS_TREES = {
             name: "APOCALYPSE", desc: "Tier 3: Barrage", skills: [
                 { name: "BULLET HELL", cost: 0, mult: 0.15, color: 0xffaa00, vfx: 'gatling', hits: 12 }, // Total 1.8x
                 { name: "BUNKER BUSTER", cost: 80, mult: 7.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 15, duration: 3, color: 0xffaa00, desc: "+15 Mana Regen" }
+                { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 15, duration: 8, color: 0xffaa00, desc: "+15 Mana Regen" }
             ]
         },
         // 30-39
@@ -414,7 +381,7 @@ const CLASS_TREES = {
             name: "ARTILLERY", desc: "Tier 4: Long Range", skills: [
                 { name: "HOWITZER", cost: 0, mult: 2.0, color: 0xaa5500, vfx: 'heavy', hits: 1 }, // Slow heavy hitter option
                 { name: "CARPET BOMB", cost: 100, mult: 0.5, color: 0xff5500, vfx: 'rain', hits: 20 }, // High hit Nuke
-                { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 25, duration: 3, color: 0xaa5500, desc: "+25 Armor" }
+                { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 25, duration: 8, color: 0xaa5500, desc: "+25 Armor" }
             ]
         },
         // 40-49
@@ -422,7 +389,7 @@ const CLASS_TREES = {
             name: "LASER-CORE", desc: "Tier 5: Energy", skills: [
                 { name: "PULSE RIFLE", cost: 0, mult: 0.12, color: 0x00f2ff, vfx: 'beam', hits: 25 }, // Total 3.0x
                 { name: "ION CANNON", cost: 120, mult: 12.0, color: 0x00ffff, vfx: 'god_beam', hits: 1 },
-                { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 3, color: 0x00f2ff, desc: "+40% Crit DMG" }
+                { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 8, color: 0x00f2ff, desc: "+40% Crit DMG" }
             ]
         },
         // 50-59
@@ -430,7 +397,7 @@ const CLASS_TREES = {
             name: "FORTRESS", desc: "Tier 6: Defense", skills: [
                 { name: "FLAK", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'explode', hits: 35 }, // Total 3.5x
                 { name: "DOOMSDAY", cost: 150, mult: 15.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "BUNKER", cost: 45, isBuff: true, buffType: 'shield', buffVal: 150, duration: 1, color: 0xffff00, desc: "+150 Shield" }
+                { name: "BUNKER", cost: 45, isBuff: true, buffType: 'shield', buffVal: 150, duration: 8, color: 0xffff00, desc: "+150 Shield" }
             ]
         },
         // 60-69
@@ -438,7 +405,7 @@ const CLASS_TREES = {
             name: "GUNDAM-X", desc: "Tier 7: Mobile", skills: [
                 { name: "BEAM SABER", cost: 0, mult: 1.0, color: 0xff00ff, vfx: 'slash', hits: 4 },
                 { name: "FULL BURST", cost: 180, mult: 0.08, color: 0x00ff00, vfx: 'omni', hits: 50 }, // Total 4.0x
-                { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 3, color: 0xff00ff, desc: "+20% All Offense" }
+                { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 8, color: 0xff00ff, desc: "+20% All Offense" }
             ]
         },
         // 70-79
@@ -446,7 +413,7 @@ const CLASS_TREES = {
             name: "DREADNOUGHT", desc: "Tier 8: Space", skills: [
                 { name: "MACRO CANNON", cost: 0, mult: 1.5, color: 0xaaaaff, vfx: 'heavy', hits: 3 },
                 { name: "EXTERMINATUS", cost: 220, mult: 0.4, color: 0xffaa00, vfx: 'rain', hits: 60 }, // Total 24x (Powerful Nuke)
-                { name: "VOID SHIELDS", cost: 55, isBuff: true, buffType: 'shield', buffVal: 250, duration: 1, color: 0xaaaaff, desc: "+250 Shield" }
+                { name: "VOID SHIELDS", cost: 55, isBuff: true, buffType: 'shield', buffVal: 250, duration: 8, color: 0xaaaaff, desc: "+250 Shield" }
             ]
         },
         // 80-89
@@ -454,7 +421,7 @@ const CLASS_TREES = {
             name: "WORLD-EATER", desc: "Tier 9: Planetary", skills: [
                 { name: "CRUST CRACK", cost: 0, mult: 0.07, color: 0xff5500, vfx: 'implode', hits: 75 }, // Total 5.25x
                 { name: "CORE DETONATE", cost: 260, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 100, duration: 3, color: 0xff5500, desc: "+100 ATK" }
+                { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 100, duration: 8, color: 0xff5500, desc: "+100 ATK" }
             ]
         },
         // 90+
@@ -462,7 +429,7 @@ const CLASS_TREES = {
             name: "ANNIHILATOR", desc: "Tier 10: Universal", skills: [
                 { name: "ZERO POINT", cost: 0, mult: 0.06, color: 0xffffff, vfx: 'gatling', hits: 100 }, // Total 6.0x
                 { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
-                { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 3, color: 0xffd700, desc: "+50% All Offense" }
+                { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 8, color: 0xffd700, desc: "+50% All Offense" }
             ]
         }
     ],
@@ -473,7 +440,7 @@ const CLASS_TREES = {
             name: "SHADE", desc: "Tier 1: Stealth", skills: [
                 { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash', hits: 1 },
                 { name: "POISON BLADE", cost: 25, mult: 0.5, color: 0x00ff00, vfx: 'multi', hits: 4 },
-                { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 2, color: 0x220033, desc: "+30% Dodge" }
+                { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 8, color: 0x220033, desc: "+30% Dodge" }
             ]
         },
         // 10-19
@@ -481,7 +448,7 @@ const CLASS_TREES = {
             name: "VENOM-WEAVER", desc: "Tier 2: Toxins", skills: [
                 { name: "TOXIC SLASH", cost: 0, mult: 0.3, color: 0x00aa00, vfx: 'multi', hits: 5 }, // Total 1.5x
                 { name: "VENOM BURST", cost: 45, mult: 4.5, color: 0x00ff00, vfx: 'implode', hits: 1 },
-                { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Crit" }
+                { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 8, color: 0x00ff00, desc: "+20% Crit" }
             ]
         },
         // 20-29
@@ -489,7 +456,7 @@ const CLASS_TREES = {
             name: "PHANTOM", desc: "Tier 3: Intangible", skills: [
                 { name: "PHASE STRIKE", cost: 0, mult: 0.25, color: 0x8800aa, vfx: 'slash', hits: 7 }, // Total 1.75x
                 { name: "SOUL DRAIN", cost: 55, mult: 2.5, color: 0xaa00ff, vfx: 'implode', hits: 2, heal: 80 },
-                { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 1, color: 0x8800aa, desc: "Invincible 1 turn" }
+                { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x8800aa, desc: "Invincible 1 turn" }
             ]
         },
         // 30-39
@@ -497,7 +464,7 @@ const CLASS_TREES = {
             name: "DEATH-DEALER", desc: "Tier 4: Execute", skills: [
                 { name: "MARKED DEATH", cost: 0, mult: 0.22, color: 0x440044, vfx: 'crit', hits: 10 }, // Total 2.2x
                 { name: "EXECUTE ORDER", cost: 75, mult: 8.0, color: 0xff0044, vfx: 'heavy', hits: 1 },
-                { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 3, color: 0xff0044, desc: "+50% Crit DMG" }
+                { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 8, color: 0xff0044, desc: "+50% Crit DMG" }
             ]
         },
         // 40-49
@@ -505,7 +472,7 @@ const CLASS_TREES = {
             name: "NIGHTMARE", desc: "Tier 5: Fear", skills: [
                 { name: "TERROR", cost: 0, mult: 0.2, color: 0x110011, vfx: 'implode', hits: 12 }, // Total 2.4x
                 { name: "NIGHT TERROR", cost: 90, mult: 3.0, color: 0x330033, vfx: 'blackhole', hits: 3 },
-                { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0x330033, desc: "+25% Lifesteal" }
+                { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 8, color: 0x330033, desc: "+25% Lifesteal" }
             ]
         },
         // 50-59
@@ -513,7 +480,7 @@ const CLASS_TREES = {
             name: "GRIM-REAPER", desc: "Tier 6: Death", skills: [
                 { name: "SCYTHE SWEEP", cost: 0, mult: 0.18, color: 0x000000, vfx: 'slash', hits: 15 }, // Total 2.7x
                 { name: "REAP SOULS", cost: 110, mult: 2.0, color: 0x440044, vfx: 'implode', hits: 5, heal: 150 },
-                { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 3, color: 0x000000, desc: "+35% Crit" }
+                { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 8, color: 0x000000, desc: "+35% Crit" }
             ]
         },
         // 60-69
@@ -521,7 +488,7 @@ const CLASS_TREES = {
             name: "WRAITH-LORD", desc: "Tier 7: Ethereal", skills: [
                 { name: "SPECTRAL BLADES", cost: 0, mult: 0.16, color: 0x6600aa, vfx: 'omni', hits: 20 }, // Total 3.2x
                 { name: "SOUL SHATTER", cost: 140, mult: 12.0, color: 0xaa00ff, vfx: 'blackhole', hits: 1 },
-                { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x6600aa, desc: "Invincible 2 turns" }
+                { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x6600aa, desc: "Invincible 2 turns" }
             ]
         },
         // 70-79
@@ -529,7 +496,7 @@ const CLASS_TREES = {
             name: "VOID-FANG", desc: "Tier 8: Void", skills: [
                 { name: "VOID FANGS", cost: 0, mult: 0.15, color: 0x220022, vfx: 'multi', hits: 25 }, // Total 3.75x
                 { name: "ANNIHILATE", cost: 170, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 3, color: 0x220022, desc: "+25% All Offense" }
+                { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 8, color: 0x220022, desc: "+25% All Offense" }
             ]
         },
         // 80-89
@@ -537,7 +504,7 @@ const CLASS_TREES = {
             name: "ENTROPY", desc: "Tier 9: Decay", skills: [
                 { name: "DECAY", cost: 0, mult: 0.14, color: 0x003300, vfx: 'implode', hits: 30 }, // Total 4.2x
                 { name: "ENTROPY WAVE", cost: 200, mult: 30.0, color: 0x006600, vfx: 'nova', hits: 1 },
-                { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 3, color: 0x003300, desc: "+75% Crit DMG" }
+                { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 8, color: 0x003300, desc: "+75% Crit DMG" }
             ]
         },
         // 90+
@@ -545,7 +512,7 @@ const CLASS_TREES = {
             name: "OBLIVION", desc: "Tier 10: End", skills: [
                 { name: "OBLIVION", cost: 0, mult: 0.12, color: 0x000000, vfx: 'blackhole', hits: 40 }, // Total 4.8x
                 { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1 },
-                { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 3, color: 0x000000, desc: "+60% All Offense" }
+                { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 8, color: 0x000000, desc: "+60% All Offense" }
             ]
         }
     ],
@@ -556,7 +523,7 @@ const CLASS_TREES = {
             name: "STREET-PUNK", desc: "Tier 1: Speed", skills: [
                 { name: "JAB", cost: 0, mult: 0.5, color: 0xff4400, vfx: 'punch', hits: 2, isFrenzy: true },
                 { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', hits: 1, doubleAttack: true },
-                { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 3, color: 0xff4400, desc: "+20% ATK Mult" }
+                { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 8, color: 0xff4400, desc: "+20% ATK Mult" }
             ]
         },
         // 10-19
@@ -564,7 +531,7 @@ const CLASS_TREES = {
             name: "CHROME-BOXER", desc: "Tier 2: Combos", skills: [
                 { name: "ONE-TWO", cost: 0, mult: 0.35, color: 0xff5500, vfx: 'punch', hits: 4, isFrenzy: true }, // Total 1.4x
                 { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', hits: 1, doubleAttack: true },
-                { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atkMult', buffVal: 0.30, duration: 3, color: 0xff5500, desc: "+30% ATK Mult" }
+                { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atkMult', buffVal: 0.30, duration: 8, color: 0xff5500, desc: "+30% ATK Mult" }
             ]
         },
         // 20-29
@@ -572,7 +539,7 @@ const CLASS_TREES = {
             name: "CYBER-KICK", desc: "Tier 3: Kicks", skills: [
                 { name: "RAPID KICKS", cost: 0, mult: 0.25, color: 0xff6600, vfx: 'punch', hits: 7, isFrenzy: true }, // Total 1.75x
                 { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', hits: 1, doubleAttack: true },
-                { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atkMult', buffVal: 0.40, duration: 3, color: 0xff6600, desc: "+40% ATK Mult" }
+                { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atkMult', buffVal: 0.40, duration: 8, color: 0xff6600, desc: "+40% ATK Mult" }
             ]
         },
         // 30-39
@@ -580,7 +547,7 @@ const CLASS_TREES = {
             name: "GRAPPLER", desc: "Tier 4: Throws", skills: [
                 { name: "COMBO STRIKE", cost: 0, mult: 0.2, color: 0xff7700, vfx: 'punch', hits: 10, isFrenzy: true }, // Total 2.0x
                 { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', hits: 1, doubleAttack: true },
-                { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atkMult', buffVal: 0.50, duration: 3, color: 0xff7700, desc: "+50% ATK Mult" }
+                { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atkMult', buffVal: 0.50, duration: 8, color: 0xff7700, desc: "+50% ATK Mult" }
             ]
         },
         // 40-49
@@ -588,7 +555,7 @@ const CLASS_TREES = {
             name: "BERSERKER", desc: "Tier 5: Fury", skills: [
                 { name: "FRENZY", cost: 0, mult: 0.18, color: 0xff2200, vfx: 'punch', hits: 13, isFrenzy: true }, // Total 2.34x
                 { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 2, doubleAttack: true },
-                { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atkMult', buffVal: 0.60, duration: 3, color: 0xff2200, desc: "+60% ATK Mult" }
+                { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atkMult', buffVal: 0.60, duration: 8, color: 0xff2200, desc: "+60% ATK Mult" }
             ]
         },
         // 50-59
@@ -596,7 +563,7 @@ const CLASS_TREES = {
             name: "PIT-CHAMPION", desc: "Tier 6: Glory", skills: [
                 { name: "FLURRY", cost: 0, mult: 0.16, color: 0xffaa00, vfx: 'punch', hits: 16, isFrenzy: true }, // Total 2.56x
                 { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', hits: 1, doubleAttack: true },
-                { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atkMult', buffVal: 0.75, duration: 3, color: 0xffaa00, desc: "+75% ATK Mult" }
+                { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atkMult', buffVal: 0.75, duration: 8, color: 0xffaa00, desc: "+75% ATK Mult" }
             ]
         },
         // 60-69
@@ -604,7 +571,7 @@ const CLASS_TREES = {
             name: "IRON-TITAN", desc: "Tier 7: Power", skills: [
                 { name: "METEOR FISTS", cost: 0, mult: 0.15, color: 0xff5500, vfx: 'punch', hits: 20, isFrenzy: true }, // Total 3.0x
                 { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', hits: 1, doubleAttack: true },
-                { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atkMult', buffVal: 1.0, duration: 3, color: 0xff5500, desc: "+100% ATK Mult" }
+                { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atkMult', buffVal: 1.0, duration: 8, color: 0xff5500, desc: "+100% ATK Mult" }
             ]
         },
         // 70-79
@@ -612,7 +579,7 @@ const CLASS_TREES = {
             name: "GOD-FIST", desc: "Tier 8: Divine", skills: [
                 { name: "INFINITE COMBO", cost: 0, mult: 0.12, color: 0xffd700, vfx: 'omni', hits: 30, isFrenzy: true }, // Total 3.6x
                 { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', hits: 1, doubleAttack: true },
-                { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atkMult', buffVal: 1.25, duration: 3, color: 0xffd700, desc: "+125% ATK Mult" }
+                { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atkMult', buffVal: 1.25, duration: 8, color: 0xffd700, desc: "+125% ATK Mult" }
             ]
         },
         // 80-89
@@ -620,7 +587,7 @@ const CLASS_TREES = {
             name: "STAR-BREAKER", desc: "Tier 9: Cosmic", skills: [
                 { name: "STAR RUSH", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'omni', hits: 40, isFrenzy: true }, // Total 4.0x
                 { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', hits: 1, doubleAttack: true },
-                { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atkMult', buffVal: 1.50, duration: 3, color: 0xffff00, desc: "+150% ATK Mult" }
+                { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atkMult', buffVal: 1.50, duration: 8, color: 0xffff00, desc: "+150% ATK Mult" }
             ]
         },
         // 90+
@@ -628,7 +595,7 @@ const CLASS_TREES = {
             name: "ONE-PUNCH", desc: "Tier 10: END", skills: [
                 { name: "SERIOUS PUNCHES", cost: 0, mult: 0.08, color: 0xffffff, vfx: 'omni', hits: 60, isFrenzy: true }, // Total 4.8x
                 { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1 },
-                { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 3, color: 0xffffff, desc: "+200% ATK Mult" }
+                { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 8, color: 0xffffff, desc: "+200% ATK Mult" }
             ]
         }
     ],
@@ -638,7 +605,7 @@ const CLASS_TREES = {
             name: "DRIFTER", desc: "Tier 1: Revolver", skills: [
                 { name: "QUICK DRAW", cost: 0, mult: 1.1, color: 0xffaa00, vfx: 'beam', hits: 1 },
                 { name: "MAGNUM OPUS", cost: 35, mult: 2.8, color: 0xff4400, vfx: 'heavy', hits: 1 },
-                { name: "DEADEYE", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 3, color: 0xffaa00, desc: "+20% Crit Chance" }
+                { name: "DEADEYE", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 8, color: 0xffaa00, desc: "+20% Crit Chance" }
             ]
         },
         // 10-19
@@ -646,7 +613,7 @@ const CLASS_TREES = {
             name: "OUTLAW", desc: "Tier 2: Dual Wield", skills: [
                 { name: "FAN HAMMER", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'multi', hits: 6 }, // Total 1.8x
                 { name: "POINT BLANK", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'explode', hits: 1 },
-                { name: "LUCKY COIN", cost: 25, isBuff: true, buffType: 'critDamage', buffVal: 0.30, duration: 3, color: 0xffff00, desc: "+30% Crit DMG" }
+                { name: "LUCKY COIN", cost: 25, isBuff: true, buffType: 'critDamage', buffVal: 0.30, duration: 8, color: 0xffff00, desc: "+30% Crit DMG" }
             ]
         },
         // 20-29
@@ -654,7 +621,7 @@ const CLASS_TREES = {
             name: "DESPERADO", desc: "Tier 3: Ricochet", skills: [
                 { name: "TRICK SHOT", cost: 0, mult: 0.4, color: 0x00ffff, vfx: 'beam', hits: 5 }, // Total 2.0x
                 { name: "EXPLOSIVE ROUND", cost: 65, mult: 6.0, color: 0xff5500, vfx: 'nuke', hits: 1 },
-                { name: "ADRENALINE", cost: 30, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 3, color: 0x00ffff, desc: "+30% Dodge" }
+                { name: "ADRENALINE", cost: 30, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 8, color: 0x00ffff, desc: "+30% Dodge" }
             ]
         },
         // 30-39
@@ -662,7 +629,7 @@ const CLASS_TREES = {
             name: "VIGILANTE", desc: "Tier 4: Sniper", skills: [
                 { name: "HEADSHOT", cost: 0, mult: 2.5, color: 0xff0000, vfx: 'crit', hits: 1 }, // Slow, heavy single hit
                 { name: "PENETRATOR", cost: 90, mult: 8.5, color: 0xff0000, vfx: 'god_beam', hits: 1 },
-                { name: "LASER SIGHT", cost: 35, isBuff: true, buffType: 'crit', buffVal: 0.40, duration: 3, color: 0xff0000, desc: "+40% Crit Chance" }
+                { name: "LASER SIGHT", cost: 35, isBuff: true, buffType: 'crit', buffVal: 0.40, duration: 8, color: 0xff0000, desc: "+40% Crit Chance" }
             ]
         },
         // 40-49
@@ -670,7 +637,7 @@ const CLASS_TREES = {
             name: "COMMANDO", desc: "Tier 5: Heavy", skills: [
                 { name: "SUPPRESSION", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'gatling', hits: 15 }, // Total 3.0x
                 { name: "RPG", cost: 110, mult: 5.0, color: 0xffaa00, vfx: 'nuke', hits: 2 },
-                { name: "GUERRILLA", cost: 40, isBuff: true, buffType: 'armor', buffVal: 20, duration: 3, color: 0x55aa00, desc: "+20 Armor" }
+                { name: "GUERRILLA", cost: 40, isBuff: true, buffType: 'armor', buffVal: 20, duration: 8, color: 0x55aa00, desc: "+20 Armor" }
             ]
         },
         // 50-59
@@ -678,7 +645,7 @@ const CLASS_TREES = {
             name: "CYBER-COWBOY", desc: "Tier 6: Neon", skills: [
                 { name: "PLASMA WHIP", cost: 0, mult: 0.4, color: 0xff00ff, vfx: 'slash', hits: 8 }, // Total 3.2x
                 { name: "NEON NOON", cost: 140, mult: 13.0, color: 0xff00ff, vfx: 'god_beam', hits: 1 },
-                { name: "HIGH NOON", cost: 45, isBuff: true, buffType: 'atk', buffVal: 50, duration: 3, color: 0xff00ff, desc: "+50 ATK" }
+                { name: "HIGH NOON", cost: 45, isBuff: true, buffType: 'atk', buffVal: 50, duration: 8, color: 0xff00ff, desc: "+50 ATK" }
             ]
         },
         // 60-69
@@ -686,7 +653,7 @@ const CLASS_TREES = {
             name: "GUN-KATA", desc: "Tier 7: Martial", skills: [
                 { name: "BULLET DANCE", cost: 0, mult: 0.15, color: 0xffffff, vfx: 'omni', hits: 25 }, // Total 3.75x
                 { name: "EQUILIBRIUM", cost: 170, mult: 16.0, color: 0xffffff, vfx: 'implode', hits: 1 },
-                { name: "FLOW STATE", cost: 50, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 3, color: 0xffffff, desc: "+40% Double Strike" }
+                { name: "FLOW STATE", cost: 50, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 8, color: 0xffffff, desc: "+40% Double Strike" }
             ]
         },
         // 70-79
@@ -694,7 +661,7 @@ const CLASS_TREES = {
             name: "RAIL-GUNNER", desc: "Tier 8: Magnetic", skills: [
                 { name: "GAUSS RIFLE", cost: 0, mult: 1.0, color: 0x00aaff, vfx: 'beam', hits: 4 }, // Total 4.0x
                 { name: "HYPER VELOCITY", cost: 200, mult: 20.0, color: 0x00aaff, vfx: 'god_beam', hits: 1 },
-                { name: "MAGNETIC FIELD", cost: 55, isBuff: true, buffType: 'shield', buffVal: 300, duration: 1, color: 0x00aaff, desc: "+300 Shield" }
+                { name: "MAGNETIC FIELD", cost: 55, isBuff: true, buffType: 'shield', buffVal: 300, duration: 8, color: 0x00aaff, desc: "+300 Shield" }
             ]
         },
         // 80-89
@@ -702,7 +669,7 @@ const CLASS_TREES = {
             name: "EXECUTIONER", desc: "Tier 9: Orbital", skills: [
                 { name: "LOCK-ON", cost: 0, mult: 0.1, color: 0xff0000, vfx: 'matrix', hits: 50 }, // Total 5.0x
                 { name: "ORBITAL STRIKE", cost: 250, mult: 35.0, color: 0xff4400, vfx: 'nuke', hits: 1 },
-                { name: "KILL PROTOCOL", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 1.0, duration: 3, color: 0xff0000, desc: "+100% Crit DMG" }
+                { name: "KILL PROTOCOL", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 1.0, duration: 8, color: 0xff0000, desc: "+100% Crit DMG" }
             ]
         },
         // 90+
@@ -710,7 +677,7 @@ const CLASS_TREES = {
             name: "BALLISTIC-GOD", desc: "Tier 10: Infinite", skills: [
                 { name: "BULLET HELL", cost: 0, mult: 0.1, color: 0xffd700, vfx: 'gatling', hits: 80 }, // Total 8.0x (Insane hit count)
                 { name: "THE BIG IRON", cost: 400, mult: 100.0, color: 0xffd700, vfx: 'god_beam', hits: 1 },
-                { name: "TRIGGER HAPPY", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.75, duration: 3, color: 0xffd700, desc: "+75% All Offense" }
+                { name: "TRIGGER HAPPY", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.75, duration: 8, color: 0xffd700, desc: "+75% All Offense" }
             ]
         }
     ],
@@ -720,7 +687,7 @@ const CLASS_TREES = {
             name: "SQUIRE", desc: "Tier 1: Defense", skills: [
                 { name: "SLASH", cost: 0, mult: 1.0, color: 0xcccccc, vfx: 'slash', hits: 1 },
                 { name: "SHIELD BASH", cost: 30, mult: 2.0, color: 0x00aaff, vfx: 'heavy', hits: 1 },
-                { name: "SHIELD UP", cost: 20, isBuff: true, buffType: 'shield', buffVal: 50, duration: 1, color: 0x00aaff, desc: "+50 Shield" }
+                { name: "SHIELD UP", cost: 20, isBuff: true, buffType: 'shield', buffVal: 50, duration: 8, color: 0x00aaff, desc: "+50 Shield" }
             ]
         },
         // 10-19
@@ -728,7 +695,7 @@ const CLASS_TREES = {
             name: "IRON-CLAD", desc: "Tier 2: Armor", skills: [
                 { name: "HEAVY SWING", cost: 0, mult: 1.2, color: 0xaaaaaa, vfx: 'slash', hits: 1 },
                 { name: "IRON STRIKE", cost: 45, mult: 3.5, color: 0x888888, vfx: 'heavy', hits: 1 },
-                { name: "FORTIFY", cost: 25, isBuff: true, buffType: 'armor', buffVal: 20, duration: 3, color: 0xaaaaaa, desc: "+20 Armor" }
+                { name: "FORTIFY", cost: 25, isBuff: true, buffType: 'armor', buffVal: 20, duration: 8, color: 0xaaaaaa, desc: "+20 Armor" }
             ]
         },
         // 20-29
@@ -736,7 +703,7 @@ const CLASS_TREES = {
             name: "GUARDIAN", desc: "Tier 3: Protector", skills: [
                 { name: "JUSTICE", cost: 0, mult: 0.5, color: 0xffd700, vfx: 'beam', hits: 4 }, // Total 2.0x
                 { name: "SMITE", cost: 60, mult: 5.0, color: 0xffd700, vfx: 'god_beam', hits: 1 },
-                { name: "HOLY WALL", cost: 35, isBuff: true, buffType: 'shield', buffVal: 150, duration: 1, color: 0xffd700, desc: "+150 Shield" }
+                { name: "HOLY WALL", cost: 35, isBuff: true, buffType: 'shield', buffVal: 150, duration: 8, color: 0xffd700, desc: "+150 Shield" }
             ]
         },
         // 30-39
@@ -744,7 +711,7 @@ const CLASS_TREES = {
             name: "CRUSADER", desc: "Tier 4: Holy", skills: [
                 { name: "DIVINE CUT", cost: 0, mult: 0.8, color: 0xffffff, vfx: 'slash', hits: 3 }, // Total 2.4x
                 { name: "JUDGEMENT", cost: 90, mult: 7.0, color: 0xffffff, vfx: 'heavy', hits: 1 },
-                { name: "DIVINE SHIELD", cost: 40, isBuff: true, buffType: 'shield', buffVal: 250, duration: 1, color: 0xffffff, desc: "+250 Shield" }
+                { name: "DIVINE SHIELD", cost: 40, isBuff: true, buffType: 'shield', buffVal: 250, duration: 8, color: 0xffffff, desc: "+250 Shield" }
             ]
         },
         // 40-49
@@ -752,7 +719,7 @@ const CLASS_TREES = {
             name: "ROYAL-GUARD", desc: "Tier 5: Elite", skills: [
                 { name: "ROYAL SLASH", cost: 0, mult: 0.6, color: 0xff0055, vfx: 'multi', hits: 5 }, // Total 3.0x
                 { name: "EXECUTION", cost: 110, mult: 10.0, color: 0xff0000, vfx: 'crit', hits: 1 },
-                { name: "KINGS ARMOR", cost: 45, isBuff: true, buffType: 'all_defense', buffVal: 0.30, duration: 3, color: 0xff0055, desc: "+30% All Defense" }
+                { name: "KINGS ARMOR", cost: 45, isBuff: true, buffType: 'all_defense', buffVal: 0.30, duration: 8, color: 0xff0055, desc: "+30% All Defense" }
             ]
         },
         // 50-59
@@ -760,7 +727,7 @@ const CLASS_TREES = {
             name: "CYBER-PALADIN", desc: "Tier 6: Energy", skills: [
                 { name: "LASER SWORD", cost: 0, mult: 0.4, color: 0x00f2ff, vfx: 'beam', hits: 8 }, // Total 3.2x
                 { name: "PLASMA BASH", cost: 140, mult: 12.0, color: 0x00f2ff, vfx: 'implode', hits: 1 },
-                { name: "FORCE FIELD", cost: 50, isBuff: true, buffType: 'shield', buffVal: 500, duration: 1, color: 0x00f2ff, desc: "+500 Shield" }
+                { name: "FORCE FIELD", cost: 50, isBuff: true, buffType: 'shield', buffVal: 500, duration: 8, color: 0x00f2ff, desc: "+500 Shield" }
             ]
         },
         // 60-69
@@ -768,7 +735,7 @@ const CLASS_TREES = {
             name: "JUGGERNAUT", desc: "Tier 7: Unstoppable", skills: [
                 { name: "EARTHQUAKE", cost: 0, mult: 0.3, color: 0x552200, vfx: 'heavy', hits: 12 }, // Total 3.6x
                 { name: "AVALANCHE", cost: 160, mult: 15.0, color: 0x884400, vfx: 'nuke', hits: 1 },
-                { name: "IRON SKIN", cost: 55, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x888888, desc: "Invincible 2 turns" }
+                { name: "IRON SKIN", cost: 55, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x888888, desc: "Invincible 2 turns" }
             ]
         },
         // 70-79
@@ -776,7 +743,7 @@ const CLASS_TREES = {
             name: "VOID-KEEPER", desc: "Tier 8: Null", skills: [
                 { name: "VOID SLASH", cost: 0, mult: 0.2, color: 0x220044, vfx: 'slash', hits: 20 }, // Total 4.0x
                 { name: "BLACK HOLE", cost: 200, mult: 20.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "VOID BARRIER", cost: 60, isBuff: true, buffType: 'shield', buffVal: 1000, duration: 1, color: 0x220044, desc: "+1000 Shield" }
+                { name: "VOID BARRIER", cost: 60, isBuff: true, buffType: 'shield', buffVal: 1000, duration: 8, color: 0x220044, desc: "+1000 Shield" }
             ]
         },
         // 80-89
@@ -784,7 +751,7 @@ const CLASS_TREES = {
             name: "TITAN-SLAYER", desc: "Tier 9: Colossal", skills: [
                 { name: "GOD KILLER", cost: 0, mult: 0.15, color: 0xffd700, vfx: 'god_beam', hits: 30 }, // Total 4.5x
                 { name: "HEAVENS FALL", cost: 250, mult: 40.0, color: 0xffffff, vfx: 'nuke', hits: 1 },
-                { name: "TITAN FORM", cost: 70, isBuff: true, buffType: 'all_defense', buffVal: 0.60, duration: 3, color: 0xffd700, desc: "+60% All Defense" }
+                { name: "TITAN FORM", cost: 70, isBuff: true, buffType: 'all_defense', buffVal: 0.60, duration: 8, color: 0xffd700, desc: "+60% All Defense" }
             ]
         },
         // 90+
@@ -792,7 +759,7 @@ const CLASS_TREES = {
             name: "OMNI-KNIGHT", desc: "Tier 10: Invincible", skills: [
                 { name: "REALITY SLASH", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'omni', hits: 60 }, // Total 6.0x
                 { name: "AEGIS STRIKE", cost: 400, mult: 80.0, color: 0x00f2ff, vfx: 'god_beam', hits: 1 },
-                { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 9999, duration: 2, color: 0xffffff, desc: "+9999 Shield" }
+                { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 9999, duration: 8, color: 0xffffff, desc: "+9999 Shield" }
             ]
         }
     ],
@@ -802,7 +769,7 @@ const CLASS_TREES = {
             name: "SCRIPT-KID", desc: "Tier 1: Exploit", skills: [
                 { name: "PING", cost: 0, mult: 0.5, color: 0x00ff00, vfx: 'zap', hits: 3, manaGain: 10 },
                 { name: "DDOS ATTACK", cost: 40, mult: 3.0, color: 0x00ff00, vfx: 'matrix', hits: 1 },
-                { name: "VPN", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.20, duration: 3, color: 0x00ff00, desc: "+20% Dodge (Lag)" }
+                { name: "VPN", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.20, duration: 8, color: 0x00ff00, desc: "+20% Dodge (Lag)" }
             ]
         },
         // 10-19
@@ -810,7 +777,7 @@ const CLASS_TREES = {
             name: "WHITE-HAT", desc: "Tier 2: Debug", skills: [
                 { name: "COMPILE", cost: 0, mult: 1.0, color: 0x00aa00, vfx: 'beam', hits: 1, manaGain: 20 },
                 { name: "FORCE QUIT", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'heavy', hits: 1 },
-                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'shield', buffVal: 100, duration: 1, color: 0x00aaff, desc: "+100 Shield" }
+                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'shield', buffVal: 100, duration: 8, color: 0x00aaff, desc: "+100 Shield" }
             ]
         },
         // 20-29
@@ -818,7 +785,7 @@ const CLASS_TREES = {
             name: "TROJAN", desc: "Tier 3: Virus", skills: [
                 { name: "INJECT", cost: 0, mult: 0.4, color: 0xaa00ff, vfx: 'multi', hits: 6 }, // Total 2.4x
                 { name: "MALWARE", cost: 65, mult: 5.5, color: 0x8800ff, vfx: 'implode', hits: 1 },
-                { name: "SIPHON DATA", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 3, color: 0xaa00ff, desc: "+25% Lifesteal" }
+                { name: "SIPHON DATA", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 8, color: 0xaa00ff, desc: "+25% Lifesteal" }
             ]
         },
         // 30-39
@@ -826,7 +793,7 @@ const CLASS_TREES = {
             name: "GLITCH", desc: "Tier 4: Bug", skills: [
                 { name: "PACKET LOSS", cost: 0, mult: 0.1, color: 0xff00ff, vfx: 'matrix', hits: 20 }, // Total 2.0x
                 { name: "BSOD", cost: 90, mult: 8.0, color: 0x0000ff, vfx: 'blackhole', hits: 1 },
-                { name: "BUFFER OVRFLW", cost: 40, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 3, color: 0xff00ff, desc: "+40% Double Strike" }
+                { name: "BUFFER OVRFLW", cost: 40, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 8, color: 0xff00ff, desc: "+40% Double Strike" }
             ]
         },
         // 40-49
@@ -834,7 +801,7 @@ const CLASS_TREES = {
             name: "BOTNET", desc: "Tier 5: Swarm", skills: [
                 { name: "ZOMBIE PC", cost: 0, mult: 0.5, color: 0x555555, vfx: 'gatling', hits: 8 }, // Total 4.0x
                 { name: "SERVER CRASH", cost: 120, mult: 11.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
-                { name: "ROOT ACCESS", cost: 45, isBuff: true, buffType: 'atk', buffVal: 40, duration: 3, color: 0x00ff00, desc: "+40 ATK" }
+                { name: "ROOT ACCESS", cost: 45, isBuff: true, buffType: 'atk', buffVal: 40, duration: 8, color: 0x00ff00, desc: "+40 ATK" }
             ]
         },
         // 50-59
@@ -842,7 +809,7 @@ const CLASS_TREES = {
             name: "CYBER-LICH", desc: "Tier 6: Undead", skills: [
                 { name: "NECRO CODE", cost: 0, mult: 0.8, color: 0x00ffaa, vfx: 'omni', hits: 5 }, // Total 4.0x
                 { name: "SOUL.EXE", cost: 150, mult: 13.0, color: 0x00ffaa, vfx: 'implode', hits: 1, heal: 200 },
-                { name: "PHYLACTERY", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 2, color: 0x00ffaa, desc: "Invincible 2 turns" }
+                { name: "PHYLACTERY", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x00ffaa, desc: "Invincible 2 turns" }
             ]
         },
         // 60-69
@@ -850,7 +817,7 @@ const CLASS_TREES = {
             name: "CRYPT-KEEPER", desc: "Tier 7: Blockchain", skills: [
                 { name: "MINING", cost: 0, mult: 1.0, color: 0xffd700, vfx: 'zap', hits: 5, manaGain: 50 },
                 { name: "RUG PULL", cost: 180, mult: 18.0, color: 0xff0000, vfx: 'heavy', hits: 1 },
-                { name: "HODL", cost: 55, isBuff: true, buffType: 'armor', buffVal: 50, duration: 3, color: 0xffd700, desc: "+50 Armor" }
+                { name: "HODL", cost: 55, isBuff: true, buffType: 'armor', buffVal: 50, duration: 8, color: 0xffd700, desc: "+50 Armor" }
             ]
         },
         // 70-79
@@ -858,7 +825,7 @@ const CLASS_TREES = {
             name: "AI-OVERLORD", desc: "Tier 8: Sentient", skills: [
                 { name: "NEURAL NET", cost: 0, mult: 0.15, color: 0xff0055, vfx: 'matrix', hits: 30 }, // Total 4.5x
                 { name: "SKYNET", cost: 220, mult: 22.0, color: 0xff0000, vfx: 'god_beam', hits: 1 },
-                { name: "PREDICT", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.50, duration: 3, color: 0xff0055, desc: "+50% Crit Chance" }
+                { name: "PREDICT", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.50, duration: 8, color: 0xff0055, desc: "+50% Crit Chance" }
             ]
         },
         // 80-89
@@ -866,7 +833,7 @@ const CLASS_TREES = {
             name: "THE-ARCHITECT", desc: "Tier 9: Matrix", skills: [
                 { name: "DEJA VU", cost: 0, mult: 0.12, color: 0x00ff00, vfx: 'omni', hits: 50 }, // Total 6.0x
                 { name: "REALITY EDIT", cost: 280, mult: 40.0, color: 0xffffff, vfx: 'blackhole', hits: 1 },
-                { name: "BULLET TIME", cost: 70, isBuff: true, buffType: 'dodge', buffVal: 0.60, duration: 3, color: 0x00ff00, desc: "+60% Dodge" }
+                { name: "BULLET TIME", cost: 70, isBuff: true, buffType: 'dodge', buffVal: 0.60, duration: 8, color: 0x00ff00, desc: "+60% Dodge" }
             ]
         },
         // 90+
@@ -874,7 +841,7 @@ const CLASS_TREES = {
             name: "SYS-ADMIN", desc: "Tier 10: God Mode", skills: [
                 { name: "CONSOLE LOG", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'matrix', hits: 100 }, // Total 10.0x
                 { name: "SUDO KILL", cost: 500, mult: 200.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "DEV TOOLS", cost: 100, isBuff: true, buffType: 'all_offense', buffVal: 1.0, duration: 3, color: 0x00ff00, desc: "+100% All Offense" }
+                { name: "DEV TOOLS", cost: 100, isBuff: true, buffType: 'all_offense', buffVal: 1.0, duration: 8, color: 0x00ff00, desc: "+100% All Offense" }
             ]
         }
     ]
@@ -1006,6 +973,10 @@ const game = {
 
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
 
+        // Hide Global Buttons
+        const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'none';
+        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'none';
+
         // --- SHOW CUTSCENE UI ---
         const overlay = document.getElementById('dialogue-overlay');
         overlay.classList.add('active');
@@ -1083,6 +1054,11 @@ const game = {
     endCutscene() {
         document.getElementById('dialogue-overlay').classList.remove('active');
         document.getElementById('hud').style.opacity = '1';
+
+        const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'flex';
+        // Inv button removed by user request, but if present logic:
+        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'flex';
+
         engine.focusCamera(null);
 
         // --- NEW: BOSS PHASE TRANSITION ---
@@ -1217,7 +1193,17 @@ const game = {
                 <div class="modal-info">
                     <div class="modal-desc">${data.desc}</div>
                     <div class="modal-skills">
-                        ${data.skills.map((s, i) => `<div class="skill-row"><div class="skill-name">${i + 1}. ${s.name}</div><div class="skill-meta">${s.isBuff ? s.desc : (s.mult + "x / " + (s.hits || 1) + " hits")} — ${s.cost > 0 ? s.cost + " MP" : "FREE"}</div></div>`).join('')}
+                        ${data.skills.map((s, i) => {
+            const skillName = s.name || 'BASIC ATTACK';
+            const costDisplay = s.cost > 0 ? s.cost + " MP" : "FREE";
+            let effectDisplay = '';
+            if (s.isBuff) {
+                effectDisplay = s.desc || `${s.buffType ? s.buffType.toUpperCase() : 'BUFF'} +${((s.buffVal || 0) * 100).toFixed(0)}% for ${s.duration || 1} turns`;
+            } else {
+                effectDisplay = `${s.mult}x DMG × ${s.hits || 1} hit${(s.hits || 1) > 1 ? 's' : ''}`;
+            }
+            return `<div class="skill-row"><div class="skill-name">${i + 1}. ${skillName}</div><div class="skill-meta">${effectDisplay} — ${costDisplay}</div></div>`;
+        }).join('')}
                     </div>
                     <div style="text-align:right;margin-top:12px;"><button class="btn" id="close-modal-btn">CLOSE</button></div>
                 </div>
@@ -1507,6 +1493,7 @@ const game = {
         this.shopData.crit.level = 1;
     },
 
+
     useSkill(slot) {
         // BRAWLER FRENZY: Allow mashing during frenzy attacks
         if (this.state === 'FRENZY_MASH' && this.frenzySkill) {
@@ -1517,7 +1504,15 @@ const game = {
         }
 
         if (this.state !== 'IDLE') return;
-        const skill = this.player.skills[slot];
+
+        // Resolve skill: if slot is number, get from pinnedSkills. If object, use directly.
+        let skill = null;
+        if (typeof slot === 'number') {
+            skill = this.player.pinnedSkills[slot];
+        } else {
+            skill = slot;
+        }
+
         if (!skill) return;
         const actualCost = Math.max(0, Math.floor(skill.cost * (1 - this.player.manaCostReduction)));
         if (this.player.mana < actualCost) { this.showText("NO MANA", this.player.mesh.position, '#00f2ff'); return; }
@@ -1751,9 +1746,8 @@ const game = {
 
     // Optional: Just a text popup for now
     showGearTooltip(type) {
-        const item = this.player.gear[type];
-        if (!item) return;
-        alert(`${item.name}\n[${item.rarity.toUpperCase()}]\n${item.desc}`);
+        // Instead of a weak tooltip, let's open the full inventory!
+        this.openInventory();
     },
 
     // Debug helper to give yourself items
@@ -1871,6 +1865,12 @@ const game = {
         if (this.floor > 100) return;
         this.floor++;
 
+        // Ensure IAP button is visible
+        const iapBtn = document.getElementById('iap-btn');
+        if (iapBtn) iapBtn.style.display = 'flex';
+        const invBtn = document.getElementById('inv-btn');
+        if (invBtn) invBtn.style.display = 'flex';
+
         // Update floor theme every 5 floors
         if (this.floor % 5 === 0 || this.floor === 1) {
             const themeName = engine.setFloorTheme(this.floor);
@@ -1966,6 +1966,11 @@ const game = {
             this.nextTutorialStep();
         }
 
+        const iapBtn = document.getElementById('iap-btn');
+        if (iapBtn) iapBtn.style.display = 'none';
+        const invBtn = document.getElementById('inv-btn');
+        if (invBtn) invBtn.style.display = 'none';
+
         this.setScreen('shop-screen');
         this.generateShop();
         this.updateUI();
@@ -1986,6 +1991,10 @@ const game = {
         document.getElementById('iap-screen').classList.add('active');
         // Hide battle controls while in IAP shop
         document.getElementById('battle-controls').classList.remove('active');
+        const iapBtn = document.getElementById('iap-btn');
+        if (iapBtn) iapBtn.style.display = 'none';
+        const invBtn = document.getElementById('inv-btn');
+        if (invBtn) invBtn.style.display = 'none';
     },
 
     closeIAPShop() {
@@ -1996,62 +2005,541 @@ const game = {
         if (this.state === 'IDLE' && this.enemy && this.enemy.hp > 0) {
             document.getElementById('battle-controls').classList.add('active');
         }
+        const iapBtn = document.getElementById('iap-btn');
+        if (iapBtn) iapBtn.style.display = 'flex';
+        const invBtn = document.getElementById('inv-btn');
+        if (invBtn) invBtn.style.display = 'flex';
+    },
+
+    // --- NEW IAP LOGIC ---
+    buyNeonPrime() {
+        if (this.iapBoosts.neonPrime) { this.showModal("ERROR", "ALREADY OWNED!"); return; }
+        this.showModal("NEON PRIME", "Purchase NEON PRIME for $19.99?<br><br>• +50% Gold Forever<br>• Gold Name<br>• Exclusive Aura", () => {
+            this.iapBoosts.neonPrime = true;
+            this.showText("NEON PRIME ACTIVATED", this.player.mesh.position, '#ffd700');
+            engine.spawnShockwave(this.player.mesh.position, 0xffd700, 10);
+            this.showModal("SUCCESS", "👑 NEON PRIME UNLOCKED! Thank you for your support!");
+        });
+    },
+
+    buyRemoveAds() {
+        if (this.iapBoosts.noAds) { this.showModal("ERROR", "ADS ALREADY REMOVED!"); return; }
+        this.showModal("REMOVE ADS", "Remove Ads + Get Starter Kit for $4.99?", () => {
+            this.iapBoosts.noAds = true;
+
+            // Give Starter Kit (Full Set of Rare Gear)
+            const kit = [
+                { name: "PLASMA BLADE", type: "weapon", rarity: "rare", atk: 50, crit: 5, desc: "Starter Prime Blade" },
+                { name: "NEO VISOR", type: "accessory", rarity: "rare", hp: 200, mana: 50, desc: "Tactical HUD" }
+            ];
+
+            kit.forEach(item => this.player.inventory.push(item));
+            this.showText("STARTER KIT ADDED!", this.player.mesh.position, '#00f2ff');
+            this.showModal("SUCCESS", "🚫 ADS REMOVED! Starter Kit added to Inventory.");
+        });
+    },
+
+    buyLootCrate(dummyTier) {
+        // Renamed 'Legendary Crate' to just 'Loot Crate' visually, but function remains for compatibility
+        this.showModal("SUPPLY DROP", "Purchase LOOT CRATE for $4.99?<br>Contains 1 Item (Weighted Rarity).", () => {
+            // WEIGHTED RNG
+            const rand = Math.random();
+            let tier = 'common';
+            if (rand < 0.05) tier = 'legendary'; // 5%
+            else if (rand < 0.20) tier = 'epic'; // 15%
+            else if (rand < 0.50) tier = 'rare'; // 30%
+            else tier = 'common'; // 50%
+
+            const types = ['WEAPONS', 'ACCESSORIES'];
+            const randType = types[Math.floor(Math.random() * 2)];
+            const pool = ITEMS[randType].filter(i => i.rarity === tier);
+
+            if (pool.length === 0) { this.showModal("ERROR", "Crate Empty (Bug)"); return; }
+
+            const item = pool[Math.floor(Math.random() * pool.length)];
+
+            // Add to Inventory instead of Equip
+            this.player.inventory.push(item);
+            this.showCrateAnimation(item);
+        });
+    },
+
+    buyOverclock() {
+        this.showModal("SYSTEM OVERCLOCK", "Purchase SYSTEM OVERCLOCK for $2.99?<br>(+100% DAMAGE & SPEED for 10 Floors)", () => {
+            this.iapBoosts.overclockFloors = 10;
+            if (this.player) {
+                this.player.atkMult = (this.player.atkMult || 0) + 1.0;
+                this.showText("SYSTEM OVERCLOCK!!", this.player.mesh.position, '#ff0055');
+            }
+            this.showModal("SUCCESS", "⚡ SYSTEM OVERCLOCK ACTIVE!");
+        });
+    },
+
+    buyRevivePack() {
+        this.showModal("REVIVE PACK", "Purchase 5x REVIVE PROTOCOLS for $1.99?", () => {
+            this.iapBoosts.reviveTokens = (this.iapBoosts.reviveTokens || 0) + 5;
+            this.showModal("SUCCESS", `✅ Purchased 5 Revive Tokens! Current: ${this.iapBoosts.reviveTokens}`);
+        });
     },
 
     buyCredits(amount, price) {
-        // Simulate purchase (in real app, this would go through payment processor)
-        if (confirm(`Purchase ${amount.toLocaleString()} Credits for $${price}?`)) {
-            this.gold += amount;
-            this.showText(`+${amount.toLocaleString()} 💰`, this.player?.mesh?.position || { x: 0, y: 1, z: 0 }, '#ffe600');
+        let actualAmount = amount;
+        if (this.iapBoosts.neonPrime) {
+            actualAmount = Math.floor(amount * 1.5);
+        }
+        const msg = `Purchase ${actualAmount.toLocaleString()} Credits for $${price}?` + (this.iapBoosts.neonPrime ? "<br><small>(Includes +50% Prime Bonus)</small>" : "");
+
+        this.showModal("CREDITS", msg, () => {
+            this.gold += actualAmount;
+            this.showText(`+${actualAmount.toLocaleString()} 💰`, this.player?.mesh?.position || { x: 0, y: 1, z: 0 }, '#ffe600');
             this.updateUI();
-            alert(`✅ Purchased ${amount.toLocaleString()} Credits!`);
+            this.showModal("SUCCESS", `✅ Purchased ${actualAmount.toLocaleString()} Credits!`);
+        });
+    },
+
+    // --- CUSTOM MODAL & INVENTORYHELPER ---
+    showModal(title, content, onConfirm) {
+        const overlay = document.getElementById('modal-overlay');
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-content').innerHTML = content;
+        overlay.classList.add('active');
+
+        const okBtn = document.getElementById('modal-ok');
+        const cancelBtn = document.getElementById('modal-cancel');
+
+        // Reset Logic
+        const newOk = okBtn.cloneNode(true);
+        okBtn.parentNode.replaceChild(newOk, okBtn);
+
+        newOk.onclick = () => {
+            overlay.classList.remove('active');
+            if (onConfirm) onConfirm();
+        };
+
+        // If content implies a choice, show cancel
+        if (onConfirm) {
+            cancelBtn.style.display = 'inline-block';
+            cancelBtn.onclick = () => overlay.classList.remove('active');
+        } else {
+            cancelBtn.style.display = 'none';
         }
     },
 
-    buyLuckBoost(type, price) {
-        const boostName = type === 'guaranteed' ? 'GUARANTEED LEGENDARY' : `${type.toUpperCase()} BOOST`;
-        if (confirm(`Purchase ${boostName} for $${price}?`)) {
-            if (type === 'guaranteed') {
-                this.iapBoosts.guaranteedLegendary = true;
-            } else if (type === 'rare') {
-                this.iapBoosts.rareBonus += 0.20;
-                this.iapBoosts.boostFloors += 3;
-            } else if (type === 'epic') {
-                this.iapBoosts.epicBonus += 0.15;
-                this.iapBoosts.boostFloors += 3;
-            } else if (type === 'legendary') {
-                this.iapBoosts.legendaryBonus += 0.10;
-                this.iapBoosts.boostFloors += 3;
+    showCrateAnimation(item) {
+        const overlay = document.getElementById('crate-overlay');
+        const box = document.getElementById('crate-box');
+        const title = document.getElementById('crate-title');
+        const itemDiv = document.getElementById('crate-item');
+        const btn = document.getElementById('crate-close-btn');
+        const light = document.getElementById('crate-light');
+        const visual = document.getElementById('crate-visual');
+
+        // FORCE RESET STATE
+        title.innerText = "";
+        title.style.color = "#fff";
+        title.style.textShadow = "none";
+        itemDiv.innerHTML = "";
+
+        overlay.classList.add('active');
+        box.style.transform = 'scale(0)';
+        title.style.opacity = '0';
+        itemDiv.style.opacity = '0';
+        btn.style.opacity = '0';
+        light.style.opacity = '1';
+        light.style.transform = 'scale(1)';
+        visual.style.display = 'block';
+
+        // 1. Zoom in box
+        setTimeout(() => { box.style.transform = 'scale(1)'; }, 100);
+
+        // 2. Flash of light & Reveal
+        setTimeout(() => {
+            light.style.transform = 'scale(50)';
+            light.style.opacity = '0';
+        }, 1500);
+
+        setTimeout(() => {
+            visual.style.display = 'none'; // Hide crate box
+            title.style.opacity = '1';
+
+            // Item Card Visual
+            let color = '#fff';
+            if (item.rarity === 'rare') color = '#00f2ff';
+            if (item.rarity === 'epic') color = '#bf00ff';
+            if (item.rarity === 'legendary') color = '#ffe600';
+
+            title.innerText = item.rarity.toUpperCase() + " DROP";
+            title.style.color = color;
+            title.style.textShadow = `0 0 20px ${color}`;
+
+            itemDiv.innerHTML = `
+                <div style="font-size:24px; font-weight:bold; margin-top:20px; color:${color}">${item.name}</div>
+                <div style="color:#aaa; font-style:italic;">${item.type.toUpperCase()}</div>
+                <div style="background:rgba(255,255,255,0.1); padding:10px; margin-top:10px;">${item.desc}</div>
+            `;
+            itemDiv.style.opacity = '1';
+        }, 1800);
+
+        // 3. Show Collect Button
+        setTimeout(() => { btn.style.opacity = '1'; }, 2500);
+    },
+
+    closeCrate() {
+        document.getElementById('crate-overlay').classList.remove('active');
+        // Do NOT reset display:block yet, let showCrateAnimation handle it.
+        // This prevents the "flash" of the crate emoji during fade out.
+    },
+
+    openInventory() {
+        document.getElementById('inventory-screen').classList.add('active');
+        const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'none';
+        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'none';
+        if (document.getElementById('battle-controls')) document.getElementById('battle-controls').classList.remove('active');
+        this.selectedInvIndex = -1; // Reset selection
+        this.renderInventory();
+        this.updateDetailsPanel();
+    },
+
+    closeInventory() {
+        document.getElementById('inventory-screen').classList.remove('active');
+        const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'flex';
+        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'flex';
+
+        // Restore controls if valid
+        if (this.state === 'IDLE' && this.enemy && this.enemy.hp > 0) {
+            document.getElementById('battle-controls').classList.add('active');
+        }
+    },
+
+    renderInventory() {
+        const grid = document.getElementById('inventory-grid');
+        grid.innerHTML = '';
+
+        // Render Equipped
+        const eqWep = document.getElementById('equip-weapon');
+        const eqAcc = document.getElementById('equip-accessory');
+        const w = this.player.gear.weapon;
+        const a = this.player.gear.accessory;
+
+        const getRarityColor = (rarity) => {
+            if (rarity === 'rare') return '#00f2ff';
+            if (rarity === 'epic') return '#bf00ff';
+            if (rarity === 'legendary') return '#ffe600';
+            return '#fff';
+        };
+
+        // Make equipped slots selectable (not auto-unequip)
+        eqWep.onclick = () => w ? this.selectEquippedItem('weapon') : null;
+        eqWep.innerHTML = w ? `<span style="color:${getRarityColor(w.rarity)}">${w.name}</span>` : 'EMPTY WEAPON';
+        eqWep.className = w ? 'equip-slot filled' : 'equip-slot';
+        if (this.selectedEquippedSlot === 'weapon') eqWep.style.boxShadow = '0 0 15px #fff';
+        else eqWep.style.boxShadow = '';
+
+        eqAcc.onclick = () => a ? this.selectEquippedItem('accessory') : null;
+        eqAcc.innerHTML = a ? `<span style="color:${getRarityColor(a.rarity)}">${a.name}</span>` : 'EMPTY ACCESSORY';
+        eqAcc.className = a ? 'equip-slot filled' : 'equip-slot';
+        if (this.selectedEquippedSlot === 'accessory') eqAcc.style.boxShadow = '0 0 15px #fff';
+        else eqAcc.style.boxShadow = '';
+
+        // Sort inventory
+        const sorted = [...this.player.inventory].sort((a, b) => {
+            const order = { legendary: 4, epic: 3, rare: 2, common: 1 };
+            return (order[b.rarity] || 0) - (order[a.rarity] || 0);
+        });
+
+        // Render Bag
+        sorted.forEach((item, sortedIdx) => {
+            const actualIdx = this.player.inventory.indexOf(item);
+            const el = document.createElement('div');
+            el.className = `inventory-item inv-rarity-${item.rarity}`;
+            if (this.selectedInvIndex === actualIdx) el.style.borderColor = "#fff"; // Highlight
+            if (this.selectedInvIndex === actualIdx) el.style.boxShadow = "0 0 10px #fff";
+
+            const mainStat = this.getItemMainStat(item);
+            const typeIcon = item.type === 'weapon' ? '⚔️' : '💍';
+
+            el.innerHTML = `
+                <div class="item-type-icon">${typeIcon}</div>
+                <div class="item-stat-label">${mainStat.label}</div>
+                <div class="item-stat-val">${mainStat.val}</div>
+            `;
+
+            el.onclick = () => {
+                this.selectedInvIndex = actualIdx;
+                this.selectedEquippedSlot = null;
+                this.renderInventory();
+                this.updateDetailsPanel();
+            };
+            grid.appendChild(el);
+        });
+
+        // Stats Update
+        const statsDiv = document.getElementById('equip-stats');
+        const p = this.player;
+        const fmtPct = (val) => (val * 100).toFixed(0) + '%';
+        const styleStat = (label, val, color = '#fff') => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="color:#aaa">${label}:</span>
+                <span style="color:${color}">${val}</span>
+            </div>`;
+
+        statsDiv.innerHTML = `
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family:'Courier New', monospace; font-size:13px;">
+                <div>
+                    ${styleStat('ATK', Math.floor(p.atk), '#ff0055')}
+                    ${styleStat('HP', `${Math.floor(p.hp)}/${Math.floor(p.maxHp)}`, '#00f2ff')}
+                    ${styleStat('MANA', `${Math.floor(p.mana)}/${Math.floor(p.maxMana)}`, '#0088ff')}
+                    ${styleStat('ARMOR', p.armor, '#888')}
+                </div>
+                <div>
+                    ${styleStat('CRIT', fmtPct(p.critChance), '#ffff00')}
+                    ${styleStat('CRIT DMG', fmtPct(p.critDamage), '#ffaa00')}
+                    ${styleStat('DODGE', fmtPct(p.dodge), '#00ff00')}
+                    ${styleStat('VAMP', fmtPct(p.lifesteal), '#ff0000')}
+                </div>
+                <div style="grid-column: span 2; border-top:1px solid #444; margin-top:5px; padding-top:5px;">
+                    ${styleStat('REGEN', `${p.regen || 0}/t`, '#00ff88')}
+                    ${styleStat('THORNS', fmtPct(p.thorns), '#bf00ff')}
+                    ${p.battleCombo > 0 ? styleStat('COMBO', 'x' + p.battleCombo, '#ffe600') : ''}
+                </div>
+            </div>
+        `;
+    },
+
+    updateDetailsPanel() {
+        const panel = document.getElementById('inv-details-panel');
+
+        // Show equipped item details
+        if (this.selectedEquippedSlot) {
+            const item = this.player.gear[this.selectedEquippedSlot];
+            if (!item) {
+                panel.innerHTML = `<div style="color:#666; font-style:italic;">No item equipped</div>`;
+                return;
             }
-            this.showText(`🎰 ${boostName}!`, this.player?.mesh?.position || { x: 0, y: 1, z: 0 }, '#ff00aa');
-            alert(`✅ ${boostName} activated!`);
+
+            let color = '#fff';
+            if (item.rarity === 'rare') color = '#00f2ff';
+            if (item.rarity === 'epic') color = '#bf00ff';
+            if (item.rarity === 'legendary') color = '#ffe600';
+
+            let statsHtml = '';
+            // Multipliers
+            if (item.atkMult) statsHtml += `<div>ATK: <span style="color:#ff0055">${item.atkMult > 0 ? '+' : ''}${(item.atkMult * 100).toFixed(0)}%</span></div>`;
+            if (item.hpMult) statsHtml += `<div>HP: <span style="color:#00f2ff">${item.hpMult > 0 ? '+' : ''}${(item.hpMult * 100).toFixed(0)}%</span></div>`;
+            if (item.manaMult) statsHtml += `<div>MANA: <span style="color:#0088ff">+${(item.manaMult * 100).toFixed(0)}%</span></div>`;
+            if (item.critChance) statsHtml += `<div>CRIT: <span style="color:#ffff00">${item.critChance > 0 ? '+' : ''}${(item.critChance * 100).toFixed(0)}%</span></div>`;
+            if (item.critDamage) statsHtml += `<div>CRIT DMG: <span style="color:#ffaa00">+${(item.critDamage * 100).toFixed(0)}%</span></div>`;
+            if (item.lifesteal) statsHtml += `<div>LIFESTEAL: <span style="color:#ff0000">+${(item.lifesteal * 100).toFixed(0)}%</span></div>`;
+            if (item.dodge) statsHtml += `<div>DODGE: <span style="color:#00ff00">${item.dodge > 0 ? '+' : ''}${(item.dodge * 100).toFixed(0)}%</span></div>`;
+            if (item.armor) statsHtml += `<div>ARMOR: <span style="color:#888">+${item.armor}</span></div>`;
+            if (item.regen) statsHtml += `<div>REGEN: <span style="color:#00ff88">+${item.regen}/t</span></div>`;
+            if (item.thorns) statsHtml += `<div>THORNS: <span style="color:#bf00ff">+${(item.thorns * 100).toFixed(0)}%</span></div>`;
+            // Legacy flat stats
+            if (item.atk) statsHtml += `<div>ATK: <span style="color:#ff0055">+${item.atk}</span></div>`;
+            if (item.hp) statsHtml += `<div>HP: <span style="color:#00f2ff">+${item.hp}</span></div>`;
+            if (item.mana) statsHtml += `<div>MANA: <span style="color:#0088ff">+${item.mana}</span></div>`;
+            if (item.crit) statsHtml += `<div>CRIT: <span style="color:#ffff00">+${(item.crit * 100).toFixed(0)}%</span></div>`;
+
+
+            panel.innerHTML = `
+                <div style="font-size:24px; font-weight:bold; color:${color}; margin-bottom:5px; text-shadow:0 0 10px ${color}">${item.name}</div>
+                <div style="color:#aaa; font-size:12px; margin-bottom:15px; text-transform:uppercase;">${item.rarity} ${item.type} • EQUIPPED</div>
+                
+                <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:5px; width:100%; margin-bottom:15px; text-align:left; font-family:'Courier New', monospace;">
+                    ${statsHtml}
+                    <div style="margin-top:10px; color:#ddd; font-style:italic; font-size:13px; border-top:1px solid #444; padding-top:5px;">"${item.desc}"</div>
+                </div>
+
+                <button class="btn" style="width:100%; border-color:${color}; color:${color}; background:rgba(0,0,0,0.5);" onclick="game.unequipSelected()">UNEQUIP</button>
+            `;
+            return;
         }
+
+        // Show inventory item details
+        if (this.selectedInvIndex === -1 || !this.player.inventory[this.selectedInvIndex]) {
+            panel.innerHTML = `<div style="color:#666; font-style:italic;">Select an item to view details</div>`;
+            return;
+        }
+
+        const item = this.player.inventory[this.selectedInvIndex];
+        let color = '#fff';
+        if (item.rarity === 'rare') color = '#00f2ff';
+        if (item.rarity === 'epic') color = '#bf00ff';
+        if (item.rarity === 'legendary') color = '#ffe600';
+
+        // Calculate sell price based on rarity
+        const sellPrices = { common: 250, rare: 1500, epic: 8000, legendary: 30000 };
+        const sellPrice = sellPrices[item.rarity] || 100;
+
+        // Build stats list - Prioritize multipliers
+        let statsHtml = '';
+        // Multipliers
+        if (item.atkMult) statsHtml += `<div>ATK: <span style="color:#ff0055">${item.atkMult > 0 ? '+' : ''}${(item.atkMult * 100).toFixed(0)}%</span></div>`;
+        if (item.hpMult) statsHtml += `<div>HP: <span style="color:#00f2ff">${item.hpMult > 0 ? '+' : ''}${(item.hpMult * 100).toFixed(0)}%</span></div>`;
+        if (item.manaMult) statsHtml += `<div>MANA: <span style="color:#0088ff">+${(item.manaMult * 100).toFixed(0)}%</span></div>`;
+        if (item.critChance) statsHtml += `<div>CRIT: <span style="color:#ffff00">${item.critChance > 0 ? '+' : ''}${(item.critChance * 100).toFixed(0)}%</span></div>`;
+        if (item.critDamage) statsHtml += `<div>CRIT DMG: <span style="color:#ffaa00">+${(item.critDamage * 100).toFixed(0)}%</span></div>`;
+        if (item.lifesteal) statsHtml += `<div>LIFESTEAL: <span style="color:#ff0000">+${(item.lifesteal * 100).toFixed(0)}%</span></div>`;
+        if (item.dodge) statsHtml += `<div>DODGE: <span style="color:#00ff00">${item.dodge > 0 ? '+' : ''}${(item.dodge * 100).toFixed(0)}%</span></div>`;
+        if (item.armor) statsHtml += `<div>ARMOR: <span style="color:#888">+${item.armor}</span></div>`;
+        if (item.regen) statsHtml += `<div>REGEN: <span style="color:#00ff88">+${item.regen}/t</span></div>`;
+        if (item.thorns) statsHtml += `<div>THORNS: <span style="color:#bf00ff">+${(item.thorns * 100).toFixed(0)}%</span></div>`;
+        // Legacy flat stats
+        if (item.atk) statsHtml += `<div>ATK: <span style="color:#ff0055">+${item.atk}</span></div>`;
+        if (item.hp) statsHtml += `<div>HP: <span style="color:#00f2ff">+${item.hp}</span></div>`;
+        if (item.mana) statsHtml += `<div>MANA: <span style="color:#0088ff">+${item.mana}</span></div>`;
+        if (item.crit) statsHtml += `<div>CRIT: <span style="color:#ffff00">+${(item.crit * 100).toFixed(0)}%</span></div>`;
+
+
+        panel.innerHTML = `
+            <div style="font-size:24px; font-weight:bold; color:${color}; margin-bottom:5px; text-shadow:0 0 10px ${color}">${item.name}</div>
+            <div style="color:#aaa; font-size:12px; margin-bottom:15px; text-transform:uppercase;">${item.rarity} ${item.type}</div>
+            
+            <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:5px; width:100%; margin-bottom:15px; text-align:left; font-family:'Courier New', monospace;">
+                ${statsHtml}
+                <div style="margin-top:10px; color:#ddd; font-style:italic; font-size:13px; border-top:1px solid #444; padding-top:5px;">"${item.desc}"</div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button class="btn" style="flex:1; border-color:${color}; color:${color}; background:rgba(0,0,0,0.5);" onclick="game.equipSelected()">EQUIP</button>
+                <button class="btn" style="flex:1; border-color:#ffe600; color:#ffe600; background:rgba(0,0,0,0.5);" onclick="game.sellSelected(${sellPrice})">SELL ${sellPrice}CR</button>
+            </div>
+        `;
     },
 
-    buyClassChange() {
-        if (confirm('Change Class for $2.99? (Keep all stats!)')) {
-            this.closeIAPShop();
-            this.showJobSelect(0); // Show base class selection
-            alert('✅ Select your new class!');
-        }
+    selectEquippedItem(slot) {
+        this.selectedEquippedSlot = slot;
+        this.selectedInvIndex = -1; // Deselect inventory
+        this.renderInventory();
+        this.updateDetailsPanel();
     },
 
-    buyInstantHeal() {
-        if (!this.player) { alert('Start a run first!'); return; }
-        if (confirm('Full Heal + Mana for $0.99?')) {
-            this.player.hp = this.player.maxHp;
-            this.player.mana = this.player.maxMana;
-            this.showText('FULL RESTORE!', this.player.mesh.position, '#00ff00');
-            this.updateUI();
-            alert('✅ Fully restored!');
-        }
+    unequipSelected() {
+        if (!this.selectedEquippedSlot) return;
+        this.unequip(this.selectedEquippedSlot);
+        this.selectedEquippedSlot = null;
+        this.renderInventory();
+        this.updateDetailsPanel();
     },
 
-    buyRevive() {
-        if (confirm('Purchase Revive Token for $1.99?')) {
-            this.iapBoosts.reviveToken = true;
-            alert('✅ Revive Token acquired! You will auto-revive on death.');
+    sellSelected(price) {
+        if (this.selectedInvIndex === -1) return;
+
+        const item = this.player.inventory[this.selectedInvIndex];
+        this.gold += price;
+        this.player.inventory.splice(this.selectedInvIndex, 1);
+
+        this.showText(`+${price} CR`, this.player.mesh.position, '#ffe600');
+        this.selectedInvIndex = -1;
+        this.renderInventory();
+        this.updateDetailsPanel();
+        this.updateUI();
+    },
+
+    equipSelected() {
+        if (this.selectedInvIndex === -1) return;
+        this.equipInventoryItem(this.selectedInvIndex);
+        this.selectedInvIndex = -1; // Reset after equip
+        this.renderInventory();
+        this.updateDetailsPanel();
+    },
+
+    getItemMainStat(item) {
+        // Prioritize multipliers first
+        if (item.atkMult) return { label: 'ATK', val: '+' + (item.atkMult * 100).toFixed(0) + '%' };
+        if (item.hpMult && item.hpMult > 0) return { label: 'HP', val: '+' + (item.hpMult * 100).toFixed(0) + '%' };
+        if (item.hpMult && item.hpMult < 0) return { label: 'HP', val: (item.hpMult * 100).toFixed(0) + '%' };
+        if (item.manaMult) return { label: 'MANA', val: '+' + (item.manaMult * 100).toFixed(0) + '%' };
+        if (item.critChance) return { label: 'CRIT', val: '+' + (item.critChance * 100).toFixed(0) + '%' };
+        if (item.critDamage) return { label: 'C.DMG', val: '+' + (item.critDamage * 100).toFixed(0) + '%' };
+        if (item.lifesteal) return { label: 'VAMP', val: '+' + (item.lifesteal * 100).toFixed(0) + '%' };
+        if (item.dodge) return { label: 'DODGE', val: '+' + (item.dodge * 100).toFixed(0) + '%' };
+        if (item.armor) return { label: 'ARM', val: '+' + item.armor };
+        if (item.regen) return { label: 'REGEN', val: '+' + item.regen };
+        if (item.thorns) return { label: 'THORNS', val: '+' + (item.thorns * 100).toFixed(0) + '%' };
+        // Legacy flat stats
+        if (item.atk) return { label: 'ATK', val: '+' + item.atk };
+        if (item.hp > 0) return { label: 'HP', val: '+' + item.hp };
+        if (item.mana > 0) return { label: 'MANA', val: '+' + item.mana };
+        if (item.crit) return { label: 'CRIT', val: '+' + (item.crit * 100).toFixed(0) + '%' };
+        return { label: 'PWR', val: '1' };
+    },
+
+    renderEquippedSlots() {
+        // Helper if we want to update slots separately
+
+        // Stats Update
+        // Stats Update
+        const statsDiv = document.getElementById('equip-stats');
+        const p = this.player;
+        const fmtPct = (val) => (val * 100).toFixed(0) + '%';
+        const styleStat = (label, val, color = '#fff') => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="color:#aaa">${label}:</span>
+                <span style="color:${color}">${val}</span>
+            </div>`;
+
+        statsDiv.innerHTML = `
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family:'Courier New', monospace; font-size:13px;">
+                <div>
+                    ${styleStat('ATK', Math.floor(p.atk), '#ff0055')}
+                    ${styleStat('HP', `${Math.floor(p.hp)}/${Math.floor(p.maxHp)}`, '#00f2ff')}
+                    ${styleStat('MANA', `${Math.floor(p.mana)}/${Math.floor(p.maxMana)}`, '#0088ff')}
+                    ${styleStat('ARMOR', p.armor, '#888')}
+                </div>
+                <div>
+                    ${styleStat('CRIT', fmtPct(p.critChance), '#ffff00')}
+                    ${styleStat('CRIT DMG', fmtPct(p.critDamage), '#ffaa00')}
+                    ${styleStat('DODGE', fmtPct(p.dodge), '#00ff00')}
+                    ${styleStat('VAMP', fmtPct(p.lifesteal), '#ff0000')}
+                </div>
+                <div style="grid-column: span 2; border-top:1px solid #444; margin-top:5px; padding-top:5px;">
+                    ${styleStat('REGEN', `${p.regen || 0}/t`, '#00ff88')}
+                    ${styleStat('THORNS', fmtPct(p.thorns), '#bf00ff')}
+                    ${p.battleCombo > 0 ? styleStat('COMBO', 'x' + p.battleCombo, '#ffe600') : ''}
+                </div>
+            </div>
+        `;
+    },
+
+    equipInventoryItem(index) {
+        const item = this.player.inventory[index];
+        // Remove from inventory
+        this.player.inventory.splice(index, 1);
+
+        // If something equipped, unequip it (swap)
+        if (item.type === 'weapon' && this.player.gear.weapon) {
+            this.player.inventory.push(this.player.gear.weapon);
         }
+        if (item.type === 'accessory' && this.player.gear.accessory) {
+            this.player.inventory.push(this.player.gear.accessory);
+        }
+
+        this.player.equip(item); // Use existing equip logic which sets this.gear
+        this.renderInventory();
+        this.updateUI();
+    },
+
+    unequip(type) {
+        const item = this.player.gear[type];
+        if (!item) return;
+
+        // Add back to inventory
+        this.player.inventory.push(item);
+
+        // Remove logic (Simplified for prototype: Revert stats manually or just accept growth)
+        // Ideally we would recalc stats from base + gear, but given the current code just ADDS, removing is tricky without base stats tracking.
+        // For now, let's just null it and user loses the item properties but keeps the stats (Anti-frustration feature? Or bug?)
+        // Let's TRY to reverse it if we can.
+
+        if (item.atk) this.player.atk -= item.atk;
+        if (item.hp) { this.player.maxHp -= item.hp; this.player.hp = Math.min(this.player.hp, this.player.maxHp); }
+        if (item.mana) { this.player.maxMana -= item.mana; this.player.mana = Math.min(this.player.mana, this.player.maxMana); }
+
+        this.player.gear[type] = null;
+        this.renderInventory();
+        this.updateUI();
+        this.showText("UNEQUIPPED", this.player.mesh.position, '#aaa');
     },
 
     // --- RENDER SHOP UI ---
@@ -2112,73 +2600,26 @@ const game = {
             el.onclick = () => this.buyItem(def.id);
             container.appendChild(el);
         });
-        if (typeof ITEMS !== 'undefined') {
-            // 1. Pick a random item
-            const types = ['WEAPONS', 'ACCESSORIES'];
-            const randType = types[Math.floor(Math.random() * 2)];
-            const pool = ITEMS[randType];
-            const item = pool[Math.floor(Math.random() * pool.length)];
+        // (Random equipment removed from Shop - only IAP/Crates now)
 
-            // 2. Calculate "Harsh" Price based on Rarity
-            // Old: 500, 1200, 3500, 8000
-            // New: 2500, 10000, 45000, 150000
-            const basePrices = { 'common': 2500, 'rare': 10000, 'epic': 45000, 'legendary': 150000 };
-            const rarityColors = { 'common': '#fff', 'rare': '#0088ff', 'epic': '#aa00ff', 'legendary': '#ffe600' };
-            const rarityRank = { 'common': 1, 'rare': 2, 'epic': 3, 'legendary': 4 };
+        // --- ADD STANDARD CRATE ---
+        const crateCost = 5000 + (this.floor * 100); // Scale slightly with floor
+        const crateEl = document.createElement('div');
+        crateEl.className = 'shop-item';
+        crateEl.style.borderColor = '#00f2ff';
+        crateEl.style.boxShadow = `0 0 10px rgba(0, 242, 255, 0.3)`;
+        const canAffordCrate = this.gold >= crateCost;
 
-            // Price Variance (+/- 15% to make it feel like a market)
-            let price = basePrices[item.rarity] || 2500;
-            const variance = Math.floor(price * 0.15);
-            price = price + Math.floor((Math.random() * variance * 2) - variance);
-
-            // 3. Render
-            const color = rarityColors[item.rarity];
-            const itemEl = document.createElement('div');
-            itemEl.className = 'shop-item';
-            itemEl.style.borderColor = color;
-            itemEl.style.boxShadow = `0 0 5px ${color}40`;
-
-            const canAfford = this.gold >= price;
-
-            // Generate visual HTML
-            itemEl.innerHTML = `
-                <div>
-                    <div class="item-name" style="color:${color}; text-shadow: 0 0 5px ${color}80;">${item.name}</div>
-                    <div class="item-desc" style="font-size:12px; color:#ccc;">${item.desc}</div>
-                    <div style="font-size:10px; text-transform:uppercase; color:${color}; margin-top:4px;">${item.rarity} ${item.type}</div>
-                </div>
-                <div class="cost" style="color:${canAfford ? color : '#555'}; font-size: 20px;">${price} CR</div>
-            `;
-
-            itemEl.onclick = () => {
-                // A. Check Gold
-                if (this.gold < price) {
-                    this.showText("INSUFFICIENT FUNDS", this.player.mesh.position, '#ff0000');
-                    return;
-                }
-
-                // B. Check Rarity Downgrade
-                if (this.player && this.player.gear[item.type]) {
-                    const currentItem = this.player.gear[item.type];
-                    const currentRank = rarityRank[currentItem.rarity] || 0;
-                    const newRank = rarityRank[item.rarity] || 0;
-
-                    if (newRank < currentRank) {
-                        alert(`CANNOT DOWNGRADE GEAR!\n\nCurrent: ${currentItem.name} (${currentItem.rarity.toUpperCase()})\nShop: ${item.name} (${item.rarity.toUpperCase()})`);
-                        return; // Stop the purchase
-                    }
-                }
-
-                // C. Process Transaction
-                this.gold -= price;
-                if (this.player && typeof this.player.equip === 'function') {
-                    this.player.equip(item);
-                    this.updateUI();
-                    itemEl.remove(); // Remove item so they don't buy it twice
-                }
-            };
-            container.appendChild(itemEl);
-        }
+        crateEl.innerHTML = `
+            <div>
+                <div class="item-name" style="color:#00f2ff; text-shadow:0 0 5px #00f2ff80;">STANDARD SUPPLY</div>
+                <div class="item-desc" style="font-size:12px; color:#ccc;">Random Item (Max Epic)</div>
+                <div style="font-size:10px; text-transform:uppercase; color:#fff; margin-top:4px;">CRATE</div>
+            </div>
+            <div class="cost" style="color:${canAffordCrate ? '#ffe600' : '#555'}; font-size: 20px;">${crateCost} CR</div>
+        `;
+        crateEl.onclick = () => this.buyStandardCrate(crateCost);
+        container.appendChild(crateEl);
     },
 
     // --- BUY LOGIC ---
@@ -2206,6 +2647,46 @@ const game = {
             this.updateUI();
             this.generateShop(); // Completely Re-Render the shop to show new Price/Level
         }
+    },
+
+    buyStandardCrate(cost) {
+        if (this.gold < cost) {
+            this.showText("INSUFFICIENT FUNDS", this.player.mesh.position, '#ff0000');
+            return;
+        }
+
+        // Deduct Gold
+        this.gold -= cost;
+        this.updateUI();
+
+        // Determine Rarity (Common 60%, Rare 35%, Epic 5%)
+        let rarity = 'common';
+        const rnd = Math.random();
+        if (rnd > 0.95) rarity = 'epic';        // Top 5%
+        else if (rnd > 0.60) rarity = 'rare';   // Next 35%
+        else rarity = 'common';                 // Bottom 60%
+
+        // Pick Item
+        const types = ['WEAPONS', 'ACCESSORIES'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        // Ensure ITEMS is defined (it is global constant)
+        if (typeof ITEMS === 'undefined') return;
+
+        const pool = ITEMS[type].filter(i => i.rarity === rarity);
+
+        if (pool.length === 0) {
+            console.error("No items found for rarity:", rarity);
+            return;
+        }
+
+        const itemTemplate = pool[Math.floor(Math.random() * pool.length)];
+
+        // Clone item to inventory
+        const newItem = { ...itemTemplate, id: Date.now() + Math.random() };
+        this.player.inventory.push(newItem);
+
+        // Animation
+        this.showCrateAnimation(newItem);
     },
 
     offerJobSelection(tier) {
@@ -2248,11 +2729,18 @@ const game = {
             });
 
         } else {
-            // Existing logic for upgrades
-            document.querySelector('#class-screen h2').innerText = `TIER ${tier + 1} ADVANCEMENT`;
+            // New Logic: Choose 1 Skill from the new Tier
+            document.querySelector('#class-screen h2').innerText = `TIER ${tier + 1} ADVANCEMENT - CHOOSE S.K.I.L.L.`;
             const currentKey = this.player.jobType;
-            if (CLASS_TREES[currentKey][tier]) {
-                this.createJobCard(container, CLASS_TREES[currentKey][tier], () => this.setJob(currentKey, tier), currentKey);
+            const tierData = CLASS_TREES[currentKey][tier];
+
+            if (tierData) {
+                // Show cards for each skill in the tier
+                tierData.skills.forEach((skill, index) => {
+                    this.createSkillCard(container, skill, () => {
+                        this.setJob(currentKey, tier, index);
+                    }, currentKey);
+                });
             } else {
                 this.nextFloor();
             }
@@ -2375,8 +2863,65 @@ const game = {
 
     },
 
-    setJob(type, tier) {
-        this.player.jobType = type; this.player.jobTier = tier; this.player.skills = CLASS_TREES[type][tier].skills;
+    createSkillCard(container, skill, onClick, jobKey) {
+        // Reuse theme logic from createJobCard if possible, or default
+        const JOB_THEMES = {
+            "RONIN": { border: "2px solid #aa00ff", shadow: "0 0 20px rgba(170, 0, 255, 0.6)", bg: "linear-gradient(135deg, rgba(30,0,50,0.9), rgba(60,0,100,0.9))", titleColor: "#dcb3ff" },
+            "PRIEST": { border: "2px solid #00f2ff", shadow: "0 0 20px rgba(0, 242, 255, 0.5)", bg: "linear-gradient(135deg, rgba(0,20,30,0.9), rgba(0,50,60,0.9))", titleColor: "#ccffff" },
+            "MECH": { border: "2px solid #ff6600", shadow: "0 0 20px rgba(255, 102, 0, 0.5)", bg: "linear-gradient(135deg, rgba(40,15,0,0.9), rgba(80,30,0,0.9))", titleColor: "#ffccaa" },
+            "SHADOW": { border: "2px solid #00ff00", shadow: "0 0 20px rgba(0, 255, 0, 0.4)", bg: "linear-gradient(135deg, #050505, #112211)", titleColor: "#aaffaa" },
+            "BRAWLER": { border: "2px solid #ff0000", shadow: "0 0 20px rgba(255, 0, 0, 0.5)", bg: "linear-gradient(135deg, #220000, #440000)", titleColor: "#ffaaaa" },
+            "GUNSLINGER": { border: "2px solid #ffaa00", shadow: "0 0 20px rgba(255, 170, 0, 0.6)", bg: "linear-gradient(135deg, #221100, #442200)", titleColor: "#ffeeb0" },
+            "KNIGHT": { border: "2px solid #ffffff", shadow: "0 0 20px rgba(255, 255, 255, 0.4)", bg: "linear-gradient(135deg, #111, #333)", titleColor: "#ffffff" },
+            "HACKER": { border: "2px solid #00ff00", shadow: "0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 10px rgba(0,255,0,0.2)", bg: "repeating-linear-gradient(45deg, #000 0px, #001100 10px, #000 20px)", titleColor: "#00ff00" }
+        };
+
+        const theme = JOB_THEMES[jobKey] || { border: "2px solid #fff", shadow: "0 0 10px #fff", bg: "#222", titleColor: "#fff" };
+
+        const card = document.createElement('div');
+        card.className = 'perk-card';
+        Object.assign(card.style, {
+            height: 'auto', border: theme.border, boxShadow: theme.shadow, background: theme.bg, transition: "transform 0.2s, box-shadow 0.2s"
+        });
+        card.onmouseover = () => { card.style.transform = "scale(1.05)"; card.style.boxShadow = `${theme.shadow}, 0 0 40px ${theme.border.split(' ')[2]}`; };
+        card.onmouseout = () => { card.style.transform = "scale(1)"; card.style.boxShadow = theme.shadow; };
+
+        const costDisplay = skill.cost > 0 ? `${skill.cost} MP` : 'FREE';
+        const typeDisplay = skill.isBuff ? 'BUFF' : 'ATTACK';
+        const hitsDisplay = skill.isBuff ? '' : ` | ${skill.hits || 1} Hits`;
+
+        card.innerHTML = `
+            <div class="perk-title" style="color:${theme.titleColor}; text-shadow:0 0 10px ${theme.titleColor}; margin-bottom:5px; font-size: 22px;">${skill.name}</div>
+            <div class="perk-desc" style="color:#ddd; font-style:italic; margin-bottom:10px;">${skill.desc || 'A powerful skill.'}</div>
+            <div style="background:rgba(0,0,0,0.5); padding:10px; border-radius:5px; border:1px solid rgba(255,255,255,0.1);">
+                <div style="font-size:14px;color:#fff;">
+                    <strong style="color:${theme.titleColor}">TYPE:</strong> ${typeDisplay}<br>
+                    <strong style="color:${theme.titleColor}">COST:</strong> ${costDisplay}<br>
+                    <span style="color:#aaa; font-size:12px">${skill.isBuff ? `Duration: ${skill.duration} Turns` : `${skill.mult}x DMG${hitsDisplay}`}</span>
+                </div>
+            </div>
+        `;
+
+        card.onclick = onClick;
+        container.appendChild(card);
+    },
+
+    setJob(type, tier, skillIndex = -1) {
+        this.player.jobType = type;
+        this.player.jobTier = tier;
+
+        // New Logic for Skills
+        if (tier === 0) {
+            // Base Class: Unlock All 3
+            this.player.unlockedSkills = [...CLASS_TREES[type][0].skills];
+            // Pin first 2
+            this.player.pinnedSkills = [this.player.unlockedSkills[0], this.player.unlockedSkills[1]];
+        } else if (skillIndex >= 0) {
+            // Advancement: Unlock Selected Skill
+            const newSkill = CLASS_TREES[type][tier].skills[skillIndex];
+            this.player.unlockedSkills.push(newSkill);
+            this.showText("SKILL UNLOCKED!", this.player.mesh.position, "#ffe600");
+        }
 
         // Update player model based on class
         this.updatePlayerModel(type, tier);
@@ -2913,23 +3458,226 @@ const game = {
     setScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); if (id !== 'hud') document.getElementById(id).classList.add('active'); },
     updateButtons() {
         if (!this.player) return;
-        const s1 = this.player.skills[0]; const s2 = this.player.skills[1]; const s3 = this.player.skills[2];
-        const cost1 = Math.max(0, Math.floor(s1.cost * (1 - this.player.manaCostReduction)));
-        const cost2 = Math.max(0, Math.floor(s2.cost * (1 - this.player.manaCostReduction)));
-        const discount1 = cost1 < s1.cost ? `<span style="text-decoration:line-through;color:#666">${s1.cost}</span> ` : '';
-        const discount2 = cost2 < s2.cost ? `<span style="text-decoration:line-through;color:#666">${s2.cost}</span> ` : '';
-        document.getElementById('btn-skill-1').innerHTML = `<span class="btn-name">${s1.name}</span><br><span class="btn-cost">${discount1}${cost1} MP</span>`;
-        document.getElementById('btn-skill-2').innerHTML = `<span class="btn-name">${s2.name}</span><br><span class="btn-cost">${discount2}${cost2} MP</span>`;
+        const s1 = this.player.pinnedSkills?.[0];
+        const s2 = this.player.pinnedSkills?.[1];
 
-        // Update buff skill button
-        if (s3) {
-            const cost3 = Math.max(0, Math.floor(s3.cost * (1 - this.player.manaCostReduction)));
-            const discount3 = cost3 < s3.cost ? `<span style="text-decoration:line-through;color:#666">${s3.cost}</span> ` : '';
-            document.getElementById('btn-skill-3').innerHTML = `<span class="btn-name">${s3.name}</span><br><span class="btn-cost">${discount3}${cost3} MP</span>`;
-            document.getElementById('btn-skill-3').style.display = 'inline-block';
+        const btn1 = document.getElementById('btn-skill-1');
+        const btn2 = document.getElementById('btn-skill-2');
+        const btn3 = document.getElementById('btn-skill-3');
+
+        // Button 1
+        if (s1) {
+            const cost1 = Math.max(0, Math.floor(s1.cost * (1 - this.player.manaCostReduction)));
+            const discount1 = cost1 < s1.cost ? `<span style="text-decoration:line-through;color:#666">${s1.cost}</span> ` : '';
+            btn1.innerHTML = `<span class="btn-name">${s1.name}</span><br><span class="btn-cost">${discount1}${cost1} MP</span>`;
+            btn1.style.opacity = '1';
+            // btn1.onclick is handled in HTML but relies on game.useSkill(0) which now uses pinnedSkills[0]
         } else {
-            document.getElementById('btn-skill-3').style.display = 'none';
+            btn1.innerHTML = `<span class="btn-name">EMPTY</span><br><span class="btn-cost">--</span>`;
+            btn1.style.opacity = '0.5';
         }
+
+        // Button 2
+        if (s2) {
+            const cost2 = Math.max(0, Math.floor(s2.cost * (1 - this.player.manaCostReduction)));
+            const discount2 = cost2 < s2.cost ? `<span style="text-decoration:line-through;color:#666">${s2.cost}</span> ` : '';
+            btn2.innerHTML = `<span class="btn-name">${s2.name}</span><br><span class="btn-cost">${discount2}${cost2} MP</span>`;
+            btn2.style.opacity = '1';
+        } else {
+            btn2.innerHTML = `<span class="btn-name">EMPTY</span><br><span class="btn-cost">--</span>`;
+            btn2.style.opacity = '0.5';
+        }
+
+        // Button 3: SKILLS MANAGER
+        btn3.innerHTML = `<span class="btn-name">SKILLS</span><br><span class="btn-cost">MENU</span>`;
+        btn3.style.display = 'inline-block';
+        btn3.onclick = () => this.openSkillsMenu(); // Override HTML onclick
+    },
+
+    // --- SKILLS MENU SYSTEM ---
+    openSkillsMenu() {
+        if (!this.player) return;
+
+        this.previousState = this.state;
+        this.state = 'SKILLS_MENU';
+
+        const screen = document.getElementById('classes-screen');
+        screen.classList.add('active');
+        const title = screen.querySelector('h1');
+        if (title) title.innerText = "SKILL MANAGEMENT";
+
+        this.renderSkillsMenu();
+    },
+
+    closeSkillsMenu() {
+        document.getElementById('classes-screen').classList.remove('active');
+        this.state = this.previousState || 'IDLE';
+
+        // Restore title for class viewer
+        const title = document.querySelector('#classes-screen h1');
+        if (title) title.innerText = "JOB ADVANCEMENT";
+    },
+
+    renderSkillsMenu() {
+        const container = document.getElementById('classes-viewer-container');
+        container.innerHTML = '';
+        container.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        `;
+
+        // Header Section
+        const header = document.createElement('div');
+        header.style.cssText = `
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 10px;
+        `;
+        header.innerHTML = `
+            <div style="font-size: 14px; color: #00f2ff; letter-spacing: 3px; margin-bottom: 10px;">AVAILABLE ABILITIES</div>
+            <div style="font-size: 12px; color: #888;">Click PIN 1 or PIN 2 to assign skills to quick slots</div>
+        `;
+        container.appendChild(header);
+
+        // Sort skills: Pinned first, then by type
+        const skills = [...this.player.unlockedSkills];
+
+        skills.forEach((skill, index) => {
+            const card = document.createElement('div');
+            card.className = 'skill-management-card';
+
+            // Check if pinned
+            const isPinned1 = this.player.pinnedSkills?.[0] === skill;
+            const isPinned2 = this.player.pinnedSkills?.[1] === skill;
+
+            // Determine skill type color scheme
+            let accentColor = '#888';
+            let glowColor = 'rgba(136, 136, 136, 0.3)';
+            if (isPinned1) {
+                accentColor = '#00f2ff';
+                glowColor = 'rgba(0, 242, 255, 0.4)';
+            } else if (isPinned2) {
+                accentColor = '#ff0055';
+                glowColor = 'rgba(255, 0, 85, 0.4)';
+            } else if (skill.isBuff) {
+                accentColor = '#ffe600';
+                glowColor = 'rgba(255, 230, 0, 0.3)';
+            } else {
+                const colorHex = skill.color ? '#' + skill.color.toString(16).padStart(6, '0') : '#fff';
+                accentColor = colorHex;
+                glowColor = colorHex + '40';
+            }
+
+            const typeLabel = skill.isBuff ? "BUFF" : "ATTACK";
+            const costLabel = skill.cost > 0 ? `${skill.cost} MP` : "FREE";
+
+            let pinnedBadge = "";
+            if (isPinned1) pinnedBadge = `<div class="skill-pinned-badge" style="background: linear-gradient(135deg, #00f2ff, #0088cc);">SLOT 1</div>`;
+            if (isPinned2) pinnedBadge = `<div class="skill-pinned-badge" style="background: linear-gradient(135deg, #ff0055, #cc0044);">SLOT 2</div>`;
+
+            const descDisplay = skill.desc || (skill.isBuff
+                ? `+${((skill.buffVal || 0) * 100).toFixed(0)}% ${skill.buffType || 'BUFF'} for ${skill.duration || 1} turns`
+                : `${skill.mult}x DMG × ${skill.hits || 1} hit${(skill.hits || 1) > 1 ? 's' : ''}`);
+
+            card.style.cssText = `
+                background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 20, 0.95));
+                backdrop-filter: blur(10px);
+                border: 2px solid ${accentColor};
+                border-radius: 12px;
+                padding: 20px;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 8px 32px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.1);
+                cursor: pointer;
+            `;
+
+            card.innerHTML = `
+                ${pinnedBadge}
+                
+                <!-- Skill Type Badge -->
+                <div style="display: inline-block; background: ${accentColor}22; border: 1px solid ${accentColor}; color: ${accentColor}; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; letter-spacing: 1px; margin-bottom: 12px;">
+                    ${typeLabel}
+                </div>
+
+                <!-- Skill Name -->
+                <div style="font-size: 24px; font-weight: bold; color: ${accentColor}; margin-bottom: 8px; text-shadow: 0 0 20px ${glowColor}, 0 2px 4px rgba(0,0,0,0.8);">
+                    ${skill.name || 'BASIC ATTACK'}
+                </div>
+
+                <!-- Description -->
+                <div style="color: #aaa; font-size: 13px; font-style: italic; margin-bottom: 15px; min-height: 40px; line-height: 1.4;">
+                    ${descDisplay}
+                </div>
+
+                <!-- Stats Bar -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; padding: 12px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="text-align: center;">
+                        <div style="font-size: 10px; color: #666; margin-bottom: 4px;">COST</div>
+                        <div style="font-size: 16px; font-weight: bold; color: ${skill.cost > 0 ? '#0088ff' : '#00ff88'};">${costLabel}</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 10px; color: #666; margin-bottom: 4px;">${skill.isBuff ? 'DURATION' : 'POWER'}</div>
+                        <div style="font-size: 16px; font-weight: bold; color: ${accentColor};">${skill.isBuff ? (skill.duration || 1) + ' turns' : skill.mult + 'x'}</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <button class="skill-action-btn" data-action="pin1" data-index="${index}" style="background: linear-gradient(135deg, #00f2ff22, #00f2ff11); border: 1px solid #00f2ff; color: #00f2ff; ${isPinned1 ? 'box-shadow: 0 0 15px #00f2ff;' : ''}">
+                        ${isPinned1 ? '✓ PIN1' : 'PIN 1'}
+                    </button>
+                    <button class="skill-action-btn" data-action="pin2" data-index="${index}" style="background: linear-gradient(135deg, #ff005522, #ff005511); border: 1px solid #ff0055; color: #ff0055; ${isPinned2 ? 'box-shadow: 0 0 15px #ff0055;' : ''}">
+                        ${isPinned2 ? '✓ PIN2' : 'PIN 2'}
+                    </button>
+                    <button class="skill-action-btn" data-action="use" data-index="${index}" style="background: linear-gradient(135deg, #00ff0044, #00ff0022); border: 1px solid #00ff00; color: #00ff00; font-weight: bold;">
+                        USE
+                    </button>
+                </div>
+
+                <!-- Decorative Glow -->
+                <div style="position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: radial-gradient(circle, ${glowColor} 0%, transparent 70%); opacity: 0.3; pointer-events: none;"></div>
+            `;
+
+            // Hover effect
+            card.onmouseenter = () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+                card.style.boxShadow = `0 12px 40px ${glowColor}, 0 0 60px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.2)`;
+            };
+            card.onmouseleave = () => {
+                card.style.transform = 'translateY(0) scale(1)';
+                card.style.boxShadow = `0 8px 32px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.1)`;
+            };
+
+            container.appendChild(card);
+        });
+
+        // Bind events to all buttons using event delegation
+        container.querySelectorAll('.skill-action-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const action = btn.dataset.action;
+                const index = parseInt(btn.dataset.index);
+                const skill = skills[index];
+
+                if (action === 'pin1') {
+                    this.player.pinnedSkills[0] = skill;
+                    this.updateButtons();
+                    this.renderSkillsMenu();
+                } else if (action === 'pin2') {
+                    this.player.pinnedSkills[1] = skill;
+                    this.updateButtons();
+                    this.renderSkillsMenu();
+                } else if (action === 'use') {
+                    this.closeSkillsMenu();
+                    this.useSkill(skill);
+                }
+            };
+        });
     },
 
     // --- CLASS VIEWER SYSTEM ---
@@ -2953,6 +3701,11 @@ const game = {
     },
 
     closeClassesViewer() {
+        if (this.state === 'SKILLS_MENU') {
+            this.closeSkillsMenu();
+            return;
+        }
+
         document.getElementById('classes-screen').classList.remove('active');
 
         // FIX: Force state to IDLE if we are in a live battle. 
@@ -3208,7 +3961,7 @@ const game = {
 
                     skillsHTML += `
                         <div class="skill-item">
-                            <div class="skill-name">SKILL ${skillNum}: ${skill.name}</div>
+                            <div class="skill-name">SKILL ${skillNum}: ${skill.name || 'BASIC ATTACK'}</div>
                             <div class="skill-details">${statsInfo}</div>
                         </div>
                     `;
@@ -3322,8 +4075,16 @@ class Unit {
         this.executeThreshold = 0; this.overkillBonus = 0; this.shield = 0; this.maxShield = 0; this.bonusCredits = 0;
         this.activeBuffs = []; this.invincible = false;
 
+        // --- NEW: SKILL SYSTEM ---
+        this.unlockedSkills = []; // Stores all known skills
+        this.pinnedSkills = [null, null]; // Stores the 2 active skills in slots
+        // -------------------------
+
+        // --- NEW: GEAR SYSTEM ---
         // --- NEW: GEAR SYSTEM ---
         this.gear = { weapon: null, accessory: null };
+        this.inventory = [];
+        // ------------------------
         // ------------------------
 
         // Late-game scaling stats
@@ -3422,24 +4183,78 @@ class Unit {
         // 1. Unequip existing (remove stats)
         if (this.gear[slot]) {
             const old = this.gear[slot];
+            // Remove old flat bonuses (legacy support)
             if (old.atk) this.atk -= old.atk;
             if (old.hp) { this.maxHp -= old.hp; this.hp = Math.min(this.hp, this.maxHp); }
             if (old.mana) { this.maxMana -= old.mana; this.mana = Math.min(this.mana, this.maxMana); }
             if (old.crit) this.critChance -= old.crit;
             if (old.dodge) this.dodge -= old.dodge;
+            // Remove multipliers
+            if (old.atkMult) this.atkMult = (this.atkMult || 0) - old.atkMult;
+            if (old.hpMult) this.hpMult = (this.hpMult || 0) - old.hpMult;
+            if (old.manaMult) this.manaMult = (this.manaMult || 0) - old.manaMult;
+            if (old.critChance) this.critChance -= old.critChance;
+            if (old.critDamage) this.critDamage -= old.critDamage;
+            if (old.lifesteal) this.lifesteal -= old.lifesteal;
+            if (old.armor) this.armor = (this.armor || 0) - old.armor;
+            if (old.regen) this.regen = (this.regen || 0) - old.regen;
+            if (old.thorns) this.thorns = (this.thorns || 0) - old.thorns;
         }
 
         // 2. Equip new (add stats)
         this.gear[slot] = item;
+        // Add flat bonuses (legacy support)
         if (item.atk) this.atk += item.atk;
         if (item.hp) { this.maxHp += item.hp; this.hp += item.hp; }
         if (item.mana) { this.maxMana += item.mana; this.mana += item.mana; }
         if (item.crit) this.critChance += item.crit;
         if (item.dodge) this.dodge += item.dodge;
+        // Add multipliers
+        if (item.atkMult) this.atkMult = (this.atkMult || 0) + item.atkMult;
+        if (item.hpMult) this.hpMult = (this.hpMult || 0) + item.hpMult;
+        if (item.manaMult) this.manaMult = (this.manaMult || 0) + item.manaMult;
+        if (item.critChance) this.critChance += item.critChance;
+        if (item.critDamage) this.critDamage += item.critDamage;
+        if (item.lifesteal) this.lifesteal += item.lifesteal;
+        if (item.armor) this.armor = (this.armor || 0) + item.armor;
+        if (item.regen) this.regen = (this.regen || 0) + item.regen;
+        if (item.thorns) this.thorns = (this.thorns || 0) + item.thorns;
 
-        // 3. UI Update
+        // 3. Recalculate multiplied stats based on base values
+        this.recalculateStats();
+
+        // 4. UI Update
         game.updateGearUI();
         game.showText(`EQUIPPED ${item.name}`, this.mesh.position, '#00ff00');
+    }
+
+    recalculateStats() {
+        // Apply multipliers to base stats
+        // Store base stats if not already stored
+        if (!this.baseAtk) {
+            this.baseAtk = 20; // Starting ATK
+            this.baseMaxHp = 100; // Starting HP
+            this.baseMaxMana = 50; // Starting Mana
+        }
+
+        // Apply multipliers
+        const atkMult = 1 + (this.atkMult || 0);
+        const hpMult = 1 + (this.hpMult || 0);
+        const manaMult = 1 + (this.manaMult || 0);
+
+        // Recalculate
+        const oldMaxHp = this.maxHp;
+        const oldMaxMana = this.maxMana;
+
+        this.atk = Math.floor(this.baseAtk * atkMult);
+        this.maxHp = Math.floor(this.baseMaxHp * hpMult);
+        this.maxMana = Math.floor(this.baseMaxMana * manaMult);
+
+        // Maintain HP/Mana ratio when max changes
+        const hpRatio = oldMaxHp > 0 ? this.hp / oldMaxHp : 1;
+        const manaRatio = oldMaxMana > 0 ? this.mana / oldMaxMana : 1;
+        this.hp = Math.floor(this.maxHp * hpRatio);
+        this.mana = Math.floor(this.maxMana * manaRatio);
     }
 
 }

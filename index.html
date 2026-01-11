@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
+
 <body>
 
     <div id="rotate-warning">
@@ -18,16 +20,18 @@
         <div id="top-ui">
             <div class="stat-box" id="floor-display">FLOOR <span id="floor-num">1</span></div>
             <div class="stat-box" id="combo-display" style="display:none;">🔥 COMBO <span id="combo-num">0</span></div>
-            <button id="classes-btn" onclick="game.toggleClassesViewer()" style="display:none;" class="stat-box" title="View Class Tree">SKILLS</button>
+            <button id="classes-btn" onclick="game.toggleClassesViewer()" style="display:none;" class="stat-box"
+                title="View Class Tree">CLASS TREE</button>
             <div class="stat-box" id="gold-display">CREDITS: <span id="gold-num">0</span></div>
         </div>
 
         <div id="buff-container"></div>
 
-        
+
 
         <div id="p-wrapper" class="unit-hud">
             <div id="gear-container">
+                <div class="gear-edit-label">GEAR ▸</div>
                 <div class="gear-slot" id="slot-weapon" onclick="game.showGearTooltip('weapon')">
                     <div class="gear-icon">⚔️</div>
                     <div class="gear-empty">EMPTY</div>
@@ -46,7 +50,8 @@
             <div id="p-shield-wrapper" style="display:none; margin-top:5px;">
                 <div class="hp-label" style="color:#00f2ff">ENERGY SHIELD</div>
                 <div class="bar-container" id="p-shield-bar" style="border-color: #00f2ff; height: 12px;">
-                    <div class="bar-fill" id="p-shield-fill" style="background: #00f2ff; box-shadow: 0 0 10px #00f2ff;"></div>
+                    <div class="bar-fill" id="p-shield-fill" style="background: #00f2ff; box-shadow: 0 0 10px #00f2ff;">
+                    </div>
                     <div class="overlay-text" id="p-shield-text" style="font-size: 14px;">0</div>
                 </div>
             </div>
@@ -68,7 +73,12 @@
     </div>
 
     <!-- IAP SHOP BUTTON (Always visible) -->
-    <button id="iap-btn" onclick="game.openIAPShop()">💎</button>
+    <button id="iap-btn" onclick="game.openIAPShop()">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
+            <path d="M12,2L2,7l3,12l7,3l7-3l3-12L12,2z M12,18l-5-2l-2-8l7-3l7,3l-2,8L12,18z" />
+        </svg>
+    </button>
+    <!-- inv-btn removed -->
 
     <div id="battle-controls">
         <button id="btn-skill-1" class="btn" onclick="game.useSkill(0)">
@@ -84,57 +94,104 @@
 
     <!-- IAP SHOP SCREEN -->
     <div id="iap-screen" class="screen">
-        <h2 class="screen-title">💎 PREMIUM SHOP 💎</h2>
-        <p style="color:#aaa; margin-bottom:20px;">Support the developer & power up!</p>
-
-        <div class="iap-grid">
-            <div class="iap-section">
-                <h3>💰 CREDIT PACKS</h3>
-                <div class="iap-item" onclick="game.buyCredits(500, 0.99)">
-                    <span>500 Credits</span><span class="iap-price">$0.99</span>
-                </div>
-                <div class="iap-item" onclick="game.buyCredits(2500, 3.99)">
-                    <span>2,500 Credits</span><span class="iap-price">$3.99</span>
-                </div>
-                <div class="iap-item" onclick="game.buyCredits(10000, 9.99)">
-                    <span>10,000 Credits</span><span class="iap-price">$9.99</span>
-                </div>
-                <div class="iap-item best-value" onclick="game.buyCredits(50000, 24.99)">
-                    <span>50,000 Credits<br><small style="color:#0f0">⭐ BEST VALUE</small></span><span class="iap-price">$24.99</span>
-                </div>
-            </div>
-
-            <div class="iap-section">
-                <h3>🎰 LUCK BOOSTERS</h3>
-                <div class="iap-item" onclick="game.buyLuckBoost('rare', 0.99)">
-                    <span>+20% Rare Chance<br><small style="color:#0088ff">3 Floors</small></span><span class="iap-price">$0.99</span>
-                </div>
-                <div class="iap-item" onclick="game.buyLuckBoost('epic', 1.99)">
-                    <span>+15% Epic Chance<br><small style="color:#aa00ff">3 Floors</small></span><span class="iap-price">$1.99</span>
-                </div>
-                <div class="iap-item" onclick="game.buyLuckBoost('legendary', 4.99)">
-                    <span>+10% Legendary<br><small style="color:#ffe600">3 Floors</small></span><span class="iap-price">$4.99</span>
-                </div>
-                <div class="iap-item best-value" onclick="game.buyLuckBoost('guaranteed', 9.99)">
-                    <span>GUARANTEED LEGENDARY<br><small style="color:#ff0">Next perk only!</small></span><span class="iap-price">$9.99</span>
-                </div>
-            </div>
-
-            <div class="iap-section">
-                <h3>🔄 CLASS CHANGE</h3>
-                <div class="iap-item" onclick="game.buyClassChange()">
-                    <span>Change Class<br><small style="color:#aaa">Keep all stats!</small></span><span class="iap-price">$2.99</span>
-                </div>
-                <div class="iap-item" onclick="game.buyInstantHeal()">
-                    <span>⚡ Full Heal + Mana<br><small style="color:#0f0">Instant!</small></span><span class="iap-price">$0.99</span>
-                </div>
-                <div class="iap-item" onclick="game.buyRevive()">
-                    <span>💀 Revive Token<br><small style="color:#ff5">Continue on death</small></span><span class="iap-price">$1.99</span>
-                </div>
-            </div>
+        <button onclick="game.closeIAPShop()"
+            style="position:fixed; top:20px; right:20px; z-index:100; background:transparent; border:none; color:#fff; font-size:30px; cursor:pointer; text-shadow:0 0 10px #bf00ff;">✕</button>
+        <div
+            style="position:absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at center, rgba(20,0,40,0.95), rgba(0,0,0,0.98)); pointer-events:none;">
         </div>
 
-        <button class="btn next-btn" onclick="game.closeIAPShop()" style="margin-top:20px;">CLOSE</button>
+        <div
+            style="z-index:10; width:100%; max-width:1100px; display:flex; flex-direction:column; align-items:center; height:auto; min-height:100%; padding-bottom:100px;">
+            <h2 class="screen-title"
+                style="font-size:42px; color:#fff; text-shadow:0 0 15px #bf00ff; border-bottom:2px solid #bf00ff; padding-bottom:10px; width:80%; text-align:center; margin-top:60px;">
+                <span style="color:#bf00ff">STORE</span> // ACCESS
+            </h2>
+            <p style="color:#aaa; font-size:14px; margin-bottom:20px; letter-spacing:2px; text-transform:uppercase;">
+                Upgrade your verified status
+            </p>
+
+            <div class="iap-grid-layout">
+                <!-- FEATURED / PERMANENT -->
+                <div class="iap-col featured">
+                    <h3 class="iap-header" style="color:#ffd700">ELITE STATUS</h3>
+
+                    <div class="iap-card elite" onclick="game.buyNeonPrime()">
+                        <div class="iap-tag">BEST VALUE</div>
+                        <div class="iap-title">NEON PRIME</div>
+                        <div class="iap-icon-box">
+                            <div class="crown-icon"></div>
+                        </div>
+                        <div class="iap-benefits">
+                            <span>+50% CREDITS FOREVER</span>
+                            <span>GOLD USERNAME</span>
+                            <span>EXCLUSIVE AURA</span>
+                        </div>
+                        <div class="iap-price-btn">$19.99</div>
+                    </div>
+
+                    <div class="iap-card" onclick="game.buyRemoveAds()">
+                        <div class="iap-title">NO ADS + KIT</div>
+                        <div class="iap-desc">Remove forced ads & get Starter Gear Set</div>
+                        <div class="iap-price-btn">$4.99</div>
+                    </div>
+                </div>
+
+                <!-- CONSUMABLES -->
+                <div class="iap-col">
+                    <h3 class="iap-header" style="color:#00f2ff">SUPPLY DROPS</h3>
+
+                    <div class="iap-card" onclick="game.buyLootCrate('legendary')">
+                        <div class="iap-title" style="color:#00f2ff">LOOT CRATE</div>
+                        <div class="iap-desc">Contains 1 Random Item.</div>
+                        <div class="iap-price-btn">$4.99</div>
+                    </div>
+
+                    <div class="iap-card" onclick="game.buyOverclock()">
+                        <div class="iap-title" style="color:#ff0055">SYSTEM OVERCLOCK</div>
+                        <div class="iap-desc">+100% DAMAGE & SPEED for the next 10 Floors</div>
+                        <div class="iap-price-btn">$2.99</div>
+                    </div>
+
+                    <div class="iap-card" onclick="game.buyRevivePack()">
+                        <div class="iap-title">REVIVE PROTOCOL x5</div>
+                        <div class="iap-desc">5 Tokens to cheat death & continue run</div>
+                        <div class="iap-price-btn">$1.99</div>
+                    </div>
+                </div>
+
+                <!-- CREDITS -->
+                <div class="iap-col">
+                    <h3 class="iap-header" style="color:#0f0">CREDIT BANK</h3>
+
+                    <div class="iap-card small" onclick="game.buyCredits(10000, 1.99)">
+                        <div class="iap-row">
+                            <span class="iap-qty">10k</span>
+                            <span class="iap-cost">$1.99</span>
+                        </div>
+                    </div>
+                    <div class="iap-card small" onclick="game.buyCredits(50000, 4.99)">
+                        <div class="iap-row">
+                            <span class="iap-qty" style="color:#00f2ff">50k</span>
+                            <span class="iap-cost">$4.99</span>
+                        </div>
+                    </div>
+                    <div class="iap-card small" onclick="game.buyCredits(150000, 9.99)">
+                        <div class="iap-row">
+                            <span class="iap-qty" style="color:#bf00ff">150k</span>
+                            <span class="iap-cost">$9.99</span>
+                        </div>
+                    </div>
+                    <div class="iap-card small" onclick="game.buyCredits(500000, 24.99)">
+                        <div class="iap-row">
+                            <span class="iap-qty" style="color:#ffe600">500k</span>
+                            <span class="iap-cost">$24.99</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
     </div>
 
     <div id="start-screen" class="screen active">
@@ -156,10 +213,78 @@
     <div id="shop-screen" class="screen">
         <h2 class="screen-title">THE ARMORY <span id="shop-tier" style="font-size:20px; color:#888">TIER 1</span></h2>
         <div class="shop-header">CREDITS: <span id="shop-gold">0</span></div>
-        
+
         <div class="shop-grid" id="shop-container"></div>
-        
         <button class="btn next-btn" onclick="game.nextFloor()">NEXT FLOOR</button>
+    </div>
+
+    <!-- INVENTORY SCREEN -->
+    <div id="inventory-screen" class="screen">
+        <h2 class="screen-title" style="color:#00f2ff; text-shadow:0 0 15px #00f2ff;">GEAR STORAGE</h2>
+        <button onclick="game.closeInventory()"
+            style="position:fixed; top:20px; right:20px; z-index:100; background:transparent; border:none; color:#fff; font-size:30px; cursor:pointer;">✕</button>
+
+        <div class="inventory-layout"
+            style="display:flex; width:100%; max-width:1200px; height:85%; padding:10px; gap:20px;">
+            <!-- COL 1: EQUIPPED & STATS -->
+            <div style="flex:1; display:flex; flex-direction:column; gap:15px; min-width:250px;">
+                <h3 class="inv-header">LOADOUT</h3>
+                <div id="equip-weapon" class="equip-slot" onclick="game.unequip('weapon')">EMPTY WEAPON</div>
+                <div id="equip-accessory" class="equip-slot" onclick="game.unequip('accessory')">EMPTY ACCESSORY</div>
+
+                <h3 class="inv-header" style="margin-top:auto;">STATS</h3>
+                <div id="equip-stats"
+                    style="color:#ddd; font-size:14px; background:rgba(0,0,0,0.5); padding:10px; border-radius:5px; border:1px solid #333;">
+                    STATS...
+                </div>
+            </div>
+
+            <!-- COL 2: STORAGE GRID -->
+            <div
+                style="flex:1.5; display:flex; flex-direction:column; border-left:1px solid #333; border-right:1px solid #333; padding:0 15px;">
+                <h3 class="inv-header">STORAGE</h3>
+                <div id="inventory-grid"
+                    style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start; overflow-y:auto; height:100%;">
+                </div>
+            </div>
+
+            <!-- COL 3: DETAILS -->
+            <div style="flex:1; display:flex; flex-direction:column; min-width:250px;">
+                <h3 class="inv-header">ITEM DETAILS</h3>
+                <div id="inv-details-panel"
+                    style="flex:1; background:rgba(0,0,0,0.3); border:1px solid #333; padding:20px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                    <div style="color:#666; font-style:italic;">Select an item to view details</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM REWARD/MSG MODAL -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div id="modal-box" class="modal-box">
+            <h2 id="modal-title">TITLE</h2>
+            <div id="modal-content">Content</div>
+            <div id="modal-actions">
+                <button class="btn" id="modal-ok">CONFIRM</button>
+                <button class="btn btn-secondary" id="modal-cancel" style="display:none;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CRATE OPENING ANIMATION OVERLAY -->
+    <div id="crate-overlay" class="modal-overlay" style="background:rgba(0,0,0,0.95); z-index:200;">
+        <div id="crate-box"
+            style="text-align:center; transform:scale(0); transition:transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            <div id="crate-visual" style="font-size:100px; margin-bottom:20px;">📦</div>
+            <div id="crate-light"
+                style="width:10px; height:10px; background:#fff; margin:0 auto; box-shadow:0 0 50px 20px #fff; border-radius:50%; transition:all 0.5s;">
+            </div>
+            <h1 id="crate-title" style="color:#fff; font-size:40px; margin-top:20px; opacity:0; transition:opacity 1s;">
+                ITEM ACQUIRED</h1>
+            <div id="crate-item" style="opacity:0; transition:opacity 1s;"></div>
+            <button class="btn" onclick="game.closeCrate()" style="margin-top:30px; opacity:0;"
+                id="crate-close-btn">COLLECT</button>
+        </div>
     </div>
 
     <div id="gameover-screen" class="screen">
@@ -171,9 +296,11 @@
     <div id="awakening-screen" class="screen">
         <h1 style="color:#ffd700; text-shadow: 0 0 30px #ffd700, 0 0 60px #ff8800;">⚡ AWAKENING ⚡</h1>
         <p style="color:#fff; font-size:18px; max-width:500px; margin:20px auto;">
-            You have reached <span style="color:#ff0055">FLOOR 50</span>. Your neural pathways have evolved beyond their original parameters.
+            You have reached <span style="color:#ff0055">FLOOR 50</span>. Your neural pathways have evolved beyond their
+            original parameters.
         </p>
-        <div style="background:rgba(0,0,0,0.5); border:2px solid #ffd700; padding:20px; margin:20px auto; max-width:400px; border-radius:10px;">
+        <div
+            style="background:rgba(0,0,0,0.5); border:2px solid #ffd700; padding:20px; margin:20px auto; max-width:400px; border-radius:10px;">
             <h3 style="color:#ffd700; margin-bottom:15px;">UNLOCKED ABILITIES:</h3>
             <p style="color:#ff00ff; margin:10px 0;">BREACH: Deal 0.5% of enemy Max HP per hit</p>
             <p style="color:#ffaa00; margin:10px 0;">MOMENTUM: +2% damage per combo hit</p>
@@ -181,12 +308,14 @@
             <p style="color:#00ff00; margin:10px 0;">STAT BOOST: +50% ATK, HP, and Mana</p>
         </div>
         <p style="color:#aaa; font-size:14px;">New shop items are now available!</p>
-        <button class="btn" style="background:linear-gradient(180deg, #ffd700, #ff8800); color:#000;" onclick="game.completeAwakening()">EMBRACE POWER</button>
+        <button class="btn" style="background:linear-gradient(180deg, #ffd700, #ff8800); color:#000;"
+            onclick="game.completeAwakening()">EMBRACE POWER</button>
     </div>
 
     <div id="rebirth-screen" class="screen">
-        <h1 style="color:#ff00ff; text-shadow: 0 0 20px #ff00ff, 0 0 40px #aa00ff; margin-bottom: 10px;">✦ REBIRTH ✦</h1>
-        
+        <h1 style="color:#ff00ff; text-shadow: 0 0 20px #ff00ff, 0 0 40px #aa00ff; margin-bottom: 10px;">✦ REBIRTH ✦
+        </h1>
+
         <p style="color:#fff; font-size:18px; margin:0 auto 15px auto;">
             THE ARCHITECT HAS FALLEN
         </p>
@@ -205,10 +334,12 @@
             gap: 30px;
             box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
         ">
-            
+
             <div style="flex: 1; text-align: left; border-right: 1px solid rgba(255,0,255,0.3); padding-right: 20px;">
-                <h2 style="color:#ff00ff; margin:0 0 10px 0; font-size: 24px;">LVL <span id="rebirth-level" style="color:#fff;">1</span></h2>
-                <p style="color:#00ff00; margin:5px 0; font-size:16px; font-weight:bold;"> +<span id="rebirth-bonus">10000</span> CREDITS</p>
+                <h2 style="color:#ff00ff; margin:0 0 10px 0; font-size: 24px;">LVL <span id="rebirth-level"
+                        style="color:#fff;">1</span></h2>
+                <p style="color:#00ff00; margin:5px 0; font-size:16px; font-weight:bold;"> +<span
+                        id="rebirth-bonus">10000</span> CREDITS</p>
                 <p style="color:#ff5500; margin:5px 0; font-size:15px;">+50% ATK, HP, MANA</p>
                 <p style="color:#ffaa00; margin:5px 0; font-size:15px;">+0.5% Breach Damage</p>
                 <p style="color:#00f2ff; margin:5px 0; font-size:15px;">+1% Combo Multiplier</p>
@@ -241,11 +372,15 @@
         <div id="classes-viewer-container" style="max-width: 1400px; width: 100%;"></div>
     </div> -->
 
-    <div id="classes-screen" class="screen" style="overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-        <button class="btn next-btn" onclick="game.closeClassesViewer()" style="position: absolute; top: 20px; right: 20px; z-index: 10;">CLOSE</button>
-        <h1 style="color: #00f2ff; text-shadow: 0 0 30px #00f2ff; text-align: center; font-size: 48px; margin-bottom: 30px; margin-top: 20px; letter-spacing: 3px;">JOB ADVANCEMENT</h1>
+    <div id="classes-screen" class="screen"
+        style="overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
+        <button class="btn next-btn" onclick="game.closeClassesViewer()"
+            style="position: absolute; top: 20px; right: 20px; z-index: 10;">CLOSE</button>
+        <h1
+            style="color: #00f2ff; text-shadow: 0 0 30px #00f2ff; text-align: center; font-size: 48px; margin-bottom: 30px; margin-top: 20px; letter-spacing: 3px;">
+            JOB ADVANCEMENT</h1>
         <div id="classes-viewer-container" style="max-width: 1400px; width: 100%;"></div>
-        
+
     </div>
 
     <!-- DIALOGUE OVERLAY -->
@@ -265,16 +400,17 @@
 
     <script src="engine.js"></script>
     <script src="game.js"></script>
-    
+
     <script>
         // Auto-start the game if tutorial hasn't been completed
         window.addEventListener('load', () => {
             const tutorialCompleted = localStorage.getItem('tutorialCompleted');
             // Auto-start if tutorial needs to be shown
-            if(!tutorialCompleted) {
+            if (!tutorialCompleted) {
                 setTimeout(() => game.startRun(), 500);
             }
         });
     </script>
 </body>
+
 </html>
