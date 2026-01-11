@@ -57,13 +57,22 @@ const engine = {
     },
 
     // Add this inside the engine object
-    focusCamera(targetPos, offset = { x: 0, y: 2, z: 6 }, duration = 800) {
-        // If targetPos is null, reset to default view
-        const tPos = targetPos ? targetPos : { x: 0, y: 2, z: 0 };
+    focusCamera(targetPos, offset, duration = 800) {
+        // If targetPos is null, reset to the game's default wide view
+        if (!targetPos) {
+            this.cameraTarget = { x: 0, y: 1, z: 0 };
+            this.tween(this.camera.position, 'x', 0, duration);
+            this.tween(this.camera.position, 'y', 5, duration);
+            this.tween(this.camera.position, 'z', 13, duration);
+            return;
+        }
+
+        const tPos = targetPos;
+        const off = offset || { x: 0, y: 2, z: 6 };
         const endPos = {
-            x: tPos.x + offset.x,
-            y: tPos.y + offset.y,
-            z: tPos.z + offset.z
+            x: tPos.x + off.x,
+            y: tPos.y + off.y,
+            z: tPos.z + off.z
         };
 
         this.tween(this.camera.position, 'x', endPos.x, duration);
@@ -249,6 +258,11 @@ const engine = {
                 this.camera.position.set(0, 5, 13);
             }
         }
+
+        // --- CAMERA LOOKAT ---
+        const camTarget = this.cameraTarget || { x: 0, y: 1, z: 0 };
+        this.camera.lookAt(camTarget.x, camTarget.y, camTarget.z);
+
         this.updateParticles();
 
         if (typeof game !== 'undefined' && game.enemy && game.floor >= 100) {

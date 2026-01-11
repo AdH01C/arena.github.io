@@ -189,81 +189,81 @@ const CLASS_TREES = {
         // 0-9: BASE - Balanced Speed
         {
             name: "CYBER-RONIN", desc: "Tier 1: Basics", skills: [
-                { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash', hits: 1 },
-                { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1 },
-                { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 8, color: 0xaa00ff, desc: "+15% Crit" }
+                { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash', hits: 1, desc: "A quick, surgical strike with a mono-molecular blade." },
+                { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1, desc: "Focus all energy into a single, devastating core-splitter." },
+                { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 8, color: 0xaa00ff, desc: "Sharpen your intent, increasing critical strike chance by 15%." }
             ]
         },
         // 10-19
         {
             name: "VOID-STALKER", desc: "Tier 2: Speed", skills: [
-                { name: "PHANTOM CUT", cost: 0, mult: 0.6, color: 0x9900ff, vfx: 'multi', hits: 3 }, // Total: 1.8x
-                { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1 },
-                { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 8, color: 0x9900ff, desc: "+25% Dodge" }
+                { name: "PHANTOM CUT", cost: 0, mult: 0.6, color: 0x9900ff, vfx: 'multi', hits: 3, desc: "Triple-strike from the shadows before the enemy can blink." },
+                { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A lethal thrust aimed at the target's weakest logic gate." },
+                { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 8, color: 0x9900ff, desc: "Bend light around your chassis to gain 25% dodge chance." }
             ]
         },
         // 20-29
         {
             name: "TIME-SLAYER", desc: "Tier 3: Multi-Hit", skills: [
-                { name: "DIMENSION REND", cost: 0, mult: 0.45, color: 0xffffff, vfx: 'slash', hits: 5 }, // Total: 2.25x
-                { name: "OMNI-SLASH", cost: 60, mult: 0.8, color: 0xaa00ff, vfx: 'omni', hits: 8 }, // Total: 6.4x
-                { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 8, color: 0xffffff, desc: "+30% Double Strike" }
+                { name: "DIMENSION REND", cost: 0, mult: 0.45, color: 0xffffff, vfx: 'slash', hits: 5, desc: "A flurry of cuts that tear through the local fabric of reality." },
+                { name: "OMNI-SLASH", cost: 60, mult: 0.8, color: 0xaa00ff, vfx: 'omni', hits: 8, desc: "Unleash a whirlwind of steel, striking from every angle at once." },
+                { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 8, color: 0xffffff, desc: "Overclock your neural link for 30% double strike chance." }
             ]
         },
         // 30-39
         {
             name: "SHADOW-LORD", desc: "Tier 4: Dark Arts", skills: [
-                { name: "NIGHTFALL", cost: 0, mult: 0.4, color: 0x330033, vfx: 'implode', hits: 7 }, // Total: 2.8x
-                { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1 },
-                { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 8, color: 0x550055, desc: "+20% Lifesteal" }
+                { name: "NIGHTFALL", cost: 0, mult: 0.4, color: 0x330033, vfx: 'implode', hits: 7, desc: "Cover the field in data-shrouding darkness, striking repeatedly." },
+                { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1, desc: "Heavy-impact blow that designates the target for immediate deletion." },
+                { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 8, color: 0x550055, desc: "Engage a hunger protocol to gain 20% lifesteal." }
             ]
         },
         // 40-49
         {
             name: "BLOOD-LETTER", desc: "Tier 5: Lifesteal", skills: [
-                { name: "HEMORRHAGE", cost: 0, mult: 0.35, color: 0xff0000, vfx: 'multi', hits: 9 }, // Total: 3.15x
-                { name: "VAMPIRISM", cost: 100, mult: 2.5, color: 0xaa0000, vfx: 'implode', hits: 4, heal: 200 },
-                { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 30, duration: 8, color: 0xff0000, desc: "+30 ATK" }
+                { name: "HEMORRHAGE", cost: 0, mult: 0.35, color: 0xff0000, vfx: 'multi', hits: 9, desc: "Jagged cuts that cause critical integrity leaks across 9 strikes." },
+                { name: "VAMPIRISM", cost: 100, mult: 2.5, color: 0xaa0000, vfx: 'implode', hits: 4, healPercent: 0.20, desc: "Drain enemy essence to repair 20% HP while dealing damage." },
+                { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 0.30, duration: 8, color: 0xff0000, desc: "Channel the heat of battle into 30% more pure ATK." }
             ]
         },
         // 50-59
         {
             name: "ETHER-BLADE", desc: "Tier 6: Magic Dmg", skills: [
-                { name: "SPIRIT SLASH", cost: 0, mult: 0.3, color: 0x00ffff, vfx: 'beam', hits: 12 }, // Total: 3.6x
-                { name: "SOUL REND", cost: 120, mult: 12.0, color: 0x00aaff, vfx: 'crit', hits: 1 },
-                { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 8, color: 0x00ffff, desc: "+40% Dodge" }
+                { name: "SPIRIT SLASH", cost: 0, mult: 0.3, color: 0x00ffff, vfx: 'beam', hits: 12, desc: "Phased blade strikes that ignore physical shielding entirely." },
+                { name: "SOUL REND", cost: 120, mult: 12.0, color: 0x00aaff, vfx: 'crit', hits: 1, desc: "A powerful strike that tears into the target's operating essence." },
+                { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 8, color: 0x00ffff, desc: "Phase out of standard dimensions for a massive 40% dodge bonus." }
             ]
         },
         // 60-69
         {
             name: "VOID-WALKER", desc: "Tier 7: Black Holes", skills: [
-                { name: "GRAVITY WELL", cost: 0, mult: 0.25, color: 0x111111, vfx: 'implode', hits: 15 }, // Total: 3.75x
-                { name: "EVENT HORIZON", cost: 150, mult: 15.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 8, color: 0x111111, desc: "+50% Crit DMG" }
+                { name: "GRAVITY WELL", cost: 0, mult: 0.25, color: 0x111111, vfx: 'implode', hits: 15, desc: "Compress space-time into a vortex of 15 crushing slashes." },
+                { name: "EVENT HORIZON", cost: 150, mult: 15.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "A singular strike that swallows all light and hope." },
+                { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 8, color: 0x111111, desc: "Empower your blade with the void, increasing Crit DMG by 50%." }
             ]
         },
         // 70-79
         {
             name: "FLASH-STEP", desc: "Tier 8: Velocity", skills: [
-                { name: "MACH SLASH", cost: 0, mult: 0.22, color: 0xffff00, vfx: 'omni', hits: 20 }, // Total: 4.4x
-                { name: "LIGHTSPEED", cost: 180, mult: 20.0, color: 0xffffff, vfx: 'beam', hits: 1 },
-                { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 8, color: 0xffff00, desc: "+50% Double Strike" }
+                { name: "MACH SLASH", cost: 0, mult: 0.22, color: 0xffff00, vfx: 'omni', hits: 20, desc: "Strike at speeds that ignite the very air around your blade." },
+                { name: "LIGHTSPEED", cost: 180, mult: 20.0, color: 0xffffff, vfx: 'beam', hits: 1, desc: "A single, blinding beam of kinetic energy delivered in an instant." },
+                { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 8, color: 0xffff00, desc: "Overclock your actuators for 50% double strike probability." }
             ]
         },
         // 80-89
         {
             name: "REALITY-BREAKER", desc: "Tier 9: Glitch", skills: [
-                { name: "GLITCH CUT", cost: 0, mult: 0.2, color: 0x00ff00, vfx: 'matrix', hits: 25 }, // Total: 5.0x
-                { name: "SYSTEM PURGE", cost: 220, mult: 2.5, color: 0x00ff00, vfx: 'matrix', hits: 10 },
-                { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 8, color: 0x00ff00, desc: "+30% Crit" }
+                { name: "GLITCH CUT", cost: 0, mult: 0.2, color: 0x00ff00, vfx: 'matrix', hits: 25, desc: "A stuttering, unpredictable series of cuts that bypass firewalls." },
+                { name: "SYSTEM PURGE", cost: 220, mult: 2.5, color: 0x00ff00, vfx: 'matrix', hits: 10, desc: "Execute a high-frequency protocol to cleanse the target from reality." },
+                { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 8, color: 0x00ff00, desc: "Distort local space to find impossible openings, +30% Crit." }
             ]
         },
         // 90+
         {
             name: "SINGULARITY", desc: "Tier 10: Cosmic", skills: [
-                { name: "BIG BANG", cost: 0, mult: 0.18, color: 0xffffff, vfx: 'blackhole', hits: 35 }, // Total: 6.3x
-                { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 8, color: 0xffd700, desc: "+25% All Offense" }
+                { name: "BIG BANG", cost: 0, mult: 0.18, color: 0xffffff, vfx: 'blackhole', hits: 35, desc: "A localized explosion of reality-shattering cosmic slashes." },
+                { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "The final strike. A total collapse of all chronological variables." },
+                { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 8, color: 0xffd700, desc: "Enter a state of infinite momentum, +25% to all offensive stats." }
             ]
         }
     ],
@@ -272,81 +272,81 @@ const CLASS_TREES = {
         // 0-9: Low Hit Count / High Utility
         {
             name: "TECH-PRIEST", desc: "Tier 1: Basics", skills: [
-                { name: "ZAP", cost: 0, mult: 0.8, color: 0xffff00, vfx: 'zap', hits: 1, manaGain: 8 },
-                { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', hits: 1, heal: 30 },
-                { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 20, duration: 8, color: 0x00ff00, desc: "Heal 20 HP/Turn" }
+                { name: "ZAP", cost: 0, mult: 0.8, color: 0xffff00, vfx: 'zap', hits: 1, manaGain: 8, desc: "A quick discharge of static energy that jumpstarts your mana reserves." },
+                { name: "SMITE", cost: 30, mult: 2.0, color: 0x00f2ff, vfx: 'beam', hits: 1, healPercent: 0.15, desc: "Call down a column of purifying light to punish systems and heal 15% HP." },
+                { name: "BLESSING", cost: 15, isBuff: true, buffType: 'regen', buffVal: 0.05, duration: 8, color: 0x00ff00, desc: "Surround yourself with a field of restorative nano-drones (5% HP/Turn)." }
             ]
         },
         // 10-19
         {
             name: "CYBER-BISHOP", desc: "Tier 2: Holy", skills: [
-                { name: "SIPHON", cost: 0, mult: 0.5, color: 0xffffaa, vfx: 'drain', hits: 2, manaGain: 15 },
-                { name: "HOLY NOVA", cost: 50, mult: 1.0, color: 0x00ffff, vfx: 'nova', hits: 3, heal: 50 },
-                { name: "SANCTUARY", cost: 25, isBuff: true, buffType: 'shield', buffVal: 50, duration: 8, color: 0x00ffff, desc: "+50 Shield" }
+                { name: "SIPHON", cost: 0, mult: 0.5, color: 0xffffaa, vfx: 'drain', hits: 2, manaGain: 15, desc: "Drain the target's data packets to quickly replenish your own energy." },
+                { name: "HOLY NOVA", cost: 50, mult: 1.0, color: 0x00ffff, vfx: 'nova', hits: 3, healPercent: 0.25, desc: "A radiant burst that disrupts enemy systems while mending 25% HP." },
+                { name: "SANCTUARY", cost: 25, isBuff: true, buffType: 'shield', buffVal: 0.25, duration: 8, color: 0x00ffff, desc: "Project a holy shield that absorbs 25% of Max HP as damage." }
             ]
         },
         // 20-29
         {
             name: "DEUS-EX", desc: "Tier 3: Machine", skills: [
-                { name: "DATA DRAIN", cost: 0, mult: 0.4, color: 0x00ff00, vfx: 'matrix', hits: 3, manaGain: 25 },
-                { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', hits: 1, heal: 100 },
-                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 15, duration: 8, color: 0x00ff00, desc: "+15 Armor" }
+                { name: "DATA DRAIN", cost: 0, mult: 0.4, color: 0x00ff00, vfx: 'matrix', hits: 3, manaGain: 25, desc: "Aggressively extract metadata from the enemy to fuel high-tier scripts." },
+                { name: "REBOOT", cost: 80, mult: 5.0, color: 0x00ffaa, vfx: 'nova', hits: 1, healPercent: 0.50, desc: "Execute a full-system refresh, clearing errors and restoring 50% HP." },
+                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'armor', buffVal: 0.15, duration: 8, color: 0x00ff00, desc: "Update your defensive protocols to grant +15% Armor." }
             ]
         },
         // 30-39
         {
             name: "ANGEL-MK1", desc: "Tier 4: Flight", skills: [
-                { name: "LASER WING", cost: 0, mult: 0.35, color: 0xffffff, vfx: 'beam', hits: 4, manaGain: 30 },
-                { name: "HEAVENLY RAY", cost: 100, mult: 2.0, color: 0xffffdd, vfx: 'god_beam', hits: 4, heal: 150 },
-                { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 50, duration: 8, color: 0xffffff, desc: "Heal 50 HP/Turn" }
+                { name: "LASER WING", cost: 0, mult: 0.35, color: 0xffffff, vfx: 'beam', hits: 4, manaGain: 30, desc: "Unfurl wings of coherent light that draw power from the enviroment." },
+                { name: "HEAVENLY RAY", cost: 100, mult: 2.0, color: 0xffffdd, vfx: 'god_beam', hits: 4, healPercent: 0.40, desc: "A concentrated beam of divine power that burns the unholy and heals 40% HP." },
+                { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 0.10, duration: 8, color: 0xffffff, desc: "Invoke a higher-tier maintenance routine for 10% HP regen per turn." }
             ]
         },
         // 40-49
         {
             name: "ORACLE", desc: "Tier 5: Sight", skills: [
-                { name: "PREDICTION", cost: 0, mult: 0.3, color: 0xaa00ff, vfx: 'zap', hits: 5, manaGain: 40 },
-                { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', hits: 1, heal: 200 },
-                { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 8, color: 0xaa00ff, desc: "+35% Dodge" }
+                { name: "PREDICTION", cost: 0, mult: 0.3, color: 0xaa00ff, vfx: 'zap', hits: 5, manaGain: 40, desc: "Process combat variables in advance, striking precisely to optimize mana gain." },
+                { name: "FATE SEAL", cost: 120, mult: 10.0, color: 0xdd00ff, vfx: 'implode', hits: 1, healPercent: 0.60, desc: "Imprint a terminal command upon the target, using the feedback to repair 60% HP." },
+                { name: "FORESIGHT", cost: 40, isBuff: true, buffType: 'dodge', buffVal: 0.35, duration: 8, color: 0xaa00ff, desc: "Predict enemy movements with 35% accuracy for effortless dodging." }
             ]
         },
         // 50-59
         {
             name: "HIGH-TEMPLAR", desc: "Tier 6: Storm", skills: [
-                { name: "PSIONIC STORM", cost: 0, mult: 0.25, color: 0x0000ff, vfx: 'rain', hits: 6, manaGain: 10 },
-                { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', hits: 1, heal: 250 },
-                { name: "PSI SHIELD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 100, duration: 8, color: 0x0000ff, desc: "+100 Shield" }
+                { name: "PSIONIC STORM", cost: 0, mult: 0.25, color: 0x0000ff, vfx: 'rain', hits: 6, manaGain: 10, desc: "Unleash a chaotic torrent of mental energy to harvest mana." },
+                { name: "FEEDBACK", cost: 150, mult: 12.0, color: 0x00aaff, vfx: 'nova', hits: 1, healPercent: 0.80, desc: "Reverse the target's logic against them, using the heat to heal 80% HP." },
+                { name: "PSI SHIELD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 100, duration: 8, color: 0x0000ff, desc: "Shape raw psionic energy into a field that absorbs 100 damage." }
             ]
         },
         // 60-69
         {
             name: "SERAPHIM", desc: "Tier 7: Fire", skills: [
-                { name: "HOLY FIRE", cost: 0, mult: 0.2, color: 0xffaa00, vfx: 'beam', hits: 8, manaGain: 50 },
-                { name: "PURGATORY", cost: 180, mult: 3.0, color: 0xff5500, vfx: 'nuke', hits: 5, heal: 300 },
-                { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 8, color: 0xffaa00, desc: "+30% Thorns" }
+                { name: "HOLY FIRE", cost: 0, mult: 0.2, color: 0xffaa00, vfx: 'beam', hits: 8, manaGain: 50, desc: "Purge the digital realm with sacred flames that fuel your mana capacitor." },
+                { name: "PURGATORY", cost: 180, mult: 3.0, color: 0xff5500, vfx: 'nuke', hits: 5, healPercent: 1.0, desc: "An area-of-effect blast that cleanses the field and repairs 100% HP." },
+                { name: "WINGS OF LIGHT", cost: 50, isBuff: true, buffType: 'thorns', buffVal: 0.30, duration: 8, color: 0xffaa00, desc: "Harden your light-wings to reflect 30% of incoming damage." }
             ]
         },
         // 70-79
         {
             name: "ARCHON", desc: "Tier 8: Power", skills: [
-                { name: "POWER OVERWHELM", cost: 0, mult: 0.18, color: 0x00f2ff, vfx: 'omni', hits: 10, manaGain: 60 },
-                { name: "ARCHON BEAM", cost: 220, mult: 2.0, color: 0x00f2ff, vfx: 'god_beam', hits: 10, heal: 400 },
-                { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 8, color: 0x00f2ff, desc: "+25% All Defense" }
+                { name: "POWER OVERWHELM", cost: 0, mult: 0.18, color: 0x00f2ff, vfx: 'omni', hits: 10, manaGain: 60, desc: "Push your psionic output to the limit, striking 10 times in one blast." },
+                { name: "ARCHON BEAM", cost: 220, mult: 2.0, color: 0x00f2ff, vfx: 'god_beam', hits: 10, healPercent: 1.5, desc: "Ascend to a state of pure energy, dealing massive damage and healing 150% HP." },
+                { name: "TRANSCENDENCE", cost: 55, isBuff: true, buffType: 'all_defense', buffVal: 0.25, duration: 8, color: 0x00f2ff, desc: "Reach theoretical perfection, boosting all defensive stats by 25%." }
             ]
         },
         // 80-89
         {
             name: "SOURCE-CODE", desc: "Tier 9: Admin", skills: [
-                { name: "REWRITE", cost: 0, mult: 0.15, color: 0x00ff00, vfx: 'matrix', hits: 12, manaGain: 100 },
-                { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', hits: 1, heal: 500 },
-                { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 150, duration: 8, color: 0x00ff00, desc: "Heal 150 HP/Turn" }
+                { name: "REWRITE", cost: 0, mult: 0.15, color: 0x00ff00, vfx: 'matrix', hits: 12, manaGain: 100, desc: "Directly modify the target's code in real-time for massive mana gain." },
+                { name: "DELETE", cost: 250, mult: 30.0, color: 0xff0000, vfx: 'blackhole', hits: 1, healPercent: 2.0, desc: "Issue a terminal DELETE command. Irreversible, devastating, and repairs 200% HP." },
+                { name: "SUDO HEAL", cost: 60, isBuff: true, buffType: 'regen', buffVal: 0.20, duration: 8, color: 0x00ff00, desc: "Override all system safety limits for a permanent 20% HP/Turn regen." }
             ]
         },
         // 90+
         {
             name: "DIGITAL-GOD", desc: "Tier 10: Omni", skills: [
-                { name: "CREATION", cost: 0, mult: 0.4, color: 0xffffff, vfx: 'god_beam', hits: 15, manaGain: 999 }, // High damage sustained beam
-                { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', hits: 1, heal: 9999 },
-                { name: "IMMORTALITY", cost: 100, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0xffd700, desc: "Invincible 2 turns" }
+                { name: "CREATION", cost: 0, mult: 0.4, color: 0xffffff, vfx: 'god_beam', hits: 15, manaGain: 999, desc: "Manifest reality from the void, gaining infinite energy from the process." },
+                { name: "RAPTURE", cost: 400, mult: 60.0, color: 0xffd700, vfx: 'nova', hits: 1, healPercent: 10.0, desc: "The ultimate transcendence. A total system purge and 1000% HP restoration." },
+                { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 5.0, duration: 8, color: 0xffffff, desc: "Transcend the concept of damage to absorb 500% Max HP worth of integrity." }
             ]
         }
     ],
@@ -355,81 +355,81 @@ const CLASS_TREES = {
         // 0-9: High Hit Count Specialist
         {
             name: "HEAVY-MECH", desc: "Tier 1: Basics", skills: [
-                { name: "GATLING", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'gatling', hits: 3 },
-                { name: "MISSILE", cost: 30, mult: 3.0, color: 0xff5500, vfx: 'explode', hits: 1 },
-                { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 10, duration: 8, color: 0xaaaaaa, desc: "+10 Armor" }
+                { name: "GATLING", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'gatling', hits: 3, desc: "A rapid-fire barrage from a tri-barrel heavy machine gun." },
+                { name: "MISSILE", cost: 30, mult: 3.0, color: 0xff5500, vfx: 'explode', hits: 1, desc: "Launch a heat-seeking high-explosive warhead for massive singular impact." },
+                { name: "IRON WALL", cost: 20, isBuff: true, buffType: 'armor', buffVal: 0.15, duration: 8, color: 0xaaaaaa, desc: "Reinforce your outer plating with +15% Armor." }
             ]
         },
         // 10-19
         {
             name: "WAR-TITAN", desc: "Tier 2: Dakka", skills: [
-                { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6 }, // Total 1.2x
-                { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1 },
-                { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 20, duration: 8, color: 0xff9900, desc: "+20 ATK" }
+                { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6, desc: "Spin up dual-rotary cannons for a relentless hail of lead." },
+                { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1, desc: "Deploy a tactical nuclear device for localized catastrophic damage." },
+                { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 0.25, duration: 8, color: 0xff9900, desc: "Sacrifice mobility to reroute all power to weapon systems (+25% ATK)." }
             ]
         },
         // 20-29
         {
             name: "APOCALYPSE", desc: "Tier 3: Barrage", skills: [
-                { name: "BULLET HELL", cost: 0, mult: 0.15, color: 0xffaa00, vfx: 'gatling', hits: 12 }, // Total 1.8x
-                { name: "BUNKER BUSTER", cost: 80, mult: 7.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 15, duration: 8, color: 0xffaa00, desc: "+15 Mana Regen" }
+                { name: "BULLET HELL", cost: 0, mult: 0.15, color: 0xffaa00, vfx: 'gatling', hits: 12, desc: "An overwhelming curtain of fire that leaves no room for evasion." },
+                { name: "BUNKER BUSTER", cost: 80, mult: 7.0, color: 0xff0000, vfx: 'nuke', hits: 1, desc: "A heavy, armor-piercing shell designed to penetrate the thickest hulls." },
+                { name: "AMMO FEED", cost: 30, isBuff: true, buffType: 'manaRegen', buffVal: 0.30, duration: 8, color: 0xffaa00, desc: "Optimize ammunition supply lines to boost Mana Regen by 30%." }
             ]
         },
         // 30-39
         {
             name: "ARTILLERY", desc: "Tier 4: Long Range", skills: [
-                { name: "HOWITZER", cost: 0, mult: 2.0, color: 0xaa5500, vfx: 'heavy', hits: 1 }, // Slow heavy hitter option
-                { name: "CARPET BOMB", cost: 100, mult: 0.5, color: 0xff5500, vfx: 'rain', hits: 20 }, // High hit Nuke
-                { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 25, duration: 8, color: 0xaa5500, desc: "+25 Armor" }
+                { name: "HOWITZER", cost: 0, mult: 2.0, color: 0xaa5500, vfx: 'heavy', hits: 1, desc: "Fire a massive, long-range shell with enough force to shatter skyscrapers." },
+                { name: "CARPET BOMB", cost: 100, mult: 0.5, color: 0xff5500, vfx: 'rain', hits: 20, desc: "Blanket the area in 20 high-explosive sub-munitions." },
+                { name: "ENTRENCH", cost: 35, isBuff: true, buffType: 'armor', buffVal: 0.40, duration: 8, color: 0xaa5500, desc: "Deploy stabilizers to lock your chassis and gain +40% Armor." }
             ]
         },
         // 40-49
         {
             name: "LASER-CORE", desc: "Tier 5: Energy", skills: [
-                { name: "PULSE RIFLE", cost: 0, mult: 0.12, color: 0x00f2ff, vfx: 'beam', hits: 25 }, // Total 3.0x
-                { name: "ION CANNON", cost: 120, mult: 12.0, color: 0x00ffff, vfx: 'god_beam', hits: 1 },
-                { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 8, color: 0x00f2ff, desc: "+40% Crit DMG" }
+                { name: "PULSE RIFLE", cost: 0, mult: 0.12, color: 0x00f2ff, vfx: 'beam', hits: 25, desc: "A high-frequency energy weapon that fires 25 rapid-response pulses." },
+                { name: "ION CANNON", cost: 120, mult: 12.0, color: 0x00ffff, vfx: 'god_beam', hits: 1, desc: "Charge a massive ion beam that disrupts molecular bonds on impact." },
+                { name: "POWER CORE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.40, duration: 8, color: 0x00f2ff, desc: "Overclock your internal reactor to supercharge Crit DMG by 40%." }
             ]
         },
         // 50-59
         {
             name: "FORTRESS", desc: "Tier 6: Defense", skills: [
-                { name: "FLAK", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'explode', hits: 35 }, // Total 3.5x
-                { name: "DOOMSDAY", cost: 150, mult: 15.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "BUNKER", cost: 45, isBuff: true, buffType: 'shield', buffVal: 150, duration: 8, color: 0xffff00, desc: "+150 Shield" }
+                { name: "FLAK", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'explode', hits: 35, desc: "Explosive anti-matter shells that fill the air with lethal shrapnel." },
+                { name: "DOOMSDAY", cost: 150, mult: 15.0, color: 0xff0000, vfx: 'nuke', hits: 1, desc: "Initiate a terminal countdown for a truly apocalyptic explosion." },
+                { name: "BUNKER", cost: 45, isBuff: true, buffType: 'shield', buffVal: 0.50, duration: 8, color: 0xffff00, desc: "Deploy a heavy-duty energy field capable of absorbing 50% Max HP as damage." }
             ]
         },
         // 60-69
         {
             name: "GUNDAM-X", desc: "Tier 7: Mobile", skills: [
-                { name: "BEAM SABER", cost: 0, mult: 1.0, color: 0xff00ff, vfx: 'slash', hits: 4 },
-                { name: "FULL BURST", cost: 180, mult: 0.08, color: 0x00ff00, vfx: 'omni', hits: 50 }, // Total 4.0x
-                { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 8, color: 0xff00ff, desc: "+20% All Offense" }
+                { name: "BEAM SABER", cost: 0, mult: 1.0, color: 0xff00ff, vfx: 'slash', hits: 4, desc: "Unsheathe a plasma-edged blade for close-quarters mobile combat." },
+                { name: "FULL BURST", cost: 180, mult: 0.08, color: 0x00ff00, vfx: 'omni', hits: 50, desc: "Simultaneously fire all 50 weapon systems in a mobile barrage." },
+                { name: "TRANS-AM", cost: 50, isBuff: true, buffType: 'all_offense', buffVal: 0.20, duration: 8, color: 0xff00ff, desc: "Push propulsion systems into a red-line state, +20% All Offense." }
             ]
         },
         // 70-79
         {
             name: "DREADNOUGHT", desc: "Tier 8: Space", skills: [
-                { name: "MACRO CANNON", cost: 0, mult: 1.5, color: 0xaaaaff, vfx: 'heavy', hits: 3 },
-                { name: "EXTERMINATUS", cost: 220, mult: 0.4, color: 0xffaa00, vfx: 'rain', hits: 60 }, // Total 24x (Powerful Nuke)
-                { name: "VOID SHIELDS", cost: 55, isBuff: true, buffType: 'shield', buffVal: 250, duration: 8, color: 0xaaaaff, desc: "+250 Shield" }
+                { name: "MACRO CANNON", cost: 0, mult: 1.5, color: 0xaaaaff, vfx: 'heavy', hits: 3, desc: "Fire ship-grade magnetic slugs for heavy kinetic impacts." },
+                { name: "EXTERMINATUS", cost: 220, mult: 0.4, color: 0xffaa00, vfx: 'rain', hits: 60, desc: "Call down a 60-strike saturation bombardment from orbital platforms." },
+                { name: "VOID SHIELDS", cost: 55, isBuff: true, buffType: 'shield', buffVal: 1.0, duration: 8, color: 0xaaaaff, desc: "Layer your chassis in ripples of space-time to absorb 100% Max HP as damage." }
             ]
         },
         // 80-89
         {
             name: "WORLD-EATER", desc: "Tier 9: Planetary", skills: [
-                { name: "CRUST CRACK", cost: 0, mult: 0.07, color: 0xff5500, vfx: 'implode', hits: 75 }, // Total 5.25x
-                { name: "CORE DETONATE", cost: 260, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 100, duration: 8, color: 0xff5500, desc: "+100 ATK" }
+                { name: "CRUST CRACK", cost: 0, mult: 0.07, color: 0xff5500, vfx: 'implode', hits: 75, desc: "Use high-frequency sonic resonance to shatter the target's hull." },
+                { name: "CORE DETONATE", cost: 260, mult: 40.0, color: 0xff0000, vfx: 'nuke', hits: 1, desc: "Infiltrate the target's drive core and force a catastrophic meltdown." },
+                { name: "TITAN MIGHT", cost: 60, isBuff: true, buffType: 'atk', buffVal: 1.0, duration: 8, color: 0xff5500, desc: "Channel the reactor's full output into physical striking force (+100% ATK)." }
             ]
         },
         // 90+
         {
             name: "ANNIHILATOR", desc: "Tier 10: Universal", skills: [
-                { name: "ZERO POINT", cost: 0, mult: 0.06, color: 0xffffff, vfx: 'gatling', hits: 100 }, // Total 6.0x
-                { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
-                { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 8, color: 0xffd700, desc: "+50% All Offense" }
+                { name: "ZERO POINT", cost: 0, mult: 0.06, color: 0xffffff, vfx: 'gatling', hits: 100, desc: "Tap into vacuum energy for 100 hits of pure, infinite power." },
+                { name: "SUPERNOVA", cost: 400, mult: 80.0, color: 0xffaa00, vfx: 'nuke', hits: 1, desc: "The absolute limit of energy output. A solar-level annihilation blast." },
+                { name: "OMEGA PROTOCOL", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.50, duration: 8, color: 0xffd700, desc: "Disable all safety limiters to achieve 50% more offensive power." }
             ]
         }
     ],
@@ -438,81 +438,81 @@ const CLASS_TREES = {
         // 0-9: Quick Hits
         {
             name: "SHADE", desc: "Tier 1: Stealth", skills: [
-                { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash', hits: 1 },
-                { name: "POISON BLADE", cost: 25, mult: 0.5, color: 0x00ff00, vfx: 'multi', hits: 4 },
-                { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 8, color: 0x220033, desc: "+30% Dodge" }
+                { name: "BACKSTAB", cost: 0, mult: 1.2, color: 0x220033, vfx: 'slash', hits: 1, desc: "Strike from the dark with a high-torque serrated combat knife." },
+                { name: "POISON BLADE", cost: 25, mult: 0.5, color: 0x00ff00, vfx: 'multi', hits: 4, desc: "A series of quick nicks that deliver concentrated neurotoxin." },
+                { name: "VANISH", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 8, color: 0x220033, desc: "Hard-reset enemy sensors to gain a massive 30% dodge bonus." }
             ]
         },
         // 10-19
         {
             name: "VENOM-WEAVER", desc: "Tier 2: Toxins", skills: [
-                { name: "TOXIC SLASH", cost: 0, mult: 0.3, color: 0x00aa00, vfx: 'multi', hits: 5 }, // Total 1.5x
-                { name: "VENOM BURST", cost: 45, mult: 4.5, color: 0x00ff00, vfx: 'implode', hits: 1 },
-                { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 8, color: 0x00ff00, desc: "+20% Crit" }
+                { name: "TOXIC SLASH", cost: 0, mult: 0.3, color: 0x00aa00, vfx: 'multi', hits: 5, desc: "Five precise cuts that leave a lingering trail of caustic logic." },
+                { name: "VENOM BURST", cost: 45, mult: 4.5, color: 0x00ff00, vfx: 'implode', hits: 1, desc: "Detonate the toxins in the target's system for total integrity failure." },
+                { name: "NEUROTOXIN", cost: 25, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 8, color: 0x00ff00, desc: "Infect the target's neural link to increase Crit Chance by 20%." }
             ]
         },
         // 20-29
         {
             name: "PHANTOM", desc: "Tier 3: Intangible", skills: [
-                { name: "PHASE STRIKE", cost: 0, mult: 0.25, color: 0x8800aa, vfx: 'slash', hits: 7 }, // Total 1.75x
-                { name: "SOUL DRAIN", cost: 55, mult: 2.5, color: 0xaa00ff, vfx: 'implode', hits: 2, heal: 80 },
-                { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x8800aa, desc: "Invincible 1 turn" }
+                { name: "PHASE STRIKE", cost: 0, mult: 0.25, color: 0x8800aa, vfx: 'slash', hits: 7, desc: "Rapidly shift in and out of phase, striking 7 times from ethereal angles." },
+                { name: "SOUL DRAIN", cost: 55, mult: 2.5, color: 0xaa00ff, vfx: 'implode', hits: 2, healPercent: 0.15, desc: "Phased strikes that extract 15% Max HP worth of restorative data." },
+                { name: "PHASE SHIFT", cost: 30, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x8800aa, desc: "Desynchronize from reality, becoming untouchable for 1 turn." }
             ]
         },
         // 30-39
         {
             name: "DEATH-DEALER", desc: "Tier 4: Execute", skills: [
-                { name: "MARKED DEATH", cost: 0, mult: 0.22, color: 0x440044, vfx: 'crit', hits: 10 }, // Total 2.2x
-                { name: "EXECUTE ORDER", cost: 75, mult: 8.0, color: 0xff0044, vfx: 'heavy', hits: 1 },
-                { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 8, color: 0xff0044, desc: "+50% Crit DMG" }
+                { name: "MARKED DEATH", cost: 0, mult: 0.22, color: 0x440044, vfx: 'crit', hits: 10, desc: "Execute a 10-hit sequence aimed at terminal vulnerabilities." },
+                { name: "EXECUTE ORDER", cost: 75, mult: 8.0, color: 0xff0044, vfx: 'heavy', hits: 1, desc: "A heavy final strike that executes the target's deletion process." },
+                { name: "DEATH MARK", cost: 35, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 8, color: 0xff0044, desc: "Mark the target for destruction, increasing Crit DMG by 50%." }
             ]
         },
         // 40-49
         {
             name: "NIGHTMARE", desc: "Tier 5: Fear", skills: [
-                { name: "TERROR", cost: 0, mult: 0.2, color: 0x110011, vfx: 'implode', hits: 12 }, // Total 2.4x
-                { name: "NIGHT TERROR", cost: 90, mult: 3.0, color: 0x330033, vfx: 'blackhole', hits: 3 },
-                { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 8, color: 0x330033, desc: "+25% Lifesteal" }
+                { name: "TERROR", cost: 0, mult: 0.2, color: 0x110011, vfx: 'implode', hits: 12, desc: "Induce system-wide failure through subsonic dread frequencies." },
+                { name: "NIGHT TERROR", cost: 90, mult: 3.0, color: 0x330033, vfx: 'blackhole', hits: 3, desc: "Manifest the target's worst digital nightmares across 3 haunting hits." },
+                { name: "FEAR AURA", cost: 40, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 8, color: 0x330033, desc: "Feed on the target's frantic logic to gain 25% lifesteal." }
             ]
         },
         // 50-59
         {
             name: "GRIM-REAPER", desc: "Tier 6: Death", skills: [
-                { name: "SCYTHE SWEEP", cost: 0, mult: 0.18, color: 0x000000, vfx: 'slash', hits: 15 }, // Total 2.7x
-                { name: "REAP SOULS", cost: 110, mult: 2.0, color: 0x440044, vfx: 'implode', hits: 5, heal: 150 },
-                { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 8, color: 0x000000, desc: "+35% Crit" }
+                { name: "SCYTHE SWEEP", cost: 0, mult: 0.18, color: 0x000000, vfx: 'slash', hits: 15, desc: "A wide arc that reaps the integrity of anything in its path." },
+                { name: "REAP SOULS", cost: 110, mult: 2.0, color: 0x440044, vfx: 'implode', hits: 5, healPercent: 0.25, desc: "A terminal sequence that harvests 25% Max HP worth of essence." },
+                { name: "DEATH'S DOOR", cost: 45, isBuff: true, buffType: 'crit', buffVal: 0.35, duration: 8, color: 0x000000, desc: "Stare into the abyss to find 35% more critical opportunities." }
             ]
         },
         // 60-69
         {
             name: "WRAITH-LORD", desc: "Tier 7: Ethereal", skills: [
-                { name: "SPECTRAL BLADES", cost: 0, mult: 0.16, color: 0x6600aa, vfx: 'omni', hits: 20 }, // Total 3.2x
-                { name: "SOUL SHATTER", cost: 140, mult: 12.0, color: 0xaa00ff, vfx: 'blackhole', hits: 1 },
-                { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x6600aa, desc: "Invincible 2 turns" }
+                { name: "SPECTRAL BLADES", cost: 0, mult: 0.16, color: 0x6600aa, vfx: 'omni', hits: 20, desc: "20 strikes from a plane that bypasses all physical armor." },
+                { name: "SOUL SHATTER", cost: 140, mult: 12.0, color: 0xaa00ff, vfx: 'blackhole', hits: 1, desc: "A crushing blow that disintegrates the target's core system." },
+                { name: "WRAITH FORM", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x6600aa, desc: "Ascend to a fully ethereal state, gaining invincibility for 2 turns." }
             ]
         },
         // 70-79
         {
             name: "VOID-FANG", desc: "Tier 8: Void", skills: [
-                { name: "VOID FANGS", cost: 0, mult: 0.15, color: 0x220022, vfx: 'multi', hits: 25 }, // Total 3.75x
-                { name: "ANNIHILATE", cost: 170, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 8, color: 0x220022, desc: "+25% All Offense" }
+                { name: "VOID FANGS", cost: 0, mult: 0.15, color: 0x220022, vfx: 'multi', hits: 25, desc: "25 rapid strikes from the mouth of the true void." },
+                { name: "ANNIHILATE", cost: 170, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "Delete the target from the current timeline using a white-hole." },
+                { name: "VOID EMBRACE", cost: 55, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 8, color: 0x220022, desc: "Wrap yourself in the void to boost all offense by 25%." }
             ]
         },
         // 80-89
         {
             name: "ENTROPY", desc: "Tier 9: Decay", skills: [
-                { name: "DECAY", cost: 0, mult: 0.14, color: 0x003300, vfx: 'implode', hits: 30 }, // Total 4.2x
-                { name: "ENTROPY WAVE", cost: 200, mult: 30.0, color: 0x006600, vfx: 'nova', hits: 1 },
-                { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 8, color: 0x003300, desc: "+75% Crit DMG" }
+                { name: "DECAY", cost: 0, mult: 0.14, color: 0x003300, vfx: 'implode', hits: 30, desc: "Observe the slow, inevitable collapse of structural integrity." },
+                { name: "ENTROPY WAVE", cost: 200, mult: 30.0, color: 0x006600, vfx: 'nova', hits: 1, desc: "A ripple of pure chaos that resets the target to base components." },
+                { name: "CHAOS FIELD", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 0.75, duration: 8, color: 0x003300, desc: "A state of total entropy where every hit is 75% more critical." }
             ]
         },
         // 90+
         {
             name: "OBLIVION", desc: "Tier 10: End", skills: [
-                { name: "OBLIVION", cost: 0, mult: 0.12, color: 0x000000, vfx: 'blackhole', hits: 40 }, // Total 4.8x
-                { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1 },
-                { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 8, color: 0x000000, desc: "+60% All Offense" }
+                { name: "OBLIVION", cost: 0, mult: 0.12, color: 0x000000, vfx: 'blackhole', hits: 40, desc: "40 strikes that pull the target closer to the absolute end." },
+                { name: "TRUE DEATH", cost: 350, mult: 100.0, color: 0x220022, vfx: 'blackhole', hits: 1, desc: "The final command. 100x multiplier. There is nothing after this." },
+                { name: "DEATH AVATAR", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.60, duration: 8, color: 0x000000, desc: "Become the personification of the end, +60% to all offense." }
             ]
         }
     ],
@@ -521,81 +521,81 @@ const CLASS_TREES = {
         // 0-9: BASE
         {
             name: "STREET-PUNK", desc: "Tier 1: Speed", skills: [
-                { name: "JAB", cost: 0, mult: 0.5, color: 0xff4400, vfx: 'punch', hits: 2, isFrenzy: true },
-                { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', hits: 1, doubleAttack: true },
-                { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atkMult', buffVal: 0.20, duration: 8, color: 0xff4400, desc: "+20% ATK Mult" }
+                { name: "JAB", cost: 0, mult: 0.5, color: 0xff4400, vfx: 'punch', hits: 2, isFrenzy: true, desc: "Send a flurry of rapid-fire punches. Mash to keep the heat coming!" },
+                { name: "HAYMAKER", cost: 25, mult: 2.0, color: 0xff6600, vfx: 'heavy', hits: 1, doubleAttack: true, desc: "A massive, double-swinging hook that delivers twice the power." },
+                { name: "ADRENALINE", cost: 15, isBuff: true, buffType: 'atk', buffVal: 0.20, duration: 8, color: 0xff4400, desc: "Flood your actuators with combat-stims for 20% more ATK Power." }
             ]
         },
         // 10-19
         {
             name: "CHROME-BOXER", desc: "Tier 2: Combos", skills: [
-                { name: "ONE-TWO", cost: 0, mult: 0.35, color: 0xff5500, vfx: 'punch', hits: 4, isFrenzy: true }, // Total 1.4x
-                { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', hits: 1, doubleAttack: true },
-                { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atkMult', buffVal: 0.30, duration: 8, color: 0xff5500, desc: "+30% ATK Mult" }
+                { name: "ONE-TWO", cost: 0, mult: 0.35, color: 0xff5500, vfx: 'punch', hits: 4, isFrenzy: true, desc: "A technical combo that leads to a mashing frenzy of 4+ hits." },
+                { name: "UPPERCUT", cost: 40, mult: 3.5, color: 0xff7700, vfx: 'heavy', hits: 1, doubleAttack: true, desc: "A bone-shattering vertical strike that hits twice on the way up." },
+                { name: "RAGE MODE", cost: 20, isBuff: true, buffType: 'atk', buffVal: 0.30, duration: 8, color: 0xff5500, desc: "Tap into your primal fury to boost ATK by 30%." }
             ]
         },
         // 20-29
         {
             name: "CYBER-KICK", desc: "Tier 3: Kicks", skills: [
-                { name: "RAPID KICKS", cost: 0, mult: 0.25, color: 0xff6600, vfx: 'punch', hits: 7, isFrenzy: true }, // Total 1.75x
-                { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', hits: 1, doubleAttack: true },
-                { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atkMult', buffVal: 0.40, duration: 8, color: 0xff6600, desc: "+40% ATK Mult" }
+                { name: "RAPID KICKS", cost: 0, mult: 0.25, color: 0xff6600, vfx: 'punch', hits: 7, isFrenzy: true, desc: "A 7-kick hydraulic sequence. Mash to continue the barrage!" },
+                { name: "ROUNDHOUSE", cost: 55, mult: 5.0, color: 0xff8800, vfx: 'slash', hits: 1, doubleAttack: true, desc: "A spinning kick that delivers double-impact force to the head." },
+                { name: "FIGHTING SPIRIT", cost: 25, isBuff: true, buffType: 'atk', buffVal: 0.40, duration: 8, color: 0xff6600, desc: "Ignite your internal fire for a sustained 40% ATK boost." }
             ]
         },
         // 30-39
         {
             name: "GRAPPLER", desc: "Tier 4: Throws", skills: [
-                { name: "COMBO STRIKE", cost: 0, mult: 0.2, color: 0xff7700, vfx: 'punch', hits: 10, isFrenzy: true }, // Total 2.0x
-                { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', hits: 1, doubleAttack: true },
-                { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atkMult', buffVal: 0.50, duration: 8, color: 0xff7700, desc: "+50% ATK Mult" }
+                { name: "COMBO STRIKE", cost: 0, mult: 0.2, color: 0xff7700, vfx: 'punch', hits: 10, isFrenzy: true, desc: "A 10-hit technical sequence. Overclock your mashing to the limit!" },
+                { name: "PILEDRIVER", cost: 70, mult: 7.0, color: 0xff9900, vfx: 'heavy', hits: 1, doubleAttack: true, desc: "Grab the target and deliver a double-impact seismic slam." },
+                { name: "IRON BODY", cost: 30, isBuff: true, buffType: 'atk', buffVal: 0.50, duration: 8, color: 0xff7700, desc: "Harden your resolve and your metal for a permanent 50% ATK boost." }
             ]
         },
         // 40-49
         {
             name: "BERSERKER", desc: "Tier 5: Fury", skills: [
-                { name: "FRENZY", cost: 0, mult: 0.18, color: 0xff2200, vfx: 'punch', hits: 13, isFrenzy: true }, // Total 2.34x
-                { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 2, doubleAttack: true },
-                { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atkMult', buffVal: 0.60, duration: 8, color: 0xff2200, desc: "+60% ATK Mult" }
+                { name: "FRENZY", cost: 0, mult: 0.18, color: 0xff2200, vfx: 'punch', hits: 13, isFrenzy: true, desc: "A 13-hit wild barrage. Mash as if your chassis depends on it!" },
+                { name: "RAMPAGE", cost: 85, mult: 4.0, color: 0xff0000, vfx: 'omni', hits: 2, doubleAttack: true, desc: "Tear through the enemy with a double-hit omni-directional assault." },
+                { name: "BLOOD FURY", cost: 35, isBuff: true, buffType: 'atk', buffVal: 0.60, duration: 8, color: 0xff2200, desc: "Enter a state of total combat madness, gaining 60% extra ATK Power." }
             ]
         },
         // 50-59
         {
             name: "PIT-CHAMPION", desc: "Tier 6: Glory", skills: [
-                { name: "FLURRY", cost: 0, mult: 0.16, color: 0xffaa00, vfx: 'punch', hits: 16, isFrenzy: true }, // Total 2.56x
-                { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', hits: 1, doubleAttack: true },
-                { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atkMult', buffVal: 0.75, duration: 8, color: 0xffaa00, desc: "+75% ATK Mult" }
+                { name: "FLURRY", cost: 0, mult: 0.16, color: 0xffaa00, vfx: 'punch', hits: 16, isFrenzy: true, desc: "A professional 16-hit flurry. Keep the pressure on with mashing!" },
+                { name: "FINISHER", cost: 100, mult: 12.0, color: 0xffcc00, vfx: 'crit', hits: 1, doubleAttack: true, desc: "Focus all momentum into one double-impact, match-ending blow." },
+                { name: "CHAMPION'S WILL", cost: 40, isBuff: true, buffType: 'atk', buffVal: 0.75, duration: 8, color: 0xffaa00, desc: "The determination to win, manifesting as a 75% ATK boost." }
             ]
         },
         // 60-69
         {
             name: "IRON-TITAN", desc: "Tier 7: Power", skills: [
-                { name: "METEOR FISTS", cost: 0, mult: 0.15, color: 0xff5500, vfx: 'punch', hits: 20, isFrenzy: true }, // Total 3.0x
-                { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', hits: 1, doubleAttack: true },
-                { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atkMult', buffVal: 1.0, duration: 8, color: 0xff5500, desc: "+100% ATK Mult" }
+                { name: "METEOR FISTS", cost: 0, mult: 0.15, color: 0xff5500, vfx: 'punch', hits: 20, isFrenzy: true, desc: "20 punches as heavy as falling stars. Mash for orbital velocity!" },
+                { name: "TITAN SMASH", cost: 130, mult: 15.0, color: 0xff8800, vfx: 'nuke', hits: 1, doubleAttack: true, desc: "A double-impact strike with the force of a tectonic shift." },
+                { name: "UNSTOPPABLE", cost: 45, isBuff: true, buffType: 'atk', buffVal: 1.0, duration: 8, color: 0xff5500, desc: "Become a juggernaut of pure force, doubling your current ATK power." }
             ]
         },
         // 70-79
         {
             name: "GOD-FIST", desc: "Tier 8: Divine", skills: [
-                { name: "INFINITE COMBO", cost: 0, mult: 0.12, color: 0xffd700, vfx: 'omni', hits: 30, isFrenzy: true }, // Total 3.6x
-                { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', hits: 1, doubleAttack: true },
-                { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atkMult', buffVal: 1.25, duration: 8, color: 0xffd700, desc: "+125% ATK Mult" }
+                { name: "INFINITE COMBO", cost: 0, mult: 0.12, color: 0xffd700, vfx: 'omni', hits: 30, isFrenzy: true, desc: "A 30-hit sequence that defies physics. Mash for eternity!" },
+                { name: "DIVINE STRIKE", cost: 160, mult: 20.0, color: 0xffffff, vfx: 'god_beam', hits: 1, doubleAttack: true, desc: "A double-impact holy punch delivered with the speed of light." },
+                { name: "GODLIKE", cost: 50, isBuff: true, buffType: 'atk', buffVal: 1.25, duration: 8, color: 0xffd700, desc: "Ascend to the pinnacle of martial prowess, +125% to all ATK Power." }
             ]
         },
         // 80-89
         {
             name: "STAR-BREAKER", desc: "Tier 9: Cosmic", skills: [
-                { name: "STAR RUSH", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'omni', hits: 40, isFrenzy: true }, // Total 4.0x
-                { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', hits: 1, doubleAttack: true },
-                { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atkMult', buffVal: 1.50, duration: 8, color: 0xffff00, desc: "+150% ATK Mult" }
+                { name: "STAR RUSH", cost: 0, mult: 0.1, color: 0xffff00, vfx: 'omni', hits: 40, isFrenzy: true, desc: "40 strikes inspired by the birth of galaxies. Mash for cosmic glory!" },
+                { name: "GALAXY CRUSHER", cost: 200, mult: 35.0, color: 0xffffff, vfx: 'blackhole', hits: 1, doubleAttack: true, desc: "A double-hit collapse that crushes entire star systems." },
+                { name: "LIMIT BREAK", cost: 55, isBuff: true, buffType: 'atk', buffVal: 1.50, duration: 8, color: 0xffff00, desc: "Remove your physical shackles for a massive 150% ATK boost." }
             ]
         },
         // 90+
         {
             name: "ONE-PUNCH", desc: "Tier 10: END", skills: [
-                { name: "SERIOUS PUNCHES", cost: 0, mult: 0.08, color: 0xffffff, vfx: 'omni', hits: 60, isFrenzy: true }, // Total 4.8x
-                { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1 },
-                { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atkMult', buffVal: 2.0, duration: 8, color: 0xffffff, desc: "+200% ATK Mult" }
+                { name: "SERIOUS PUNCHES", cost: 0, mult: 0.08, color: 0xffffff, vfx: 'omni', hits: 60, isFrenzy: true, desc: "60 absolute punches. Mash for total victory!" },
+                { name: "ONE PUNCH", cost: 500, mult: 999.0, color: 0xffd700, vfx: 'nuke', hits: 1, desc: "This is the end. One punch is all I need. (999x Damage)" },
+                { name: "LIMITLESS", cost: 80, isBuff: true, buffType: 'atk', buffVal: 2.0, duration: 8, color: 0xffffff, desc: "Tap into an infinite well of power, tripling your base ATK Power." }
             ]
         }
     ],
@@ -603,81 +603,81 @@ const CLASS_TREES = {
         // 0-9: BASE - High Noon Style
         {
             name: "DRIFTER", desc: "Tier 1: Revolver", skills: [
-                { name: "QUICK DRAW", cost: 0, mult: 1.1, color: 0xffaa00, vfx: 'beam', hits: 1 },
-                { name: "MAGNUM OPUS", cost: 35, mult: 2.8, color: 0xff4400, vfx: 'heavy', hits: 1 },
-                { name: "DEADEYE", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 8, color: 0xffaa00, desc: "+20% Crit Chance" }
+                { name: "QUICK DRAW", cost: 0, mult: 1.1, color: 0xffaa00, vfx: 'beam', hits: 1, desc: "Draw and fire in one fluid motion, striking with lethal precision." },
+                { name: "MAGNUM OPUS", cost: 35, mult: 2.8, color: 0xff4400, vfx: 'heavy', hits: 1, desc: "A high-caliber round that delivers a devastating psychological impact." },
+                { name: "DEADEYE", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.20, duration: 8, color: 0xffaa00, desc: "Focus your vision to increase your Critical Hit Chance by 20%." }
             ]
         },
         // 10-19
         {
             name: "OUTLAW", desc: "Tier 2: Dual Wield", skills: [
-                { name: "FAN HAMMER", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'multi', hits: 6 }, // Total 1.8x
-                { name: "POINT BLANK", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'explode', hits: 1 },
-                { name: "LUCKY COIN", cost: 25, isBuff: true, buffType: 'critDamage', buffVal: 0.30, duration: 8, color: 0xffff00, desc: "+30% Crit DMG" }
+                { name: "FAN HAMMER", cost: 0, mult: 0.3, color: 0xffaa00, vfx: 'multi', hits: 6, desc: "Empty the cylinder in a rapid-fire burst of dual-revolver fury." },
+                { name: "POINT BLANK", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'explode', hits: 1, desc: "Deliver a high-velocity impact directly to the target's core." },
+                { name: "LUCKY COIN", cost: 25, isBuff: true, buffType: 'critDamage', buffVal: 0.30, duration: 8, color: 0xffff00, desc: "Test your fortune to boost your Critical Damage by 30%." }
             ]
         },
         // 20-29
         {
             name: "DESPERADO", desc: "Tier 3: Ricochet", skills: [
-                { name: "TRICK SHOT", cost: 0, mult: 0.4, color: 0x00ffff, vfx: 'beam', hits: 5 }, // Total 2.0x
-                { name: "EXPLOSIVE ROUND", cost: 65, mult: 6.0, color: 0xff5500, vfx: 'nuke', hits: 1 },
-                { name: "ADRENALINE", cost: 30, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 8, color: 0x00ffff, desc: "+30% Dodge" }
+                { name: "TRICK SHOT", cost: 0, mult: 0.4, color: 0x00ffff, vfx: 'beam', hits: 5, desc: "A series of shots that bounce off the architecture for 5 hits." },
+                { name: "EXPLOSIVE ROUND", cost: 65, mult: 6.0, color: 0xff5500, vfx: 'nuke', hits: 1, desc: "Fire a specialized shell that detonates with catastrophic force." },
+                { name: "ADRENALINE", cost: 30, isBuff: true, buffType: 'dodge', buffVal: 0.30, duration: 8, color: 0x00ffff, desc: "Flood your systems with combat-stimulants for 30% more dodge." }
             ]
         },
         // 30-39
         {
             name: "VIGILANTE", desc: "Tier 4: Sniper", skills: [
-                { name: "HEADSHOT", cost: 0, mult: 2.5, color: 0xff0000, vfx: 'crit', hits: 1 }, // Slow, heavy single hit
-                { name: "PENETRATOR", cost: 90, mult: 8.5, color: 0xff0000, vfx: 'god_beam', hits: 1 },
-                { name: "LASER SIGHT", cost: 35, isBuff: true, buffType: 'crit', buffVal: 0.40, duration: 8, color: 0xff0000, desc: "+40% Crit Chance" }
+                { name: "HEADSHOT", cost: 0, mult: 2.5, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A lethal strike to the target's most vulnerable processing unit." },
+                { name: "PENETRATOR", cost: 90, mult: 8.5, color: 0xff0000, vfx: 'god_beam', hits: 1, desc: "A ship-grade kinetic slug designed to ignore all armor." },
+                { name: "LASER SIGHT", cost: 35, isBuff: true, buffType: 'crit', buffVal: 0.40, duration: 8, color: 0xff0000, desc: "Calibrate your weapons to increase Critical Hit Chance by 40%." }
             ]
         },
         // 40-49
         {
             name: "COMMANDO", desc: "Tier 5: Heavy", skills: [
-                { name: "SUPPRESSION", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'gatling', hits: 15 }, // Total 3.0x
-                { name: "RPG", cost: 110, mult: 5.0, color: 0xffaa00, vfx: 'nuke', hits: 2 },
-                { name: "GUERRILLA", cost: 40, isBuff: true, buffType: 'armor', buffVal: 20, duration: 8, color: 0x55aa00, desc: "+20 Armor" }
+                { name: "SUPPRESSION", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'gatling', hits: 15, desc: "15 rounds of high-volume fire to keep the enemy pinned down." },
+                { name: "RPG", cost: 110, mult: 5.0, color: 0xffaa00, vfx: 'nuke', hits: 2, desc: "Launch a dual-warhead rocket for massive explosive coverage." },
+                { name: "GUERRILLA", cost: 40, isBuff: true, buffType: 'armor', buffVal: 0.20, duration: 8, color: 0x55aa00, desc: "Utilize cover and tactical awareness to gain +20% Armor." }
             ]
         },
         // 50-59
         {
             name: "CYBER-COWBOY", desc: "Tier 6: Neon", skills: [
-                { name: "PLASMA WHIP", cost: 0, mult: 0.4, color: 0xff00ff, vfx: 'slash', hits: 8 }, // Total 3.2x
-                { name: "NEON NOON", cost: 140, mult: 13.0, color: 0xff00ff, vfx: 'god_beam', hits: 1 },
-                { name: "HIGH NOON", cost: 45, isBuff: true, buffType: 'atk', buffVal: 50, duration: 8, color: 0xff00ff, desc: "+50 ATK" }
+                { name: "PLASMA WHIP", cost: 0, mult: 0.4, color: 0xff00ff, vfx: 'slash', hits: 8, desc: "A high-energy lash that leaves 8 strikes of searing energy." },
+                { name: "NEON NOON", cost: 140, mult: 13.0, color: 0xff00ff, vfx: 'god_beam', hits: 1, desc: "Channel the power of the grid into a single, blinding laser beam." },
+                { name: "HIGH NOON", cost: 45, isBuff: true, buffType: 'atk', buffVal: 0.50, duration: 8, color: 0xff00ff, desc: "The ultimate showdown. Reroute all power to gain +50% ATK." }
             ]
         },
         // 60-69
         {
             name: "GUN-KATA", desc: "Tier 7: Martial", skills: [
-                { name: "BULLET DANCE", cost: 0, mult: 0.15, color: 0xffffff, vfx: 'omni', hits: 25 }, // Total 3.75x
-                { name: "EQUILIBRIUM", cost: 170, mult: 16.0, color: 0xffffff, vfx: 'implode', hits: 1 },
-                { name: "FLOW STATE", cost: 50, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 8, color: 0xffffff, desc: "+40% Double Strike" }
+                { name: "BULLET DANCE", cost: 0, mult: 0.15, color: 0xffffff, vfx: 'omni', hits: 25, desc: "A 25-hit whirlwind of lead where every movement is a shot." },
+                { name: "EQUILIBRIUM", cost: 170, mult: 16.0, color: 0xffffff, vfx: 'implode', hits: 1, desc: "Achieve personal balance to deliver a perfectly centered killing blow." },
+                { name: "FLOW STATE", cost: 50, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 8, color: 0xffffff, desc: "Enter a trance-like state to double-strike with 40% probability." }
             ]
         },
         // 70-79
         {
             name: "RAIL-GUNNER", desc: "Tier 8: Magnetic", skills: [
-                { name: "GAUSS RIFLE", cost: 0, mult: 1.0, color: 0x00aaff, vfx: 'beam', hits: 4 }, // Total 4.0x
-                { name: "HYPER VELOCITY", cost: 200, mult: 20.0, color: 0x00aaff, vfx: 'god_beam', hits: 1 },
-                { name: "MAGNETIC FIELD", cost: 55, isBuff: true, buffType: 'shield', buffVal: 300, duration: 8, color: 0x00aaff, desc: "+300 Shield" }
+                { name: "GAUSS RIFLE", cost: 0, mult: 1.0, color: 0x00aaff, vfx: 'beam', hits: 4, desc: "Accelerate four magnetic slugs to hypersonic velocities." },
+                { name: "HYPER VELOCITY", cost: 200, mult: 20.0, color: 0x00aaff, vfx: 'god_beam', hits: 1, desc: "Deliver a 20x multiplier impact that travels at light-speed." },
+                { name: "MAGNETIC FIELD", cost: 55, isBuff: true, buffType: 'shield', buffVal: 1.0, duration: 8, color: 0x00aaff, desc: "Project a containment field that absorbs 100% Max HP as damage." }
             ]
         },
         // 80-89
         {
             name: "EXECUTIONER", desc: "Tier 9: Orbital", skills: [
-                { name: "LOCK-ON", cost: 0, mult: 0.1, color: 0xff0000, vfx: 'matrix', hits: 50 }, // Total 5.0x
-                { name: "ORBITAL STRIKE", cost: 250, mult: 35.0, color: 0xff4400, vfx: 'nuke', hits: 1 },
-                { name: "KILL PROTOCOL", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 1.0, duration: 8, color: 0xff0000, desc: "+100% Crit DMG" }
+                { name: "LOCK-ON", cost: 0, mult: 0.1, color: 0xff0000, vfx: 'matrix', hits: 50, desc: "Coordinate 50 micro-missiles to track the target's signature." },
+                { name: "ORBITAL STRIKE", cost: 250, mult: 35.0, color: 0xff4400, vfx: 'nuke', hits: 1, desc: "Call down a 35x satellite bombardment from a geosynchronous platform." },
+                { name: "KILL PROTOCOL", cost: 60, isBuff: true, buffType: 'critDamage', buffVal: 1.0, duration: 8, color: 0xff0000, desc: "Engage terminal combat logic to double your Critical Damage." }
             ]
         },
         // 90+
         {
             name: "BALLISTIC-GOD", desc: "Tier 10: Infinite", skills: [
-                { name: "BULLET HELL", cost: 0, mult: 0.1, color: 0xffd700, vfx: 'gatling', hits: 80 }, // Total 8.0x (Insane hit count)
-                { name: "THE BIG IRON", cost: 400, mult: 100.0, color: 0xffd700, vfx: 'god_beam', hits: 1 },
-                { name: "TRIGGER HAPPY", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.75, duration: 8, color: 0xffd700, desc: "+75% All Offense" }
+                { name: "BULLET HELL", cost: 0, mult: 0.1, color: 0xffd700, vfx: 'gatling', hits: 80, desc: "An 80-hit curtain of fire that defies all possible evasion." },
+                { name: "THE BIG IRON", cost: 400, mult: 100.0, color: 0xffd700, vfx: 'god_beam', hits: 1, desc: "The legendary 100x multiplier shot that ends all arguments." },
+                { name: "TRIGGER HAPPY", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.75, duration: 8, color: 0xffd700, desc: "+75% to all offense." }
             ]
         }
     ],
@@ -685,81 +685,81 @@ const CLASS_TREES = {
         // 0-9: BASE - Tank
         {
             name: "SQUIRE", desc: "Tier 1: Defense", skills: [
-                { name: "SLASH", cost: 0, mult: 1.0, color: 0xcccccc, vfx: 'slash', hits: 1 },
-                { name: "SHIELD BASH", cost: 30, mult: 2.0, color: 0x00aaff, vfx: 'heavy', hits: 1 },
-                { name: "SHIELD UP", cost: 20, isBuff: true, buffType: 'shield', buffVal: 50, duration: 8, color: 0x00aaff, desc: "+50 Shield" }
+                { name: "SLASH", cost: 0, mult: 1.0, color: 0xcccccc, vfx: 'slash', hits: 1, desc: "A disciplined vertical strike from a heavy combat blade." },
+                { name: "SHIELD BASH", cost: 30, mult: 2.0, color: 0x00aaff, vfx: 'heavy', hits: 1, desc: "Use your defensive plate as a weapon of blunt impact." },
+                { name: "SHIELD UP", cost: 20, isBuff: true, buffType: 'shield', buffVal: 0.25, duration: 8, color: 0x00aaff, desc: "Lock your armor plates to absorb 25% Max HP as damage." }
             ]
         },
         // 10-19
         {
             name: "IRON-CLAD", desc: "Tier 2: Armor", skills: [
-                { name: "HEAVY SWING", cost: 0, mult: 1.2, color: 0xaaaaaa, vfx: 'slash', hits: 1 },
-                { name: "IRON STRIKE", cost: 45, mult: 3.5, color: 0x888888, vfx: 'heavy', hits: 1 },
-                { name: "FORTIFY", cost: 25, isBuff: true, buffType: 'armor', buffVal: 20, duration: 8, color: 0xaaaaaa, desc: "+20 Armor" }
+                { name: "HEAVY SWING", cost: 0, mult: 1.2, color: 0xaaaaaa, vfx: 'slash', hits: 1, desc: "A wide horizontal sweep designed to shatter enemy frames." },
+                { name: "IRON STRIKE", cost: 45, mult: 3.5, color: 0x888888, vfx: 'heavy', hits: 1, desc: "A crushing overhead blow that leverages your full chassis weight." },
+                { name: "FORTIFY", cost: 25, isBuff: true, buffType: 'armor', buffVal: 0.20, duration: 8, color: 0xaaaaaa, desc: "Reinforce your structural integrity to gain +20% Armor." }
             ]
         },
         // 20-29
         {
             name: "GUARDIAN", desc: "Tier 3: Protector", skills: [
-                { name: "JUSTICE", cost: 0, mult: 0.5, color: 0xffd700, vfx: 'beam', hits: 4 }, // Total 2.0x
-                { name: "SMITE", cost: 60, mult: 5.0, color: 0xffd700, vfx: 'god_beam', hits: 1 },
-                { name: "HOLY WALL", cost: 35, isBuff: true, buffType: 'shield', buffVal: 150, duration: 8, color: 0xffd700, desc: "+150 Shield" }
+                { name: "JUSTICE", cost: 0, mult: 0.5, color: 0xffd700, vfx: 'beam', hits: 4, desc: "Deliver four strikes fueled by unwavering resolve." },
+                { name: "SMITE", cost: 60, mult: 5.0, color: 0xffd700, vfx: 'god_beam', hits: 1, desc: "Call down a beam of pure judgment from the heavens." },
+                { name: "HOLY WALL", cost: 35, isBuff: true, buffType: 'shield', buffVal: 0.50, duration: 8, color: 0xffd700, desc: "Raise an energy-barrier capable of absorbing 50% Max HP as damage." }
             ]
         },
         // 30-39
         {
             name: "CRUSADER", desc: "Tier 4: Holy", skills: [
-                { name: "DIVINE CUT", cost: 0, mult: 0.8, color: 0xffffff, vfx: 'slash', hits: 3 }, // Total 2.4x
-                { name: "JUDGEMENT", cost: 90, mult: 7.0, color: 0xffffff, vfx: 'heavy', hits: 1 },
-                { name: "DIVINE SHIELD", cost: 40, isBuff: true, buffType: 'shield', buffVal: 250, duration: 8, color: 0xffffff, desc: "+250 Shield" }
+                { name: "DIVINE CUT", cost: 0, mult: 0.8, color: 0xffffff, vfx: 'slash', hits: 3, desc: "A triple-slash sequence performed with ethereal grace." },
+                { name: "JUDGEMENT", cost: 90, mult: 7.0, color: 0xffffff, vfx: 'heavy', hits: 1, desc: "Deliver a terminal sentence that hits with 7x force." },
+                { name: "DIVINE SHIELD", cost: 40, isBuff: true, buffType: 'shield', buffVal: 0.75, duration: 8, color: 0xffffff, desc: "A blinding aura of protection that absorbs 75% Max HP as damage." }
             ]
         },
         // 40-49
         {
             name: "ROYAL-GUARD", desc: "Tier 5: Elite", skills: [
-                { name: "ROYAL SLASH", cost: 0, mult: 0.6, color: 0xff0055, vfx: 'multi', hits: 5 }, // Total 3.0x
-                { name: "EXECUTION", cost: 110, mult: 10.0, color: 0xff0000, vfx: 'crit', hits: 1 },
-                { name: "KINGS ARMOR", cost: 45, isBuff: true, buffType: 'all_defense', buffVal: 0.30, duration: 8, color: 0xff0055, desc: "+30% All Defense" }
+                { name: "ROYAL SLASH", cost: 0, mult: 0.6, color: 0xff0055, vfx: 'multi', hits: 5, desc: "An elite 5-hit sequence used by the Emperor's Guard." },
+                { name: "EXECUTION", cost: 110, mult: 10.0, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A 10x multiplier blow meant for the most dangerous adversaries." },
+                { name: "KINGS ARMOR", cost: 45, isBuff: true, buffType: 'all_defense', buffVal: 0.35, duration: 8, color: 0xff0055, desc: "Adorn yourself in the majesty of kings for 35% more total defense." }
             ]
         },
         // 50-59
         {
             name: "CYBER-PALADIN", desc: "Tier 6: Energy", skills: [
-                { name: "LASER SWORD", cost: 0, mult: 0.4, color: 0x00f2ff, vfx: 'beam', hits: 8 }, // Total 3.2x
-                { name: "PLASMA BASH", cost: 140, mult: 12.0, color: 0x00f2ff, vfx: 'implode', hits: 1 },
-                { name: "FORCE FIELD", cost: 50, isBuff: true, buffType: 'shield', buffVal: 500, duration: 8, color: 0x00f2ff, desc: "+500 Shield" }
+                { name: "LASER SWORD", cost: 0, mult: 0.4, color: 0x00f2ff, vfx: 'beam', hits: 8, desc: "8 rapid cuts from a blade made of high-frequency photons." },
+                { name: "PLASMA BASH", cost: 140, mult: 12.0, color: 0x00f2ff, vfx: 'implode', hits: 1, desc: "A seismic shield impact infused with ionized plasma." },
+                { name: "FORCE FIELD", cost: 50, isBuff: true, buffType: 'shield', buffVal: 1.0, duration: 8, color: 0x00f2ff, desc: "Project a high-density energy field that absorbs 100% Max HP as damage." }
             ]
         },
         // 60-69
         {
             name: "JUGGERNAUT", desc: "Tier 7: Unstoppable", skills: [
-                { name: "EARTHQUAKE", cost: 0, mult: 0.3, color: 0x552200, vfx: 'heavy', hits: 12 }, // Total 3.6x
-                { name: "AVALANCHE", cost: 160, mult: 15.0, color: 0x884400, vfx: 'nuke', hits: 1 },
-                { name: "IRON SKIN", cost: 55, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x888888, desc: "Invincible 2 turns" }
+                { name: "EARTHQUAKE", cost: 0, mult: 0.3, color: 0x552200, vfx: 'heavy', hits: 12, desc: "A 12-hit seismic resonance that ripples through the ground." },
+                { name: "AVALANCHE", cost: 160, mult: 15.0, color: 0x884400, vfx: 'nuke', hits: 1, desc: "Bury the target under a 15x landslide of kinetic energy." },
+                { name: "IRON SKIN", cost: 55, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x888888, desc: "Become a living fortress of steel, gain invincibility for 2 turns." }
             ]
         },
         // 70-79
         {
             name: "VOID-KEEPER", desc: "Tier 8: Null", skills: [
-                { name: "VOID SLASH", cost: 0, mult: 0.2, color: 0x220044, vfx: 'slash', hits: 20 }, // Total 4.0x
-                { name: "BLACK HOLE", cost: 200, mult: 20.0, color: 0x000000, vfx: 'blackhole', hits: 1 },
-                { name: "VOID BARRIER", cost: 60, isBuff: true, buffType: 'shield', buffVal: 1000, duration: 8, color: 0x220044, desc: "+1000 Shield" }
+                { name: "VOID SLASH", cost: 0, mult: 0.2, color: 0x220044, vfx: 'slash', hits: 20, desc: "20 strikes delivered from the heart of the absolute void." },
+                { name: "BLACK HOLE", cost: 200, mult: 20.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "Manifest a localized singularity to devour the enemy." },
+                { name: "VOID BARRIER", cost: 60, isBuff: true, buffType: 'shield', buffVal: 1.5, duration: 8, color: 0x220044, desc: "Wrap your chassis in nothingness to absorb 150% Max HP as damage." }
             ]
         },
         // 80-89
         {
             name: "TITAN-SLAYER", desc: "Tier 9: Colossal", skills: [
-                { name: "GOD KILLER", cost: 0, mult: 0.15, color: 0xffd700, vfx: 'god_beam', hits: 30 }, // Total 4.5x
-                { name: "HEAVENS FALL", cost: 250, mult: 40.0, color: 0xffffff, vfx: 'nuke', hits: 1 },
-                { name: "TITAN FORM", cost: 70, isBuff: true, buffType: 'all_defense', buffVal: 0.60, duration: 8, color: 0xffd700, desc: "+60% All Defense" }
+                { name: "GOD KILLER", cost: 0, mult: 0.15, color: 0xffd700, vfx: 'god_beam', hits: 30, desc: "30 strikes aimed at the core of a divine entity." },
+                { name: "HEAVENS FALL", cost: 250, mult: 40.0, color: 0xffffff, vfx: 'nuke', hits: 1, desc: "Bring down the full weight of the sky for 40x damage." },
+                { name: "TITAN FORM", cost: 70, isBuff: true, buffType: 'all_defense', buffVal: 0.60, duration: 8, color: 0xffd700, desc: "Ascend to a colossal state, gaining 60% more total defense." }
             ]
         },
         // 90+
         {
             name: "OMNI-KNIGHT", desc: "Tier 10: Invincible", skills: [
-                { name: "REALITY SLASH", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'omni', hits: 60 }, // Total 6.0x
-                { name: "AEGIS STRIKE", cost: 400, mult: 80.0, color: 0x00f2ff, vfx: 'god_beam', hits: 1 },
-                { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 9999, duration: 8, color: 0xffffff, desc: "+9999 Shield" }
+                { name: "REALITY SLASH", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'omni', hits: 60, desc: "60 slashes that occur across multiple parallel timelines." },
+                { name: "AEGIS STRIKE", cost: 400, mult: 80.0, color: 0x00f2ff, vfx: 'god_beam', hits: 1, desc: "The ultimate 80x strike delivered behind an unbreakable shield." },
+                { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 5.0, duration: 8, color: 0xffffff, desc: "Transcend the concept of damage to absorb 500% Max HP worth of integrity." }
             ]
         }
     ],
@@ -767,81 +767,81 @@ const CLASS_TREES = {
         // 0-9: BASE - Script Kiddie
         {
             name: "SCRIPT-KID", desc: "Tier 1: Exploit", skills: [
-                { name: "PING", cost: 0, mult: 0.5, color: 0x00ff00, vfx: 'zap', hits: 3, manaGain: 10 },
-                { name: "DDOS ATTACK", cost: 40, mult: 3.0, color: 0x00ff00, vfx: 'matrix', hits: 1 },
-                { name: "VPN", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.20, duration: 8, color: 0x00ff00, desc: "+20% Dodge (Lag)" }
+                { name: "PING", cost: 0, mult: 0.5, color: 0x00ff00, vfx: 'zap', hits: 3, manaGain: 10, desc: "Send a small probe to gain 10 Mana and probe for vulnerabilities." },
+                { name: "DDOS ATTACK", cost: 40, mult: 3.0, color: 0x00ff00, vfx: 'matrix', hits: 1, desc: "Overwhelm the target's buffers with a 3x flood of packets." },
+                { name: "VPN", cost: 20, isBuff: true, buffType: 'dodge', buffVal: 0.20, duration: 8, color: 0x00ff00, desc: "Route your location through multiple proxies for 20% more dodge." }
             ]
         },
         // 10-19
         {
             name: "WHITE-HAT", desc: "Tier 2: Debug", skills: [
-                { name: "COMPILE", cost: 0, mult: 1.0, color: 0x00aa00, vfx: 'beam', hits: 1, manaGain: 20 },
-                { name: "FORCE QUIT", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'heavy', hits: 1 },
-                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'shield', buffVal: 100, duration: 8, color: 0x00aaff, desc: "+100 Shield" }
+                { name: "COMPILE", cost: 0, mult: 1.0, color: 0x00aa00, vfx: 'beam', hits: 1, manaGain: 20, desc: "Refactor your logic to gain 20 Mana and optimize strikes." },
+                { name: "FORCE QUIT", cost: 50, mult: 4.5, color: 0xff0000, vfx: 'heavy', hits: 1, desc: "Issues a terminal KILL command to the target process." },
+                { name: "FIREWALL", cost: 30, isBuff: true, buffType: 'shield', buffVal: 0.35, duration: 8, color: 0x00aaff, desc: "Deploy a security layer capable of blocking 35% Max HP as damage." }
             ]
         },
         // 20-29
         {
             name: "TROJAN", desc: "Tier 3: Virus", skills: [
-                { name: "INJECT", cost: 0, mult: 0.4, color: 0xaa00ff, vfx: 'multi', hits: 6 }, // Total 2.4x
-                { name: "MALWARE", cost: 65, mult: 5.5, color: 0x8800ff, vfx: 'implode', hits: 1 },
-                { name: "SIPHON DATA", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 8, color: 0xaa00ff, desc: "+25% Lifesteal" }
+                { name: "INJECT", cost: 0, mult: 0.4, color: 0xaa00ff, vfx: 'multi', hits: 6, desc: "Execute 6 malicious code blocks directly into the target's system." },
+                { name: "MALWARE", cost: 65, mult: 5.5, color: 0x8800ff, vfx: 'implode', hits: 1, desc: "A slow, corrosive payload that hits with 5.5x force." },
+                { name: "SIPHON DATA", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 8, color: 0xaa00ff, desc: "Leech integrity from the target to gain 25% lifesteal." }
             ]
         },
         // 30-39
         {
             name: "GLITCH", desc: "Tier 4: Bug", skills: [
-                { name: "PACKET LOSS", cost: 0, mult: 0.1, color: 0xff00ff, vfx: 'matrix', hits: 20 }, // Total 2.0x
-                { name: "BSOD", cost: 90, mult: 8.0, color: 0x0000ff, vfx: 'blackhole', hits: 1 },
-                { name: "BUFFER OVRFLW", cost: 40, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 8, color: 0xff00ff, desc: "+40% Double Strike" }
+                { name: "PACKET LOSS", cost: 0, mult: 0.1, color: 0xff00ff, vfx: 'matrix', hits: 20, desc: "A 20-hit sequence that disrupts the target's data flow." },
+                { name: "BSOD", cost: 90, mult: 8.0, color: 0x0000ff, vfx: 'blackhole', hits: 1, desc: "Trigger a catastrophic system failure and a Blue Screen of Death." },
+                { name: "BUFFER OVRFLW", cost: 40, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 8, color: 0xff00ff, desc: "Push calculations past their limits for 40% double-strike." }
             ]
         },
         // 40-49
         {
             name: "BOTNET", desc: "Tier 5: Swarm", skills: [
-                { name: "ZOMBIE PC", cost: 0, mult: 0.5, color: 0x555555, vfx: 'gatling', hits: 8 }, // Total 4.0x
-                { name: "SERVER CRASH", cost: 120, mult: 11.0, color: 0xffaa00, vfx: 'nuke', hits: 1 },
-                { name: "ROOT ACCESS", cost: 45, isBuff: true, buffType: 'atk', buffVal: 40, duration: 8, color: 0x00ff00, desc: "+40 ATK" }
+                { name: "ZOMBIE PC", cost: 0, mult: 0.5, color: 0x555555, vfx: 'gatling', hits: 8, desc: "Command a small swarm of 8 infected bots to strike the target." },
+                { name: "SERVER CRASH", cost: 120, mult: 11.0, color: 0xffaa00, vfx: 'nuke', hits: 1, desc: "Deliver an 11x blow that causes total runtime termination." },
+                { name: "ROOT ACCESS", cost: 45, isBuff: true, buffType: 'atk', buffVal: 0.40, duration: 8, color: 0x00ff00, desc: "Gain administrative privileges over your own chassis (+40% ATK)." }
             ]
         },
         // 50-59
         {
             name: "CYBER-LICH", desc: "Tier 6: Undead", skills: [
-                { name: "NECRO CODE", cost: 0, mult: 0.8, color: 0x00ffaa, vfx: 'omni', hits: 5 }, // Total 4.0x
-                { name: "SOUL.EXE", cost: 150, mult: 13.0, color: 0x00ffaa, vfx: 'implode', hits: 1, heal: 200 },
-                { name: "PHYLACTERY", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x00ffaa, desc: "Invincible 2 turns" }
+                { name: "NECRO CODE", cost: 0, mult: 0.8, color: 0x00ffaa, vfx: 'omni', hits: 5, desc: "5 strikes from a script that was never meant to be run." },
+                { name: "SOUL.EXE", cost: 150, mult: 13.0, color: 0x00ffaa, vfx: 'implode', hits: 1, heal: 200, desc: "A terminal 13x strike that heals 200 HP from harvested logic." },
+                { name: "PHYLACTERY", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x00ffaa, desc: "Store your data in a secure, unreachable drive (Invincibility)." }
             ]
         },
         // 60-69
         {
             name: "CRYPT-KEEPER", desc: "Tier 7: Blockchain", skills: [
-                { name: "MINING", cost: 0, mult: 1.0, color: 0xffd700, vfx: 'zap', hits: 5, manaGain: 50 },
-                { name: "RUG PULL", cost: 180, mult: 18.0, color: 0xff0000, vfx: 'heavy', hits: 1 },
-                { name: "HODL", cost: 55, isBuff: true, buffType: 'armor', buffVal: 50, duration: 8, color: 0xffd700, desc: "+50 Armor" }
+                { name: "MINING", cost: 0, mult: 1.0, color: 0xffd700, vfx: 'zap', hits: 5, manaGain: 50, desc: "Reroute power to solve 50 Mana worth of complex hash algorithms." },
+                { name: "RUG PULL", cost: 180, mult: 18.0, color: 0xff0000, vfx: 'heavy', hits: 1, desc: "Disrupt the ground beneath the target for 18x damage." },
+                { name: "HODL", cost: 55, isBuff: true, buffType: 'armor', buffVal: 0.50, duration: 8, color: 0xffd700, desc: "Hold your position and your data to gain +50% Armor." }
             ]
         },
         // 70-79
         {
             name: "AI-OVERLORD", desc: "Tier 8: Sentient", skills: [
-                { name: "NEURAL NET", cost: 0, mult: 0.15, color: 0xff0055, vfx: 'matrix', hits: 30 }, // Total 4.5x
-                { name: "SKYNET", cost: 220, mult: 22.0, color: 0xff0000, vfx: 'god_beam', hits: 1 },
-                { name: "PREDICT", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.50, duration: 8, color: 0xff0055, desc: "+50% Crit Chance" }
+                { name: "NEURAL NET", cost: 0, mult: 0.15, color: 0xff0055, vfx: 'matrix', hits: 30, desc: "A 30-hit distributed attack from a hive-mind intelligence." },
+                { name: "SKYNET", cost: 220, mult: 22.0, color: 0xff0000, vfx: 'god_beam', hits: 1, desc: "The ultimate autonomous 22x strike from a satellite AI." },
+                { name: "PREDICT", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.50, duration: 8, color: 0xff0055, desc: "Use machine learning to increase Critical Hit Chance by 50%." }
             ]
         },
         // 80-89
         {
             name: "THE-ARCHITECT", desc: "Tier 9: Matrix", skills: [
-                { name: "DEJA VU", cost: 0, mult: 0.12, color: 0x00ff00, vfx: 'omni', hits: 50 }, // Total 6.0x
-                { name: "REALITY EDIT", cost: 280, mult: 40.0, color: 0xffffff, vfx: 'blackhole', hits: 1 },
-                { name: "BULLET TIME", cost: 70, isBuff: true, buffType: 'dodge', buffVal: 0.60, duration: 8, color: 0x00ff00, desc: "+60% Dodge" }
+                { name: "DEJA VU", cost: 0, mult: 0.12, color: 0x00ff00, vfx: 'omni', hits: 50, desc: "A 50-hit sequence that makes the target wonder if they've met you." },
+                { name: "REALITY EDIT", cost: 280, mult: 40.0, color: 0xffffff, vfx: 'blackhole', hits: 1, desc: "Modify the current simulation live for a massive 40x hit." },
+                { name: "BULLET TIME", cost: 70, isBuff: true, buffType: 'dodge', buffVal: 0.60, duration: 8, color: 0x00ff00, desc: "Slow the simulation flow to gain 60% more dodge." }
             ]
         },
         // 90+
         {
             name: "SYS-ADMIN", desc: "Tier 10: God Mode", skills: [
-                { name: "CONSOLE LOG", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'matrix', hits: 100 }, // Total 10.0x
-                { name: "SUDO KILL", cost: 500, mult: 200.0, color: 0xff0000, vfx: 'nuke', hits: 1 },
-                { name: "DEV TOOLS", cost: 100, isBuff: true, buffType: 'all_offense', buffVal: 1.0, duration: 8, color: 0x00ff00, desc: "+100% All Offense" }
+                { name: "CONSOLE LOG", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'matrix', hits: 100, desc: "Flood the target with 100 hits of debugging information." },
+                { name: "SUDO KILL", cost: 500, mult: 200.0, color: 0xff0000, vfx: 'nuke', hits: 1, desc: "The ultimate administrative command. 200x damage." },
+                { name: "DEV TOOLS", cost: 100, isBuff: true, buffType: 'all_offense', buffVal: 1.0, duration: 8, color: 0x00ff00, desc: "Equip the tools of the creators for 100% more offense." }
             ]
         }
     ]
@@ -856,29 +856,44 @@ const RARITY = {
 };
 
 const PERK_POOL = [
-    // --- SCALING PERKS (Now Multiplicative) ---
-    { name: "HYDRAULICS", icon: "💪", baseVal: 15, desc: "+{val}% Damage", statDesc: "DMG", func: (p, v) => p.atk = Math.floor(p.atk * (1 + v / 100)) },
+    // --- SCALING PERKS (Now Multiplicative with Base) ---
+    {
+        name: "HYDRAULICS", icon: "💪", baseVal: 15, desc: "+{val}% Damage", statDesc: "DMG", func: (p, v) => {
+            p.baseAtk = Math.floor(p.baseAtk * (1 + v / 100));
+            p.recalculateStats();
+        }
+    },
     {
         name: "TITANIUM", icon: "🛡️", baseVal: 20, desc: "+{val}% Max HP", statDesc: "Max HP", func: (p, v) => {
-            const oldMax = p.maxHp;
-            p.maxHp = Math.floor(p.maxHp * (1 + v / 100));
-            p.hp += (p.maxHp - oldMax); // Heal the difference
+            p.baseMaxHp = Math.floor(p.baseMaxHp * (1 + v / 100));
+            p.recalculateStats();
         }
     },
     {
         name: "BATTERY", icon: "🔋", baseVal: 20, desc: "+{val}% Max Mana", statDesc: "Max Mana", func: (p, v) => {
-            p.maxMana = Math.floor(p.maxMana * (1 + v / 100));
+            p.baseMaxMana = Math.floor(p.baseMaxMana * (1 + v / 100));
+            p.recalculateStats();
             p.mana = p.maxMana; // Full refill on upgrade
         }
     },
 
     // --- UTILITY PERKS ---
-    { name: "RECYCLER", icon: "♻️", baseVal: 10, desc: "+{val}% Mana Regen", statDesc: "Regen", func: (p, v) => p.manaRegen = Math.floor(p.manaRegen * (1 + v / 100)) },
+    {
+        name: "RECYCLER", icon: "♻️", baseVal: 10, desc: "+{val}% Mana Regen", statDesc: "Regen", func: (p, v) => {
+            p.baseManaRegen = Math.floor(p.baseManaRegen * (1 + v / 100));
+            p.recalculateStats();
+        }
+    },
     { name: "CRITICAL OS", icon: "🎯", baseVal: 5, desc: "+{val}% Crit Chance", statDesc: "Crit", func: (p, v) => p.critChance += (v / 100) },
     { name: "VAMPIRE", icon: "🧛", baseVal: 2, desc: "+{val}% Lifesteal", statDesc: "Lifesteal", func: (p, v) => p.lifesteal = (p.lifesteal || 0) + (v / 100) },
 
     // --- DEFENSE PERKS ---
-    { name: "CHROME PLATING", icon: "🔩", baseVal: 15, desc: "+{val}% Armor", statDesc: "Armor", func: (p, v) => p.armor = Math.max(5, Math.floor((p.armor || 5) * (1 + v / 100))) },
+    {
+        name: "CHROME PLATING", icon: "🔩", baseVal: 15, desc: "+{val}% Armor", statDesc: "Armor", func: (p, v) => {
+            p.baseArmor = Math.max(5, Math.floor((p.baseArmor || 5) * (1 + v / 100)));
+            p.recalculateStats();
+        }
+    },
     { name: "REFLEX BOOST", icon: "⚡", baseVal: 3, desc: "+{val}% Dodge", statDesc: "Dodge", func: (p, v) => p.dodge += (v / 100) },
 
     // --- NEW OFFENSIVE PERKS ---
@@ -1086,7 +1101,7 @@ const game = {
             this.offerJobSelection(0);
             return;
         }
-        this.processFloorEvent(true);
+        this.processFloorEvent(true, true);
     },
 
     _initMapDrag(wrapper, redraw) {
@@ -1593,7 +1608,7 @@ const game = {
     applyBuff(skill) {
         const p = this.player;
         const type = skill.buffType;
-        const val = skill.buffVal;
+        const val = skill.buffVal; // Now treats this as decimal (e.g. 0.20 for 20%)
         const dur = skill.duration;
 
         // Initialize active buffs array if needed
@@ -1607,23 +1622,45 @@ const game = {
         else if (type === 'dodge') { p.dodge += val; buff.revert = () => p.dodge -= val; }
         else if (type === 'doubleStrike') { p.doubleStrike += val; buff.revert = () => p.doubleStrike -= val; }
         else if (type === 'lifesteal') { p.lifesteal += val; buff.revert = () => p.lifesteal -= val; }
-        else if (type === 'atk') { p.atk += val; buff.revert = () => p.atk -= val; }
-        else if (type === 'atkMult') { p.atkMult = (p.atkMult || 0) + val; buff.revert = () => p.atkMult -= val; }
-        else if (type === 'armor') { p.armor += val; buff.revert = () => p.armor -= val; }
+        else if (type === 'atk') {
+            p.atkMult += val;
+            p.recalculateStats();
+            buff.revert = () => { p.atkMult -= val; p.recalculateStats(); };
+        }
+        else if (type === 'armor') {
+            p.armorMult += val;
+            p.recalculateStats();
+            buff.revert = () => { p.armorMult -= val; p.recalculateStats(); };
+        }
+        else if (type === 'manaRegen') {
+            p.manaRegenMult += val;
+            p.recalculateStats();
+            buff.revert = () => { p.manaRegenMult -= val; p.recalculateStats(); };
+        }
         else if (type === 'critDamage') { p.critDamage += val; buff.revert = () => p.critDamage -= val; }
         else if (type === 'thorns') { p.thorns += val; buff.revert = () => p.thorns -= val; }
-        else if (type === 'manaRegen') { p.manaRegen += val; buff.revert = () => p.manaRegen -= val; }
-        else if (type === 'shield') { p.shield += val; p.maxShield = Math.max(p.maxShield, p.shield); buff.revert = () => { }; }
-        else if (type === 'regen') { buff.healPerTurn = val; buff.revert = () => { }; }
+        else if (type === 'shield') {
+            // Shield is % of Max HP
+            const shieldVal = Math.floor(p.maxHp * val);
+            p.shield += shieldVal;
+            p.maxShield = Math.max(p.maxShield, p.shield);
+            buff.revert = () => { };
+        }
+        else if (type === 'regen') {
+            // Regen is % of Max HP per turn
+            buff.healPerTurn = Math.floor(p.maxHp * val);
+            buff.revert = () => { };
+        }
         else if (type === 'invincible') { p.invincible = true; buff.revert = () => p.invincible = false; }
         else if (type === 'all_offense') {
-            p.critChance += val; p.critDamage += val; p.atk += Math.floor(p.atk * val);
-            const atkBonus = Math.floor(p.atk * val / (1 + val));
-            buff.revert = () => { p.critChance -= val; p.critDamage -= val; p.atk -= atkBonus; };
+            p.critChance += val; p.critDamage += val; p.atkMult += val;
+            p.recalculateStats();
+            buff.revert = () => { p.critChance -= val; p.critDamage -= val; p.atkMult -= val; p.recalculateStats(); };
         }
         else if (type === 'all_defense') {
-            p.armor += Math.floor(val * 50); p.dodge += val;
-            buff.revert = () => { p.armor -= Math.floor(val * 50); p.dodge -= val; };
+            p.armorMult += val; p.dodge += val;
+            p.recalculateStats();
+            buff.revert = () => { p.armorMult -= val; p.dodge -= val; p.recalculateStats(); };
         }
 
         p.activeBuffs.push(buff);
@@ -1654,14 +1691,23 @@ const game = {
         this.updateUI();
     },
 
+    clearAllBuffs() {
+        if (!this.player || !this.player.activeBuffs) return;
+        this.player.activeBuffs.forEach(buff => {
+            if (buff.revert) buff.revert();
+        });
+        this.player.activeBuffs = [];
+        this.player.shield = 0;
+        this.updateUI();
+    },
+
     triggerHit(skill, index, totalHits, frenzyBonus = 0) {
         let isCrit = Math.random() < this.player.critChance;
         const critMult = this.player.critDamage + (this.floor * 0.05);
         let raw = Math.floor(this.player.atk * skill.mult * (isCrit ? critMult : 1));
 
-        // BRAWLER: Apply frenzy bonus (click speed) and atkMult buff
-        const atkMultBonus = this.player.atkMult || 0;
-        raw = Math.floor(raw * (1 + frenzyBonus + atkMultBonus));
+        // BRAWLER: Apply frenzy bonus (click speed)
+        raw = Math.floor(raw * (1 + frenzyBonus));
 
         // Show frenzy bonus text on first hit
         if (frenzyBonus > 0 && index === 0) {
@@ -1693,7 +1739,9 @@ const game = {
         }
 
         if (skill.heal) this.player.hp = Math.min(this.player.maxHp, this.player.hp + (skill.heal / totalHits));
+        if (skill.healPercent) this.player.hp = Math.min(this.player.maxHp, this.player.hp + (this.player.maxHp * skill.healPercent / totalHits));
         if (skill.manaGain) this.player.mana = Math.min(this.player.maxMana, this.player.mana + (skill.manaGain / totalHits));
+        if (skill.manaGainPercent) this.player.mana = Math.min(this.player.maxMana, this.player.mana + (this.player.maxMana * skill.manaGainPercent / totalHits));
         if (this.player.lifesteal > 0) {
             const ls = Math.floor(raw * this.player.lifesteal);
             if (ls > 0) this.player.hp = Math.min(this.player.maxHp, this.player.hp + ls);
@@ -1897,13 +1945,18 @@ const game = {
         this.processFloorEvent(false);
     },
     // --- NEW EVENT MANAGER ---
-    processFloorEvent(ignoreStory = false) {
-        // 1. CHECK STORY (High Priority)
+    processFloorEvent(ignoreStory = false, ignoreSpawn = false) {
+        // 1. SPAWN ENEMY FIRST (So they are visible during story/selection)
+        if (!ignoreSpawn) {
+            this.spawnEnemy();
+        }
+
+        // 2. CHECK STORY (High Priority)
         if (!ignoreStory && this.checkStoryTrigger(this.floor)) {
             return; // Stop here, let the cutscene play.
         }
 
-        // 2. CHECK JOB SELECTION (Medium Priority)
+        // 3. CHECK JOB SELECTION (Medium Priority)
         if (this.floor % 10 === 0 && this.floor <= 90) {
             const nextTier = this.floor / 10;
             // Only offer if it's an upgrade
@@ -1919,7 +1972,7 @@ const game = {
 
         this.setScreen('hud');
         document.getElementById('battle-controls').classList.add('active');
-        this.spawnEnemy();
+        engine.focusCamera(null);
         this.updateButtons();
         this.updateUI();
 
@@ -2527,19 +2580,11 @@ const game = {
         // Add back to inventory
         this.player.inventory.push(item);
 
-        // Remove logic (Simplified for prototype: Revert stats manually or just accept growth)
-        // Ideally we would recalc stats from base + gear, but given the current code just ADDS, removing is tricky without base stats tracking.
-        // For now, let's just null it and user loses the item properties but keeps the stats (Anti-frustration feature? Or bug?)
-        // Let's TRY to reverse it if we can.
+        // Remove stats and unequip
+        this.player.unequip(type);
 
-        if (item.atk) this.player.atk -= item.atk;
-        if (item.hp) { this.player.maxHp -= item.hp; this.player.hp = Math.min(this.player.hp, this.player.maxHp); }
-        if (item.mana) { this.player.maxMana -= item.mana; this.player.mana = Math.min(this.player.mana, this.player.maxMana); }
-
-        this.player.gear[type] = null;
         this.renderInventory();
         this.updateUI();
-        this.showText("UNEQUIPPED", this.player.mesh.position, '#aaa');
     },
 
     // --- RENDER SHOP UI ---
@@ -2603,7 +2648,7 @@ const game = {
         // (Random equipment removed from Shop - only IAP/Crates now)
 
         // --- ADD STANDARD CRATE ---
-        const crateCost = 5000 + (this.floor * 100); // Scale slightly with floor
+        const crateCost = 600 + (this.floor * 25); // Reduced from 1200 + 50
         const crateEl = document.createElement('div');
         crateEl.className = 'shop-item';
         crateEl.style.borderColor = '#00f2ff';
@@ -2620,9 +2665,27 @@ const game = {
         `;
         crateEl.onclick = () => this.buyStandardCrate(crateCost);
         container.appendChild(crateEl);
+
+        // --- ADD ELITE CRATE ---
+        const eliteCost = 5000 + (this.floor * 250); // Reduced from 10000 + 500
+        const eliteEl = document.createElement('div');
+        eliteEl.className = 'shop-item';
+        eliteEl.style.borderColor = '#bf00ff';
+        eliteEl.style.boxShadow = `0 0 15px rgba(191, 0, 255, 0.4)`;
+        const canAffordElite = this.gold >= eliteCost;
+
+        eliteEl.innerHTML = `
+            <div>
+                <div class="item-name" style="color:#bf00ff; text-shadow:0 0 8px #bf00ff80;">ELITE SUPPLY</div>
+                <div class="item-desc" style="font-size:12px; color:#ccc;">Rare+ Item (Guaranteed)</div>
+                <div style="font-size:10px; text-transform:uppercase; color:#fff; margin-top:4px;">PREMIUM CRATE</div>
+            </div>
+            <div class="cost" style="color:${canAffordElite ? '#ffe600' : '#555'}; font-size: 20px;">${eliteCost} CR</div>
+        `;
+        eliteEl.onclick = () => this.buyEliteCrate(eliteCost);
+        container.appendChild(eliteEl);
     },
 
-    // --- BUY LOGIC ---
     buyItem(id) {
         const cost = this.getItemCost(id);
 
@@ -2632,9 +2695,18 @@ const game = {
 
             // Apply Stats
             if (id === 'heal') this.player.hp = Math.min(this.player.maxHp, this.player.hp + val);
-            else if (id === 'atk') this.player.atk += val;
-            else if (id === 'hp') { this.player.maxHp += val; this.player.hp += val; }
-            else if (id === 'mana') { this.player.maxMana += val; this.player.mana += val; }
+            else if (id === 'atk') {
+                this.player.baseAtk += val;
+                this.player.recalculateStats();
+            }
+            else if (id === 'hp') {
+                this.player.baseMaxHp += val;
+                this.player.recalculateStats();
+            }
+            else if (id === 'mana') {
+                this.player.baseMaxMana += val;
+                this.player.recalculateStats();
+            }
             // Late-game stats
             else if (id === 'breach') this.player.breachDamage = (this.player.breachDamage || 0) + val;
             else if (id === 'combo') this.player.comboMult = (this.player.comboMult || 0.01) + val;
@@ -2649,43 +2721,59 @@ const game = {
         }
     },
 
+    // --- CRATE LOGIC ---
+    buyEliteCrate(cost) {
+        if (this.gold < cost) {
+            this.showText("INSUFFICIENT FUNDS", this.player.mesh.position, '#ff0000');
+            return;
+        }
+
+        this.gold -= cost;
+        this.updateUI();
+
+        // Determine Rarity (Rare 60%, Epic 35%, Legendary 5%)
+        let rarity = 'rare';
+        const rnd = Math.random();
+        if (rnd > 0.95) rarity = 'legendary';
+        else if (rnd > 0.60) rarity = 'epic';
+        else rarity = 'rare';
+
+        this.giveRandomItemFromPool(rarity);
+    },
+
     buyStandardCrate(cost) {
         if (this.gold < cost) {
             this.showText("INSUFFICIENT FUNDS", this.player.mesh.position, '#ff0000');
             return;
         }
 
-        // Deduct Gold
         this.gold -= cost;
         this.updateUI();
 
         // Determine Rarity (Common 60%, Rare 35%, Epic 5%)
         let rarity = 'common';
         const rnd = Math.random();
-        if (rnd > 0.95) rarity = 'epic';        // Top 5%
-        else if (rnd > 0.60) rarity = 'rare';   // Next 35%
-        else rarity = 'common';                 // Bottom 60%
+        if (rnd > 0.95) rarity = 'epic';
+        else if (rnd > 0.60) rarity = 'rare';
+        else rarity = 'common';
 
-        // Pick Item
+        this.giveRandomItemFromPool(rarity);
+    },
+
+    giveRandomItemFromPool(rarity) {
         const types = ['WEAPONS', 'ACCESSORIES'];
         const type = types[Math.floor(Math.random() * types.length)];
-        // Ensure ITEMS is defined (it is global constant)
         if (typeof ITEMS === 'undefined') return;
 
         const pool = ITEMS[type].filter(i => i.rarity === rarity);
-
         if (pool.length === 0) {
             console.error("No items found for rarity:", rarity);
             return;
         }
 
         const itemTemplate = pool[Math.floor(Math.random() * pool.length)];
-
-        // Clone item to inventory
         const newItem = { ...itemTemplate, id: Date.now() + Math.random() };
         this.player.inventory.push(newItem);
-
-        // Animation
         this.showCrateAnimation(newItem);
     },
 
@@ -2996,6 +3084,7 @@ const game = {
     spawnEnemy() {
         if (this.enemy) engine.scene.remove(this.enemy.mesh);
         this.battleCombo = 0;
+        this.clearAllBuffs(); // FRESH START
 
         const isFinalBoss = (this.floor >= 100);
         const isMidBoss = (this.floor === 25 || this.floor === 50 || this.floor === 75);
@@ -3025,8 +3114,8 @@ const game = {
             this.bossPhase = 1; // <--- NEW TRACKER
 
             // Phase 1: The "Avatar" (Weaker version)
-            // 150M HP / Normal Boss Damage
-            hp = 150000000 * Math.pow(2, this.rebirth);
+            // 250M HP / Normal Boss Damage (Was 150M)
+            hp = 250000000 * Math.pow(2, this.rebirth);
             atk = 300000 * Math.pow(1.5, this.rebirth);
 
             document.getElementById('enemy-name').innerText = `THE ARCHITECT (AVATAR)`;
@@ -3035,7 +3124,7 @@ const game = {
             this.enemy.mitigation = 0.4;
         }
         else if (isMidBoss) {
-            hp *= 6; // Tanky mid-bosses
+            hp *= 10; // Tanky mid-bosses (was 6x)
             atk *= 2.5;
             const names = { 25: "WARDEN", 50: "EXECUTIONER", 75: "OVERLORD" };
             const variants = { 25: 0, 50: 1, 75: 2 };
@@ -3044,7 +3133,7 @@ const game = {
             this.enemy = new Unit(false, hp, hp, atk, 0xff5500, 'midboss', variants[this.floor]);
         }
         else if (isFloorBoss) {
-            hp *= 3.0;
+            hp *= 5.0; // (was 3.0x)
             atk *= 2.0;
             document.getElementById('enemy-name').innerText = `SECTOR BOSS - ${this.floor}`;
             document.getElementById('enemy-name').style.color = '#ff0000';
@@ -3060,7 +3149,8 @@ const game = {
         }
 
         // --- STATS ---
-        this.enemy.armor = this.floor * 5; // Armor helps trash mobs survive rapid weak hits
+        this.enemy.baseArmor = this.floor * 5; // Armor helps trash mobs survive rapid weak hits
+        this.enemy.armor = this.enemy.baseArmor;
         this.enemy.critChance = Math.min(0.20, this.floor * 0.002);
         if (this.floor > 10) this.enemy.dodge = Math.min(0.15, (this.floor - 10) * 0.002);
 
@@ -3260,10 +3350,41 @@ const game = {
                 this.showText(`+${overkillCredits} OVERKILL`, this.enemy.mesh.position, '#ffe600');
             }
         }
-        engine.tween(this.enemy.mesh.scale, 'y', 0.1, 200);
+        const enemyMesh = this.enemy.mesh;
+        engine.tween(enemyMesh.scale, 'y', 0, 300, () => {
+            if (enemyMesh.parent) engine.scene.remove(enemyMesh);
+        });
 
         // Reset player position after battle
         this.resetPlayerPosition();
+
+        // --- RANDOM ITEM DROP ---
+        let dropChance = 0.05; // 5% base chance (was 12%)
+        const isBoss = ['boss', 'midboss', 'architect'].includes(this.enemy.type);
+        if (isBoss) dropChance = 0.25; // 25% for bosses (was 50%)
+
+        if (Math.random() < dropChance) {
+            const rnd = Math.random();
+            let rarity = 'common';
+
+            if (isBoss) {
+                // Bosses drop better loot: 60% Rare, 30% Epic, 10% Legendary
+                if (rnd > 0.90) rarity = 'legendary';
+                else if (rnd > 0.60) rarity = 'epic';
+                else rarity = 'rare';
+            } else {
+                // Regular mobs: 70% Common, 22% Rare, 7% Epic, 1% Legendary
+                if (rnd > 0.99) rarity = 'legendary';
+                else if (rnd > 0.92) rarity = 'epic';
+                else if (rnd > 0.70) rarity = 'rare';
+                else rarity = 'common';
+            }
+
+            // Slight delay so the crate animation feels like a reward after the screen transition
+            setTimeout(() => {
+                this.giveRandomItemFromPool(rarity);
+            }, 800);
+        }
 
         this.updateUI();
         this.generatePerks();
@@ -4068,10 +4189,34 @@ const game = {
 
 class Unit {
     constructor(isPlayer, hp, maxHp, atk, color, type = 'walker', variant = 0) {
-        this.isPlayer = isPlayer; this.hp = hp; this.maxHp = maxHp; this.atk = atk; this.type = type;
-        this.maxMana = isPlayer ? 50 : 100; this.mana = this.maxMana; this.manaRegen = 5;
+        this.isPlayer = isPlayer;
+        this.type = type;
+
+        // Base values (before multipliers)
+        this.baseMaxHp = maxHp;
+        this.baseAtk = atk;
+        this.baseMaxMana = isPlayer ? 50 : 100;
+        this.baseArmor = 0;
+        this.baseManaRegen = 5;
+
+        // Multipliers (0.2 = +20%)
+        this.hpMult = 0;
+        this.atkMult = 0;
+        this.manaMult = 0;
+        this.armorMult = 0;
+        this.manaRegenMult = 0;
+
+        // Final calculated values
+        this.maxHp = maxHp;
+        this.hp = hp;
+        this.atk = atk;
+        this.maxMana = this.baseMaxMana;
+        this.mana = this.maxMana;
+        this.manaRegen = this.baseManaRegen;
+        this.armor = 0;
+
         this.critChance = 0.05; this.critDamage = 1.5; this.lifesteal = 0; this.jobType = null; this.jobTier = 0;
-        this.armor = 0; this.dodge = 0; this.thorns = 0; this.doubleStrike = 0; this.manaCostReduction = 0;
+        this.dodge = 0; this.thorns = 0; this.doubleStrike = 0; this.manaCostReduction = 0;
         this.executeThreshold = 0; this.overkillBonus = 0; this.shield = 0; this.maxShield = 0; this.bonusCredits = 0;
         this.activeBuffs = []; this.invincible = false;
 
@@ -4177,38 +4322,53 @@ class Unit {
         setTimeout(() => this.mesh.position.x = base, 50);
         // Show Text handled in TriggerHit
     }
+    unequip(slot) {
+        const old = this.gear[slot];
+        if (!old) return;
+
+        // Remove flat bonuses (Update base stats)
+        if (old.atk) this.baseAtk -= old.atk;
+        if (old.hp) this.baseMaxHp -= old.hp;
+        if (old.mana) this.baseMaxMana -= old.mana;
+        if (old.crit) this.critChance -= old.crit;
+        if (old.dodge) this.dodge -= old.dodge;
+
+        // Remove multipliers
+        if (old.atkMult) this.atkMult -= old.atkMult;
+        if (old.hpMult) this.hpMult -= old.hpMult;
+        if (old.manaMult) this.manaMult -= old.manaMult;
+        if (old.critChance) this.critChance -= old.critChance;
+        if (old.critDamage) this.critDamage -= old.critDamage;
+        if (old.lifesteal) this.lifesteal -= old.lifesteal;
+        if (old.armor) this.baseArmor = (this.baseArmor || 0) - old.armor;
+        if (old.regen) this.baseManaRegen = (this.baseManaRegen || 5) - old.regen;
+        if (old.thorns) this.thorns -= old.thorns;
+
+        this.gear[slot] = null;
+        this.recalculateStats();
+        game.updateGearUI();
+        game.showText(`UNEQUIPPED ${old.name}`, this.mesh.position, '#aaa');
+    }
+
     equip(item) {
         const slot = item.type; // 'weapon' or 'accessory'
 
-        // 1. Unequip existing (remove stats)
+        // 1. Unequip existing if any
         if (this.gear[slot]) {
-            const old = this.gear[slot];
-            // Remove old flat bonuses (legacy support)
-            if (old.atk) this.atk -= old.atk;
-            if (old.hp) { this.maxHp -= old.hp; this.hp = Math.min(this.hp, this.maxHp); }
-            if (old.mana) { this.maxMana -= old.mana; this.mana = Math.min(this.mana, this.maxMana); }
-            if (old.crit) this.critChance -= old.crit;
-            if (old.dodge) this.dodge -= old.dodge;
-            // Remove multipliers
-            if (old.atkMult) this.atkMult = (this.atkMult || 0) - old.atkMult;
-            if (old.hpMult) this.hpMult = (this.hpMult || 0) - old.hpMult;
-            if (old.manaMult) this.manaMult = (this.manaMult || 0) - old.manaMult;
-            if (old.critChance) this.critChance -= old.critChance;
-            if (old.critDamage) this.critDamage -= old.critDamage;
-            if (old.lifesteal) this.lifesteal -= old.lifesteal;
-            if (old.armor) this.armor = (this.armor || 0) - old.armor;
-            if (old.regen) this.regen = (this.regen || 0) - old.regen;
-            if (old.thorns) this.thorns = (this.thorns || 0) - old.thorns;
+            // Stats are reversed inside unequip()
+            this.unequip(slot);
         }
 
         // 2. Equip new (add stats)
         this.gear[slot] = item;
-        // Add flat bonuses (legacy support)
-        if (item.atk) this.atk += item.atk;
-        if (item.hp) { this.maxHp += item.hp; this.hp += item.hp; }
-        if (item.mana) { this.maxMana += item.mana; this.mana += item.mana; }
+
+        // Add flat bonuses (Update base stats)
+        if (item.atk) this.baseAtk += item.atk;
+        if (item.hp) this.baseMaxHp += item.hp;
+        if (item.mana) this.baseMaxMana += item.mana;
         if (item.crit) this.critChance += item.crit;
         if (item.dodge) this.dodge += item.dodge;
+
         // Add multipliers
         if (item.atkMult) this.atkMult = (this.atkMult || 0) + item.atkMult;
         if (item.hpMult) this.hpMult = (this.hpMult || 0) + item.hpMult;
@@ -4216,11 +4376,11 @@ class Unit {
         if (item.critChance) this.critChance += item.critChance;
         if (item.critDamage) this.critDamage += item.critDamage;
         if (item.lifesteal) this.lifesteal += item.lifesteal;
-        if (item.armor) this.armor = (this.armor || 0) + item.armor;
-        if (item.regen) this.regen = (this.regen || 0) + item.regen;
+        if (item.armor) this.baseArmor = (this.baseArmor || 0) + item.armor;
+        if (item.regen) this.baseManaRegen = (this.baseManaRegen || 5) + item.regen;
         if (item.thorns) this.thorns = (this.thorns || 0) + item.thorns;
 
-        // 3. Recalculate multiplied stats based on base values
+        // 3. Final Recalculation
         this.recalculateStats();
 
         // 4. UI Update
@@ -4229,32 +4389,30 @@ class Unit {
     }
 
     recalculateStats() {
-        // Apply multipliers to base stats
-        // Store base stats if not already stored
-        if (!this.baseAtk) {
-            this.baseAtk = 20; // Starting ATK
-            this.baseMaxHp = 100; // Starting HP
-            this.baseMaxMana = 50; // Starting Mana
-        }
-
-        // Apply multipliers
-        const atkMult = 1 + (this.atkMult || 0);
-        const hpMult = 1 + (this.hpMult || 0);
-        const manaMult = 1 + (this.manaMult || 0);
-
-        // Recalculate
         const oldMaxHp = this.maxHp;
         const oldMaxMana = this.maxMana;
 
-        this.atk = Math.floor(this.baseAtk * atkMult);
-        this.maxHp = Math.floor(this.baseMaxHp * hpMult);
-        this.maxMana = Math.floor(this.baseMaxMana * manaMult);
+        // Apply multipliers: Final = Base * (1 + Mult)
+        this.maxHp = Math.floor(this.baseMaxHp * (1 + (this.hpMult || 0)));
+        this.atk = Math.floor(this.baseAtk * (1 + (this.atkMult || 0)));
+        this.maxMana = Math.floor(this.baseMaxMana * (1 + (this.manaMult || 0)));
+        this.armor = Math.floor(this.baseArmor + (this.baseAtk * 0.1 * (this.armorMult || 0))); // Armor scales with 10% of base ATK for meaningful padding
+        this.manaRegen = Math.floor(this.baseManaRegen * (1 + (this.manaRegenMult || 0)));
 
         // Maintain HP/Mana ratio when max changes
-        const hpRatio = oldMaxHp > 0 ? this.hp / oldMaxHp : 1;
-        const manaRatio = oldMaxMana > 0 ? this.mana / oldMaxMana : 1;
-        this.hp = Math.floor(this.maxHp * hpRatio);
-        this.mana = Math.floor(this.maxMana * manaRatio);
+        if (oldMaxHp > 0) {
+            const hpRatio = this.hp / oldMaxHp;
+            this.hp = Math.floor(this.maxHp * hpRatio);
+        } else {
+            this.hp = this.maxHp;
+        }
+
+        if (oldMaxMana > 0) {
+            const manaRatio = this.mana / oldMaxMana;
+            this.mana = Math.floor(this.maxMana * manaRatio);
+        } else {
+            this.mana = this.maxMana;
+        }
     }
 
 }
