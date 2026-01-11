@@ -1,5 +1,4 @@
 const engine = {
-    // ... (Keep existing scene, camera, renderer, particles logic) ...
     scene: null, camera: null, renderer: null, particles: [], shakeIntensity: 0,
     grid: null, ambientLight: null, dirLight: null, // Store references for theme changes
 
@@ -213,6 +212,10 @@ const engine = {
     },
 
     animate() {
+        if (this.isHitStopped) {
+            requestAnimationFrame(() => this.animate());
+            return;
+        }
         requestAnimationFrame(() => this.animate());
 
         // Idle Animation System
@@ -271,6 +274,13 @@ const engine = {
         }
 
         this.renderer.render(this.scene, this.camera);
+    },
+
+    hitStop(ms) {
+        this.isHitStopped = true;
+        setTimeout(() => {
+            this.isHitStopped = false;
+        }, ms);
     },
 
     updateGlitch(bossMesh) {

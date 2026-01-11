@@ -123,7 +123,7 @@
             <div class="iap-grid-layout">
                 <!-- FEATURED / PERMANENT -->
                 <div class="iap-col featured">
-                    <h3 class="iap-header" style="color:#ffd700">ELITE STATUS</h3>
+                    <h3 class="iap-header">ELITE STATUS</h3>
 
                     <div class="iap-card elite" onclick="game.buyNeonPrime()">
                         <div class="iap-tag">BEST VALUE</div>
@@ -148,16 +148,16 @@
 
                 <!-- CONSUMABLES -->
                 <div class="iap-col">
-                    <h3 class="iap-header" style="color:#00f2ff">SUPPLY DROPS</h3>
+                    <h3 class="iap-header">SUPPLY DROPS</h3>
 
                     <div class="iap-card" onclick="game.buyLootCrate('legendary')">
-                        <div class="iap-title" style="color:#00f2ff">LOOT CRATE</div>
+                        <div class="iap-title">LOOT CRATE</div>
                         <div class="iap-desc">Contains 1 Random Item.</div>
                         <div class="iap-price-btn">$4.99</div>
                     </div>
 
                     <div class="iap-card" onclick="game.buyOverclock()">
-                        <div class="iap-title" style="color:#ff0055">SYSTEM OVERCLOCK</div>
+                        <div class="iap-title">SYSTEM OVERCLOCK</div>
                         <div class="iap-desc">+100% DAMAGE & SPEED for the next 10 Floors</div>
                         <div class="iap-price-btn">$2.99</div>
                     </div>
@@ -171,7 +171,7 @@
 
                 <!-- CREDITS -->
                 <div class="iap-col">
-                    <h3 class="iap-header" style="color:#0f0">CREDIT BANK</h3>
+                    <h3 class="iap-header">CREDIT BANK</h3>
 
                     <div class="iap-card small" onclick="game.buyCredits(10000, 1.99)">
                         <div class="iap-row">
@@ -181,19 +181,19 @@
                     </div>
                     <div class="iap-card small" onclick="game.buyCredits(50000, 4.99)">
                         <div class="iap-row">
-                            <span class="iap-qty" style="color:#00f2ff">50k</span>
+                            <span class="iap-qty">50k</span>
                             <span class="iap-cost">$4.99</span>
                         </div>
                     </div>
                     <div class="iap-card small" onclick="game.buyCredits(150000, 9.99)">
                         <div class="iap-row">
-                            <span class="iap-qty" style="color:#bf00ff">150k</span>
+                            <span class="iap-qty">150k</span>
                             <span class="iap-cost">$9.99</span>
                         </div>
                     </div>
                     <div class="iap-card small" onclick="game.buyCredits(500000, 24.99)">
                         <div class="iap-row">
-                            <span class="iap-qty" style="color:#ffe600">500k</span>
+                            <span class="iap-qty">500k</span>
                             <span class="iap-cost">$24.99</span>
                         </div>
                     </div>
@@ -221,7 +221,8 @@
     </div>
 
     <div id="shop-screen" class="screen">
-        <h2 class="screen-title">THE ARMORY <span id="shop-tier" style="font-size:20px; color:#888">TIER 1</span></h2>
+        <h2 class="screen-title">THE ARMORY <span id="shop-tier" style="font-size:20px; color:#888">TIER 1</span>
+        </h2>
         <div class="shop-header">CREDITS: <span id="shop-gold">0</span></div>
 
         <div class="shop-grid" id="shop-container"></div>
@@ -234,36 +235,32 @@
         <button onclick="game.closeInventory()"
             style="position:fixed; top:20px; right:20px; z-index:100; background:transparent; border:none; color:#fff; font-size:30px; cursor:pointer;">✕</button>
 
-        <div class="inventory-layout"
-            style="display:flex; width:100%; max-width:1200px; height:85%; padding:10px; gap:20px;">
+        <div class="inventory-layout">
             <!-- COL 1: EQUIPPED & STATS -->
-            <div style="flex:1; display:flex; flex-direction:column; gap:15px; min-width:250px;">
+            <div class="inv-col inv-side">
                 <h3 class="inv-header">LOADOUT</h3>
                 <div id="equip-weapon" class="equip-slot" onclick="game.unequip('weapon')">EMPTY WEAPON</div>
-                <div id="equip-accessory" class="equip-slot" onclick="game.unequip('accessory')">EMPTY ACCESSORY</div>
+                <div id="equip-accessory" class="equip-slot" onclick="game.unequip('accessory')">EMPTY ACCESSORY
+                </div>
 
-                <h3 class="inv-header" style="margin-top:auto;">STATS</h3>
-                <div id="equip-stats"
-                    style="color:#ddd; font-size:14px; background:rgba(0,0,0,0.5); padding:10px; border-radius:5px; border:1px solid #333;">
+                <h3 class="inv-header stats-header">STATS</h3>
+                <div id="equip-stats" class="stats-panel">
                     STATS...
                 </div>
             </div>
 
             <!-- COL 2: STORAGE GRID -->
-            <div
-                style="flex:1.5; display:flex; flex-direction:column; border-left:1px solid #333; border-right:1px solid #333; padding:0 15px;">
+            <div class="inv-col inv-main">
                 <h3 class="inv-header">STORAGE</h3>
-                <div id="inventory-grid"
-                    style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start; overflow-y:auto; height:100%;">
+                <div id="inventory-grid" class="inventory-grid">
                 </div>
             </div>
 
             <!-- COL 3: DETAILS -->
-            <div style="flex:1; display:flex; flex-direction:column; min-width:250px;">
+            <div class="inv-col inv-side">
                 <h3 class="inv-header">ITEM DETAILS</h3>
-                <div id="inv-details-panel"
-                    style="flex:1; background:rgba(0,0,0,0.3); border:1px solid #333; padding:20px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                    <div style="color:#666; font-style:italic;">Select an item to view details</div>
+                <div id="inv-details-panel" class="details-panel">
+                    <div class="details-placeholder">Select an item to view details</div>
                 </div>
             </div>
         </div>
@@ -300,13 +297,14 @@
     <div id="gameover-screen" class="screen">
         <h1 class="crit-fail">CRITICAL FAILURE</h1>
         <p class="fail-stats">FLOOR REACHED: <span id="final-floor">0</span></p>
-        <button class="btn" onclick="game.startRun()">REBOOT SYSTEM</button>
+        <button id="retry-btn" class="btn" onclick="game.retryFloor()">RETRY FROM SAVED DATA</button>
     </div>
 
     <div id="awakening-screen" class="screen">
         <h1 style="color:#ffd700; text-shadow: 0 0 30px #ffd700, 0 0 60px #ff8800;">⚡ AWAKENING ⚡</h1>
         <p style="color:#fff; font-size:18px; max-width:500px; margin:20px auto;">
-            You have reached <span style="color:#ff0055">FLOOR 50</span>. Your neural pathways have evolved beyond their
+            You have reached <span style="color:#ff0055">FLOOR 50</span>. Your neural pathways have evolved beyond
+            their
             original parameters.
         </p>
         <div

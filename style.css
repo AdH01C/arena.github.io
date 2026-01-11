@@ -624,6 +624,18 @@ body {
     font-size: 18px;
 }
 
+.iap-col:nth-child(1) .iap-header {
+    color: #ffd700;
+}
+
+.iap-col:nth-child(2) .iap-header {
+    color: #00f2ff;
+}
+
+.iap-col:nth-child(3) .iap-header {
+    color: #0f0;
+}
+
 .iap-card {
     background: rgba(30, 30, 40, 0.85);
     border: 1px solid #555;
@@ -708,6 +720,68 @@ body {
 }
 
 /* --- INVENTORY STYLES --- */
+.inventory-layout {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    height: 85%;
+    padding: 10px;
+    gap: 20px;
+}
+
+.inv-col {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.inv-side {
+    flex: 1;
+    min-width: 250px;
+}
+
+.inv-main {
+    flex: 1.5;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    padding: 0 15px;
+}
+
+.inventory-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: flex-start;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.stats-panel {
+    color: #ddd;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+.details-panel {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.details-placeholder {
+    color: #666;
+    font-style: italic;
+}
+
 .inv-header {
     color: #aaa;
     border-bottom: 1px solid #444;
@@ -1293,30 +1367,6 @@ body {
     pointer-events: none;
 }
 
-/* Classes toggle button - integrated into HUD */
-#classes-btn {
-    border-color: #00f2ff !important;
-    color: #00f2ff !important;
-    font-weight: bold;
-    font-size: 14px;
-    padding: 5px 15px !important;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-#classes-btn:hover {
-    background: #00f2ff !important;
-    color: #000 !important;
-    box-shadow: 0 0 20px #00f2ff !important;
-}
-
-@media (max-width: 800px) {
-    #classes-btn {
-        padding: 4px 10px !important;
-        font-size: 12px !important;
-    }
-}
-
 .class-map-links path.link-unlocked {
     stroke: rgba(0, 242, 255, 0.18);
     stroke-width: 3;
@@ -1340,20 +1390,36 @@ body {
     }
 }
 
-/* MOBILE / RESPONSIVE */
+/* Classes toggle button - integrated into HUD */
+#classes-btn {
+    border-color: #00f2ff !important;
+    color: #00f2ff !important;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 15px !important;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#classes-btn:hover {
+    background: #00f2ff !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px #00f2ff !important;
+}
+
 @media (max-width: 800px) {
     #classes-map-wrapper {
         height: calc(100vh - 140px);
     }
 
     .map-node {
-        width: 92px;
-        height: 92px;
-        border-radius: 14px;
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
     }
 
     .node-title {
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .node-sub {
@@ -1361,7 +1427,7 @@ body {
     }
 
     .class-map {
-        gap: 12px;
+        gap: 10px;
     }
 
     .class-column-highlight {
@@ -1382,8 +1448,91 @@ body {
         margin-top: 10px;
     }
 
+    /* IAP Grid Stack */
+    .iap-grid-layout {
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 100px;
+    }
+
+    .iap-col {
+        min-width: 100%;
+        max-width: 450px;
+    }
+
+    .iap-col.featured {
+        transform: none;
+        box-shadow: 0 0 20px rgba(191, 0, 255, 0.2);
+    }
+
+    /* Inventory Stack */
+    .inventory-layout {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+        padding-bottom: 80px;
+    }
+
+    .inv-main {
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid #333;
+        border-bottom: 1px solid #333;
+        padding: 15px 0;
+    }
+
+    .inventory-grid {
+        justify-content: center;
+        max-height: 300px;
+    }
+
+    .inv-side {
+        min-width: 100%;
+    }
+
+    /* UI Scaling */
+    .screen-title {
+        font-size: 36px;
+    }
+
     .btn {
         padding: 12px 18px;
+    }
+
+    #top-ui {
+        padding: 10px 15px;
+    }
+
+    .stat-box {
+        font-size: 20px;
+        padding: 5px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .glitch-title {
+        font-size: 48px;
+    }
+
+    .sub-title {
+        font-size: 14px;
+    }
+
+    .iap-title {
+        font-size: 20px;
+    }
+
+    .iap-price-btn {
+        width: 100%;
+    }
+
+    .inventory-item {
+        width: 50px;
+        height: 50px;
+    }
+
+    .item-stat-val {
+        font-size: 14px;
     }
 }
 

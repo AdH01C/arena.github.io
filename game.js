@@ -1429,6 +1429,44 @@ const game = {
 
     },
 
+    handleDefeat() {
+        this.state = 'GAMEOVER';
+        const rollbackFloor = Math.max(1, this.floor - 5);
+
+        const finalFloorEl = document.getElementById('final-floor');
+        if (finalFloorEl) finalFloorEl.innerText = this.floor;
+
+        const retryBtn = document.getElementById('retry-btn');
+        if (retryBtn) {
+            retryBtn.innerText = `RETRY FROM FLOOR ${rollbackFloor}`;
+            retryBtn.onclick = () => this.retryFloor();
+        }
+
+        this.setScreen('gameover-screen');
+        const battleControls = document.getElementById('battle-controls');
+        if (battleControls) battleControls.classList.remove('active');
+    },
+
+    retryFloor() {
+        // Rollback current floor
+        this.floor = Math.max(1, this.floor - 5);
+
+        // Fully restore player
+        this.player.hp = this.player.maxHp;
+        this.player.mana = this.player.maxMana;
+
+        // Clear all active buffs (to prevent stacking exploits)
+        this.player.activeBuffs = [];
+        this.buffs = {};
+
+        // Decelerate floor so nextFloor() lands precisely on the rollback target
+        this.floor--;
+        this.nextFloor();
+
+        // Close screen
+        this.setScreen('hud'); // Back to game
+    },
+
     // Tutorial System
     tutorialStep: 0,
     tutorialState: 'INACTIVE',
@@ -1811,6 +1849,14 @@ const game = {
         // BRAWLER: Apply frenzy bonus (click speed)
         raw = Math.floor(raw * (1 + frenzyBonus));
 
+        // --- NEW: BOSS/PLAYER MECHANICS (Executioner charges) ---
+        if (this.shadowCharges > 0) {
+            const chargeBonus = this.shadowCharges * 0.5; // 50% per charge
+            raw = Math.floor(raw * (1 + chargeBonus));
+            game.showText(`SHADOW STRIKE!`, this.mesh.position, '#8800ff');
+            this.shadowCharges = 0; // Consume all
+        }
+
         // Show frenzy bonus text on first hit
         if (frenzyBonus > 0 && index === 0) {
             const frenzyPct = Math.floor(frenzyBonus * 100);
@@ -1827,6 +1873,12 @@ const game = {
         else if (this.battleCombo === 25) this.showText("25 COMBO!", this.player.mesh.position, '#ff5500');
         else if (this.battleCombo === 50) this.showText("50 COMBO!", this.player.mesh.position, '#ff0000');
         else if (this.battleCombo === 100) this.showText("100 COMBO!!", this.player.mesh.position, '#ff00ff');
+
+        // --- NEW: BOSS/COMBAT POLISH (Crits) ---
+        if (isCrit) {
+            engine.hitStop(50); // Small pause for impact
+            engine.addShake(0.2);
+        }
 
         // % MAX HP DAMAGE (Breach) - helps against tanky enemies
         if (this.player.breachDamage > 0) {
@@ -3423,6 +3475,27 @@ const game = {
                 engine.spawnParticles(this.player.mesh.position, 0xffaa00, 5);
             }
 
+            // --- NEW: BOSS MECHANICS ---
+            if (this.enemy.isRaging || this.enemy.type === 'midboss') {
+                this.enemy.turnCount = (this.enemy.turnCount || 0) + 1;
+
+                // Warden (Floor 25): Reactive Shield every 3 turns
+                if (this.floor >= 25 && this.floor < 40 && this.enemy.turnCount % 3 === 0) {
+                    this.enemy.reflectShield = 0.5; // Reflect 50%
+                    this.showText("REACTIVE SHIELD ACTIVE", this.enemy.mesh.position, '#00f2ff');
+                    this.runVFX('shield', this.enemy.mesh.position, 0x00f2ff, 0, 1.5);
+                } else {
+                    this.enemy.reflectShield = 0;
+                }
+
+                // Overlord (Floor 75): Mana Drain
+                if (this.floor >= 75 && this.floor < 90) {
+                    const drain = 15;
+                    this.player.mana = Math.max(0, this.player.mana - drain);
+                    this.showText(`-${drain} MP (DRAIN)`, this.player.mesh.position, '#ff00ff');
+                }
+            }
+
             const regen = this.player.manaRegen;
             this.player.mana = Math.min(this.player.maxMana, this.player.mana + regen);
             this.showText(`+${regen} MP`, this.player.mesh.position, '#00f2ff');
@@ -3442,10 +3515,7 @@ const game = {
                     this.updateUI();
                     this.state = 'IDLE';
                 } else {
-                    this.state = 'GAMEOVER';
-                    document.getElementById('final-floor').innerText = this.floor;
-                    this.setScreen('gameover-screen');
-                    document.getElementById('battle-controls').classList.remove('active');
+                    this.handleDefeat();
                 }
             } else {
                 this.state = 'IDLE';
@@ -4469,6 +4539,14 @@ class Unit {
         this.activeBuffs = []; this.invincible = false;
         this.manaCostMult = 1.0; // Added for corrupted penalties
 
+        // Phase/Boss Mechanics
+        this.phase = 1;
+        this.maxPhase = 2;
+        this.isRaging = false;
+        this.reflectShield = 0; // % DMG reflected
+        this.shadowCharges = 0; // Executioner charges
+        this.turnCount = 0;
+
         // --- NEW: SKILL SYSTEM ---
         this.unlockedSkills = []; // Stores all known skills
         this.pinnedSkills = [null, null]; // Stores the 2 active skills in slots
@@ -4526,8 +4604,15 @@ class Unit {
             return 0;
         }
         // Dodge check
-        if (this.isPlayer && Math.random() < this.dodge) {
+        if (Math.random() < this.dodge) {
             game.showText("DODGE!", this.mesh.position, '#00ff00');
+
+            // Executioner (Floor 50): Gain Shadow Charge on dodge
+            if (this.type === 'midboss' && game.floor >= 50 && game.floor < 65) {
+                this.shadowCharges = (this.shadowCharges || 0) + 1;
+                game.showText(`SHADOW CHARGE (+${this.shadowCharges})`, this.mesh.position, '#8800ff');
+                game.runVFX('puff', this.mesh.position, 0x8800ff, 0, 1.2);
+            }
             return 0;
         }
         // Armor reduces damage
@@ -4536,6 +4621,12 @@ class Unit {
         // --- MUTATION: OVERCLOCKED ---
         if (game.currentMutation === 'overclocked') {
             finalDmg = Math.floor(finalDmg * 1.5);
+        }
+
+        if (this.isPlayer && game.enemy && game.enemy.reflectShield > 0) {
+            const reflect = Math.floor(amount * game.enemy.reflectShield);
+            game.enemy.hp = Math.max(0, game.enemy.hp - reflect);
+            game.showText(`${reflect} REFLECT`, game.enemy.mesh.position, '#ff00ff');
         }
 
         // Shield absorbs damage first
@@ -4570,6 +4661,11 @@ class Unit {
                 game.triggerBossEnding();
                 return;
             }
+        }
+
+        if (!this.isPlayer && !this.isRaging && this.hp < (this.maxHp * 0.5) &&
+            ['midboss', 'boss', 'architect'].includes(this.type)) {
+            this.triggerRage();
         }
         // -----------------------------
         // Thorns damage (reflect)
@@ -4678,4 +4774,28 @@ class Unit {
         }
     }
 
+    triggerRage() {
+        if (this.isRaging) return;
+        this.isRaging = true;
+        this.phase = 2;
+        this.atk = Math.floor(this.atk * 1.5);
+        if (this.mesh) this.mesh.scale.multiplyScalar(1.2);
+
+        game.showText("URGE OVERDRIVE: ATK+50%", this.mesh.position, '#ff0000');
+
+        // Visual Flare
+        engine.addShake(0.5);
+        engine.hitStop(500);
+
+        // Zoom Camera briefly
+        const oldPos = engine.camera.position.clone();
+        const oldTarget = { ...engine.cameraTarget };
+        engine.focusCamera(this.mesh.position, { x: 0, y: 1, z: 4 }, 300);
+        setTimeout(() => {
+            if (engine.camera && oldPos) {
+                engine.camera.position.copy(oldPos);
+                engine.cameraTarget = oldTarget;
+            }
+        }, 1000);
+    }
 }
