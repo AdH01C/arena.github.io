@@ -20,6 +20,9 @@
         <div id="top-ui">
             <div class="stat-box" id="floor-display">FLOOR <span id="floor-num">1</span></div>
             <div class="stat-box" id="combo-display" style="display:none;">🔥 COMBO <span id="combo-num">0</span></div>
+            <button id="boss-jump-btn" class="stat-box" onclick="game.jumpToFinalBoss()"
+                style="cursor:pointer; background:rgba(255,0,0,0.2); border:1px solid #ff0000; color:#fff; display:none;">JUMP
+                TO BOSS</button>
             <button id="classes-btn" onclick="game.toggleClassesViewer()" style="display:none;" class="stat-box"
                 title="View Class Tree">CLASS TREE</button>
             <div class="stat-box" id="gold-display">CREDITS: <span id="gold-num">0</span></div>
@@ -116,13 +119,22 @@
                 style="font-size:42px; color:#fff; text-shadow:0 0 15px #bf00ff; border-bottom:2px solid #bf00ff; padding-bottom:10px; width:80%; text-align:center; margin-top:60px;">
                 <span style="color:#bf00ff">STORE</span> // ACCESS
             </h2>
-            <p style="color:#aaa; font-size:14px; margin-bottom:20px; letter-spacing:2px; text-transform:uppercase;">
+
+            <!-- MOBILE IAP TABS -->
+            <div id="iap-tabs" class="mobile-tabs-container">
+                <button class="tab-btn active" onclick="game.switchIAPTab('featured')">ELITE</button>
+                <button class="tab-btn" onclick="game.switchIAPTab('supply')">SUPPLY</button>
+                <button class="tab-btn" onclick="game.switchIAPTab('bank')">BANK</button>
+            </div>
+
+            <p style="color:#aaa; font-size:12px; margin-bottom:15px; letter-spacing:1px; text-transform:uppercase;"
+                class="iap-subtitle">
                 Upgrade your verified status
             </p>
 
             <div class="iap-grid-layout">
                 <!-- FEATURED / PERMANENT -->
-                <div class="iap-col featured">
+                <div id="iap-col-featured" class="iap-col featured active">
                     <h3 class="iap-header">ELITE STATUS</h3>
 
                     <div class="iap-card elite" onclick="game.buyNeonPrime()">
@@ -147,7 +159,7 @@
                 </div>
 
                 <!-- CONSUMABLES -->
-                <div class="iap-col">
+                <div id="iap-col-supply" class="iap-col">
                     <h3 class="iap-header">SUPPLY DROPS</h3>
 
                     <div class="iap-card" onclick="game.buyLootCrate('legendary')">
@@ -170,7 +182,7 @@
                 </div>
 
                 <!-- CREDITS -->
-                <div class="iap-col">
+                <div id="iap-col-bank" class="iap-col">
                     <h3 class="iap-header">CREDIT BANK</h3>
 
                     <div class="iap-card small" onclick="game.buyCredits(10000, 1.99)">
@@ -236,8 +248,14 @@
             style="position:fixed; top:20px; right:20px; z-index:100; background:transparent; border:none; color:#fff; font-size:30px; cursor:pointer;">✕</button>
 
         <div class="inventory-layout">
+            <!-- MOBILE INV TABS -->
+            <div id="inv-tabs" class="mobile-tabs-container">
+                <button class="tab-btn active" onclick="game.switchInvTab('loadout')">LOADOUT</button>
+                <button class="tab-btn" onclick="game.switchInvTab('storage')">STORAGE</button>
+            </div>
+
             <!-- COL 1: EQUIPPED & STATS -->
-            <div class="inv-col inv-side">
+            <div id="inv-col-loadout" class="inv-col inv-side active">
                 <h3 class="inv-header">LOADOUT</h3>
                 <div id="equip-weapon" class="equip-slot" onclick="game.unequip('weapon')">EMPTY WEAPON</div>
                 <div id="equip-accessory" class="equip-slot" onclick="game.unequip('accessory')">EMPTY ACCESSORY
@@ -250,14 +268,14 @@
             </div>
 
             <!-- COL 2: STORAGE GRID -->
-            <div class="inv-col inv-main">
+            <div id="inv-col-storage" class="inv-col inv-main">
                 <h3 class="inv-header">STORAGE</h3>
                 <div id="inventory-grid" class="inventory-grid">
                 </div>
             </div>
 
             <!-- COL 3: DETAILS -->
-            <div class="inv-col inv-side">
+            <div id="inv-col-details" class="inv-col inv-side">
                 <h3 class="inv-header">ITEM DETAILS</h3>
                 <div id="inv-details-panel" class="details-panel">
                     <div class="details-placeholder">Select an item to view details</div>

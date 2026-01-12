@@ -186,84 +186,84 @@ const STORY_SCRIPT = {
 // --- JOB TREES (UPDATED FOR SPECTACLE) ---
 const CLASS_TREES = {
     "RONIN": [
-        // 0-9: BASE - Balanced Speed
+        // 0-9: NEON-RONIN
         {
-            name: "CYBER-RONIN", desc: "Tier 1: Basics", skills: [
-                { name: "SLASH", cost: 0, mult: 1.0, color: 0xaa00ff, vfx: 'slash', hits: 1, desc: "A quick, surgical strike with a mono-molecular blade." },
-                { name: "EXECUTE", cost: 30, mult: 2.5, color: 0xff0055, vfx: 'heavy', hits: 1, desc: "Focus all energy into a single, devastating core-splitter." },
+            name: "NEON-RONIN", desc: "Tier 1: Core Systems", skills: [
+                { name: "NEON SLASH", cost: 0, mult: 1.2, color: 0xaa00ff, vfx: 'slash', hits: 1, desc: "A precision strike with a neon-charged blade." },
+                { name: "SYSTEM DIVIDE", cost: 25, mult: 3.0, color: 0xff0055, vfx: 'heavy', hits: 1, desc: "A high-output strike designed to bypass basic shields." },
                 { name: "BLADE FOCUS", cost: 20, isBuff: true, buffType: 'crit', buffVal: 0.15, duration: 8, color: 0xaa00ff, desc: "Sharpen your intent, increasing critical strike chance by 15%." }
             ]
         },
-        // 10-19
+        // 10-19: SHADOW-STRIKER
         {
-            name: "VOID-STALKER", desc: "Tier 2: Speed", skills: [
-                { name: "PHANTOM CUT", cost: 0, mult: 0.6, color: 0x9900ff, vfx: 'multi', hits: 3, desc: "Triple-strike from the shadows before the enemy can blink." },
-                { name: "ASSASSINATE", cost: 45, mult: 4.0, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A lethal thrust aimed at the target's weakest logic gate." },
+            name: "SHADOW-STRIKER", desc: "Tier 2: Evasion Overclock", skills: [
+                { name: "PHANTOM CUT", cost: 0, mult: 0.5, color: 0x9900ff, vfx: 'multi', hits: 3, desc: "Triple-strike from the shadows before the enemy can respond." },
+                { name: "ASSASSINATE", cost: 40, mult: 4.5, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A lethal thrust aimed at the target's weakest logic gate." },
                 { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 8, color: 0x9900ff, desc: "Bend light around your chassis to gain 25% dodge chance." }
             ]
         },
-        // 20-29
+        // 20-29: VELOCITY-BLADE
         {
-            name: "TIME-SLAYER", desc: "Tier 3: Multi-Hit", skills: [
-                { name: "DIMENSION REND", cost: 0, mult: 0.45, color: 0xffffff, vfx: 'slash', hits: 5, desc: "A flurry of cuts that tear through the local fabric of reality." },
-                { name: "OMNI-SLASH", cost: 60, mult: 0.8, color: 0xaa00ff, vfx: 'omni', hits: 8, desc: "Unleash a whirlwind of steel, striking from every angle at once." },
-                { name: "TIME DILATION", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.30, duration: 8, color: 0xffffff, desc: "Overclock your neural link for 30% double strike chance." }
+            name: "VELOCITY-BLADE", desc: "Tier 3: Rapid Acceleration", skills: [
+                { name: "VELOCITY SLASH", cost: 0, mult: 0.4, color: 0xffffff, vfx: 'slash', hits: 5, desc: "A flurry of cuts delivered at hyperspeed." },
+                { name: "OMNI-STRIKE", cost: 50, mult: 0.7, color: 0xaa00ff, vfx: 'omni', hits: 10, desc: "Unleash a whirlwind of steel, striking from every angle at once." },
+                { name: "MOMENTUM", cost: 30, isBuff: true, buffType: 'doubleStrike', buffVal: 0.35, duration: 8, color: 0xffffff, desc: "Overclock your neural link for 35% double strike chance." }
             ]
         },
-        // 30-39
+        // 30-39: DARK-RONIN
         {
-            name: "SHADOW-LORD", desc: "Tier 4: Dark Arts", skills: [
-                { name: "NIGHTFALL", cost: 0, mult: 0.4, color: 0x330033, vfx: 'implode', hits: 7, desc: "Cover the field in data-shrouding darkness, striking repeatedly." },
-                { name: "DEATH MARK", cost: 80, mult: 8.0, color: 0x550055, vfx: 'heavy', hits: 1, desc: "Heavy-impact blow that designates the target for immediate deletion." },
-                { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.20, duration: 8, color: 0x550055, desc: "Engage a hunger protocol to gain 20% lifesteal." }
+            name: "DARK-RONIN", desc: "Tier 4: Void Corruption", skills: [
+                { name: "VOID SLASH", cost: 0, mult: 0.35, color: 0x330033, vfx: 'implode', hits: 8, desc: "Cover the field in data-shrouding darkness, striking repeatedly." },
+                { name: "DEATH MARK", cost: 70, mult: 9.0, color: 0x550055, vfx: 'heavy', hits: 1, desc: "Heavy-impact blow that designates the target for immediate deletion." },
+                { name: "DARK PACT", cost: 35, isBuff: true, buffType: 'lifesteal', buffVal: 0.25, duration: 8, color: 0x550055, desc: "Engage a hunger protocol to gain 25% lifesteal." }
             ]
         },
-        // 40-49
+        // 40-49: BLOOD-SAMURAI
         {
-            name: "BLOOD-LETTER", desc: "Tier 5: Lifesteal", skills: [
-                { name: "HEMORRHAGE", cost: 0, mult: 0.35, color: 0xff0000, vfx: 'multi', hits: 9, desc: "Jagged cuts that cause critical integrity leaks across 9 strikes." },
-                { name: "VAMPIRISM", cost: 100, mult: 2.5, color: 0xaa0000, vfx: 'implode', hits: 4, healPercent: 0.20, desc: "Drain enemy essence to repair 20% HP while dealing damage." },
-                { name: "BLOOD RAGE", cost: 40, isBuff: true, buffType: 'atk', buffVal: 0.30, duration: 8, color: 0xff0000, desc: "Channel the heat of battle into 30% more pure ATK." }
+            name: "BLOOD-SAMURAI", desc: "Tier 5: Hunger Protocol", skills: [
+                { name: "HEMORRHAGE", cost: 0, mult: 0.3, color: 0xff0000, vfx: 'multi', hits: 12, desc: "Jagged cuts that cause critical integrity leaks across 12 strikes." },
+                { name: "VAMPIRISM", cost: 90, mult: 2.0, color: 0xaa0000, vfx: 'implode', hits: 6, healPercent: 0.25, desc: "Drain enemy essence to repair 25% HP while dealing damage." },
+                { name: "BLOOD LUST", cost: 40, isBuff: true, buffType: 'atk', buffVal: 0.40, duration: 8, color: 0xff0000, desc: "Channel the heat of battle into 40% more pure ATK power." }
             ]
         },
-        // 50-59
+        // 50-59: PHASE-STALKER
         {
-            name: "ETHER-BLADE", desc: "Tier 6: Magic Dmg", skills: [
-                { name: "SPIRIT SLASH", cost: 0, mult: 0.3, color: 0x00ffff, vfx: 'beam', hits: 12, desc: "Phased blade strikes that ignore physical shielding entirely." },
-                { name: "SOUL REND", cost: 120, mult: 12.0, color: 0x00aaff, vfx: 'crit', hits: 1, desc: "A powerful strike that tears into the target's operating essence." },
-                { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.40, duration: 8, color: 0x00ffff, desc: "Phase out of standard dimensions for a massive 40% dodge bonus." }
+            name: "PHASE-STALKER", desc: "Tier 6: Dimensional Shifting", skills: [
+                { name: "PHASE CUT", cost: 0, mult: 0.25, color: 0x00ffff, vfx: 'beam', hits: 15, desc: "Phased blade strikes that ignore standard shielding protocols." },
+                { name: "SPIRIT BANE", cost: 110, mult: 14.0, color: 0x00aaff, vfx: 'crit', hits: 1, desc: "A powerful strike that tears into the target's operating essence." },
+                { name: "ETHER FORM", cost: 45, isBuff: true, buffType: 'dodge', buffVal: 0.45, duration: 8, color: 0x00ffff, desc: "Phase out of standard dimensions for a massive 45% dodge bonus." }
             ]
         },
-        // 60-69
+        // 60-69: VOID-BLADE
         {
-            name: "VOID-WALKER", desc: "Tier 7: Black Holes", skills: [
-                { name: "GRAVITY WELL", cost: 0, mult: 0.25, color: 0x111111, vfx: 'implode', hits: 15, desc: "Compress space-time into a vortex of 15 crushing slashes." },
-                { name: "EVENT HORIZON", cost: 150, mult: 15.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "A singular strike that swallows all light and hope." },
-                { name: "VOID SHROUD", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.50, duration: 8, color: 0x111111, desc: "Empower your blade with the void, increasing Crit DMG by 50%." }
+            name: "VOID-BLADE", desc: "Tier 7: Singularity Specialist", skills: [
+                { name: "SINGULARITY SLASH", cost: 0, mult: 0.2, color: 0x111111, vfx: 'implode', hits: 20, desc: "Compress space-time into a vortex of 20 crushing slashes." },
+                { name: "EVENT HORIZON", cost: 130, mult: 18.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "A singular strike that swallows all light and hope." },
+                { name: "VOID FOCUS", cost: 50, isBuff: true, buffType: 'critDamage', buffVal: 0.60, duration: 8, color: 0x111111, desc: "Empower your blade with the void, increasing Crit DMG by 60%." }
             ]
         },
-        // 70-79
+        // 70-79: TIME-RONIN
         {
-            name: "FLASH-STEP", desc: "Tier 8: Velocity", skills: [
-                { name: "MACH SLASH", cost: 0, mult: 0.22, color: 0xffff00, vfx: 'omni', hits: 20, desc: "Strike at speeds that ignite the very air around your blade." },
-                { name: "LIGHTSPEED", cost: 180, mult: 20.0, color: 0xffffff, vfx: 'beam', hits: 1, desc: "A single, blinding beam of kinetic energy delivered in an instant." },
-                { name: "HYPER SPEED", cost: 55, isBuff: true, buffType: 'doubleStrike', buffVal: 0.50, duration: 8, color: 0xffff00, desc: "Overclock your actuators for 50% double strike probability." }
+            name: "TIME-RONIN", desc: "Tier 8: Temporal Acceleration", skills: [
+                { name: "CHRONO STRIKE", cost: 0, mult: 0.18, color: 0xffff00, vfx: 'omni', hits: 25, desc: "Strike at speeds that fracture the local time-stream." },
+                { name: "PARADOX", cost: 160, mult: 1.0, color: 0xffffff, vfx: 'beam', hits: 25, desc: "A blinding flurry of 25 strikes delivered across multiple timelines." },
+                { name: "TEMPORAL ACCEL", cost: 60, isBuff: true, buffType: 'doubleStrike', buffVal: 0.60, duration: 8, color: 0xffff00, desc: "Overclock your actuators for 60% double strike probability." }
             ]
         },
-        // 80-89
+        // 80-89: DIMENSION-SLAYER
         {
-            name: "REALITY-BREAKER", desc: "Tier 9: Glitch", skills: [
-                { name: "GLITCH CUT", cost: 0, mult: 0.2, color: 0x00ff00, vfx: 'matrix', hits: 25, desc: "A stuttering, unpredictable series of cuts that bypass firewalls." },
-                { name: "SYSTEM PURGE", cost: 220, mult: 2.5, color: 0x00ff00, vfx: 'matrix', hits: 10, desc: "Execute a high-frequency protocol to cleanse the target from reality." },
-                { name: "REALITY WARP", cost: 60, isBuff: true, buffType: 'crit', buffVal: 0.30, duration: 8, color: 0x00ff00, desc: "Distort local space to find impossible openings, +30% Crit." }
+            name: "DIMENSION-SLAYER", desc: "Tier 9: Reality Weaver", skills: [
+                { name: "REALITY SHATTER", cost: 0, mult: 0.15, color: 0xff0055, vfx: 'implode', hits: 30, desc: "30 strikes that tear through the local fabric of reality." },
+                { name: "WORLD ENDER", cost: 200, mult: 30.0, color: 0xff0055, vfx: 'nuke', hits: 1, desc: "A final, cataclysmic strike that forces a system-wide reboot." },
+                { name: "UNSTABLE POWER", cost: 70, isBuff: true, buffType: 'all_offense', buffVal: 0.40, duration: 8, color: 0xff0055, desc: "Surge with unstable code, gaining 40% ATK, Crit, and Crit DMG." }
             ]
         },
-        // 90+
+        // 90+: CYBER-SHOGUN
         {
-            name: "SINGULARITY", desc: "Tier 10: Cosmic", skills: [
-                { name: "BIG BANG", cost: 0, mult: 0.18, color: 0xffffff, vfx: 'blackhole', hits: 35, desc: "A localized explosion of reality-shattering cosmic slashes." },
-                { name: "END OF TIME", cost: 300, mult: 50.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "The final strike. A total collapse of all chronological variables." },
-                { name: "GODSPEED", cost: 80, isBuff: true, buffType: 'all_offense', buffVal: 0.25, duration: 8, color: 0xffd700, desc: "Enter a state of infinite momentum, +25% to all offensive stats." }
+            name: "CYBER-SHOGUN", desc: "Tier 10: Ultimate Pinnacle", skills: [
+                { name: "FINAL DELETION", cost: 0, mult: 0.12, color: 0xffffff, vfx: 'omni', hits: 50, desc: "A definitive 50-strike clearing operation." },
+                { name: "ZERO DAY", cost: 250, mult: 50.0, color: 0x00f2ff, vfx: 'nuke', hits: 1, desc: "A flawless exploit that deletes the enemy's logic entirely." },
+                { name: "SHOGUN'S RULE", cost: 100, isBuff: true, buffType: 'all_offense', buffVal: 1.0, duration: 10, color: 0x00f2ff, desc: "Absolute mastery: +100% to all offensive stats for 10 turns." }
             ]
         }
     ],
@@ -1404,9 +1404,40 @@ const game = {
         return Math.floor(item.baseCost * Math.pow(item.costMult, item.level - 1));
     },
 
-    getItemValue(id) {
-        const item = this.shopData[id];
-        return item.baseVal + ((item.level - 1) * item.valInc);
+    // --- MOBILE UI TAB SYSTEM ---
+    switchIAPTab(tab) {
+        const cols = {
+            'featured': document.getElementById('iap-col-featured'),
+            'supply': document.getElementById('iap-col-supply'),
+            'bank': document.getElementById('iap-col-bank')
+        };
+        const btns = document.querySelectorAll('#iap-tabs .tab-btn');
+
+        Object.keys(cols).forEach((key, idx) => {
+            if (cols[key]) cols[key].classList.toggle('active', key === tab);
+            if (btns[idx]) btns[idx].classList.toggle('active', key === tab);
+        });
+    },
+
+    switchInvTab(tab) {
+        const loadout = document.getElementById('inv-col-loadout');
+        const storage = document.getElementById('inv-col-storage');
+        const btns = document.querySelectorAll('#inv-tabs .tab-btn');
+
+        if (loadout) loadout.classList.toggle('active', tab === 'loadout');
+        if (storage) storage.classList.toggle('active', tab === 'storage');
+        if (btns[0]) btns[0].classList.toggle('active', tab === 'loadout');
+        if (btns[1]) btns[1].classList.toggle('active', tab === 'storage');
+    },
+
+    jumpToFinalBoss() {
+        if (this.state === 'CUTSCENE' || this.floor >= 100) return;
+        this.floor = 100;
+        engine.setFloorTheme(100);
+        this.spawnEnemy();
+        this.updateUI();
+        this.showText("CRITICAL JUMP INITIATED", this.player.mesh.position, "#ff0000");
+        engine.addShake(0.5);
     },
 
     startRun() {
@@ -2214,6 +2245,7 @@ const game = {
     },
 
     closeIAPShop() {
+        this.switchIAPTab('featured'); // Reset to first tab
         document.getElementById('iap-screen').classList.remove('active');
         // Restore to previous state, ensuring it's a valid state
         this.state = this.previousState || 'IDLE';
@@ -2420,6 +2452,7 @@ const game = {
     },
 
     closeInventory() {
+        this.switchInvTab('loadout'); // Reset to first tab
         document.getElementById('inventory-screen').classList.remove('active');
         const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'flex';
         const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'flex';
@@ -3285,9 +3318,9 @@ const game = {
             this.bossPhase = 1; // <--- NEW TRACKER
 
             // Phase 1: The "Avatar" (Weaker version)
-            // 250M HP / Normal Boss Damage (Was 150M)
-            hp = 250000000 * Math.pow(2, this.rebirth);
-            atk = 300000 * Math.pow(1.5, this.rebirth);
+            // EXPONENTIAL SCALING: HP quintuples, ATK 2.5x per rebirth
+            hp = 500000000 * Math.pow(5, this.rebirth);
+            atk = 450000 * Math.pow(2.5, this.rebirth);
 
             document.getElementById('enemy-name').innerText = `THE ARCHITECT (AVATAR)`;
             document.getElementById('enemy-name').style.color = '#ffd700';
@@ -3295,20 +3328,20 @@ const game = {
             this.enemy.mitigation = 0.4;
         }
         else if (isMidBoss) {
-            hp *= 10; // Tanky mid-bosses (was 6x)
-            atk *= 2.5;
+            hp *= 18; // Tanky mid-bosses (was 10x)
+            atk *= 3.5; // (was 2.5x)
             const names = { 25: "WARDEN", 50: "EXECUTIONER", 75: "OVERLORD" };
             const variants = { 25: 0, 50: 1, 75: 2 };
             document.getElementById('enemy-name').innerText = `${names[this.floor]}`;
             document.getElementById('enemy-name').style.color = '#ff5500';
-            this.enemy = new Unit(false, hp, hp, atk, 0xff5500, 'midboss', variants[this.floor]);
+            this.enemy = new Unit(false, hp, hp, atk, '#ff5500', 'midboss', variants[this.floor]);
         }
         else if (isFloorBoss) {
-            hp *= 5.0; // (was 3.0x)
-            atk *= 2.0;
+            hp *= 8.0; // (was 5.0x)
+            atk *= 2.5; // (was 2.0x)
             document.getElementById('enemy-name').innerText = `SECTOR BOSS - ${this.floor}`;
             document.getElementById('enemy-name').style.color = '#ff0000';
-            this.enemy = new Unit(false, hp, hp, atk, 0xff0000, 'boss');
+            this.enemy = new Unit(false, hp, hp, atk, '#ff0000', 'boss');
         }
         else {
             // Apply Mutation Scaling
@@ -3462,18 +3495,30 @@ const game = {
         if (this.floor >= 100) this.bossStarted = true;
 
         this.enemy.attackAnim(() => {
-            const dmg = Math.floor(this.enemy.atk * (0.8 + Math.random() * 0.4));
+            let dmg = Math.floor(this.enemy.atk * (0.8 + Math.random() * 0.4));
+            let isSpecial = false;
+
+            // --- BOSS SPECIAL ATTACK (Every 3 turns) ---
+            if (['boss', 'midboss', 'architect'].includes(this.enemy.type)) {
+                this.enemy.turnCount = (this.enemy.turnCount || 0) + 1;
+                if (this.enemy.turnCount % 3 === 0) {
+                    dmg *= 2;
+                    isSpecial = true;
+                    engine.addShake(0.6);
+                    this.showText("CRITICAL ERROR!", this.player.mesh.position, "#ff0000");
+                }
+            }
+
             this.player.takeDmg(dmg);
-            this.showText(dmg, this.player.mesh.position, '#ff0055');
-            engine.addShake(0.1);
+            this.showText(dmg, this.player.mesh.position, isSpecial ? '#ff0000' : '#ff0055');
+            engine.addShake(isSpecial ? 0.3 : 0.1);
 
             if (this.enemy.type === 'architect') {
                 const attacks = ['god_beam', 'blackhole', 'matrix', 'nuke'];
                 const vfx = attacks[Math.floor(Math.random() * attacks.length)];
-                this.runVFX(vfx, this.player.mesh.position, 0xff0000, 0, 1);
-                this.showText("REALITY BREAK", this.player.mesh.position, "#ff0000");
-            } else if (this.enemy.type === 'boss') {
-                this.runVFX('heavy', this.player.mesh.position, 0xff5500, 0, 1);
+                this.runVFX(vfx, this.player.mesh.position, 0xff0000, 0, isSpecial ? 1.5 : 1);
+            } else if (this.enemy.type === 'boss' || this.enemy.type === 'midboss') {
+                this.runVFX(isSpecial ? 'nuke' : 'heavy', this.player.mesh.position, 0xff5500, 0, isSpecial ? 1.2 : 1);
             } else {
                 engine.spawnParticles(this.player.mesh.position, 0xffaa00, 5);
             }
@@ -4458,6 +4503,12 @@ const game = {
             comboDisplay.style.display = 'none';
         }
 
+        const classesBtn = document.getElementById('classes-btn');
+        if (classesBtn) classesBtn.style.display = (this.player && this.player.jobType) ? 'block' : 'none';
+
+        const bossJumpBtn = document.getElementById('boss-jump-btn');
+        if (bossJumpBtn) bossJumpBtn.style.display = (this.floor < 100 && this.state !== 'GAMEOVER') ? 'block' : 'none';
+
         if (this.player) {
             document.getElementById('p-hp-fill').style.width = Math.min(100, (this.player.hp / this.player.maxHp) * 100) + '%';
 
@@ -4621,6 +4672,15 @@ class Unit {
         // Armor reduces damage
         let finalDmg = Math.max(1, amount - this.armor);
 
+        // --- BOSS MECHANIC: REACTIVE ARMOR ---
+        // Every hit taken grants a small shield to punish high-hit count builds
+        if (!this.isPlayer && ['boss', 'midboss', 'architect'].includes(this.type)) {
+            const reactiveShield = Math.floor(this.maxHp * 0.0005); // 0.05% of max HP per hit
+            this.shield += reactiveShield;
+            this.maxShield = Math.max(this.maxShield, this.shield);
+            game.runVFX('shieldBurst', this.mesh.position, 0x00f2ff, 0, 0.5);
+        }
+
         // --- MUTATION: OVERCLOCKED ---
         if (game.currentMutation === 'overclocked') {
             finalDmg = Math.floor(finalDmg * 1.5);
@@ -4666,7 +4726,10 @@ class Unit {
             }
         }
 
-        if (!this.isPlayer && !this.isRaging && this.hp < (this.maxHp * 0.5) &&
+        if (!this.isPlayer && this.hp < (this.maxHp * 0.2) && !this.isDesperate &&
+            ['midboss', 'boss', 'architect'].includes(this.type)) {
+            this.triggerDesperation();
+        } else if (!this.isPlayer && !this.isRaging && this.hp < (this.maxHp * 0.5) &&
             ['midboss', 'boss', 'architect'].includes(this.type)) {
             this.triggerRage();
         }
@@ -4787,8 +4850,9 @@ class Unit {
         game.showText("URGE OVERDRIVE: ATK+50%", this.mesh.position, '#ff0000');
 
         // Visual Flare
-        engine.addShake(0.5);
-        engine.hitStop(500);
+        engine.addShake(0.8);
+        engine.hitStop(800);
+        game.runVFX('nuke', this.mesh.position, '#ff0000', 0, 1.5);
 
         // Zoom Camera briefly
         const oldPos = engine.camera.position.clone();

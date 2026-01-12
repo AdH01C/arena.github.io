@@ -410,6 +410,17 @@ const engine = {
         }, 100);
     },
 
+    spawnExplosion(pos, color, scale = 1) {
+        this.spawnShockwave(pos, color, scale * 2);
+        this.spawnParticles(pos, color, 30, 0.5 * scale);
+        this.addShake(0.8 * scale);
+
+        // Secondary burst
+        setTimeout(() => {
+            this.runVFX('nova', pos, color, 0, scale);
+        }, 200);
+    },
+
     spawnBeam(pos, color, height = 5, width = 0.5) {
         const geo = new THREE.CylinderGeometry(width, width, height, 16);
         const mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.9 });
@@ -514,7 +525,7 @@ const Models = {
         const g = new THREE.Group();
         const mB = new THREE.MeshStandardMaterial({ color: 0x222, metalness: 0.9, roughness: 0.1 });
         const mG = new THREE.MeshBasicMaterial({ color: c });
-        const mBlade = new THREE.MeshStandardMaterial({ color: 0xaaaaff, metalness: 1, roughness: 0.1, emissive: 0x4444aa });
+        const mBlade = new THREE.MeshStandardMaterial({ color: 0xaaaaff, metalness: 1, roughness: 0.1, emissive: c, emissiveIntensity: 2 });
 
         // Animated Torso
         const t = this.box(0.4, 0.45, 0.3, mB, 0, 0.65, 0, g);
@@ -529,44 +540,48 @@ const Models = {
         const h = this.box(0.25, 0.25, 0.25, mB, 0, 0.45, 0, t);
         this.box(0.22, 0.06, 0.05, mG, 0, 0.02, 0.13, h); // Visor
 
-        // Scarf (Tier 2+)
+        // Scarf (Tier 2+) - Now longer and more active
         if (tier >= 2) {
-            const scarf = this.box(0.3, 0.5, 0.05, mG, 0, -0.1, -0.2, t);
-            scarf.rotation.x = 0.3;
-            scarf.userData.idle = true; scarf.userData.swing = { axis: 'x', speed: 3, amp: 0.2, base: 0.3 };
+            const scarf = this.box(0.3, 0.7, 0.03, mG, 0, -0.1, -0.2, t);
+            scarf.rotation.x = 0.5;
+            scarf.userData.idle = true; scarf.userData.swing = { axis: 'x', speed: 4, amp: 0.3, base: 0.5 };
         }
 
-        // Arms (Sway)
+        // Shoulder Pads (Tier 4+)
+        if (tier >= 4) {
+            this.box(0.25, 0.12, 0.25, mB, -0.35, 0.3, 0, t); // L Shoulder
+            this.box(0.2, 0.05, 0.2, mG, -0.35, 0.38, 0, t); // L Accent
+            this.box(0.25, 0.12, 0.25, mB, 0.35, 0.3, 0, t); // R Shoulder
+            this.box(0.2, 0.05, 0.2, mG, 0.35, 0.38, 0, t); // R Accent
+        }
+
+        // Back Thrusters (Tier 7+)
+        if (tier >= 7) {
+            const thrusterL = this.box(0.15, 0.4, 0.15, mB, -0.2, 0.1, -0.25, t);
+            thrusterL.rotation.x = -0.3;
+            this.box(0.1, 0.1, 0.05, mG, 0, -0.15, -0.05, thrusterL); // Glow
+
+            const thrusterR = this.box(0.15, 0.4, 0.15, mB, 0.2, 0.1, -0.25, t);
+            thrusterR.rotation.x = -0.3;
+            this.box(0.1, 0.1, 0.05, mG, 0, -0.15, -0.05, thrusterR); // Glow
+        }
+
+        // Arms
         const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
 
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.3, 0, 0); ag.add(leftArm);
-        this.box(0.1, 0.4, 0.1, mB, 0, -0.2, 0, leftArm);
-        leftArm.userData.idle = true; leftArm.userData.swing = { axis: 'x', speed: 1.5, amp: 0.1, base: 0 };
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0); ag.add(leftArm);
+        this.box(0.1, 0.5, 0.1, mB, 0, -0.25, 0, leftArm);
+        leftArm.userData.idle = true; leftArm.userData.swing = { axis: 'x', speed: 2, amp: 0.15, base: 0 };
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.3, 0, 0); ag.add(rightArm);
-        this.box(0.1, 0.4, 0.1, mB, 0, -0.2, 0, rightArm);
-        rightArm.userData.idle = true; rightArm.userData.swing = { axis: 'x', speed: 1.5, amp: 0.1, base: 0, offset: Math.PI };
+        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0); ag.add(rightArm);
+        this.box(0.1, 0.5, 0.1, mB, 0, -0.25, 0, rightArm);
+        rightArm.userData.idle = true; rightArm.userData.swing = { axis: 'x', speed: 2, amp: 0.15, base: 0, offset: Math.PI };
 
-        // Katana
-        const katana = new THREE.Group(); katana.position.set(0, -0.3, 0.15); rightArm.add(katana);
-        this.box(0.03, 1.0, 0.02, mBlade, 0, 0.4, 0, katana);
-        this.box(0.08, 0.08, 0.08, mB, 0, 0, 0, katana);
-        katana.userData.idle = true; katana.userData.pulse = { speed: 4, amp: 0.1, base: 1 }; // Pulsing Energy
-
-        // Tier effects
-        if (tier >= 4) {
-            this.box(0.18, 0.08, 0.15, mG, -0.3, 0.35, 0, t);
-            this.box(0.18, 0.08, 0.15, mG, 0.3, 0.35, 0, t);
-        }
-        if (tier >= 7) {
-            const wing1 = this.box(0.02, 0.8, 0.3, mG, -0.35, 0.3, -0.15, t);
-            wing1.rotation.z = 0.3;
-            wing1.userData.idle = true; wing1.userData.swing = { axis: 'z', speed: 1, amp: 0.1, base: 0.3 };
-
-            const wing2 = this.box(0.02, 0.8, 0.3, mG, 0.35, 0.3, -0.15, t);
-            wing2.rotation.z = -0.3;
-            wing2.userData.idle = true; wing2.userData.swing = { axis: 'z', speed: 1, amp: 0.1, base: -0.3 };
-        }
+        // Katana - Improved Emissive
+        const katana = new THREE.Group(); katana.position.set(0, -0.35, 0.2); rightArm.add(katana);
+        this.box(0.03, 1.2, 0.02, mBlade, 0, 0.5, 0, katana); // Blade
+        this.box(0.08, 0.1, 0.08, mB, 0, 0, 0, katana); // Hilt
+        katana.userData.idle = true; katana.userData.pulse = { speed: 6, amp: 0.2, base: 1 }; // High Frequency Pulse
 
         g.scale.set(s, s, s); return { mesh: g, weapon: rightArm };
     },
