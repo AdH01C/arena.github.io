@@ -1445,7 +1445,7 @@ const game = {
         this.enemy.isPlayer = false; // Just to be safe
         // pStats might not be fully available if we called this too early, but usually fine.
         const pStats = this.player;
-        const eHp = pStats.atk * 100;
+        const eHp = 1000000000000; // 1 Trillion HP
         const eAtk = pStats.maxHp * 0.4;
 
         this.enemy = new Unit(false, eHp, eHp, eAtk, 0xff0000, 'boss');
