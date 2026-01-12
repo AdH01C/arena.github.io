@@ -992,6 +992,9 @@ const game = {
     floor: 1, gold: 0, player: null, enemy: null, state: 'IDLE',
     lastBossAiTick: 0, bossStarted: false,
 
+    // Mouse Input
+    mouseX: 0, mouseY: 0,
+
     // --- REBIRTH SYSTEM ---
     rebirth: 0, // Rebirth level (0 = first playthrough)
     currentMutation: null,
@@ -1083,7 +1086,6 @@ const game = {
 
         // Hide Global Buttons
         const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'none';
-        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'none';
 
         // --- SHOW CUTSCENE UI ---
         const overlay = document.getElementById('dialogue-overlay');
@@ -1166,8 +1168,6 @@ const game = {
         this.updateMutationUI(); // Re-show mutation display
 
         const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'flex';
-        // Inv button removed by user request, but if present logic:
-        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'flex';
 
         engine.focusCamera(null);
 
@@ -1393,6 +1393,7 @@ const game = {
         combo: { level: 1, baseCost: 1500, costMult: 1.8, baseVal: 0.01, valInc: 0.005 }, // Combo damage multiplier
         crit: { level: 1, baseCost: 1000, costMult: 1.6, baseVal: 0.25, valInc: 0.15 } // Crit damage
     },
+    shopItems: [],
 
     // Combo counter for battle
     battleCombo: 0,
@@ -1404,40 +1405,69 @@ const game = {
         return Math.floor(item.baseCost * Math.pow(item.costMult, item.level - 1));
     },
 
-    // --- MOBILE UI TAB SYSTEM ---
-    switchIAPTab(tab) {
-        const cols = {
-            'featured': document.getElementById('iap-col-featured'),
-            'supply': document.getElementById('iap-col-supply'),
-            'bank': document.getElementById('iap-col-bank')
+    getItemValue(id) {
+        const item = this.shopData[id];
+        if (!item) return 0;
+        return item.baseVal + (item.level - 1) * item.valInc;
+    },
+
+
+
+    startSeasonalBoss() {
+        if (this.state === 'SEASONAL' || this.state === 'CUTSCENE') return;
+
+        // Save State
+        this.savedState = {
+            floor: this.floor,
+            rebirth: this.rebirth,
+            gold: this.gold,
+            bg: document.body.style.background
         };
-        const btns = document.querySelectorAll('#iap-tabs .tab-btn');
 
-        Object.keys(cols).forEach((key, idx) => {
-            if (cols[key]) cols[key].classList.toggle('active', key === tab);
-            if (btns[idx]) btns[idx].classList.toggle('active', key === tab);
-        });
-    },
+        this.state = 'SEASONAL';
+        this.floor = 666; // Visual only
+        engine.setFloorTheme(666); // Glitch theme?
 
-    switchInvTab(tab) {
-        const loadout = document.getElementById('inv-col-loadout');
-        const storage = document.getElementById('inv-col-storage');
-        const btns = document.querySelectorAll('#inv-tabs .tab-btn');
+        // Custom Boss Spawn
+        // Remove current enemy
+        if (this.enemy && this.enemy.mesh) engine.scene.remove(this.enemy.mesh);
 
-        if (loadout) loadout.classList.toggle('active', tab === 'loadout');
-        if (storage) storage.classList.toggle('active', tab === 'storage');
-        if (btns[0]) btns[0].classList.toggle('active', tab === 'loadout');
-        if (btns[1]) btns[1].classList.toggle('active', tab === 'storage');
-    },
+        // Spawn THE ANOMALY
+        // Spawn THE ANOMALY
+        // Unit(isPlayer, hp, maxHp, atk, color, type/name)
+        // Using 'boss' type for model, but specific stats
+        this.enemy.isPlayer = false; // Just to be safe
+        // pStats might not be fully available if we called this too early, but usually fine.
+        const pStats = this.player;
+        const eHp = pStats.atk * 100;
+        const eAtk = pStats.maxHp * 0.4;
 
-    jumpToFinalBoss() {
-        if (this.state === 'CUTSCENE' || this.floor >= 100) return;
-        this.floor = 100;
-        engine.setFloorTheme(100);
-        this.spawnEnemy();
+        this.enemy = new Unit(false, eHp, eHp, eAtk, 0xff0000, 'boss');
+        this.enemy.name = "SYSTEM ANOMALY";
+        this.enemy.isPlayer = false;
+
+        this.enemy.model.mesh.scale.set(3, 3, 3); // Giant
+
+        // Special Visuals
+        game.showText("⚠ ANOMALY DETECTED ⚠", this.player.mesh.position, "#ff0000");
+        engine.addShake(1.0);
         this.updateUI();
-        this.showText("CRITICAL JUMP INITIATED", this.player.mesh.position, "#ff0000");
-        engine.addShake(0.5);
+    },
+
+    restoreGameState() {
+        if (!this.savedState) return;
+
+        this.floor = this.savedState.floor;
+        this.rebirth = this.savedState.rebirth;
+        // Keep gold earned? Yes.
+
+        this.state = 'IDLE';
+        this.savedState = null;
+
+        // Restore Theme and Enemy
+        engine.setFloorTheme(this.floor);
+        this.spawnEnemy(); // back to normal flow
+        this.updateUI();
     },
 
     startRun() {
@@ -1461,6 +1491,14 @@ const game = {
     },
 
     handleDefeat() {
+        // SEASONAL BOSS LOSS
+        if (this.state === 'SEASONAL') {
+            this.showModal("ANOMALY PERSISTS", "The system instability remains unchecked...\n\nReturning to stable coordinates.", () => {
+                this.restoreGameState();
+            });
+            return;
+        }
+
         this.state = 'GAMEOVER';
         const rollbackFloor = Math.max(1, this.floor - 5);
 
@@ -1684,7 +1722,7 @@ const game = {
             return;
         }
 
-        if (this.state !== 'IDLE') return;
+        if (this.state !== 'IDLE' && this.state !== 'SEASONAL') return;
 
         // Resolve skill: if slot is number, get from pinnedSkills. If object, use directly.
         let skill = null;
@@ -2093,6 +2131,9 @@ const game = {
             engine.addShake(0.25);
             engine.spawnShockwave(pos, 0xffcc00, 2.0);
         }
+        else if (type === 'shieldBurst') {
+            engine.spawnShieldBurst(pos, color, scale);
+        }
         else engine.spawnParticles(pos, color, 15);
     },
 
@@ -2103,8 +2144,6 @@ const game = {
         // Ensure IAP button is visible
         const iapBtn = document.getElementById('iap-btn');
         if (iapBtn) iapBtn.style.display = 'flex';
-        const invBtn = document.getElementById('inv-btn');
-        if (invBtn) invBtn.style.display = 'flex';
 
         // Update floor theme every 5 floors
         if (this.floor % 5 === 0 || this.floor === 1) {
@@ -2174,17 +2213,9 @@ const game = {
     triggerAwakening() {
         this.player.awakened = true;
 
-        // Major stat boosts
-        this.player.atk = Math.floor(this.player.atk * 1.5);
-        this.player.maxHp = Math.floor(this.player.maxHp * 1.5);
+        // Resource refill
         this.player.hp = this.player.maxHp;
-        this.player.maxMana = Math.floor(this.player.maxMana * 1.5);
         this.player.mana = this.player.maxMana;
-
-        // Unlock late-game mechanics
-        this.player.comboMult = 0.02;      // 2% damage per combo hit (was 1%)
-        this.player.breachDamage = 0.005;  // 0.5% enemy max HP per hit
-        this.player.critDamage += 0.5;     // +50% crit damage
 
         // Show awakening screen
         this.setScreen('awakening-screen');
@@ -2213,12 +2244,55 @@ const game = {
 
         const iapBtn = document.getElementById('iap-btn');
         if (iapBtn) iapBtn.style.display = 'none';
-        const invBtn = document.getElementById('inv-btn');
-        if (invBtn) invBtn.style.display = 'none';
 
         this.setScreen('shop-screen');
+        this.prepShopItems();
         this.generateShop();
         this.updateUI();
+    },
+
+    prepShopItems() {
+        this.shopItems = [];
+        const pool = ['common', 'rare', 'epic', 'legendary'];
+        // Rarity chances (Total = 1.0)
+        let weights = [0.85, 0.15, 0, 0];
+        if (this.floor > 15) weights = [0.4, 0.5, 0.1, 0];
+        if (this.floor > 50) weights = [0, 0.4, 0.5, 0.1];
+        if (this.floor > 100) weights = [0, 0, 0.6, 0.4];
+
+        const getRandomRarity = () => {
+            const r = Math.random();
+            let acc = 0;
+            for (let i = 0; i < pool.length; i++) {
+                acc += weights[i];
+                if (r < acc) return pool[i];
+            }
+            return 'common';
+        };
+
+        const getItemPrice = (rarity) => {
+            const basePrices = { common: 800, rare: 3000, epic: 12000, legendary: 50000 };
+            const scale = 1 + (this.floor * 0.05);
+            return Math.floor((basePrices[rarity] || 1000) * scale);
+        };
+
+        // Pick 4 items for a full shelf
+        for (let i = 0; i < 4; i++) {
+            const rarity = getRandomRarity();
+            const types = ['WEAPONS', 'ACCESSORIES'];
+            const type = (i < 2) ? 'WEAPONS' : ((i === 2) ? 'ACCESSORIES' : types[Math.floor(Math.random() * 2)]);
+
+            const itemPool = ITEMS[type].filter(it => it.rarity === rarity);
+            if (itemPool.length > 0) {
+                const template = itemPool[Math.floor(Math.random() * itemPool.length)];
+                this.shopItems.push({
+                    ...template,
+                    price: getItemPrice(rarity),
+                    source: type,
+                    sold: false
+                });
+            }
+        }
     },
 
     // --- IAP PREMIUM SHOP ---
@@ -2238,14 +2312,12 @@ const game = {
         document.getElementById('battle-controls').classList.remove('active');
         const iapBtn = document.getElementById('iap-btn');
         if (iapBtn) iapBtn.style.display = 'none';
-        const invBtn = document.getElementById('inv-btn');
-        if (invBtn) invBtn.style.display = 'none';
 
         this.updateMutationUI();
     },
 
     closeIAPShop() {
-        this.switchIAPTab('featured'); // Reset to first tab
+
         document.getElementById('iap-screen').classList.remove('active');
         // Restore to previous state, ensuring it's a valid state
         this.state = this.previousState || 'IDLE';
@@ -2255,8 +2327,6 @@ const game = {
         }
         const iapBtn = document.getElementById('iap-btn');
         if (iapBtn) iapBtn.style.display = 'flex';
-        const invBtn = document.getElementById('inv-btn');
-        if (invBtn) invBtn.style.display = 'flex';
 
         this.updateMutationUI();
     },
@@ -2441,21 +2511,50 @@ const game = {
     },
 
     openInventory() {
+        if (!this.player) return; // safety
+
+        // Populate Hero Panel
+        const classTitle = document.getElementById('inv-class-title');
+        const levelDisplay = document.getElementById('inv-level-display');
+        // Fallback to player.type if job is undefined (e.g. initial state)
+        // Also ensure level is defined (default to 1 if missing)
+        const jobName = this.player.job || this.player.type || 'UNKNOWN';
+        const level = this.player.level !== undefined ? this.player.level : 1;
+
+        if (classTitle) classTitle.innerText = jobName.toUpperCase();
+        if (levelDisplay) levelDisplay.innerText = `LVL ${level}`;
+
         document.getElementById('inventory-screen').classList.add('active');
         const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'none';
-        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'none';
         if (document.getElementById('battle-controls')) document.getElementById('battle-controls').classList.remove('active');
         this.selectedInvIndex = -1; // Reset selection
         this.renderInventory();
-        this.updateDetailsPanel();
+        // this.updateDetailsPanel(); // Obsolete, using overlay
         this.updateMutationUI();
+
+        // Initialize 3D Model
+        setTimeout(() => {
+            engine.initInventoryRenderer('paperdoll-model-container');
+
+            // Use ACTUAL player mesh (cloned) to reflect exact look
+            if (this.player && this.player.mesh) {
+                engine.updateInventoryModel(this.player.mesh);
+            }
+
+            // Start Animation Loop
+            const invLoop = () => {
+                if (!document.getElementById('inventory-screen').classList.contains('active')) return;
+                engine.renderInventoryFrame(this.mouseX, this.mouseY);
+                requestAnimationFrame(invLoop);
+            };
+            invLoop();
+        }, 100); // Slight delay for DOM to be ready/visible
     },
 
     closeInventory() {
-        this.switchInvTab('loadout'); // Reset to first tab
+
         document.getElementById('inventory-screen').classList.remove('active');
         const iapBtn = document.getElementById('iap-btn'); if (iapBtn) iapBtn.style.display = 'flex';
-        const invBtn = document.getElementById('inv-btn'); if (invBtn) invBtn.style.display = 'flex';
 
         // Restore controls if valid
         if (this.state === 'IDLE' && this.enemy && this.enemy.hp > 0) {
@@ -2466,6 +2565,8 @@ const game = {
 
     renderInventory() {
         const grid = document.getElementById('inventory-grid');
+        if (!grid) return;
+
         grid.innerHTML = '';
 
         // Render Equipped
@@ -2481,53 +2582,90 @@ const game = {
             return '#fff';
         };
 
-        // Make equipped slots selectable (not auto-unequip)
-        eqWep.onclick = () => w ? this.selectEquippedItem('weapon') : null;
-        eqWep.innerHTML = w ? `<span style="color:${getRarityColor(w.rarity)}">${w.name}</span>` : 'EMPTY WEAPON';
-        eqWep.className = w ? 'equip-slot filled' : 'equip-slot';
-        if (this.selectedEquippedSlot === 'weapon') eqWep.style.boxShadow = '0 0 15px #fff';
-        else eqWep.style.boxShadow = '';
+        // Make equipped slots selectable
+        if (eqWep) {
+            eqWep.onclick = (e) => {
+                e.stopPropagation(); // Prevent bubbling issues
+                w ? this.selectEquippedItem('weapon') : null;
+            };
+            eqWep.innerHTML = w ? `<span style="color:${getRarityColor(w.rarity)}">${w.name}</span>` : 'EMPTY WEAPON';
+            eqWep.className = w ? 'equip-slot big-slot weapon-slot filled' : 'equip-slot big-slot weapon-slot';
+            // Note: kept 'big-slot' classes for CSS styling
 
-        eqAcc.onclick = () => a ? this.selectEquippedItem('accessory') : null;
-        eqAcc.innerHTML = a ? `<span style="color:${getRarityColor(a.rarity)}">${a.name}</span>` : 'EMPTY ACCESSORY';
-        eqAcc.className = a ? 'equip-slot filled' : 'equip-slot';
-        if (this.selectedEquippedSlot === 'accessory') eqAcc.style.boxShadow = '0 0 15px #fff';
-        else eqAcc.style.boxShadow = '';
+            if (this.selectedEquippedSlot === 'weapon') eqWep.style.border = '1px solid #fff';
+            else eqWep.style.border = '';
+        }
 
-        // Sort inventory
+        if (eqAcc) {
+            eqAcc.onclick = (e) => {
+                e.stopPropagation();
+                a ? this.selectEquippedItem('accessory') : null;
+            };
+            eqAcc.innerHTML = a ? `<span style="color:${getRarityColor(a.rarity)}">${a.name}</span>` : 'EMPTY ACCESSORY';
+            eqAcc.className = a ? 'equip-slot big-slot accessory-slot filled' : 'equip-slot big-slot accessory-slot';
+
+            if (this.selectedEquippedSlot === 'accessory') eqAcc.style.border = '1px solid #fff';
+            else eqAcc.style.border = '';
+        }
+
+        // Sort inventory properly
         const sorted = [...this.player.inventory].sort((a, b) => {
             const order = { legendary: 4, epic: 3, rare: 2, common: 1 };
-            return (order[b.rarity] || 0) - (order[a.rarity] || 0);
+            if (order[b.rarity] !== order[a.rarity]) return order[b.rarity] - order[a.rarity];
+            // Sub-sort by stats (simple atk check)
+            return (b.atkMult || 0) - (a.atkMult || 0);
         });
 
         // Render Bag
-        sorted.forEach((item, sortedIdx) => {
+        sorted.forEach((item) => {
+            // Find original index for actions
             const actualIdx = this.player.inventory.indexOf(item);
+
             const el = document.createElement('div');
             el.className = `inventory-item inv-rarity-${item.rarity}`;
-            if (this.selectedInvIndex === actualIdx) el.style.borderColor = "#fff"; // Highlight
-            if (this.selectedInvIndex === actualIdx) el.style.boxShadow = "0 0 10px #fff";
+
+            // Visual check for selection
+            if (this.selectedInvIndex === actualIdx) {
+                el.style.borderColor = "#fff";
+                el.style.boxShadow = "0 0 10px #ffffff50";
+            }
 
             const mainStat = this.getItemMainStat(item);
             const typeIcon = item.type === 'weapon' ? '⚔️' : '💍';
 
+            // Rarity Colors
+            let rarColor = '#fff';
+            if (item.rarity === 'rare') rarColor = '#00f2ff';
+            if (item.rarity === 'epic') rarColor = '#bf00ff';
+            if (item.rarity === 'legendary') rarColor = '#ffe600';
+
             el.innerHTML = `
-                <div class="item-type-icon">${typeIcon}</div>
-                <div class="item-stat-label">${mainStat.label}</div>
-                <div class="item-stat-val">${mainStat.val}</div>
+                <div class="inv-item-name" style="color:${rarColor}; font-weight:bold; font-size:14px;">${item.name}</div>
+                <div class="inv-item-sub" style="font-size:10px; color:#888; text-transform:uppercase;">${item.rarity} ${item.type}</div>
+                <div class="inv-item-stat" style="margin-top:4px; font-size:12px; color:#ddd;">
+                    ${typeIcon} ${mainStat.val} <span style="font-size:10px; color:#aaa;">${mainStat.label}</span>
+                </div>
             `;
 
-            el.onclick = () => {
+            el.onclick = (e) => {
+                e.stopPropagation();
+                // Select and Show
                 this.selectedInvIndex = actualIdx;
-                this.selectedEquippedSlot = null;
-                this.renderInventory();
-                this.updateDetailsPanel();
+                this.selectedEquippedSlot = null; // Clear equipped selection
+                this.renderInventory(); // Re-render to highlight this item
+                this.showItemOverlay(item, actualIdx, false);
             };
             grid.appendChild(el);
         });
 
-        // Stats Update
+        // Update Stats Panel (if it exists)
+        this.updateStatsPanel();
+    },
+
+    updateStatsPanel() {
         const statsDiv = document.getElementById('equip-stats');
+        if (!statsDiv) return;
+
         const p = this.player;
         const fmtPct = (val) => (val * 100).toFixed(0) + '%';
         const styleStat = (label, val, color = '#fff') => `
@@ -2546,125 +2684,102 @@ const game = {
                 </div>
                 <div>
                     ${styleStat('CRIT', fmtPct(p.critChance), '#ffff00')}
-                    ${styleStat('CRIT DMG', fmtPct(p.critDamage), '#ffaa00')}
+                    ${styleStat('DMG', fmtPct(p.critDamage), '#ffaa00')}
                     ${styleStat('DODGE', fmtPct(p.dodge), '#00ff00')}
                     ${styleStat('VAMP', fmtPct(p.lifesteal), '#ff0000')}
                 </div>
-                <div style="grid-column: span 2; border-top:1px solid #444; margin-top:5px; padding-top:5px;">
-                    ${styleStat('REGEN', `${p.regen || 0}/t`, '#00ff88')}
-                    ${styleStat('THORNS', fmtPct(p.thorns), '#bf00ff')}
-                    ${p.battleCombo > 0 ? styleStat('COMBO', 'x' + p.battleCombo, '#ffe600') : ''}
+            </div>`;
+    },
+
+    // --- ITEM OVERLAY (New Premium UI) ---
+    showItemOverlay(item, index, isEquipped = false) {
+        const overlay = document.getElementById('inv-details-overlay');
+        const content = document.getElementById('inv-details-content');
+        const btnEquip = document.getElementById('btn-equip');
+        const btnSell = document.getElementById('btn-sell');
+
+        if (!overlay || !content) return;
+
+        // Rarity Colors
+        const rarColors = {
+            common: '#fff', rare: '#00f2ff', epic: '#bf00ff', legendary: '#ffe600'
+        };
+        const rarColor = rarColors[item.rarity] || '#fff';
+        const mainStat = this.getItemMainStat(item);
+
+        content.innerHTML = `
+            <div style="text-align:center; margin-bottom:20px;">
+                <div style="font-size:24px; color:${rarColor}; font-weight:bold; margin-bottom:5px; text-shadow:0 0 10px ${rarColor}40;">${item.name}</div>
+                <div style="font-size:14px; color:#aaa; letter-spacing:2px; text-transform:uppercase;">${item.rarity} ${item.type}</div>
+            </div>
+            
+            <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; width:100%; box-sizing:border-box; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:10px;">
+                    <span style="color:#aaa;">MAIN STAT</span>
+                    <span style="font-size:18px; color:#fff; font-weight:bold;">${mainStat.val} ${mainStat.label}</span>
                 </div>
+                ${item.atkMult ? `<div style="display:flex; justify-content:space-between; color:#ddd; margin-bottom:5px;"><span>ATK Bonus:</span> <span style="color:#ff0055">+${(item.atkMult * 100).toFixed(0)}%</span></div>` : ''}
+                ${item.hpMult ? `<div style="display:flex; justify-content:space-between; color:#ddd; margin-bottom:5px;"><span>HP Bonus:</span> <span style="color:#00f2ff">+${(item.hpMult * 100).toFixed(0)}%</span></div>` : ''}
+                ${item.manaMult ? `<div style="display:flex; justify-content:space-between; color:#ddd; margin-bottom:5px;"><span>Mana Bonus:</span> <span style="color:#0088ff">+${(item.manaMult * 100).toFixed(0)}%</span></div>` : ''}
+                ${item.critChance ? `<div style="display:flex; justify-content:space-between; color:#ddd; margin-bottom:5px;"><span>Crit Chance:</span> <span style="color:#ffff00">+${(item.critChance * 100).toFixed(0)}%</span></div>` : ''}
+                ${item.critDamage ? `<div style="display:flex; justify-content:space-between; color:#ddd; margin-bottom:5px;"><span>Crit DMG:</span> <span style="color:#ffaa00">+${(item.critDamage * 100).toFixed(0)}%</span></div>` : ''}
+                ${item.dodge ? `<div style="display:flex; justify-content:space-between; color:#ddd; margin-bottom:5px;"><span>Dodge:</span> <span style="color:#00ff00">+${(item.dodge * 100).toFixed(0)}%</span></div>` : ''}
+                ${item.lifesteal ? `<div style="display:flex; justify-content:space-between; color:#ddd; margin-bottom:5px;"><span>Lifesteal:</span> <span style="color:#ff0000">+${(item.lifesteal * 100).toFixed(0)}%</span></div>` : ''}
+                ${item.desc ? `<div style="margin-top:10px; font-style:italic; color:#888; font-size:12px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">"${item.desc}"</div>` : ''}
+            </div>
+            
+            <div style="color:#666; font-size:12px; text-align:center; margin-bottom:5px;">
+                ${isEquipped ? 'Action Preview' : 'Select action below'}
             </div>
         `;
+
+        // Update Buttons if they exist
+        if (btnEquip && btnSell) {
+            if (isEquipped) {
+                btnEquip.innerText = "UNEQUIP";
+                btnEquip.onclick = () => {
+                    this.unequip(item.type);
+                    overlay.style.display = 'none';
+                    this.renderInventory();
+                };
+                btnSell.style.display = 'none';
+            } else {
+                btnEquip.innerText = "EQUIP";
+                btnEquip.onclick = () => {
+                    this.selectedInvIndex = index; // Ensure selection matches
+                    this.equipSelected(item.type);
+                    overlay.style.display = 'none';
+                    this.renderInventory();
+                    // Play sound or effect?
+                };
+
+                btnSell.innerText = "SELL";
+                btnSell.style.display = 'inline-block';
+                btnSell.onclick = () => {
+                    this.selectedInvIndex = index;
+                    this.sellSelected();
+                    overlay.style.display = 'none';
+                };
+            }
+        }
+
+        overlay.style.display = 'flex';
     },
 
     updateDetailsPanel() {
-        const panel = document.getElementById('inv-details-panel');
-
-        // Show equipped item details
-        if (this.selectedEquippedSlot) {
-            const item = this.player.gear[this.selectedEquippedSlot];
-            if (!item) {
-                panel.innerHTML = `<div style="color:#666; font-style:italic;">No item equipped</div>`;
-                return;
-            }
-
-            let color = '#fff';
-            if (item.rarity === 'rare') color = '#00f2ff';
-            if (item.rarity === 'epic') color = '#bf00ff';
-            if (item.rarity === 'legendary') color = '#ffe600';
-
-            let statsHtml = '';
-            // Multipliers
-            if (item.atkMult) statsHtml += `<div>ATK: <span style="color:#ff0055">${item.atkMult > 0 ? '+' : ''}${(item.atkMult * 100).toFixed(0)}%</span></div>`;
-            if (item.hpMult) statsHtml += `<div>HP: <span style="color:#00f2ff">${item.hpMult > 0 ? '+' : ''}${(item.hpMult * 100).toFixed(0)}%</span></div>`;
-            if (item.manaMult) statsHtml += `<div>MANA: <span style="color:#0088ff">+${(item.manaMult * 100).toFixed(0)}%</span></div>`;
-            if (item.critChance) statsHtml += `<div>CRIT: <span style="color:#ffff00">${item.critChance > 0 ? '+' : ''}${(item.critChance * 100).toFixed(0)}%</span></div>`;
-            if (item.critDamage) statsHtml += `<div>CRIT DMG: <span style="color:#ffaa00">+${(item.critDamage * 100).toFixed(0)}%</span></div>`;
-            if (item.lifesteal) statsHtml += `<div>LIFESTEAL: <span style="color:#ff0000">+${(item.lifesteal * 100).toFixed(0)}%</span></div>`;
-            if (item.dodge) statsHtml += `<div>DODGE: <span style="color:#00ff00">${item.dodge > 0 ? '+' : ''}${(item.dodge * 100).toFixed(0)}%</span></div>`;
-            if (item.armor) statsHtml += `<div>ARMOR: <span style="color:#888">+${item.armor}</span></div>`;
-            if (item.regen) statsHtml += `<div>REGEN: <span style="color:#00ff88">+${item.regen}/t</span></div>`;
-            if (item.thorns) statsHtml += `<div>THORNS: <span style="color:#bf00ff">+${(item.thorns * 100).toFixed(0)}%</span></div>`;
-            // Legacy flat stats
-            if (item.atk) statsHtml += `<div>ATK: <span style="color:#ff0055">+${item.atk}</span></div>`;
-            if (item.hp) statsHtml += `<div>HP: <span style="color:#00f2ff">+${item.hp}</span></div>`;
-            if (item.mana) statsHtml += `<div>MANA: <span style="color:#0088ff">+${item.mana}</span></div>`;
-            if (item.crit) statsHtml += `<div>CRIT: <span style="color:#ffff00">+${(item.crit * 100).toFixed(0)}%</span></div>`;
-
-
-            panel.innerHTML = `
-                <div style="font-size:24px; font-weight:bold; color:${color}; margin-bottom:5px; text-shadow:0 0 10px ${color}">${item.name}</div>
-                <div style="color:#aaa; font-size:12px; margin-bottom:15px; text-transform:uppercase;">${item.rarity} ${item.type} • EQUIPPED</div>
-                
-                <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:5px; width:100%; margin-bottom:15px; text-align:left; font-family:'Courier New', monospace;">
-                    ${statsHtml}
-                    <div style="margin-top:10px; color:#ddd; font-style:italic; font-size:13px; border-top:1px solid #444; padding-top:5px;">"${item.desc}"</div>
-                </div>
-
-                <button class="btn" style="width:100%; border-color:${color}; color:${color}; background:rgba(0,0,0,0.5);" onclick="game.unequipSelected()">UNEQUIP</button>
-            `;
-            return;
-        }
-
-        // Show inventory item details
-        if (this.selectedInvIndex === -1 || !this.player.inventory[this.selectedInvIndex]) {
-            panel.innerHTML = `<div style="color:#666; font-style:italic;">Select an item to view details</div>`;
-            return;
-        }
-
-        const item = this.player.inventory[this.selectedInvIndex];
-        let color = '#fff';
-        if (item.rarity === 'rare') color = '#00f2ff';
-        if (item.rarity === 'epic') color = '#bf00ff';
-        if (item.rarity === 'legendary') color = '#ffe600';
-
-        // Calculate sell price based on rarity
-        const sellPrices = { common: 250, rare: 1500, epic: 8000, legendary: 30000 };
-        const sellPrice = sellPrices[item.rarity] || 100;
-
-        // Build stats list - Prioritize multipliers
-        let statsHtml = '';
-        // Multipliers
-        if (item.atkMult) statsHtml += `<div>ATK: <span style="color:#ff0055">${item.atkMult > 0 ? '+' : ''}${(item.atkMult * 100).toFixed(0)}%</span></div>`;
-        if (item.hpMult) statsHtml += `<div>HP: <span style="color:#00f2ff">${item.hpMult > 0 ? '+' : ''}${(item.hpMult * 100).toFixed(0)}%</span></div>`;
-        if (item.manaMult) statsHtml += `<div>MANA: <span style="color:#0088ff">+${(item.manaMult * 100).toFixed(0)}%</span></div>`;
-        if (item.critChance) statsHtml += `<div>CRIT: <span style="color:#ffff00">${item.critChance > 0 ? '+' : ''}${(item.critChance * 100).toFixed(0)}%</span></div>`;
-        if (item.critDamage) statsHtml += `<div>CRIT DMG: <span style="color:#ffaa00">+${(item.critDamage * 100).toFixed(0)}%</span></div>`;
-        if (item.lifesteal) statsHtml += `<div>LIFESTEAL: <span style="color:#ff0000">+${(item.lifesteal * 100).toFixed(0)}%</span></div>`;
-        if (item.dodge) statsHtml += `<div>DODGE: <span style="color:#00ff00">${item.dodge > 0 ? '+' : ''}${(item.dodge * 100).toFixed(0)}%</span></div>`;
-        if (item.armor) statsHtml += `<div>ARMOR: <span style="color:#888">+${item.armor}</span></div>`;
-        if (item.regen) statsHtml += `<div>REGEN: <span style="color:#00ff88">+${item.regen}/t</span></div>`;
-        if (item.thorns) statsHtml += `<div>THORNS: <span style="color:#bf00ff">+${(item.thorns * 100).toFixed(0)}%</span></div>`;
-        // Legacy flat stats
-        if (item.atk) statsHtml += `<div>ATK: <span style="color:#ff0055">+${item.atk}</span></div>`;
-        if (item.hp) statsHtml += `<div>HP: <span style="color:#00f2ff">+${item.hp}</span></div>`;
-        if (item.mana) statsHtml += `<div>MANA: <span style="color:#0088ff">+${item.mana}</span></div>`;
-        if (item.crit) statsHtml += `<div>CRIT: <span style="color:#ffff00">+${(item.crit * 100).toFixed(0)}%</span></div>`;
-
-
-        panel.innerHTML = `
-            <div style="font-size:24px; font-weight:bold; color:${color}; margin-bottom:5px; text-shadow:0 0 10px ${color}">${item.name}</div>
-            <div style="color:#aaa; font-size:12px; margin-bottom:15px; text-transform:uppercase;">${item.rarity} ${item.type}</div>
-            
-            <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:5px; width:100%; margin-bottom:15px; text-align:left; font-family:'Courier New', monospace;">
-                ${statsHtml}
-                <div style="margin-top:10px; color:#ddd; font-style:italic; font-size:13px; border-top:1px solid #444; padding-top:5px;">"${item.desc}"</div>
-            </div>
-
-            <div style="display:flex; gap:10px;">
-                <button class="btn" style="flex:1; border-color:${color}; color:${color}; background:rgba(0,0,0,0.5);" onclick="game.equipSelected()">EQUIP</button>
-                <button class="btn" style="flex:1; border-color:#ffe600; color:#ffe600; background:rgba(0,0,0,0.5);" onclick="game.sellSelected(${sellPrice})">SELL ${sellPrice}CR</button>
-            </div>
-        `;
+        // Legacy support or no-op
     },
 
     selectEquippedItem(slot) {
         this.selectedEquippedSlot = slot;
         this.selectedInvIndex = -1; // Deselect inventory
         this.renderInventory();
-        this.updateDetailsPanel();
+
+        // Show details overlay for the equipped item if it exists
+        const item = this.player.gear[slot];
+        if (item) {
+            this.showItemOverlay(item, -1, true); // -1 index, true = isEquipped
+        }
     },
 
     unequipSelected() {
@@ -2672,29 +2787,32 @@ const game = {
         this.unequip(this.selectedEquippedSlot);
         this.selectedEquippedSlot = null;
         this.renderInventory();
-        this.updateDetailsPanel();
     },
 
     sellSelected(price) {
         if (this.selectedInvIndex === -1) return;
 
-        const item = this.player.inventory[this.selectedInvIndex];
+        // Define price if not passed
+        if (!price) {
+            const item = this.player.inventory[this.selectedInvIndex];
+            if (!item) return;
+            const sellPrices = { common: 250, rare: 1500, epic: 8000, legendary: 30000 };
+            price = sellPrices[item.rarity] || 100;
+        }
+
         this.gold += price;
         this.player.inventory.splice(this.selectedInvIndex, 1);
-
         this.showText(`+${price} CR`, this.player.mesh.position, '#ffe600');
         this.selectedInvIndex = -1;
         this.renderInventory();
-        this.updateDetailsPanel();
         this.updateUI();
     },
 
-    equipSelected() {
+    equipSelected(slot) {
         if (this.selectedInvIndex === -1) return;
         this.equipInventoryItem(this.selectedInvIndex);
-        this.selectedInvIndex = -1; // Reset after equip
+        this.selectedInvIndex = -1;
         this.renderInventory();
-        this.updateDetailsPanel();
     },
 
     getItemMainStat(item) {
@@ -2790,100 +2908,120 @@ const game = {
     // --- RENDER SHOP UI ---
     generateShop() {
         const container = document.getElementById('shop-container');
+        if (!container) return;
         container.innerHTML = '';
 
-        // Show Current Player Stats so you can see them grow
+        // Update Gold Display in Shop
+        const goldEl = document.getElementById('shop-gold');
+        if (goldEl) goldEl.innerText = this.formatNum(this.gold);
+
+        // Header Stats (Dynamic Tier)
+        const tier = Math.floor(this.floor / 10) + 1;
         const breachPct = ((this.player.breachDamage || 0) * 100).toFixed(1);
         const comboPct = ((this.player.comboMult || 0.01) * 100).toFixed(1);
-        let statsHtml = `CURRENT ATK: <span style="color:#ff0055">${Math.floor(this.player.atk)}</span> | HP: <span style="color:#00f2ff">${Math.floor(this.player.maxHp)}</span>`;
-        if (this.floor >= 50) {
-            statsHtml += ` | BREACH: <span style="color:#ff00ff">${breachPct}%</span> | COMBO: <span style="color:#ffaa00">${comboPct}%</span>`;
-        }
-        document.getElementById('shop-tier').innerHTML = `<br><span style="font-size:16px; color:#fff">${statsHtml}</span>`;
+        let statsHtml = `ATK: <span style="color:#ff0055">${this.formatNum(this.player.atk)}</span> | HP: <span style="color:#00f2ff">${this.formatNum(this.player.maxHp)}</span>`;
+        if (this.floor >= 50) statsHtml += ` | BREACH: <span style="color:#ff00ff">${breachPct}%</span> | COMBO: <span style="color:#ffaa00">${comboPct}%</span>`;
 
-        const items = [
-            { id: 'heal', name: "NANO REPAIR", desc: (val) => `+${val} HP` },
-            { id: 'atk', name: "WEAPON OC", desc: (val) => `+${val} DMG` },
-            { id: 'hp', name: "TITANIUM HULL", desc: (val) => `+${val} MAX HP` },
-            { id: 'mana', name: "ARC BATTERY", desc: (val) => `+${val} MAX MP` }
-        ];
+        const tierLabel = document.getElementById('shop-tier-label');
+        if (tierLabel) tierLabel.innerText = `TIER ${tier}`;
 
-        // LATE-GAME ITEMS (unlock after floor 50)
-        if (this.floor >= 50) {
-            items.push(
-                { id: 'breach', name: "QUANTUM CORE", desc: (val) => `+${(val * 100).toFixed(1)}% Enemy Max HP Damage`, tier: 'epic' },
-                { id: 'combo', name: "WAR PROTOCOL", desc: (val) => `+${(val * 100).toFixed(1)}% Combo Damage/Hit`, tier: 'epic' },
-                { id: 'crit', name: "FATAL CHIP", desc: (val) => `+${(val * 100).toFixed(0)}% Crit Damage`, tier: 'rare' }
-            );
-        }
+        const statsEl = document.getElementById('shop-player-stats');
+        if (statsEl) statsEl.innerHTML = statsHtml;
 
-        items.forEach(def => {
-            const data = this.shopData[def.id];
-            const cost = this.getItemCost(def.id);
-            const val = this.getItemValue(def.id);
+        // 1. SYSTEM UPGRADES
+        this.appendShopHeader(container, "SYSTEM UPGRADES", "PERMANENT STAT BOOSTS");
+        const statKeys = ['heal', 'atk', 'hp', 'mana'];
+        if (this.floor >= 50) { statKeys.push('breach', 'combo', 'crit'); }
 
-            const el = document.createElement('div');
-            el.className = 'shop-item';
-            if (def.tier === 'epic') el.style.borderColor = '#aa00ff';
-            else if (def.tier === 'rare') el.style.borderColor = '#00aaff';
+        statKeys.forEach(id => {
+            const data = this.shopData[id];
+            if (!data) return;
+            const cost = this.getItemCost(id);
+            const val = this.getItemValue(id);
+            const defs = {
+                heal: { name: "NANO REPAIR", desc: `Repair +${val} HP` },
+                atk: { name: "WEAPON OC", desc: `Upgrade +${val} ATK` },
+                hp: { name: "TITANIUM HULL", desc: `Upgrade +${val} Max HP` },
+                mana: { name: "ARC BATTERY", desc: `Upgrade +${val} Max Mana` },
+                breach: { name: "QUANTUM CORE", desc: `+${(val * 100).toFixed(1)}% Max HP DMG`, tier: 'epic' },
+                combo: { name: "WAR PROTOCOL", desc: `+${(val * 100).toFixed(1)}% Combo Mult`, tier: 'epic' },
+                crit: { name: "FATAL CHIP", desc: `+${(val * 100).toFixed(0)}% Crit DMG`, tier: 'rare' }
+            };
+            const def = defs[id];
 
-            const canAfford = this.gold >= cost;
-            const costColor = canAfford ? '#ffe600' : '#555';
-            const itemColor = canAfford ? '#fff' : '#777';
-
-            el.innerHTML = `
-                <div style="color:${itemColor}">
-                    <div class="item-name" style="font-size:20px">
-                        ${def.name}
-                        <span style="font-size:14px;color:#00f2ff; font-weight:bold; margin-left:5px;">LVL ${data.level}</span>
-                    </div>
-                    <div class="item-desc">${def.desc(val)}</div>
-                </div>
-                <div class="cost" style="color:${costColor}">${cost} CR</div>
-            `;
-
-            el.onclick = () => this.buyItem(def.id);
+            const el = this.createShopItem(def.name, def.desc, cost, data.level, def.tier);
+            el.onclick = () => this.buyItem(id);
             container.appendChild(el);
         });
-        // (Random equipment removed from Shop - only IAP/Crates now)
 
-        // --- ADD STANDARD CRATE ---
-        const crateCost = 600 + (this.floor * 25); // Reduced from 1200 + 50
-        const crateEl = document.createElement('div');
-        crateEl.className = 'shop-item';
-        crateEl.style.borderColor = '#00f2ff';
-        crateEl.style.boxShadow = `0 0 10px rgba(0, 242, 255, 0.3)`;
-        const canAffordCrate = this.gold >= crateCost;
+        // 2. DIRECT EQUIPMENT
+        if (this.shopItems.length > 0) {
+            this.appendShopHeader(container, "DIRECT EQUIPMENT", "SAVES TO INVENTORY");
+            this.shopItems.forEach(item => {
+                if (item.sold) return;
+                const rarityCols = { common: '#888', rare: '#00aaff', epic: '#aa00ff', legendary: '#ffd700' };
+                const el = this.createShopItem(item.name, item.desc, item.price, null, item.rarity);
+                el.onclick = () => this.buyShopEquipment(item);
+                container.appendChild(el);
+            });
+        }
 
-        crateEl.innerHTML = `
-            <div>
-                <div class="item-name" style="color:#00f2ff; text-shadow:0 0 5px #00f2ff80;">STANDARD SUPPLY</div>
-                <div class="item-desc" style="font-size:12px; color:#ccc;">Random Item (Max Epic)</div>
-                <div style="font-size:10px; text-transform:uppercase; color:#fff; margin-top:4px;">CRATE</div>
+        // 3. SUPPLY CRATES
+        this.appendShopHeader(container, "SUPPLY CRATES", "RANDOM GEAR BOXES");
+        const standardCost = 1000 + (this.floor * 50);
+        const eliteCost = 6000 + (this.floor * 300);
+
+        const crates = [
+            { id: 'standard', name: "STANDARD SUPPLY", cost: standardCost, color: '#00f2ff', desc: 'Random Common/Rare' },
+            { id: 'elite', name: "ELITE SUPPLY", cost: eliteCost, color: '#bf00ff', desc: 'Guaranteed Rare+' }
+        ];
+
+        crates.forEach(c => {
+            const el = this.createShopItem(c.name, c.desc, c.cost, null, null, c.color);
+            el.onclick = () => (c.id === 'standard' ? this.buyStandardCrate(c.cost) : this.buyEliteCrate(c.cost));
+            container.appendChild(el);
+        });
+    },
+
+    appendShopHeader(container, title, subtitle) {
+        const h = document.createElement('div');
+        h.className = 'shop-header';
+        h.innerHTML = `${title} <span style="font-size:14px; color:#888; font-weight:normal; margin-left:15px; letter-spacing:0;">${subtitle}</span>`;
+        h.style.gridColumn = '1 / -1'; // Span ALL columns
+        h.style.marginTop = '20px';
+        container.appendChild(h);
+    },
+
+    createShopItem(name, desc, cost, level, rarityTier, customColor) {
+        const el = document.createElement('div');
+        el.className = 'shop-item';
+
+        const rarityCols = { common: '#777', rare: '#00aaff', epic: '#aa00ff', legendary: '#ffd700' };
+        const borderColor = customColor || (rarityTier ? rarityCols[rarityTier] : '#555');
+        el.style.borderColor = borderColor;
+
+        const canAfford = this.gold >= cost;
+        const op = canAfford ? 1 : 0.5;
+
+        // If affordable and using default grey borders, highlight title in white
+        // If it has a rarity color, keep that color (or brighten it?) -> Keep it.
+        let titleColor = borderColor;
+        if (canAfford && (borderColor === '#555' || borderColor === '#777')) {
+            titleColor = '#fff';
+        }
+
+        el.innerHTML = `
+            <div style="flex:1; text-align:left; opacity:${op}; overflow:hidden;">
+                <div class="shop-name" style="color:${titleColor};">
+                    ${name} ${level ? `<span class="shop-level">LVL ${level}</span>` : ''}
+                </div>
+                <div class="shop-desc">${desc}</div>
             </div>
-            <div class="cost" style="color:${canAffordCrate ? '#ffe600' : '#555'}; font-size: 20px;">${crateCost} CR</div>
-        `;
-        crateEl.onclick = () => this.buyStandardCrate(crateCost);
-        container.appendChild(crateEl);
-
-        // --- ADD ELITE CRATE ---
-        const eliteCost = 5000 + (this.floor * 250); // Reduced from 10000 + 500
-        const eliteEl = document.createElement('div');
-        eliteEl.className = 'shop-item';
-        eliteEl.style.borderColor = '#bf00ff';
-        eliteEl.style.boxShadow = `0 0 15px rgba(191, 0, 255, 0.4)`;
-        const canAffordElite = this.gold >= eliteCost;
-
-        eliteEl.innerHTML = `
-            <div>
-                <div class="item-name" style="color:#bf00ff; text-shadow:0 0 8px #bf00ff80;">ELITE SUPPLY</div>
-                <div class="item-desc" style="font-size:12px; color:#ccc;">Rare+ Item (Guaranteed)</div>
-                <div style="font-size:10px; text-transform:uppercase; color:#fff; margin-top:4px;">PREMIUM CRATE</div>
+            <div class="shop-cost" style="color:${canAfford ? '#ffe600' : '#ff4444'}; opacity:${op};">
+                ${this.formatNum(cost)}
             </div>
-            <div class="cost" style="color:${canAffordElite ? '#ffe600' : '#555'}; font-size: 20px;">${eliteCost} CR</div>
         `;
-        eliteEl.onclick = () => this.buyEliteCrate(eliteCost);
-        container.appendChild(eliteEl);
+        return el;
     },
 
     buyItem(id) {
@@ -2919,6 +3057,27 @@ const game = {
             this.updateUI();
             this.generateShop(); // Completely Re-Render the shop to show new Price/Level
         }
+    },
+
+    buyShopEquipment(item) {
+        if (this.gold < item.price) {
+            this.showText("INSUFFICIENT FUNDS", this.player.mesh.position, '#ff0000');
+            return;
+        }
+
+        this.gold -= item.price;
+        item.sold = true; // Mark as sold so it disappears from list
+
+        const newItem = { ...item, id: Date.now() + Math.random() };
+        delete newItem.price;
+        delete newItem.shopId;
+        delete newItem.sold;
+
+        this.player.inventory.push(newItem);
+        this.showCrateAnimation(newItem); // Reuse the animation for "Gained Item"
+
+        this.updateUI();
+        this.generateShop();
     },
 
     // --- CRATE LOGIC ---
@@ -3303,12 +3462,22 @@ const game = {
         // Floor 99:  70,000,000 HP <-- Tough, but not a chore
         const difficultyScale = this.floor + (this.rebirth * 50);
 
-        hp = Math.floor(200 * Math.pow(1.13, difficultyScale));
+        if (this.floor <= 50) {
+            hp = Math.floor(200 * Math.pow(1.13, difficultyScale));
+            atk = Math.floor(10 * Math.pow(1.085, difficultyScale));
+        } else {
+            // STEAPER POST-50 SCALING
+            // Calculate Floor 50 base for continuity
+            const scaleAt50 = 50 + (this.rebirth * 50);
+            const hpAt50 = 200 * Math.pow(1.13, scaleAt50);
+            const atkAt50 = 10 * Math.pow(1.085, scaleAt50);
 
-        // Attack grows slower so your 500k HP feels tanky against normal mobs
-        atk = Math.floor(10 * Math.pow(1.085, difficultyScale));
+            const extraFloors = this.floor - 50;
+            hp = Math.floor(hpAt50 * Math.pow(1.18, extraFloors));
+            atk = Math.floor(atkAt50 * Math.pow(1.12, extraFloors));
+        }
 
-        // Rebirth Scaling
+        // Rebirth Multiplier (Stacked on top of base scale)
         if (this.rebirth > 0) {
             hp = Math.floor(hp * Math.pow(2.8, this.rebirth));
             atk = Math.floor(atk * Math.pow(1.6, this.rebirth));
@@ -3318,8 +3487,8 @@ const game = {
             this.bossPhase = 1; // <--- NEW TRACKER
 
             // Phase 1: The "Avatar" (Weaker version)
-            // EXPONENTIAL SCALING: HP quintuples, ATK 2.5x per rebirth
-            hp = 500000000 * Math.pow(5, this.rebirth);
+            // MASSIVE BUFF: 2.5B Base HP / 8x Multiplier per rebirth
+            hp = 2500000000 * Math.pow(8, this.rebirth);
             atk = 450000 * Math.pow(2.5, this.rebirth);
 
             document.getElementById('enemy-name').innerText = `THE ARCHITECT (AVATAR)`;
@@ -3574,13 +3743,22 @@ const game = {
     winBattle() {
         this.state = 'REWARD';
 
+        // SEASONAL BOSS VICTORY
+        if (this.state === 'SEASONAL') {
+            this.showModal("ANOMALY NEUTRALIZED", "System stability restored. \n\nREWARD: LEGENDARY CACHE", () => {
+                this.giveRandomItemFromPool('legendary');
+                this.restoreGameState();
+            });
+            return;
+        }
+
         // Floor 100 victory - trigger REBIRTH instead of ending
         if (this.floor >= 100) {
             this.triggerRebirth();
             return;
         }
 
-        let loot = 50 + (this.floor * 15);
+        let loot = 100 + (this.floor * 50);
 
         // REBIRTH BONUS: Massive gold multiplier
         if (this.rebirth > 0) {
@@ -3662,19 +3840,10 @@ const game = {
         // Reset floor theme
         if (engine.setFloorTheme) engine.setFloorTheme(1);
 
-        // Boost Player Stats
+        // Boost Player Stats (REMOVED: Only full heal & flag)
         if (this.player) {
-            this.player.atk = Math.floor(this.player.atk * 1.5);
-            this.player.maxHp = Math.floor(this.player.maxHp * 1.5);
             this.player.hp = this.player.maxHp; // Full Heal
-            this.player.maxMana = Math.floor(this.player.maxMana * 1.5);
             this.player.mana = this.player.maxMana;
-
-            this.player.critDamage += 0.5;
-            this.player.comboMult = (this.player.comboMult || 0.01) + 0.01;
-            this.player.breachDamage = (this.player.breachDamage || 0) + 0.005;
-
-            // Re-awaken immediately (Keep the visual flair)
             this.player.awakened = true;
         }
 
@@ -4212,11 +4381,7 @@ const game = {
         }
     },
 
-    toggleClassesViewer() {
-        const screen = document.getElementById('classes-screen');
-        if (screen.classList.contains('active')) this.closeClassesViewer();
-        else this.openClassesViewer();
-    },
+    // toggleClassesViewer removed - feature deprecated
 
     isClassUnlocked(classKey) {
         // A class is unlocked if player currently has it or has reached the tier it appears in
@@ -4504,25 +4669,32 @@ const game = {
         }
 
         const classesBtn = document.getElementById('classes-btn');
-        if (classesBtn) classesBtn.style.display = (this.player && this.player.jobType) ? 'block' : 'none';
+        if (classesBtn) classesBtn.style.display = 'none'; // Removed feature
+
+        // Show Seasonal Boss Button
+        const seasonalBtn = document.getElementById('seasonal-boss-btn');
+        if (seasonalBtn) {
+            // Always available, or maybe Floor 5+? Let's make it always available for "experimentation"
+            seasonalBtn.style.display = 'block';
+        }
 
         const bossJumpBtn = document.getElementById('boss-jump-btn');
         if (bossJumpBtn) bossJumpBtn.style.display = (this.floor < 100 && this.state !== 'GAMEOVER') ? 'block' : 'none';
 
         if (this.player) {
-            document.getElementById('p-hp-fill').style.width = Math.min(100, (this.player.hp / this.player.maxHp) * 100) + '%';
+            this.player.shieldOrb.material.opacity = this.player.shield > 0 ? (0.2 + Math.sin(Date.now() * 0.005) * 0.1) : 0;
+            this.player.shieldOrb.rotation.y += 0.01;
+            this.player.shieldOrb.rotation.x += 0.005;
 
-            // FIX: Formatted numbers for Player Stats
+            document.getElementById('p-hp-fill').style.width = Math.min(100, (this.player.hp / this.player.maxHp) * 100) + '%';
             document.getElementById('p-hp-text').innerText = `${this.formatNum(this.player.hp)} / ${this.formatNum(this.player.maxHp)}`;
             document.getElementById('p-mana-fill').style.width = Math.min(100, (this.player.mana / this.player.maxMana) * 100) + '%';
             document.getElementById('p-mana-text').innerText = `${this.formatNum(this.player.mana)} / ${this.formatNum(this.player.maxMana)}`;
 
-            // Shield bar - only show if player has shield
             const shieldWrapper = document.getElementById('p-shield-wrapper');
             if (this.player.shield > 0) {
                 shieldWrapper.style.display = 'block';
                 document.getElementById('p-shield-text').innerText = this.formatNum(this.player.shield);
-
                 this.player.maxShield = Math.max(this.player.maxShield || this.player.shield, this.player.shield);
                 document.getElementById('p-shield-fill').style.width = Math.min(100, (this.player.shield / this.player.maxShield) * 100) + '%';
             } else {
@@ -4531,12 +4703,24 @@ const game = {
         }
 
         if (this.enemy) {
+            this.enemy.shieldOrb.material.opacity = this.enemy.shield > 0 ? (0.3 + Math.sin(Date.now() * 0.008) * 0.15) : 0;
+            this.enemy.shieldOrb.rotation.y -= 0.015;
+            this.enemy.shieldOrb.rotation.x += 0.01;
+
             const eBar = document.getElementById('e-hp-fill');
             const ePct = (this.enemy.hp / this.enemy.maxHp) * 100;
             eBar.style.width = Math.min(100, ePct) + '%';
-
-            // FIX: Formatted numbers for Enemy HP
             document.getElementById('e-hp-text').innerText = `${this.formatNum(this.enemy.hp)} / ${this.formatNum(this.enemy.maxHp)}`;
+
+            const eShieldWrapper = document.getElementById('e-shield-wrapper');
+            if (this.enemy.shield > 0) {
+                eShieldWrapper.style.display = 'block';
+                document.getElementById('e-shield-text').innerText = this.formatNum(this.enemy.shield);
+                this.enemy.maxShield = Math.max(this.enemy.maxShield || this.enemy.shield, this.enemy.shield);
+                document.getElementById('e-shield-fill').style.width = Math.min(100, (this.enemy.shield / this.enemy.maxShield) * 100) + '%';
+            } else {
+                eShieldWrapper.style.display = 'none';
+            }
 
             // --- NEW: BOSS BAR VISUALS ---
             if (this.floor >= 100) {
@@ -4642,6 +4826,19 @@ class Unit {
         this.mesh.userData.idleAmp = floatingTypes.includes(type) ? 0.15 : 0.1;
         this.mesh.position.y = this.mesh.userData.baseY;
         engine.scene.add(this.mesh);
+
+        // Persistent Shield Effect (Visual only)
+        const sSize = (isPlayer ? 1.5 : (['architect', 'midboss', 'boss'].includes(type) ? 3.5 : 1.8));
+        const sGeo = new THREE.SphereGeometry(sSize, 24, 24);
+        const sMat = new THREE.MeshBasicMaterial({
+            color: 0x00f2ff,
+            transparent: true,
+            opacity: 0,
+            wireframe: true,
+            side: THREE.DoubleSide
+        });
+        this.shieldOrb = new THREE.Mesh(sGeo, sMat);
+        this.mesh.add(this.shieldOrb);
     }
     attackAnim(cb) {
         const weapon = this.model.weapon; const pivot = this.mesh;
@@ -4672,14 +4869,13 @@ class Unit {
         // Armor reduces damage
         let finalDmg = Math.max(1, amount - this.armor);
 
-        // --- BOSS MECHANIC: REACTIVE ARMOR ---
-        // Every hit taken grants a small shield to punish high-hit count builds
-        if (!this.isPlayer && ['boss', 'midboss', 'architect'].includes(this.type)) {
-            const reactiveShield = Math.floor(this.maxHp * 0.0005); // 0.05% of max HP per hit
-            this.shield += reactiveShield;
-            this.maxShield = Math.max(this.maxShield, this.shield);
-            game.runVFX('shieldBurst', this.mesh.position, 0x00f2ff, 0, 0.5);
-        }
+        // --- BOSS MECHANIC: REACTIVE ARMOR [DISABLED] ---
+        // if (!this.isPlayer && ['boss', 'midboss', 'architect'].includes(this.type)) {
+        //     const reactiveShield = Math.floor(this.maxHp * 0.0005);
+        //     this.shield += reactiveShield;
+        //     this.maxShield = Math.max(this.maxShield, this.shield);
+        //     game.runVFX('shieldBurst', this.mesh.position, 0x00f2ff, 0, 0.5);
+        // }
 
         // --- MUTATION: OVERCLOCKED ---
         if (game.currentMutation === 'overclocked') {
@@ -4742,9 +4938,11 @@ class Unit {
                 game.showText(`${thornsDmg} THORNS`, game.enemy.mesh.position, '#ff00ff');
             }
         }
-        const base = this.mesh.position.x;
-        this.mesh.position.x += (this.isPlayer ? -0.2 : 0.2);
-        setTimeout(() => this.mesh.position.x = base, 50);
+        if (this.isPlayer) {
+            const base = this.mesh.position.x;
+            this.mesh.position.x -= 0.2;
+            setTimeout(() => this.mesh.position.x = base, 50);
+        }
         // Show Text handled in TriggerHit
     }
     unequip(slot) {
@@ -4866,3 +5064,10 @@ class Unit {
         }, 1000);
     }
 }
+// --- GLOBAL INPUT TRACKING ---
+document.addEventListener('mousemove', (e) => {
+    if (typeof game !== 'undefined') {
+        game.mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        game.mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+    }
+});

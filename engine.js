@@ -410,6 +410,15 @@ const engine = {
         }, 100);
     },
 
+    spawnShieldBurst(pos, color, scale = 1) {
+        const geo = new THREE.SphereGeometry(0.5, 32, 32);
+        const mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.5, wireframe: true });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(pos);
+        mesh.userData.type = 'shockwave'; mesh.userData.grow = 2.0 * scale;
+        this.scene.add(mesh); this.particles.push(mesh);
+    },
+
     spawnExplosion(pos, color, scale = 1) {
         this.spawnShockwave(pos, color, scale * 2);
         this.spawnParticles(pos, color, 30, 0.5 * scale);
@@ -495,6 +504,89 @@ const engine = {
                 if (p.scale.x < 0.01) { this.scene.remove(p); this.particles.splice(i, 1); }
             }
         }
+    },
+
+    // --- INVENTORY RENDERER ---
+    initInventoryRenderer(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // cleanup old if exists
+        if (this.invRenderer) {
+            const oldCanvas = this.invRenderer.domElement;
+            if (oldCanvas.parentNode) oldCanvas.parentNode.removeChild(oldCanvas);
+            this.invRenderer.dispose();
+        }
+
+        this.invScene = new THREE.Scene();
+
+        // Transparent background
+        this.invRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        this.invRenderer.setPixelRatio(window.devicePixelRatio);
+        this.invRenderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(this.invRenderer.domElement);
+
+        this.invCamera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+        this.invCamera.position.set(0, 0.8, 3.5);
+        this.invCamera.lookAt(0, 0.8, 0);
+
+        // Lighting
+        const ambient = new THREE.AmbientLight(0xffffff, 1.2);
+        const dir = new THREE.DirectionalLight(0xffffff, 1.5);
+        dir.position.set(2, 5, 5);
+        this.invScene.add(ambient, dir);
+    },
+
+    updateInventoryModel(sourceMesh) {
+        if (!this.invScene) return;
+
+        // clear old mesh
+        if (this.invMesh) {
+            this.invScene.remove(this.invMesh);
+            this.invMesh = null;
+        }
+
+        if (sourceMesh) {
+            this.invMesh = sourceMesh.clone();
+
+            // Reset transforms for the Inventory View
+            this.invMesh.position.set(0, -1.0, 0); // Center in view
+            this.invMesh.rotation.set(0, -0.3, 0); // Default angle
+            this.invMesh.scale.set(1.3, 1.3, 1.3); // Good size for panel
+
+            // Ensure visible (just in case parent was hidden)
+            this.invMesh.visible = true;
+
+            this.invScene.add(this.invMesh);
+        }
+    },
+
+    renderInventoryFrame(mouseX, mouseY) {
+        if (!this.invRenderer || !this.invScene || !this.invCamera) return;
+
+        if (this.invMesh) {
+            let targetRot = -0.3; // Default slightly right
+            if (mouseX !== null && mouseX !== 0) { // Check for 0 too if mouse hasn't moved?
+                // mouseX is -1 (left) to 1 (right)
+                // PREVIOUS: targetRot = -mouseX * 1.0;
+                // USER REPORT: "looking at opposite direction"
+                // NEW: Invert logic.
+                // If Mouse is Left (-1), we want model to look Left?
+                // If model faces Z+, Left is +Y rotation.
+                // So -1 input -> +1 output. 
+                // Wait, previous was: -(-1) = +1. So previous was: Mouse Left -> Rot Left.
+                // If user says "opposite", maybe they want Mouse Left -> Rot Right (Mirror)?
+                // OR my coordinate system assumption is wrong.
+                // Let's try flipping the sign to positive.
+                targetRot = mouseX * 0.8;
+
+                this.invMesh.rotation.y += (targetRot - this.invMesh.rotation.y) * 0.1;
+            } else {
+                // Default look to the right (negative rotation)
+                this.invMesh.rotation.y += (-0.5 - this.invMesh.rotation.y) * 0.05;
+            }
+        }
+        this.invRenderer.render(this.invScene, this.invCamera);
     }
 };
 
