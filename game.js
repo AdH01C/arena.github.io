@@ -1421,12 +1421,18 @@ const game = {
             floor: this.floor,
             rebirth: this.rebirth,
             gold: this.gold,
-            bg: document.body.style.background
+            bg: document.body.style.background,
+            playerHp: this.player.hp,
+            playerMana: this.player.mana
         };
 
         this.state = 'SEASONAL';
         this.floor = 666; // Visual only
         engine.setFloorTheme(666); // Glitch theme?
+
+        // Ensure UI is clear
+        document.getElementById('iap-screen').classList.remove('active');
+        document.getElementById('battle-controls').classList.add('active');
 
         // Custom Boss Spawn
         // Remove current enemy
@@ -1461,11 +1467,24 @@ const game = {
         this.rebirth = this.savedState.rebirth;
         // Keep gold earned? Yes.
 
+        // Restore Player Health/Mana from before the fight
+        if (this.savedState.playerHp !== undefined) {
+            this.player.hp = Math.min(this.player.maxHp, this.savedState.playerHp);
+            this.player.mana = Math.min(this.player.maxMana, this.savedState.playerMana);
+        }
+
         this.state = 'IDLE';
         this.savedState = null;
 
         // Restore Theme and Enemy
         engine.setFloorTheme(this.floor);
+        this.spawnEnemy(); // back to normal flow
+
+        // Restore IAP Button
+        const iapBtn = document.getElementById('iap-btn');
+        if (iapBtn) iapBtn.style.display = 'flex';
+
+        this.updateUI();
         this.spawnEnemy(); // back to normal flow
         this.updateUI();
     },
@@ -1492,10 +1511,10 @@ const game = {
 
     handleDefeat() {
         // SEASONAL BOSS LOSS
-        if (this.state === 'SEASONAL') {
+        if (this.savedState) {
             this.showModal("ANOMALY PERSISTS", "The system instability remains unchecked...\n\nReturning to stable coordinates.", () => {
                 this.restoreGameState();
-            });
+            }, false);
             return;
         }
 
@@ -2418,7 +2437,10 @@ const game = {
     },
 
     // --- CUSTOM MODAL & INVENTORYHELPER ---
-    showModal(title, content, onConfirm) {
+    showModal(title, content, onConfirm, showCancel = true) {
+        // Safety Override for Seasonal Boss to ensure no Cancel button
+        if (title.includes("ANOMALY")) showCancel = false;
+
         const overlay = document.getElementById('modal-overlay');
         document.getElementById('modal-title').innerText = title;
         document.getElementById('modal-content').innerHTML = content;
@@ -2437,7 +2459,7 @@ const game = {
         };
 
         // If content implies a choice, show cancel
-        if (onConfirm) {
+        if (onConfirm && showCancel) {
             cancelBtn.style.display = 'inline-block';
             cancelBtn.onclick = () => overlay.classList.remove('active');
         } else {
@@ -2531,7 +2553,6 @@ const game = {
         this.renderInventory();
         // this.updateDetailsPanel(); // Obsolete, using overlay
         this.updateMutationUI();
-
         // Initialize 3D Model
         setTimeout(() => {
             engine.initInventoryRenderer('paperdoll-model-container');
@@ -3744,11 +3765,11 @@ const game = {
         this.state = 'REWARD';
 
         // SEASONAL BOSS VICTORY
-        if (this.state === 'SEASONAL') {
+        if (this.savedState) {
             this.showModal("ANOMALY NEUTRALIZED", "System stability restored. \n\nREWARD: LEGENDARY CACHE", () => {
                 this.giveRandomItemFromPool('legendary');
                 this.restoreGameState();
-            });
+            }, false);
             return;
         }
 
@@ -3797,14 +3818,13 @@ const game = {
             let rarity = 'common';
 
             if (isBoss) {
-                // Bosses drop better loot: 60% Rare, 30% Epic, 10% Legendary
-                if (rnd > 0.90) rarity = 'legendary';
+                // Bosses drop better loot: 60% Rare, 30% Epic, 10% Legendary (ONLY on Floor 25/50/75/100)
+                if (rnd > 0.90 && (this.floor % 25 === 0)) rarity = 'legendary';
                 else if (rnd > 0.60) rarity = 'epic';
                 else rarity = 'rare';
             } else {
-                // Regular mobs: 70% Common, 22% Rare, 7% Epic, 1% Legendary
-                if (rnd > 0.99) rarity = 'legendary';
-                else if (rnd > 0.92) rarity = 'epic';
+                // Regular mobs: 70% Common, 22% Rare, 8% Epic, 0% Legendary
+                if (rnd > 0.92) rarity = 'epic';
                 else if (rnd > 0.70) rarity = 'rare';
                 else rarity = 'common';
             }
@@ -4156,6 +4176,7 @@ const game = {
 
         this.previousState = this.state;
         this.state = 'SKILLS_MENU';
+        this.skillTab = 'BASIC'; // Default tab
 
         const screen = document.getElementById('classes-screen');
         screen.classList.add('active');
@@ -4168,41 +4189,351 @@ const game = {
     closeSkillsMenu() {
         document.getElementById('classes-screen').classList.remove('active');
         this.state = this.previousState || 'IDLE';
-
-        // Restore title for class viewer
-        const title = document.querySelector('#classes-screen h1');
-        if (title) title.innerText = "JOB ADVANCEMENT";
     },
 
     renderSkillsMenu() {
         const container = document.getElementById('classes-viewer-container');
         container.innerHTML = '';
+        // SIDEBAR LAYOUT CONTAINER
         container.style.cssText = `
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            gap: 0;
+            padding: 0;
             max-width: 1400px;
             margin: 0 auto;
+            width: 100%;
+            height: 70vh; /* Fixed height for scrolling */
+            background: rgba(0, 0, 0, 0.4); /* Slight backing */
+            border-radius: 8px;
+            border: 1px solid #333;
         `;
 
-        // Header Section
-        const header = document.createElement('div');
-        header.style.cssText = `
-            grid-column: 1 / -1;
-            text-align: center;
+        // 1. LEFT SIDEBAR (TABS)
+        const sidebar = document.createElement('div');
+        sidebar.style.cssText = `
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px;
+            border-right: 1px solid rgba(0, 242, 255, 0.2);
+            background: rgba(10, 10, 15, 0.6);
+            flex-shrink: 0;
+        `;
+
+        // Sidebar Header
+        sidebar.innerHTML = `
+            <div style="font-size: 16px; color: #fff; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; border-bottom: 1px solid #555; padding-bottom: 10px;">
+                CATEGORIES
+            </div>
+        `;
+
+        const tabs = ['BASIC', 'HEAVY', 'BUFF'];
+        tabs.forEach(tab => {
+            const btn = document.createElement('button');
+            const isActive = this.skillTab === tab;
+            let color = '#fff';
+            if (tab === 'BASIC') color = '#00f2ff';
+            if (tab === 'HEAVY') color = '#ff0055';
+            if (tab === 'BUFF') color = '#ffe600';
+
+            btn.innerText = tab;
+            btn.className = 'btn';
+            btn.style.cssText = `
+                width: 100%;
+                text-align: left;
+                padding: 15px 20px;
+                font-size: 16px;
+                letter-spacing: 2px;
+                border: 2px solid ${isActive ? color : 'transparent'};
+                border-left: 5px solid ${isActive ? color : '#333'};
+                background: ${isActive ? 'rgba(0,0,0,0.5)' : 'transparent'};
+                color: ${isActive ? '#fff' : '#888'};
+                box-shadow: ${isActive ? `0 0 20px ${color}20` : 'none'};
+                transition: all 0.2s;
+                position: relative;
+                overflow: hidden;
+                margin-bottom: 5px;
+            `;
+
+            // Hover effect
+            btn.onmouseenter = () => {
+                if (!isActive) {
+                    btn.style.background = 'rgba(255,255,255,0.05)';
+                    btn.style.color = '#fff';
+                    btn.style.borderLeftColor = color;
+                }
+            };
+            btn.onmouseleave = () => {
+                if (!isActive) {
+                    btn.style.background = 'transparent';
+                    btn.style.color = '#888';
+                    btn.style.borderLeftColor = '#333';
+                }
+            };
+
+            btn.onclick = () => {
+                this.skillTab = tab;
+                this.renderSkillsMenu();
+            };
+            sidebar.appendChild(btn);
+        });
+
+        // "CLOSE" button at the bottom of sidebar
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = "CLOSE MENU";
+        closeBtn.className = 'btn';
+        closeBtn.style.cssText = `
+            margin-top: auto;
+            width: 100%;
+            border: 1px solid #555;
+            color: #aaa;
+            font-size: 14px;
+            padding: 12px;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.5);
+        `;
+        closeBtn.onclick = () => this.closeSkillsMenu();
+        sidebar.appendChild(closeBtn);
+
+        container.appendChild(sidebar);
+
+        // 2. RIGHT CONTENT Area
+        const contentArea = document.createElement('div');
+        contentArea.style.cssText = `
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            position: relative;
+        `;
+
+        // Custom Scrollbar
+        const style = document.createElement('style');
+        style.innerHTML = `
+            #classes-viewer-container ::-webkit-scrollbar { width: 8px; }
+            #classes-viewer-container ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+            #classes-viewer-container ::-webkit-scrollbar-thumb { background: #00f2ff; border-radius: 4px; }
+        `;
+        contentArea.appendChild(style);
+
+        // SKILL GRID
+        const grid = document.createElement('div');
+        grid.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+        `;
+
+        // Filter and Sort Skills
+        const allSkills = [...this.player.unlockedSkills];
+        const filteredSkills = allSkills.filter(skill => {
+            if (this.skillTab === 'BUFF') return skill.isBuff;
+            if (this.skillTab === 'HEAVY') return !skill.isBuff && skill.cost > 0; // Any cost > 0 is HEAVY
+            if (this.skillTab === 'BASIC') return !skill.isBuff && skill.cost === 0; // Strictly 0 cost is BASIC
+            return true;
+        });
+
+        if (filteredSkills.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#666; padding:50px; font-size:18px;">NO SKILLS IN THIS CATEGORY</div>`;
+        }
+
+        filteredSkills.forEach((skill) => {
+            const index = this.player.unlockedSkills.indexOf(skill);
+            const card = document.createElement('div');
+            card.className = 'skill-management-card';
+
+            const isPinned1 = this.player.pinnedSkills?.[0] === skill;
+            const isPinned2 = this.player.pinnedSkills?.[1] === skill;
+
+            let accentColor = '#888';
+            let glowColor = 'rgba(136, 136, 136, 0.3)';
+            if (isPinned1) {
+                accentColor = '#00f2ff';
+                glowColor = 'rgba(0, 242, 255, 0.4)';
+            } else if (isPinned2) {
+                accentColor = '#ff0055';
+                glowColor = 'rgba(255, 0, 85, 0.4)';
+            } else if (skill.isBuff) {
+                accentColor = '#ffe600';
+                glowColor = 'rgba(255, 230, 0, 0.3)';
+            } else {
+                const colorHex = skill.color ? '#' + skill.color.toString(16).padStart(6, '0') : '#fff';
+                accentColor = colorHex;
+                glowColor = colorHex + '40';
+            }
+
+            const typeLabel = skill.isBuff ? "BUFF" : "ATTACK";
+            const costLabel = skill.cost > 0 ? `${skill.cost}MP` : "FREE";
+
+            let pinnedBadge = "";
+            if (isPinned1) pinnedBadge = `<div style="position:absolute; top:0; right:0; background:#00f2ff; color:#000; font-size:10px; font-weight:bold; padding:4px 8px; border-bottom-left-radius:8px; z-index:2;">SLOT 1</div>`;
+            if (isPinned2) pinnedBadge = `<div style="position:absolute; top:0; right:0; background:#ff0055; color:#fff; font-size:10px; font-weight:bold; padding:4px 8px; border-bottom-left-radius:8px; z-index:2;">SLOT 2</div>`;
+
+            const descDisplay = skill.desc || (skill.isBuff
+                ? `+${((skill.buffVal || 0) * 100).toFixed(0)}% ${skill.buffType || 'BUFF'}`
+                : `${skill.mult}x DMG`);
+
+            card.style.cssText = `
+                background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 20, 0.95));
+                border: 1px solid ${accentColor};
+                border-radius: 8px;
+                padding: 15px;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 15px ${glowColor}40;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 160px;
+            `;
+
+            card.innerHTML = `
+                ${pinnedBadge}
+                <div style="margin-bottom: 8px;">
+                    <span style="font-size: 10px; color: ${accentColor}; border: 1px solid ${accentColor}; padding: 2px 6px; border-radius: 4px; margin-right: 6px; letter-spacing:1px;">${typeLabel}</span>
+                    <span style="font-size: 18px; font-weight: bold; color: ${accentColor}; text-shadow: 0 0 10px ${glowColor};">${skill.name || 'SKILL'}</span>
+                </div>
+                <div style="color: #bbb; font-size: 13px; margin-bottom: 12px; line-height: 1.4; flex-grow: 1;">
+                    ${descDisplay}
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #ddd; margin-bottom: 10px; border-top: 1px solid #333; padding-top: 6px;">
+                        <span>COST: <span style="color:#00f2ff">${costLabel}</span></span>
+                        <span>${skill.isBuff ? (skill.duration + ' TURNS') : ((skill.hits || 1) + ' HITS')}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+                        <button class="skill-action-btn" data-action="pin1" data-index="${index}" style="font-size:11px; padding:6px 0; background: #00f2ff22; border: 1px solid #00f2ff; color: #00f2ff; ${isPinned1 ? 'background:#00f2ff; color:#000;' : ''}">
+                            ${isPinned1 ? 'SLOT 1' : 'PIN 1'}
+                        </button>
+                        <button class="skill-action-btn" data-action="pin2" data-index="${index}" style="font-size:11px; padding:6px 0; background: #ff005522; border: 1px solid #ff0055; color: #ff0055; ${isPinned2 ? 'background:#ff0055; color:#fff;' : ''}">
+                            ${isPinned2 ? 'SLOT 2' : 'PIN 2'}
+                        </button>
+                        <button class="skill-action-btn" data-action="use" data-index="${index}" style="font-size:11px; padding:6px 0; background: #00ff0022; border: 1px solid #00ff00; color: #00ff00;">
+                            USE
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            card.onmouseenter = () => {
+                card.style.transform = 'translateY(-3px)';
+                card.style.boxShadow = `0 8px 30px ${glowColor}`;
+            };
+            card.onmouseleave = () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = `0 4px 15px ${glowColor}40`;
+            };
+
+            grid.appendChild(card);
+        });
+
+        contentArea.appendChild(grid);
+        container.appendChild(contentArea);
+
+        grid.querySelectorAll('.skill-action-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const action = btn.dataset.action;
+                const index = parseInt(btn.dataset.index);
+                const skill = this.player.unlockedSkills[index];
+
+                if (action === 'pin1') {
+                    this.player.pinnedSkills[0] = skill;
+                    this.updateButtons();
+                    this.renderSkillsMenu();
+                } else if (action === 'pin2') {
+                    this.player.pinnedSkills[1] = skill;
+                    this.updateButtons();
+                    this.renderSkillsMenu();
+                } else if (action === 'use') {
+                    this.closeSkillsMenu();
+                    this.useSkill(skill);
+                }
+            };
+        });
+    },
+
+    renderSkillsMenu_OLD() {
+        const container = document.getElementById('classes-viewer-container');
+        container.innerHTML = '';
+        container.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        `;
+
+        // 1. TABS CONTAINER
+        const tabContainer = document.createElement('div');
+        tabContainer.style.cssText = `
+            display: flex;
+            justify-content: center;
+            gap: 20px;
             margin-bottom: 10px;
         `;
-        header.innerHTML = `
-            <div style="font-size: 14px; color: #00f2ff; letter-spacing: 3px; margin-bottom: 10px;">AVAILABLE ABILITIES</div>
-            <div style="font-size: 12px; color: #888;">Click PIN 1 or PIN 2 to assign skills to quick slots</div>
+
+        const tabs = ['BASIC', 'HEAVY', 'BUFF'];
+        tabs.forEach(tab => {
+            const btn = document.createElement('button');
+            const isActive = this.skillTab === tab;
+            let color = '#fff';
+            if (tab === 'BASIC') color = '#00f2ff';
+            if (tab === 'HEAVY') color = '#ff0055';
+            if (tab === 'BUFF') color = '#ffe600';
+
+            btn.innerText = tab;
+            btn.className = 'btn'; // Reuse base btn class
+            btn.style.cssText = `
+                min-width: 150px;
+                font-size: 16px;
+                letter-spacing: 2px;
+                border: 2px solid ${color};
+                color: ${isActive ? '#000' : color};
+                background: ${isActive ? color : 'transparent'};
+                box-shadow: ${isActive ? `0 0 15px ${color}` : 'none'};
+                opacity: ${isActive ? 1 : 0.7};
+            `;
+            btn.onclick = () => {
+                this.skillTab = tab;
+                this.renderSkillsMenu();
+            };
+            tabContainer.appendChild(btn);
+        });
+        container.appendChild(tabContainer);
+
+        // 2. SKILL GRID
+        const grid = document.createElement('div');
+        grid.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            width: 100%;
         `;
-        container.appendChild(header);
 
-        // Sort skills: Pinned first, then by type
-        const skills = [...this.player.unlockedSkills];
+        // Filter and Sort Skills
+        const allSkills = [...this.player.unlockedSkills];
+        const filteredSkills = allSkills.filter(skill => {
+            if (this.skillTab === 'BUFF') return skill.isBuff;
+            if (this.skillTab === 'HEAVY') return !skill.isBuff && skill.cost >= 40;
+            if (this.skillTab === 'BASIC') return !skill.isBuff && skill.cost < 40;
+            return true;
+        });
 
-        skills.forEach((skill, index) => {
+        if (filteredSkills.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#666; padding:50px;">NO SKILLS IN THIS CATEGORY</div>`;
+        }
+
+        filteredSkills.forEach((skill) => {
+            // Find original index for binding actions
+            const index = this.player.unlockedSkills.indexOf(skill);
+
             const card = document.createElement('div');
             card.className = 'skill-management-card';
 
@@ -4229,101 +4560,99 @@ const game = {
             }
 
             const typeLabel = skill.isBuff ? "BUFF" : "ATTACK";
-            const costLabel = skill.cost > 0 ? `${skill.cost} MP` : "FREE";
+            // Compact Cost Label
+            const costLabel = skill.cost > 0 ? `${skill.cost}MP` : "FREE";
 
             let pinnedBadge = "";
-            if (isPinned1) pinnedBadge = `<div class="skill-pinned-badge" style="background: linear-gradient(135deg, #00f2ff, #0088cc);">SLOT 1</div>`;
-            if (isPinned2) pinnedBadge = `<div class="skill-pinned-badge" style="background: linear-gradient(135deg, #ff0055, #cc0044);">SLOT 2</div>`;
+            if (isPinned1) pinnedBadge = `<div style="position:absolute; top:0; right:0; background:#00f2ff; color:#000; font-size:9px; font-weight:bold; padding:2px 6px; border-bottom-left-radius:6px;">SLOT 1</div>`;
+            if (isPinned2) pinnedBadge = `<div style="position:absolute; top:0; right:0; background:#ff0055; color:#fff; font-size:9px; font-weight:bold; padding:2px 6px; border-bottom-left-radius:6px;">SLOT 2</div>`;
 
+            // Ultra Compact Description
             const descDisplay = skill.desc || (skill.isBuff
-                ? `+${((skill.buffVal || 0) * 100).toFixed(0)}% ${skill.buffType || 'BUFF'} for ${skill.duration || 1} turns`
-                : `${skill.mult}x DMG × ${skill.hits || 1} hit${(skill.hits || 1) > 1 ? 's' : ''}`);
+                ? `+${((skill.buffVal || 0) * 100).toFixed(0)}% ${skill.buffType || 'BUFF'}`
+                : `${skill.mult}x DMG`);
 
+            // COMPACT CARD STYLE
             card.style.cssText = `
                 background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 20, 0.95));
-                backdrop-filter: blur(10px);
-                border: 2px solid ${accentColor};
-                border-radius: 12px;
-                padding: 20px;
+                border: 1px solid ${accentColor};
+                border-radius: 6px;
+                padding: 10px;
                 position: relative;
                 overflow: hidden;
-                transition: all 0.3s ease;
-                box-shadow: 0 8px 32px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.1);
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 15px ${glowColor}40;
                 cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 120px;
             `;
 
             card.innerHTML = `
                 ${pinnedBadge}
                 
-                <!-- Skill Type Badge -->
-                <div style="display: inline-block; background: ${accentColor}22; border: 1px solid ${accentColor}; color: ${accentColor}; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; letter-spacing: 1px; margin-bottom: 12px;">
-                    ${typeLabel}
-                </div>
-
-                <!-- Skill Name -->
-                <div style="font-size: 24px; font-weight: bold; color: ${accentColor}; margin-bottom: 8px; text-shadow: 0 0 20px ${glowColor}, 0 2px 4px rgba(0,0,0,0.8);">
-                    ${skill.name || 'BASIC ATTACK'}
+                <!-- Header: Type + Name -->
+                <div style="margin-bottom: 5px;">
+                    <span style="font-size: 9px; color: ${accentColor}; border: 1px solid ${accentColor}; padding: 1px 4px; border-radius: 3px; margin-right: 5px;">${typeLabel}</span>
+                    <span style="font-size: 14px; font-weight: bold; color: ${accentColor}; text-shadow: 0 0 10px ${glowColor};">${skill.name || 'SKILL'}</span>
                 </div>
 
                 <!-- Description -->
-                <div style="color: #aaa; font-size: 13px; font-style: italic; margin-bottom: 15px; min-height: 40px; line-height: 1.4;">
+                <div style="color: #aaa; font-size: 11px; margin-bottom: 8px; line-height: 1.2; flex-grow: 1;">
                     ${descDisplay}
                 </div>
 
-                <!-- Stats Bar -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; padding: 12px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div style="text-align: center;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 4px;">COST</div>
-                        <div style="font-size: 16px; font-weight: bold; color: ${skill.cost > 0 ? '#0088ff' : '#00ff88'};">${costLabel}</div>
+                <!-- Footer: Stats + Buttons -->
+                <div>
+                     <!-- Mini Stats Row -->
+                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: #ddd; margin-bottom: 8px; border-top: 1px solid #333; padding-top: 4px;">
+                        <span>COST: <span style="color:#00f2ff">${costLabel}</span></span>
+                        <span>${skill.isBuff ? (skill.duration + 'T') : ((skill.hits || 1) + ' HITS')}</span>
                     </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 10px; color: #666; margin-bottom: 4px;">${skill.isBuff ? 'DURATION' : 'POWER'}</div>
-                        <div style="font-size: 16px; font-weight: bold; color: ${accentColor};">${skill.isBuff ? (skill.duration || 1) + ' turns' : skill.mult + 'x'}</div>
+
+                    <!-- Action Buttons (Grid) -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;">
+                        <button class="skill-action-btn" data-action="pin1" data-index="${index}" style="font-size:10px; padding:4px 0; background: #00f2ff22; border: 1px solid #00f2ff; color: #00f2ff; ${isPinned1 ? 'background:#00f2ff; color:#000;' : ''}">
+                            ${isPinned1 ? '1' : 'P1'}
+                        </button>
+                        <button class="skill-action-btn" data-action="pin2" data-index="${index}" style="font-size:10px; padding:4px 0; background: #ff005522; border: 1px solid #ff0055; color: #ff0055; ${isPinned2 ? 'background:#ff0055; color:#fff;' : ''}">
+                            ${isPinned2 ? '2' : 'P2'}
+                        </button>
+                        <button class="skill-action-btn" data-action="use" data-index="${index}" style="font-size:10px; padding:4px 0; background: #00ff0022; border: 1px solid #00ff00; color: #00ff00;">
+                            USE
+                        </button>
                     </div>
                 </div>
-
-                <!-- Action Buttons -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                    <button class="skill-action-btn" data-action="pin1" data-index="${index}" style="background: linear-gradient(135deg, #00f2ff22, #00f2ff11); border: 1px solid #00f2ff; color: #00f2ff; ${isPinned1 ? 'box-shadow: 0 0 15px #00f2ff;' : ''}">
-                        ${isPinned1 ? '✓ PIN1' : 'PIN 1'}
-                    </button>
-                    <button class="skill-action-btn" data-action="pin2" data-index="${index}" style="background: linear-gradient(135deg, #ff005522, #ff005511); border: 1px solid #ff0055; color: #ff0055; ${isPinned2 ? 'box-shadow: 0 0 15px #ff0055;' : ''}">
-                        ${isPinned2 ? '✓ PIN2' : 'PIN 2'}
-                    </button>
-                    <button class="skill-action-btn" data-action="use" data-index="${index}" style="background: linear-gradient(135deg, #00ff0044, #00ff0022); border: 1px solid #00ff00; color: #00ff00; font-weight: bold;">
-                        USE
-                    </button>
-                </div>
-
-                <!-- Decorative Glow -->
-                <div style="position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: radial-gradient(circle, ${glowColor} 0%, transparent 70%); opacity: 0.3; pointer-events: none;"></div>
             `;
 
             // Hover effect
             card.onmouseenter = () => {
-                card.style.transform = 'translateY(-5px) scale(1.02)';
-                card.style.boxShadow = `0 12px 40px ${glowColor}, 0 0 60px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.2)`;
+                card.style.transform = 'translateY(-2px)';
+                card.style.boxShadow = `0 5px 20px ${glowColor}`;
             };
             card.onmouseleave = () => {
-                card.style.transform = 'translateY(0) scale(1)';
-                card.style.boxShadow = `0 8px 32px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.1)`;
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = `0 4px 15px ${glowColor}40`;
             };
 
-            container.appendChild(card);
+            grid.appendChild(card);
         });
 
+        container.appendChild(grid);
+
         // Bind events to all buttons using event delegation
-        container.querySelectorAll('.skill-action-btn').forEach(btn => {
+        grid.querySelectorAll('.skill-action-btn').forEach(btn => {
             btn.onclick = (e) => {
                 e.stopPropagation();
                 const action = btn.dataset.action;
                 const index = parseInt(btn.dataset.index);
-                const skill = skills[index];
+                const skill = this.player.unlockedSkills[index];
 
                 if (action === 'pin1') {
                     this.player.pinnedSkills[0] = skill;
                     this.updateButtons();
-                    this.renderSkillsMenu();
+                    this.renderSkillsMenu(); // Re-renders current tab
                 } else if (action === 'pin2') {
                     this.player.pinnedSkills[1] = skill;
                     this.updateButtons();
@@ -4344,6 +4673,10 @@ const game = {
         // Already open -> toggle close
         const screen = document.getElementById('classes-screen');
         if (screen.classList.contains('active')) { this.closeClassesViewer(); return; }
+
+        // Set Title Correctly
+        const title = screen.querySelector('h1');
+        if (title) title.innerText = "JOB ADVANCEMENT";
 
         // Store current state
         this.previousState = this.state;
@@ -4671,12 +5004,7 @@ const game = {
         const classesBtn = document.getElementById('classes-btn');
         if (classesBtn) classesBtn.style.display = 'none'; // Removed feature
 
-        // Show Seasonal Boss Button
-        const seasonalBtn = document.getElementById('seasonal-boss-btn');
-        if (seasonalBtn) {
-            // Always available, or maybe Floor 5+? Let's make it always available for "experimentation"
-            seasonalBtn.style.display = 'block';
-        }
+        // Seasonal Boss Button Removed from JS logic (Moved to IAP)
 
         const bossJumpBtn = document.getElementById('boss-jump-btn');
         if (bossJumpBtn) bossJumpBtn.style.display = (this.floor < 100 && this.state !== 'GAMEOVER') ? 'block' : 'none';
@@ -5049,7 +5377,7 @@ class Unit {
 
         // Visual Flare
         engine.addShake(0.8);
-        engine.hitStop(800);
+        engine.hitStop(50);
         game.runVFX('nuke', this.mesh.position, '#ff0000', 0, 1.5);
 
         // Zoom Camera briefly
@@ -5062,6 +5390,22 @@ class Unit {
                 engine.cameraTarget = oldTarget;
             }
         }, 1000);
+    }
+
+    triggerDesperation() {
+        if (this.isDesperate) return;
+        this.isDesperate = true;
+
+        // Desperation Effects
+        this.atk = Math.floor(this.atk * 1.3); // Further Attack Boost
+        this.reflectShield = 0.2; // 20% Reflection constant
+
+        game.showText("⚠ CRITICAL ERROR: LIMIT REMOVED ⚠", this.mesh.position, '#ff0000');
+
+        // VFX
+        engine.addShake(1.0);
+        engine.hitStop(50);
+        game.runVFX('shockwave', this.mesh.position, '#ff0000', 0, 2.0);
     }
 }
 // --- GLOBAL INPUT TRACKING ---

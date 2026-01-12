@@ -3529,3 +3529,85 @@ body {
     opacity: 0.9;
     pointer-events: none;
 }
+
+/* Update Modal Content Text Size */
+#modal-content {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.4;
+    color: #fff;
+    white-space: pre-wrap;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+/* GAME OVER SCREEN STYLES */
+.crit-fail {
+    font-size: 80px !important;
+    color: #ff0000 !important;
+    text-shadow: 0 0 30px #ff0000, 0 0 10px #fff !important;
+    margin-bottom: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+.fail-stats {
+    font-size: 32px;
+    color: #fff;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+#retry-btn {
+    font-size: 24px;
+    padding: 20px 50px;
+    border: 2px solid #fff;
+    background: transparent;
+    color: #fff;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+#retry-btn:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 30px #fff;
+}
+
+/* START SCREEN STYLES (MATCH GAME OVER) */
+#start-screen .glitch-title {
+    font-size: 80px !important;
+    color: #00f2ff !important;
+    text-shadow: 0 0 30px #00f2ff, 0 0 10px #fff !important;
+    margin-bottom: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+#start-screen .sub-title {
+    font-size: 32px !important;
+    color: #fff !important;
+    margin-bottom: 40px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+#start-screen .btn {
+    font-size: 24px !important;
+    padding: 20px 50px !important;
+    border: 2px solid #00f2ff !important;
+    background: transparent !important;
+    color: #fff !important;
+    transition: all 0.3s;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+#start-screen .btn:hover {
+    background: #00f2ff !important;
+    color: #000 !important;
+    box-shadow: 0 0 40px #00f2ff !important;
+}

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEON TOWER: FINAL</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
@@ -20,9 +20,7 @@
         <div id="top-ui">
             <div class="stat-box" id="floor-display">FLOOR <span id="floor-num">1</span></div>
             <div class="stat-box" id="combo-display" style="display:none;">🔥 COMBO <span id="combo-num">0</span></div>
-            <button id="seasonal-boss-btn" class="stat-box" onclick="game.startSeasonalBoss()"
-                style="cursor:pointer; background:rgba(255,0,0,0.2); border:1px solid #ff0000; color:#ff0000; animation: pulse 2s infinite; display:none;">⚠
-                ANOMALY ⚠</button>
+            <!-- Seasonal Boss Button Removed from Top UI -->
             <!-- Removed Class Tree Button -->
             <div class="stat-box" id="gold-display">CREDITS: <span id="gold-num">0</span></div>
         </div>
@@ -142,7 +140,26 @@
                 <div class="iap-grid">
                     <!-- FEATURED -->
                     <div class="iap-section-title">ELITE STATUS</div>
-                    <div class="iap-card elite" onclick="game.buyNeonPrime()">
+
+                    <!-- NEW ANOMALY ACCESS CARD -->
+                    <div class="iap-card elite" onclick="game.startSeasonalBoss()"
+                        onmouseenter="game.previewIAP('seasonal')" onmouseleave="game.previewIAP(null)"
+                        style="border-color: #ff0000; background: linear-gradient(135deg, #300, #111);">
+                        <div class="iap-tag" style="background: #ff0000; color: #fff;">EVENT</div>
+                        <div class="iap-title" style="color: #ff0000;">ANOMALY DETECTED</div>
+                        <div class="iap-icon-box" style="border: 2px solid #ff0000; background: #000;">
+                            <img src="/Users/adrian/.gemini/antigravity/brain/01858684-e365-48e6-bdf1-5cefe3dea1ab/boss_thumb_1768228657945.png"
+                                style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <div class="iap-benefits">
+                            <span style="color:#ff5555;">⚠ BOSS: SYSTEM ANOMALY</span>
+                            <span>REWARD: LEGENDARY CACHE</span>
+                            <span>RISK: EXTREME</span>
+                        </div>
+                        <div class="iap-price-btn" style="background: #ff0000; color: #fff;">BREACH</div>
+                    </div>
+                    <div class="iap-card elite" onclick="game.buyNeonPrime()"
+                        onmouseenter="game.previewIAP('neon_prime')" onmouseleave="game.previewIAP(null)">
                         <div class="iap-tag">BEST VALUE</div>
                         <div class="iap-title">NEON PRIME</div>
                         <div class="iap-icon-box">
@@ -156,7 +173,8 @@
                         <div class="iap-price-btn">$19.99</div>
                     </div>
 
-                    <div class="iap-card" onclick="game.buyRemoveAds()">
+                    <div class="iap-card" onclick="game.buyRemoveAds()" onmouseenter="game.previewIAP('remove_ads')"
+                        onmouseleave="game.previewIAP(null)">
                         <div class="iap-title">NO ADS + KIT</div>
                         <div class="iap-desc">Remove forced ads & get Starter Gear Set</div>
                         <div class="iap-price-btn">$4.99</div>
@@ -164,17 +182,20 @@
 
                     <!-- SUPPLY -->
                     <div class="iap-section-title" style="margin-top:30px;">SUPPLY DROPS</div>
-                    <div class="iap-card" onclick="game.buyLootCrate('legendary')">
+                    <div class="iap-card" onclick="game.buyLootCrate('legendary')"
+                        onmouseenter="game.previewIAP('loot_crate')" onmouseleave="game.previewIAP(null)">
                         <div class="iap-title">LOOT CRATE</div>
                         <div class="iap-desc">Contains 1 Random Item.</div>
                         <div class="iap-price-btn">$4.99</div>
                     </div>
-                    <div class="iap-card" onclick="game.buyOverclock()">
+                    <div class="iap-card" onclick="game.buyOverclock()" onmouseenter="game.previewIAP('overclock')"
+                        onmouseleave="game.previewIAP(null)">
                         <div class="iap-title">SYSTEM OVERCLOCK</div>
                         <div class="iap-desc">+100% DAMAGE & SPEED for 10 Floors</div>
                         <div class="iap-price-btn">$2.99</div>
                     </div>
-                    <div class="iap-card" onclick="game.buyRevivePack()">
+                    <div class="iap-card" onclick="game.buyRevivePack()" onmouseenter="game.previewIAP('revive')"
+                        onmouseleave="game.previewIAP(null)">
                         <div class="iap-title">REVIVE PROTOCOL x5</div>
                         <div class="iap-desc">5 Tokens to cheat death</div>
                         <div class="iap-price-btn">$1.99</div>
@@ -183,19 +204,23 @@
                     <!-- BANK -->
                     <div class="iap-section-title" style="margin-top:30px;">CREDIT BANK</div>
                     <div class="iap-row-container">
-                        <div class="iap-card small" onclick="game.buyCredits(10000, 1.99)">
+                        <div class="iap-card small" onclick="game.buyCredits(10000, 1.99)"
+                            onmouseenter="game.previewIAP('credits', 10000)" onmouseleave="game.previewIAP(null)">
                             <div class="iap-row"><span class="iap-qty">10k</span><span class="iap-cost">$1.99</span>
                             </div>
                         </div>
-                        <div class="iap-card small" onclick="game.buyCredits(50000, 4.99)">
+                        <div class="iap-card small" onclick="game.buyCredits(50000, 4.99)"
+                            onmouseenter="game.previewIAP('credits', 50000)" onmouseleave="game.previewIAP(null)">
                             <div class="iap-row"><span class="iap-qty">50k</span><span class="iap-cost">$4.99</span>
                             </div>
                         </div>
-                        <div class="iap-card small" onclick="game.buyCredits(150000, 9.99)">
+                        <div class="iap-card small" onclick="game.buyCredits(150000, 9.99)"
+                            onmouseenter="game.previewIAP('credits', 150000)" onmouseleave="game.previewIAP(null)">
                             <div class="iap-row"><span class="iap-qty">150k</span><span class="iap-cost">$9.99</span>
                             </div>
                         </div>
-                        <div class="iap-card small" onclick="game.buyCredits(500000, 24.99)">
+                        <div class="iap-card small" onclick="game.buyCredits(500000, 24.99)"
+                            onmouseenter="game.previewIAP('credits', 500000)" onmouseleave="game.previewIAP(null)">
                             <div class="iap-row"><span class="iap-qty">500k</span><span class="iap-cost">$24.99</span>
                             </div>
                         </div>
@@ -448,8 +473,7 @@
 
     <div id="classes-screen" class="screen"
         style="overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-        <button class="btn next-btn" onclick="game.closeClassesViewer()"
-            style="position: absolute; top: 20px; right: 20px; z-index: 10;">CLOSE</button>
+
         <h1
             style="color: #00f2ff; text-shadow: 0 0 30px #00f2ff; text-align: center; font-size: 48px; margin-bottom: 30px; margin-top: 20px; letter-spacing: 3px;">
             JOB ADVANCEMENT</h1>
