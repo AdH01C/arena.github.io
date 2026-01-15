@@ -496,12 +496,36 @@
     <div id="tutorial-spotlight" style="display:none;"></div>
     <div id="tutorial-panel" style="display:none;"></div>
 
-    <script src="engine.js"></script>
-    <script src="game.js"></script>
+    <!-- DATA -->
+    <script src="js/data/items.js"></script>
+    <script src="js/data/story.js"></script>
+    <script src="js/data/classes.js"></script>
+
+    <!-- ENGINE -->
+    <script src="js/engine/core.js"></script>
+    <script src="js/engine/models.js"></script>
+    <script src="js/engine/vfx.js"></script>
+
+    <!-- GAME -->
+    <script src="js/game/unit.js"></script>
+    <script src="js/game/core.js"></script>
+    <script src="js/game/systems/vfx.js"></script>
+    <script src="js/game/systems/combat.js"></script>
+    <script src="js/game/systems/inventory.js"></script>
+    <script src="js/game/systems/shop.js"></script>
+    <script src="js/game/systems/skills.js"></script>
+    <script src="js/game/systems/progression.js"></script>
+    <script src="js/game/systems/dialogue.js"></script>
+    <script src="js/game/systems/tutorial.js"></script>
+    <script src="js/game/systems/iap.js"></script>
+    <script src="js/game/ui.js"></script>
 
     <script>
         // Auto-start the game if tutorial hasn't been completed
         window.addEventListener('load', () => {
+            // Initialize engine once all scripts are loaded
+            engine.init();
+
             const tutorialCompleted = localStorage.getItem('tutorialCompleted');
             // Auto-start if tutorial needs to be shown
             if (!tutorialCompleted) {
