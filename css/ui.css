@@ -1,0 +1,292 @@
+#battle-controls {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    text-align: center;
+    padding-left: 80px;
+    /* Slight shift to right */
+    box-sizing: border-box;
+    pointer-events: none;
+    opacity: 0;
+    transition: 0.3s;
+    transform: translateY(20px);
+    z-index: 15;
+    /* Above HUD, below screens */
+}
+
+#battle-controls.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.btn {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #fff;
+    color: #fff;
+    font-family: 'Teko';
+    padding: 10px 40px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+}
+
+.btn:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 20px #fff;
+}
+
+.btn-name {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.btn-cost {
+    font-size: 18px;
+    color: #00f2ff;
+}
+
+.btn-buff {
+    border-color: #ffe600;
+}
+
+.btn-buff .btn-name {
+    color: #ffe600;
+}
+
+.btn-buff:hover {
+    background: #ffe600;
+    color: #000;
+    box-shadow: 0 0 20px #ffe600;
+}
+
+.btn-buff.on-cooldown {
+    opacity: 0.5;
+    border-color: #555;
+}
+
+.btn-buff.on-cooldown .btn-name {
+    color: #555;
+}
+
+/* --- SHOP & CARDS --- */
+.card-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.perk-card {
+    width: 200px;
+    height: 280px;
+    background: linear-gradient(180deg, #222 0%, #111 100%);
+    border: 1px solid #555;
+    padding: 15px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.perk-card:hover {
+    border-color: #ffe600;
+    transform: scale(1.05);
+}
+
+.perk-title {
+    font-size: 26px;
+    color: #ffe600;
+    margin-bottom: 10px;
+}
+
+.perk-desc {
+    font-size: 18px;
+    color: #ccc;
+}
+
+.shop-layout {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    align-items: stretch;
+}
+
+.shop-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.4);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    text-align: left;
+}
+
+.shop-sidebar-top {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.shop-title {
+    font-size: 42px;
+    color: #ffe600;
+    margin: 0;
+    line-height: 1;
+    text-shadow: 0 0 15px rgba(255, 230, 0, 0.5);
+}
+
+#shop-tier-box {
+    margin-top: 10px;
+}
+
+#shop-tier-label {
+    font-size: 24px;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#shop-player-stats {
+    font-size: 16px;
+    color: #ccc;
+    margin-top: 5px;
+    font-family: 'Courier New', monospace;
+}
+
+.shop-sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.shop-credit-display {
+    font-size: 32px;
+    color: #ffe600;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 230, 0, 0.3);
+}
+
+.big-next-btn {
+    width: 100%;
+    height: 80px;
+    background: transparent;
+    border: 3px solid #ffe600;
+    color: #ffe600;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.big-next-btn:hover {
+    background: #ffe600;
+    color: #000;
+    box-shadow: 0 0 30px rgba(255, 230, 0, 0.4);
+}
+
+.shop-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.shop-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.shop-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.shop-content::-webkit-scrollbar-thumb {
+    background: #ffe600;
+    border-radius: 4px;
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+.shop-header {
+    font-size: 28px;
+    color: #fff;
+    margin: 30px 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shop-item {
+    background: rgba(30, 30, 30, 0.9);
+    border: 1px solid #777;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    min-height: 80px;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+.shop-item:hover,
+.shop-item:active {
+    background: #ffe600;
+    color: #000;
+}
+
+.cost {
+    font-weight: bold;
+}
+
+/* Base Shop Item Styles (Desktop) */
+.shop-name {
+    font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shop-level {
+    font-size: 12px;
+    color: #00f2ff;
+    margin-left: 5px;
+}
+
+.shop-desc {
+    font-size: 13px;
+    color: #ccc;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shop-cost {
+    font-weight: bold;
+    font-size: 20px;
+    margin-left: 15px;
+    white-space: nowrap;
+}
+
+/* Mobile / Compact Landscape Adjustment */
+/* Mobile / Compact Landscape Adjustment */

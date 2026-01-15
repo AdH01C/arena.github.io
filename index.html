@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1280">
     <title>NEON TOWER: FINAL</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="css/core.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/ui.css">
+    <link rel="stylesheet" href="css/modules.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
@@ -544,7 +547,7 @@
         window.addEventListener('load', () => {
             // Initialize engine once all scripts are loaded
             engine.init();
-            
+
             // Initialize Admin System
             game.admin = new AdminSystem(game);
 

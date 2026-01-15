@@ -1,0 +1,245 @@
+/* --- HUD LAYOUT --- */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 100;
+    /* Increased to be above controls */
+    transition: opacity 0.3s;
+    pointer-events: none;
+    opacity: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#shop-screen,
+#iap-screen,
+#inventory-screen {
+    overflow: hidden;
+    /* Sidebar layout handles scrolling */
+}
+
+.screen.active {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+#start-screen {
+    justify-content: center;
+}
+
+.glitch-title {
+    font-size: 80px;
+    margin: 0;
+    color: #00f2ff;
+    text-shadow: 0 0 30px #00f2ff;
+    letter-spacing: 5px;
+}
+
+.sub-title {
+    color: #888;
+    letter-spacing: 2px;
+}
+
+.screen-title {
+    font-size: 50px;
+    color: #ffe600;
+    text-shadow: 0 0 20px #ffaa00;
+    letter-spacing: 3px;
+}
+
+/* --- HUD BARS --- */
+#top-ui {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    z-index: 5;
+}
+
+.stat-box {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #444;
+    padding: 5px 25px;
+    font-size: 32px;
+    transform: skewX(-15deg);
+    display: flex;
+    gap: 10px;
+}
+
+#floor-display {
+    color: #ffaa00;
+    border-color: #ffaa00;
+}
+
+#gold-display {
+    color: #ffe600;
+    border-color: #ffe600;
+}
+
+/* --- BUFF ICONS --- */
+#buff-container {
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 300px;
+    z-index: 10;
+}
+
+.buff-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #555;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 16px;
+    cursor: default;
+    transition: transform 0.1s, border-color 0.2s;
+}
+
+.buff-icon:hover {
+    transform: scale(1.15);
+    border-color: #fff;
+    z-index: 20;
+}
+
+.buff-icon .buff-emoji {
+    font-size: 18px;
+}
+
+.buff-icon .buff-stack {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #ff0055;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 3px;
+    min-width: 12px;
+    text-align: center;
+}
+
+.buff-icon .buff-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #00f2ff;
+    padding: 6px 10px;
+    white-space: nowrap;
+    font-size: 12px;
+    color: #fff;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    z-index: 100;
+}
+
+.buff-icon:hover .buff-tooltip {
+    display: block;
+}
+
+.buff-tooltip .buff-name {
+    color: #ffe600;
+    font-weight: bold;
+}
+
+.buff-tooltip .buff-value {
+    color: #00f2ff;
+}
+
+.unit-hud {
+    position: absolute;
+    width: 350px;
+    z-index: 5;
+}
+
+#p-wrapper {
+    bottom: 30px;
+    left: 30px;
+}
+
+#e-wrapper {
+    top: 90px;
+    right: 30px;
+}
+
+.hp-label {
+    font-size: 22px;
+    color: #aaa;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+}
+
+/* NEW BAR STYLES */
+.bar-container {
+    width: 100%;
+    height: 24px;
+    background: #111;
+    border: 1px solid #444;
+    transform: skewX(-20deg);
+    position: relative;
+    margin-bottom: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.bar-fill {
+    height: 100%;
+    width: 100%;
+    transition: width 0.2s linear;
+}
+
+.hp-fill {
+    background: #ff0055;
+    box-shadow: 0 0 15px #ff0055;
+}
+
+#p-hp-fill {
+    background: #00f2ff;
+    box-shadow: 0 0 15px #00f2ff;
+}
+
+.mana-fill {
+    background: #0088ff;
+    box-shadow: 0 0 10px #0088ff;
+}
+
+/* NUMERICAL OVERLAY */
+.overlay-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    transform: skewX(20deg);
+    /* Counter-skew text */
+    z-index: 2;
+}
+
+/* --- CONTROLS --- */

@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap');
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #15151a;
+    font-family: 'Teko', sans-serif;
+    color: white;
+
+    /* DISABLE SELECTION */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    /* PREVENT BLUE TAP HIGHLIGHT ON MOBILE */
+    -webkit-tap-highlight-color: transparent;
+}
