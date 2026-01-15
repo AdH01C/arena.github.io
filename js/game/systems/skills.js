@@ -24,7 +24,7 @@ Object.assign(game, {
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
 
             // 1. Define all available classes
-            const allJobs = ['RONIN', 'PRIEST', 'MECH', 'GUNSLINGER', 'KNIGHT', 'SHADOW', 'BRAWLER', 'HACKER', 'REAPER'];
+            const allJobs = ['RONIN', 'PRIEST', 'MECH', 'GUNSLINGER', 'SQUIRE', 'SHADOW', 'BRAWLER', 'HACKER', 'REAPER'];
 
             // 2. Shuffle and pick 3 random classes
             const randomJobs = allJobs
@@ -147,7 +147,22 @@ Object.assign(game, {
 
         // --- 3. BUILD CONTENT ---
         const s3 = jobData.skills[2];
+
         const buffInfo = s3 ? `<br><strong style="color:${theme.titleColor}">3:</strong> <span style="color:#fff">${s3.name}</span><br><span style="color:#aaa">${s3.desc}</span>` : '';
+
+        // Class Stat Bonuses Map
+        const STAT_BONUSES = {
+            "RONIN": "+25% Crit Chance, +10 ATK",
+            "PRIEST": "+15 Mana Regen, +10 HP Regen/Turn",
+            "MECH": "+200 Max HP, +10 Armor",
+            "GUNSLINGER": "+40% Crit DMG, +15 ATK",
+            "SHADOW": "+15% Dodge, +10% Double Strike",
+            "BRAWLER": "+100 Max HP, +20 ATK",
+            "HACKER": "+100 Max Mana, -25% Mana Costs",
+            "REAPER": "+10% Lifesteal, Execute < 15% HP",
+            "SQUIRE": "+15 Armor, +15% Phy. Mitigation, +50 HP"
+        };
+        const statDesc = STAT_BONUSES[jobKey] || "Standard Stats";
 
         // Mark broken classes
         const isBroken = false;
@@ -157,6 +172,12 @@ Object.assign(game, {
             ${brokenTag}
             <div class="perk-title" style="color:${theme.titleColor}; text-shadow:0 0 10px ${theme.titleColor}; margin-bottom:5px; font-size: 22px;">${jobData.name}</div>
             <div class="perk-desc" style="color:#ddd; font-style:italic; margin-bottom:10px;">${jobData.desc}</div>
+            
+            <div style="background:rgba(255,255,255,0.1); padding:5px; border-radius:4px; margin-bottom:10px; border:1px solid ${theme.titleColor}; box-shadow:inset 0 0 10px rgba(0,0,0,0.5);">
+                <strong style="color:${theme.titleColor}; font-size:12px;">CLASS PASSIVE:</strong><br>
+                <div style="color:#fff; font-size:13px; margin-top:2px;">${statDesc}</div>
+            </div>
+
             <div style="background:rgba(0,0,0,0.5); padding:10px; border-radius:5px; border:1px solid rgba(255,255,255,0.1);">
                 <div style="font-size:14px;color:#fff;margin-top:5px;">
                     <strong style="color:${theme.titleColor}">1:</strong> ${jobData.skills[0].name}<br>
@@ -226,8 +247,62 @@ Object.assign(game, {
         if (tier === 0) {
             // Base Class: Unlock All 3
             this.player.unlockedSkills = [...CLASS_TREES[type][0].skills];
-            // Pin first 2
-            this.player.pinnedSkills = [this.player.unlockedSkills[0], this.player.unlockedSkills[1]];
+            // Pin first 2 skills to Slot 1 & 2. Pin 3rd skill (Buff) to Slot 3 (Index 3).
+            // Index 2 is reserved for "SKILLS" menu.
+            this.player.pinnedSkills = [
+                this.player.unlockedSkills[0],
+                this.player.unlockedSkills[1],
+                null,
+                this.player.unlockedSkills[2]
+            ];
+
+            // --- CLASS INHERENT STAT BONUSES ---
+            if (type === 'SQUIRE') {
+                this.player.baseArmor += 15;
+                this.player.armor += 15;
+                this.player.mitigation = 0.15; // 15% inherent mitigation
+                this.player.maxHp += 50;
+                this.player.hp = this.player.maxHp;
+                setTimeout(() => this.showText("HEAVY PLATING EQUIPPED", this.player.mesh.position, "#888888"), 500);
+            } else if (type === 'RONIN') {
+                this.player.critChance += 0.25; // Glass Cannon
+                this.player.atk += 10;
+                setTimeout(() => this.showText("CRITICAL SYSTEMS ENGAGED", this.player.mesh.position, "#aa00ff"), 500);
+            } else if (type === 'PRIEST') {
+                this.player.manaRegen += 15; // Massive regen
+                this.player.baseManaRegen += 15;
+                this.player.hpRegen = (this.player.hpRegen || 0) + 10; // Native HP Regen
+                setTimeout(() => this.showText("HOLY AURA ACTIVE", this.player.mesh.position, "#00f2ff"), 500);
+            } else if (type === 'MECH') {
+                this.player.baseArmor += 10;
+                this.player.armor += 10;
+                this.player.maxHp += 200; // Hull Tank
+                this.player.hp = this.player.maxHp;
+                setTimeout(() => this.showText("HULL REINFORCED", this.player.mesh.position, "#ff6600"), 500);
+            } else if (type === 'GUNSLINGER') {
+                this.player.critDamage += 0.40; // Sniper
+                this.player.atk += 15;
+                setTimeout(() => this.showText("TARGETING SCOPE ONLINE", this.player.mesh.position, "#ffaa00"), 500);
+            } else if (type === 'SHADOW') {
+                this.player.dodge += 0.15; // Evasion Tank
+                this.player.doubleStrike += 0.10;
+                setTimeout(() => this.showText("CLOAKING ACTIVE", this.player.mesh.position, "#220044"), 500);
+            } else if (type === 'BRAWLER') {
+                this.player.maxHp += 100;
+                this.player.hp = this.player.maxHp;
+                // Berserker scaling handled in combat logic usually, but we give raw stats here
+                this.player.atk += 20;
+                setTimeout(() => this.showText("FRENZY INDUCED", this.player.mesh.position, "#ff0000"), 500);
+            } else if (type === 'HACKER') {
+                this.player.manaCostReduction += 0.25; // Efficiency
+                this.player.maxMana += 100;
+                this.player.mana = this.player.maxMana;
+                setTimeout(() => this.showText("OPTIMIZED RUNTIME", this.player.mesh.position, "#00ff00"), 500);
+            } else if (type === 'REAPER') {
+                this.player.lifesteal += 0.10;
+                this.player.executeThreshold += 0.15; // Execute enemies below 15%
+                setTimeout(() => this.showText("SOUL HARVEST READY", this.player.mesh.position, "#5500aa"), 500);
+            }
         } else if (skillIndex >= 0) {
             // Advancement: Unlock Selected Skill
             const newSkill = CLASS_TREES[type][tier].skills[skillIndex];

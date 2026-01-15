@@ -42,7 +42,7 @@ class Unit {
 
         // --- NEW: SKILL SYSTEM ---
         this.unlockedSkills = []; // Stores all known skills
-        this.pinnedSkills = [null, null]; // Stores the 2 active skills in slots
+        this.pinnedSkills = [null, null, null, null, null, null]; // Stores the 6 active skills in slots
         // -------------------------
 
         // --- NEW: GEAR SYSTEM ---

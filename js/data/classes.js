@@ -496,85 +496,85 @@ const CLASS_TREES = {
             ]
         }
     ],
-    "KNIGHT": [
+    "SQUIRE": [
         // 0-9: BASE - Tank
         {
-            name: "SQUIRE", desc: "Tier 1: Defense", skills: [
+            name: "SQUIRE", desc: "Tier 1: Heavy Defense", skills: [
                 { name: "SLASH", cost: 0, mult: 1.0, color: 0xcccccc, vfx: 'slash', hits: 1, desc: "A disciplined vertical strike from a heavy combat blade." },
-                { name: "SHIELD BASH", cost: 30, mult: 2.0, color: 0x00aaff, vfx: 'heavy', hits: 1, desc: "Use your defensive plate as a weapon of blunt impact." },
-                { name: "SHIELD UP", cost: 20, isBuff: true, buffType: 'shield', buffVal: 0.25, duration: 8, color: 0x00aaff, desc: "Lock your armor plates to absorb 25% Max HP as damage." }
+                { name: "SHIELD BASH", cost: 30, mult: 2.5, color: 0x00aaff, vfx: 'heavy', hits: 1, desc: "Use your defensive plate as a weapon of blunt impact." },
+                { name: "IRON DEFENSE", cost: 20, isBuff: true, buffType: 'shield', buffVal: 0.40, duration: 8, color: 0x00aaff, desc: "Lock your armor plates to absorb 40% Max HP as damage." }
             ]
         },
         // 10-19
         {
-            name: "IRON-CLAD", desc: "Tier 2: Armor", skills: [
-                { name: "HEAVY SWING", cost: 0, mult: 1.2, color: 0xaaaaaa, vfx: 'slash', hits: 1, desc: "A wide horizontal sweep designed to shatter enemy frames." },
-                { name: "IRON STRIKE", cost: 45, mult: 3.5, color: 0x888888, vfx: 'heavy', hits: 1, desc: "A crushing overhead blow that leverages your full chassis weight." },
-                { name: "FORTIFY", cost: 25, isBuff: true, buffType: 'armor', buffVal: 0.20, duration: 8, color: 0xaaaaaa, desc: "Reinforce your structural integrity to gain +20% Armor." }
+            name: "VANGUARD", desc: "Tier 2: Frontline", skills: [
+                { name: "WIDE SWEEP", cost: 0, mult: 1.2, color: 0xaaaaaa, vfx: 'slash', hits: 1, desc: "A wide horizontal sweep designed to control the battlefield." },
+                { name: "CHARGE", cost: 45, mult: 3.5, color: 0x888888, vfx: 'heavy', hits: 1, desc: "Rush the enemy with the momentum of a freight train." },
+                { name: "RALLY", cost: 25, isBuff: true, buffType: 'armor', buffVal: 0.25, duration: 8, color: 0xaaaaaa, desc: "Inspire yourself, fortifying your armor by 25%." }
             ]
         },
         // 20-29
         {
-            name: "GUARDIAN", desc: "Tier 3: Protector", skills: [
-                { name: "JUSTICE", cost: 0, mult: 0.5, color: 0xffd700, vfx: 'beam', hits: 4, desc: "Deliver four strikes fueled by unwavering resolve." },
-                { name: "SMITE", cost: 60, mult: 5.0, color: 0xffd700, vfx: 'god_beam', hits: 1, desc: "Call down a beam of pure judgment from the heavens." },
-                { name: "HOLY WALL", cost: 35, isBuff: true, buffType: 'shield', buffVal: 0.50, duration: 8, color: 0xffd700, desc: "Raise an energy-barrier capable of absorbing 50% Max HP as damage." }
+            name: "SENTINEL", desc: "Tier 3: Watcher", skills: [
+                { name: "PIERCING THRUST", cost: 0, mult: 1.0, color: 0xffd700, vfx: 'beam', hits: 2, desc: "Two precise strikes that exploit gaps in enemy plating." },
+                { name: "RETRIBUTION", cost: 60, mult: 5.0, color: 0xffaa00, vfx: 'heavy', hits: 1, desc: "A counter-strike delivered with punishing force." },
+                { name: "OVERWATCH", cost: 35, isBuff: true, buffType: 'shield', buffVal: 0.60, duration: 8, color: 0xffd700, desc: "Enter a defensive stance, generating a shield for 60% Max HP." }
             ]
         },
         // 30-39
         {
-            name: "CRUSADER", desc: "Tier 4: Holy", skills: [
-                { name: "DIVINE CUT", cost: 0, mult: 0.8, color: 0xffffff, vfx: 'slash', hits: 3, desc: "A triple-slash sequence performed with ethereal grace." },
-                { name: "JUDGEMENT", cost: 90, mult: 7.0, color: 0xffffff, vfx: 'heavy', hits: 1, desc: "Deliver a terminal sentence that hits with 7x force." },
-                { name: "DIVINE SHIELD", cost: 40, isBuff: true, buffType: 'shield', buffVal: 0.75, duration: 8, color: 0xffffff, desc: "A blinding aura of protection that absorbs 75% Max HP as damage." }
+            name: "JUSTICIAR", desc: "Tier 4: Law", skills: [
+                { name: "VERDICT", cost: 0, mult: 0.8, color: 0xffffff, vfx: 'slash', hits: 3, desc: "Deliver three strikes of binding law." },
+                { name: "EXECUTIONER", cost: 90, mult: 7.0, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A heavy downward slash meant to end the conflict." },
+                { name: "LAW OF STEEL", cost: 40, isBuff: true, buffType: 'all_defense', buffVal: 0.30, duration: 8, color: 0xffffff, desc: "Your armor becomes absolute law, boosting all defenses by 30%." }
             ]
         },
         // 40-49
         {
-            name: "ROYAL-GUARD", desc: "Tier 5: Elite", skills: [
-                { name: "ROYAL SLASH", cost: 0, mult: 0.6, color: 0xff0055, vfx: 'multi', hits: 5, desc: "An elite 5-hit sequence used by the Emperor's Guard." },
-                { name: "EXECUTION", cost: 110, mult: 10.0, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A 10x multiplier blow meant for the most dangerous adversaries." },
-                { name: "KINGS ARMOR", cost: 45, isBuff: true, buffType: 'all_defense', buffVal: 0.35, duration: 8, color: 0xff0055, desc: "Adorn yourself in the majesty of kings for 35% more total defense." }
+            name: "IMPERIAL-GUARD", desc: "Tier 5: Elite", skills: [
+                { name: "IMPERIAL SLASH", cost: 0, mult: 0.6, color: 0xff0055, vfx: 'multi', hits: 5, desc: "An elite 5-hit sequence from the Emperor's training manual." },
+                { name: "ROYAL DECREE", cost: 110, mult: 10.0, color: 0xff0055, vfx: 'god_beam', hits: 1, desc: "A strike so powerful it commands obedience from reality itself." },
+                { name: "KINGS GUARD", cost: 45, isBuff: true, buffType: 'shield', buffVal: 1.0, duration: 8, color: 0xff0055, desc: "Summon the royal energy field to absorb 100% Max HP." }
             ]
         },
         // 50-59
         {
-            name: "CYBER-PALADIN", desc: "Tier 6: Energy", skills: [
-                { name: "LASER SWORD", cost: 0, mult: 0.4, color: 0x00f2ff, vfx: 'beam', hits: 8, desc: "8 rapid cuts from a blade made of high-frequency photons." },
-                { name: "PLASMA BASH", cost: 140, mult: 12.0, color: 0x00f2ff, vfx: 'implode', hits: 1, desc: "A seismic shield impact infused with ionized plasma." },
-                { name: "FORCE FIELD", cost: 50, isBuff: true, buffType: 'shield', buffVal: 1.0, duration: 8, color: 0x00f2ff, desc: "Project a high-density energy field that absorbs 100% Max HP as damage." }
+            name: "TECH-FORTRESS", desc: "Tier 6: Machine", skills: [
+                { name: "AUTO-CANNON", cost: 0, mult: 0.4, color: 0x00f2ff, vfx: 'beam', hits: 8, desc: "Shoulder-mounted cannons fire a barrage of 8 energy rounds." },
+                { name: "BUNKER BUSTER", cost: 140, mult: 12.0, color: 0xff6600, vfx: 'nuke', hits: 1, desc: "A high-explosive shell that cracks even the toughest defenses." },
+                { name: "ENERGY WALL", cost: 50, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x00f2ff, desc: "Deploy a hard-light barrier granting invincibility for 2 turns." }
             ]
         },
         // 60-69
         {
-            name: "JUGGERNAUT", desc: "Tier 7: Unstoppable", skills: [
-                { name: "EARTHQUAKE", cost: 0, mult: 0.3, color: 0x552200, vfx: 'heavy', hits: 12, desc: "A 12-hit seismic resonance that ripples through the ground." },
-                { name: "AVALANCHE", cost: 160, mult: 15.0, color: 0x884400, vfx: 'nuke', hits: 1, desc: "Bury the target under a 15x landslide of kinetic energy." },
-                { name: "IRON SKIN", cost: 55, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0x888888, desc: "Become a living fortress of steel, gain invincibility for 2 turns." }
+            name: "DREADNOUGHT", desc: "Tier 7: War Machine", skills: [
+                { name: "GATLING STRIKE", cost: 0, mult: 0.3, color: 0x552200, vfx: 'heavy', hits: 12, desc: "A continuous stream of heavy impacts that suppresses the enemy." },
+                { name: "DOOMSDAY", cost: 160, mult: 15.0, color: 0xaa0000, vfx: 'nuke', hits: 1, desc: "Fire all weapon systems at once for catastrophic damage." },
+                { name: "LIVING METAL", cost: 55, isBuff: true, buffType: 'regen', buffVal: 0.15, duration: 8, color: 0x888888, desc: "Nanites repair your hull, regenerating 15% HP per turn." }
             ]
         },
         // 70-79
         {
-            name: "VOID-KEEPER", desc: "Tier 8: Null", skills: [
-                { name: "VOID SLASH", cost: 0, mult: 0.2, color: 0x220044, vfx: 'slash', hits: 20, desc: "20 strikes delivered from the heart of the absolute void." },
-                { name: "BLACK HOLE", cost: 200, mult: 20.0, color: 0x000000, vfx: 'blackhole', hits: 1, desc: "Manifest a localized singularity to devour the enemy." },
-                { name: "VOID BARRIER", cost: 60, isBuff: true, buffType: 'shield', buffVal: 1.5, duration: 8, color: 0x220044, desc: "Wrap your chassis in nothingness to absorb 150% Max HP as damage." }
+            name: "STAR-BASTION", desc: "Tier 8: Cosmic", skills: [
+                { name: "COMET SHIELD", cost: 0, mult: 0.2, color: 0x0000ff, vfx: 'implode', hits: 20, desc: "Batter the enemy with a shield forged from a dying star." },
+                { name: "SUPERNOVA", cost: 200, mult: 20.0, color: 0xffaa00, vfx: 'nova', hits: 1, desc: "Detonate your core energy in a controlled stellar explosion." },
+                { name: "GRAVITY WELL", cost: 60, isBuff: true, buffType: 'all_defense', buffVal: 0.50, duration: 8, color: 0x220044, desc: "Bend gravity to deflect attacks, boosting defense by 50%." }
             ]
         },
         // 80-89
         {
-            name: "TITAN-SLAYER", desc: "Tier 9: Colossal", skills: [
-                { name: "GOD KILLER", cost: 0, mult: 0.15, color: 0xffd700, vfx: 'god_beam', hits: 30, desc: "30 strikes aimed at the core of a divine entity." },
-                { name: "HEAVENS FALL", cost: 250, mult: 40.0, color: 0xffffff, vfx: 'nuke', hits: 1, desc: "Bring down the full weight of the sky for 40x damage." },
-                { name: "TITAN FORM", cost: 70, isBuff: true, buffType: 'all_defense', buffVal: 0.60, duration: 8, color: 0xffd700, desc: "Ascend to a colossal state, gaining 60% more total defense." }
+            name: "GALACTIC-WALL", desc: "Tier 9: Unmovable", skills: [
+                { name: "EVENT HORIZON", cost: 0, mult: 0.15, color: 0x220044, vfx: 'blackhole', hits: 30, desc: "Strikes that pull the enemy into a gravity trap." },
+                { name: "BIG BANG", cost: 250, mult: 40.0, color: 0xffffff, vfx: 'god_beam', hits: 1, desc: "Recreate the birth of the universe in a single sword swing." },
+                { name: "INFINITE MASS", cost: 70, isBuff: true, buffType: 'invincible', buffVal: 1, duration: 8, color: 0xffffff, desc: "Your density becomes infinite. 3 Turns of Invincibility." }
             ]
         },
         // 90+
         {
-            name: "OMNI-KNIGHT", desc: "Tier 10: Invincible", skills: [
-                { name: "REALITY SLASH", cost: 0, mult: 0.1, color: 0xffffff, vfx: 'omni', hits: 60, desc: "60 slashes that occur across multiple parallel timelines." },
-                { name: "AEGIS STRIKE", cost: 400, mult: 80.0, color: 0x00f2ff, vfx: 'god_beam', hits: 1, desc: "The ultimate 80x strike delivered behind an unbreakable shield." },
-                { name: "IMPERISHABLE", cost: 100, isBuff: true, buffType: 'shield', buffVal: 5.0, duration: 8, color: 0xffffff, desc: "Transcend the concept of damage to absorb 500% Max HP worth of integrity." }
+            name: "COSMIC-AEGIS", desc: "Tier 10: God", skills: [
+                { name: "DIVINE JUDGEMENT", cost: 0, mult: 0.1, color: 0xffd700, vfx: 'omni', hits: 60, desc: "60 strikes from a higher dimension." },
+                { name: "FINAL PROTECTOR", cost: 400, mult: 80.0, color: 0x00f2ff, vfx: 'god_beam', hits: 1, desc: "The ultimate blow. If it lands, you save the world." },
+                { name: "ETERNAL GUARD", cost: 100, isBuff: true, buffType: 'shield', buffVal: 10.0, duration: 8, color: 0xffffff, desc: "A shield so strong it outlasts time. Absorb 1000% Max HP." }
             ]
         }
     ],

@@ -242,52 +242,87 @@ Object.assign(game, {
     },
     updateButtons() {
         if (!this.player) return;
-        const s1 = this.player.pinnedSkills?.[0];
-        const s2 = this.player.pinnedSkills?.[1];
+        const skills = this.player.pinnedSkills || [];
 
-        const btn1 = document.getElementById('btn-skill-1');
-        const btn2 = document.getElementById('btn-skill-2');
-        const btn3 = document.getElementById('btn-skill-3');
+        // Helper to update a button
+        const updateBtn = (id, skill, index) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
 
-        // Button 1
-        if (s1) {
-            const cost1 = Math.max(0, Math.floor(s1.cost * (1 - this.player.manaCostReduction)));
-            const discount1 = cost1 < s1.cost ? `<span style="text-decoration:line-through;color:#666">${s1.cost}</span> ` : '';
-            btn1.innerHTML = `<span class="btn-name">${s1.name}</span><br><span class="btn-cost">${discount1}${cost1} MP</span>`;
-            btn1.style.opacity = '1';
-            // btn1.onclick is handled in HTML but relies on game.useSkill(0) which now uses pinnedSkills[0]
-        } else {
-            btn1.innerHTML = `<span class="btn-name">EMPTY</span><br><span class="btn-cost">--</span>`;
-            btn1.style.opacity = '0.5';
+            if (index === 2) {
+                // Skill 3 (Yellow) - ALWAYS SKILLS MENU
+                btn.innerHTML = `<span class="btn-name" style="color:#ffe600">SKILLS</span><br><span class="btn-cost" style="font-size:10px">MANAGE</span>`;
+                btn.style.opacity = '1';
+                btn.className = 'btn btn-buff empty-skill'; // Reset classes, ensure consistent styling
+                btn.onclick = () => {
+                    if (game.state === 'IDLE') game.openSkillsMenu();
+                };
+                return; // SKIP standard skill rendering for this button
+            }
+
+            if (skill) {
+                const cost = Math.max(0, Math.floor(skill.cost * (1 - this.player.manaCostReduction)));
+                // Discount visual not strictly needed for small buttons but good for consistency
+                // For small buttons, maybe just show COST if space allows, or just name
+                if (index >= 3) {
+                    // Small button
+                    btn.innerHTML = `<span class="btn-name">${skill.name}</span>`;
+                    // Maybe tooltip or cost in title?
+                    btn.title = `${skill.name} - ${cost} MP\n${skill.desc}`;
+                } else {
+                    // Big button
+                    const discount = cost < skill.cost ? `<span style="text-decoration:line-through;color:#666">${skill.cost}</span> ` : '';
+                    btn.innerHTML = `<span class="btn-name">${skill.name}</span><br><span class="btn-cost">${discount}${cost} MP</span>`;
+                }
+                btn.style.opacity = '1';
+                btn.classList.remove('empty-skill');
+                // Restore onclick if it was overwritten
+                btn.onclick = () => game.useSkill(index);
+            } else {
+                if (index >= 3) {
+                    btn.innerHTML = `<span class="btn-name" style="color:#444">EMPTY</span>`;
+                    btn.style.opacity = '0.5';
+                    btn.classList.add('empty-skill');
+                    btn.onclick = null;
+                } else {
+                    btn.innerHTML = `<span class="btn-name">EMPTY</span><br><span class="btn-cost">--</span>`;
+                    btn.style.opacity = '0.5';
+                    btn.classList.add('empty-skill');
+                    btn.onclick = null;
+                }
+            }
+        };
+
+        // Update all 6 buttons
+        // 0: Strike, 1: Heavy, 2: Buff/Ult, 3,4,5: Extras
+        for (let i = 0; i < 6; i++) {
+            updateBtn(`btn-skill-${i + 1}`, skills[i], i);
         }
 
-        // Button 2
-        if (s2) {
-            const cost2 = Math.max(0, Math.floor(s2.cost * (1 - this.player.manaCostReduction)));
-            const discount2 = cost2 < s2.cost ? `<span style="text-decoration:line-through;color:#666">${s2.cost}</span> ` : '';
-            btn2.innerHTML = `<span class="btn-name">${s2.name}</span><br><span class="btn-cost">${discount2}${cost2} MP</span>`;
-            btn2.style.opacity = '1';
-        } else {
-            btn2.innerHTML = `<span class="btn-name">EMPTY</span><br><span class="btn-cost">--</span>`;
-            btn2.style.opacity = '0.5';
-        }
-
-        // Button 3: SKILLS MANAGER
-        btn3.innerHTML = `<span class="btn-name">SKILLS</span><br><span class="btn-cost">MENU</span>`;
-        btn3.style.display = 'inline-block';
-        btn3.onclick = () => this.openSkillsMenu(); // Override HTML onclick
+        // Special handling for Skill 3 (Ult/Buff) expecting explicit click handler sometimes? 
+        // No, HTML has onclick="game.useSkill(X)"
+        // Just ensure opacity logic doesn't conflict.
     },
 
     // --- SKILLS MENU SYSTEM ---
     openSkillsMenu() {
-        if (!this.player) return;
+        console.log("openSkillsMenu called");
+        if (!this.player) {
+            console.error("No player found in openSkillsMenu");
+            return;
+        }
 
         this.previousState = this.state;
         this.state = 'SKILLS_MENU';
         this.skillTab = 'BASIC'; // Default tab
 
         const screen = document.getElementById('classes-screen');
+        if (!screen) {
+            console.error("classes-screen element not found!");
+            return;
+        }
         screen.classList.add('active');
+
         const title = screen.querySelector('h1');
         if (title) title.innerText = "SKILL MANAGEMENT";
 
@@ -297,6 +332,52 @@ Object.assign(game, {
     closeSkillsMenu() {
         document.getElementById('classes-screen').classList.remove('active');
         this.state = this.previousState || 'IDLE';
+    },
+
+    updateBuffs() {
+        if (!this.player) return;
+        const container = document.getElementById('p-buffs');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const buffs = this.player.activeBuffs || [];
+        buffs.forEach(buff => {
+            const div = document.createElement('div');
+            // Simple visual representation
+            div.style.cssText = `
+                width: 24px; 
+                height: 24px; 
+                background: #222; 
+                border: 1px solid #ffaa00; 
+                color: #ffaa00; 
+                font-size: 14px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                border-radius: 4px;
+                cursor: help;
+                position: relative;
+            `;
+            div.innerText = buff.name ? buff.name[0] : 'B';
+            div.title = `${buff.name} (${buff.duration} turns)`;
+
+            // Duration Badge
+            const dur = document.createElement('div');
+            dur.style.cssText = `
+                position: absolute; 
+                bottom: -4px; 
+                right: -4px; 
+                background: #000; 
+                color: #fff; 
+                font-size: 9px; 
+                padding: 1px 3px; 
+                border-radius: 4px;
+            `;
+            dur.innerText = buff.duration;
+            div.appendChild(dur);
+
+            container.appendChild(div);
+        });
     },
 
     renderSkillsMenu() {
@@ -452,18 +533,29 @@ Object.assign(game, {
             const card = document.createElement('div');
             card.className = 'skill-management-card';
 
-            const isPinned1 = this.player.pinnedSkills?.[0] === skill;
-            const isPinned2 = this.player.pinnedSkills?.[1] === skill;
+            // Slot Mapping: User sees 1-5, Internal is 0,1,3,4,5 (Skip 2)
+            const slotMap = [0, 1, 3, 4, 5];
 
+            const isPinnedInSlot = (internalIdx) => this.player.pinnedSkills?.[internalIdx] === skill;
+            const pinnedInternalIndex = this.player.pinnedSkills?.indexOf(skill);
+
+            let pinnedBadge = "";
+            let userSlot = -1;
+
+            if (pinnedInternalIndex > -1) {
+                // Find which "User Slot" this corresponds to
+                const mapIdx = slotMap.indexOf(pinnedInternalIndex);
+                if (mapIdx > -1) {
+                    userSlot = mapIdx + 1;
+                    pinnedBadge = `<div style="position:absolute; top:0; right:0; background:#00f2ff; color:#000; font-size:10px; font-weight:bold; padding:4px 8px; border-bottom-left-radius:8px; z-index:2;">SLOT ${userSlot}</div>`;
+                }
+            }
+
+            // Restore colors and labels
             let accentColor = '#888';
             let glowColor = 'rgba(136, 136, 136, 0.3)';
-            if (isPinned1) {
-                accentColor = '#00f2ff';
-                glowColor = 'rgba(0, 242, 255, 0.4)';
-            } else if (isPinned2) {
-                accentColor = '#ff0055';
-                glowColor = 'rgba(255, 0, 85, 0.4)';
-            } else if (skill.isBuff) {
+
+            if (skill.isBuff) {
                 accentColor = '#ffe600';
                 glowColor = 'rgba(255, 230, 0, 0.3)';
             } else {
@@ -474,15 +566,11 @@ Object.assign(game, {
 
             const typeLabel = skill.isBuff ? "BUFF" : "ATTACK";
             const costLabel = skill.cost > 0 ? `${skill.cost}MP` : "FREE";
-
-            let pinnedBadge = "";
-            if (isPinned1) pinnedBadge = `<div style="position:absolute; top:0; right:0; background:#00f2ff; color:#000; font-size:10px; font-weight:bold; padding:4px 8px; border-bottom-left-radius:8px; z-index:2;">SLOT 1</div>`;
-            if (isPinned2) pinnedBadge = `<div style="position:absolute; top:0; right:0; background:#ff0055; color:#fff; font-size:10px; font-weight:bold; padding:4px 8px; border-bottom-left-radius:8px; z-index:2;">SLOT 2</div>`;
-
             const descDisplay = skill.desc || (skill.isBuff
                 ? `+${((skill.buffVal || 0) * 100).toFixed(0)}% ${skill.buffType || 'BUFF'}`
                 : `${skill.mult}x DMG`);
 
+            // ... (styles same as before) ...
             card.style.cssText = `
                 background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 20, 0.95));
                 border: 1px solid ${accentColor};
@@ -499,6 +587,19 @@ Object.assign(game, {
                 min-height: 160px;
             `;
 
+            // Slot Buttons Generation
+            let slotButtonsHTML = '<div style="display:flex; gap:4px; justify-content:center; margin-bottom:8px;">';
+            slotMap.forEach((internalIdx, i) => {
+                const isThisSlot = isPinnedInSlot(internalIdx);
+                const bg = isThisSlot ? '#00f2ff' : 'rgba(255,255,255,0.1)';
+                const col = isThisSlot ? '#000' : '#888';
+                slotButtonsHTML += `<button class="skill-action-btn" data-action="pin" data-slot="${internalIdx}" data-index="${index}" 
+                    style="width:25px; height:25px; border:1px solid #444; background:${bg}; color:${col}; font-size:10px; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center;">
+                    ${i + 1}
+                </button>`;
+            });
+            slotButtonsHTML += '</div>';
+
             card.innerHTML = `
                 ${pinnedBadge}
                 <div style="margin-bottom: 8px;">
@@ -509,32 +610,19 @@ Object.assign(game, {
                     ${descDisplay}
                 </div>
                 <div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #ddd; margin-bottom: 10px; border-top: 1px solid #333; padding-top: 6px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #ddd; margin-bottom: 5px; border-top: 1px solid #333; padding-top: 6px;">
                         <span>COST: <span style="color:#00f2ff">${costLabel}</span></span>
                         <span>${skill.isBuff ? (skill.duration + ' TURNS') : ((skill.hits || 1) + ' HITS')}</span>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
-                        <button class="skill-action-btn" data-action="pin1" data-index="${index}" style="font-size:11px; padding:6px 0; background: #00f2ff22; border: 1px solid #00f2ff; color: #00f2ff; ${isPinned1 ? 'background:#00f2ff; color:#000;' : ''}">
-                            ${isPinned1 ? 'SLOT 1' : 'PIN 1'}
-                        </button>
-                        <button class="skill-action-btn" data-action="pin2" data-index="${index}" style="font-size:11px; padding:6px 0; background: #ff005522; border: 1px solid #ff0055; color: #ff0055; ${isPinned2 ? 'background:#ff0055; color:#fff;' : ''}">
-                            ${isPinned2 ? 'SLOT 2' : 'PIN 2'}
-                        </button>
-                        <button class="skill-action-btn" data-action="use" data-index="${index}" style="font-size:11px; padding:6px 0; background: #00ff0022; border: 1px solid #00ff00; color: #00ff00;">
-                            USE
-                        </button>
-                    </div>
+                    ${slotButtonsHTML}
+                    <button class="skill-action-btn" data-action="use" data-index="${index}" style="width:100%; font-size:11px; padding:6px 0; background: #00ff0022; border: 1px solid #00ff00; color: #00ff00;">
+                        QUICK CAST
+                    </button>
                 </div>
             `;
 
-            card.onmouseenter = () => {
-                card.style.transform = 'translateY(-3px)';
-                card.style.boxShadow = `0 8px 30px ${glowColor}`;
-            };
-            card.onmouseleave = () => {
-                card.style.transform = 'translateY(0)';
-                card.style.boxShadow = `0 4px 15px ${glowColor}40`;
-            };
+            card.onmouseenter = () => { card.style.transform = 'translateY(-3px)'; card.style.boxShadow = `0 8px 30px ${glowColor}`; };
+            card.onmouseleave = () => { card.style.transform = 'translateY(0)'; card.style.boxShadow = `0 4px 15px ${glowColor}40`; };
 
             grid.appendChild(card);
         });
@@ -549,17 +637,19 @@ Object.assign(game, {
                 const index = parseInt(btn.dataset.index);
                 const skill = this.player.unlockedSkills[index];
 
-                if (action === 'pin1') {
-                    this.player.pinnedSkills[0] = skill;
-                    this.updateButtons();
-                    this.renderSkillsMenu();
-                } else if (action === 'pin2') {
-                    this.player.pinnedSkills[1] = skill;
+                if (action === 'pin') {
+                    const slot = parseInt(btn.dataset.slot);
+                    // Remove from other slots if present
+                    if (this.player.pinnedSkills.includes(skill)) {
+                        const oldIdx = this.player.pinnedSkills.indexOf(skill);
+                        if (oldIdx !== slot) this.player.pinnedSkills[oldIdx] = null;
+                    }
+                    this.player.pinnedSkills[slot] = skill;
                     this.updateButtons();
                     this.renderSkillsMenu();
                 } else if (action === 'use') {
                     this.closeSkillsMenu();
-                    this.useSkill(skill);
+                    this.useSkill(skill); // Assuming generic useSkill works for player skill object
                 }
             };
         });

@@ -386,64 +386,207 @@ const Models = {
 
     createKnight(c, s = 1, tier = 0) {
         const g = new THREE.Group();
-        const mArmor = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.8, roughness: 0.2 });
-        const mGold = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 1.0, roughness: 0.3 });
-        const mG = new THREE.MeshBasicMaterial({ color: c || 0x00aaff });
-        const mDark = new THREE.MeshStandardMaterial({ color: 0x222, metalness: 0.5, roughness: 0.5 });
 
-        // Body
-        this.box(0.18, 0.5, 0.18, mArmor, -0.2, 0.25, 0, g);
-        this.box(0.18, 0.5, 0.18, mArmor, 0.2, 0.25, 0, g);
-        const t = this.box(0.6, 0.5, 0.35, mArmor, 0, 0.7, 0, g);
-        this.box(0.2, 0.2, 0.1, mG, 0, 0.05, 0.18, t); // Glowing crest
+        // --- MATERIALS ---
+        // Tier-based colors
+        let mainColor = tier < 3 ? 0x888888 : (tier < 6 ? 0xffeeaa : 0x220044); // Iron -> Gold -> Cosmic
+        if (tier >= 9) mainColor = 0x00f2ff;
 
-        // Head
-        const h = this.box(0.25, 0.3, 0.25, mArmor, 0, 0.45, 0, t);
-        this.box(0.26, 0.04, 0.1, mG, 0, 0, 0.1, h); // Visor
+        const mArmor = new THREE.MeshStandardMaterial({ color: mainColor, metalness: 0.7, roughness: 0.3 });
+        const mDark = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, metalness: 0.5, roughness: 0.7 }); // Undertunics / joints
+        const mGold = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 1.0, roughness: 0.2 });
+        const mG = new THREE.MeshBasicMaterial({ color: c || 0x00aaff }); // Energy Glow
+        const mEnergy = new THREE.MeshBasicMaterial({ color: c || 0x00aaff, transparent: true, opacity: 0.85 });
 
-        // Pauldrons
-        const pSize = 0.2 + (tier * 0.02);
-        const pL = this.box(pSize, pSize, pSize, mArmor, -0.45, 0.25, 0, t);
-        const pR = this.box(pSize, pSize, pSize, mArmor, 0.45, 0.25, 0, t);
+        // overall scale factor for tier growth
+        const bScale = 1.0 + (tier * 0.04);
 
-        // Cape (Tier 4+)
+        // --- TORSO ---
+        const torsoGroup = new THREE.Group();
+        torsoGroup.position.y = 0.95 * bScale; // Hip height
+        g.add(torsoGroup);
+
+        // Abdomen (Flexible midsection)
+        this.box(0.28 * bScale, 0.25 * bScale, 0.2 * bScale, mDark, 0, 0, 0, torsoGroup);
+        // Chest Plate (Bulky, tapered)
+        const chest = this.box(0.42 * bScale, 0.45 * bScale, 0.3 * bScale, mArmor, 0, 0.35 * bScale, 0.05 * bScale, torsoGroup);
+        // Chest Detail (Reactor/Crest)
+        this.box(0.15 * bScale, 0.15 * bScale, 0.05, mG, 0, 0.05 * bScale, 0.16 * bScale, chest);
+
+        // Neck Guard
+        this.box(0.3 * bScale, 0.1 * bScale, 0.25 * bScale, mArmor, 0, 0.6 * bScale, 0, torsoGroup);
+
+        // --- HEAD ---
+        const headGroup = new THREE.Group();
+        headGroup.position.y = 0.7 * bScale;
+        torsoGroup.add(headGroup);
+
+        // Helmet Main
+        const helmet = this.box(0.22 * bScale, 0.28 * bScale, 0.26 * bScale, mArmor, 0, 0.14 * bScale, 0, headGroup);
+        // Visor (Glowing slit)
+        this.box(0.2 * bScale, 0.04 * bScale, 0.15, mG, 0, 0.02 * bScale, 0.1 * bScale, sensor => helmet.add(sensor));
+        // Crest/Plume (Tier 4+)
         if (tier >= 4) {
-            const cape = this.box(0.5, 0.7, 0.05, mG, 0, -0.1, -0.2, t);
-            cape.rotation.x = 0.2;
-            cape.userData.idle = true; cape.userData.swing = { axis: 'x', speed: 1.5, amp: 0.1, base: 0.2 };
+            const plume = this.box(0.04 * bScale, 0.25 * bScale, 0.3 * bScale, mG, 0, 0.25 * bScale, -0.05 * bScale, helmet);
+            plume.rotation.x = -0.2;
+        }
+        // Halo (Tier 8+)
+        if (tier >= 8) {
+            const halo = this.box(0.6 * bScale, 0.02, 0.6 * bScale, mEnergy, 0, 0.4 * bScale, 0, helmet);
+            halo.userData.idle = true; halo.userData.spin = { axis: 'y', speed: 2 };
         }
 
-        // Arms
-        const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.4, 0, 0); ag.add(leftArm);
-        this.box(0.15, 0.4, 0.15, mDark, 0, -0.2, 0, leftArm);
+        // --- ARMS (Articulated) ---
+        const createArm = (isRight) => {
+            const armGroup = new THREE.Group();
+            const side = isRight ? 1 : -1;
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.4, 0, 0); ag.add(rightArm);
-        this.box(0.15, 0.4, 0.15, mDark, 0, -0.2, 0, rightArm);
+            // Shoulder Joint / Pauldron
+            armGroup.position.set(side * 0.28 * bScale, 0.5 * bScale, 0);
+            torsoGroup.add(armGroup);
 
-        // Sword
-        const sword = new THREE.Group(); sword.position.set(0, -0.3, 0.1); rightArm.add(sword);
-        this.box(0.04, 0.15, 0.04, mDark, 0, -0.07, 0, sword);
-        this.box(0.15, 0.02, 0.08, mGold, 0, 0, 0, sword);
-        const bladeLen = 0.8 + (tier * 0.05);
-        const blade = this.box(0.08, bladeLen, 0.02, mArmor, 0, bladeLen / 2, 0, sword);
+            // Pauldron (Shoulder Armor)
+            const pSize = (0.22 + (tier * 0.02)) * bScale;
+            this.box(pSize, pSize, pSize, mArmor, side * 0.15 * bScale, 0.15 * bScale, 0, armGroup);
+
+            // Spike (Tier 5+)
+            if (tier >= 5) {
+                this.box(0.05 * bScale, 0.25 * bScale, 0.05 * bScale, mGold, side * 0.15 * bScale, 0.3 * bScale, 0, armGroup);
+            }
+
+            // Upper Arm
+            const upperArm = this.box(0.14 * bScale, 0.35 * bScale, 0.14 * bScale, mDark, side * 0.12 * bScale, -0.15 * bScale, 0, armGroup);
+
+            // Elbow / Forearm
+            const forearmGroup = new THREE.Group();
+            forearmGroup.position.set(0, -0.32 * bScale, 0); // Elbow pivot
+            upperArm.add(forearmGroup);
+
+            // Gauntlet (Thicker armor)
+            this.box(0.16 * bScale, 0.35 * bScale, 0.16 * bScale, mArmor, 0, -0.15 * bScale, 0, forearmGroup);
+
+            // Hand
+            this.box(0.13 * bScale, 0.13 * bScale, 0.13 * bScale, mDark, 0, -0.4 * bScale, 0, forearmGroup);
+
+            return forearmGroup; // Return forearm to attach weapons
+        };
+
+        const leftForearm = createArm(false);
+        const rightForearm = createArm(true);
+
+        // Pose Arms (Idle Stance)
+        leftForearm.parent.rotation.z = 0.2; // Flare elbows slightly
+        leftForearm.rotation.x = 0.4; // Bend arm forward
+        rightForearm.parent.rotation.z = -0.2;
+        rightForearm.rotation.x = 0.5;
+
+        // --- LEGS (Articulated) ---
+        const createLeg = (isRight) => {
+            const legGroup = new THREE.Group();
+            const side = isRight ? 1 : -1;
+
+            // Hip Joint
+            legGroup.position.set(side * 0.12 * bScale, 0, 0);
+            torsoGroup.add(legGroup);
+
+            // Thigh (Cuisses)
+            this.box(0.18 * bScale, 0.45 * bScale, 0.18 * bScale, mArmor, 0, -0.2 * bScale, 0, legGroup);
+
+            // Knee / Shin
+            const shinGroup = new THREE.Group();
+            shinGroup.position.set(0, -0.45 * bScale, 0);
+            legGroup.add(shinGroup);
+
+            // Knee Pad
+            this.box(0.14 * bScale, 0.14 * bScale, 0.05 * bScale, mGold, 0, 0, 0.1 * bScale, shinGroup);
+
+            // Greaves (Lower Leg) - Flared at bottom
+            this.box(0.16 * bScale, 0.45 * bScale, 0.16 * bScale, mArmor, 0, -0.2 * bScale, 0, shinGroup);
+            // Boot
+            this.box(0.18 * bScale, 0.12 * bScale, 0.22 * bScale, mDark, 0, -0.5 * bScale, 0.05 * bScale, shinGroup);
+        };
+
+        createLeg(false);
+        createLeg(true);
+
+        // --- WEAPONS ---
+
+        // SWORD (Right Hand)
+        const swordGroup = new THREE.Group();
+        swordGroup.position.set(0, -0.4 * bScale, 0);
+        // Angle sword slightly
+        swordGroup.rotation.x = -0.8;
+        rightForearm.add(swordGroup);
+
+        // Hilt
+        this.box(0.04 * bScale, 0.15 * bScale, 0.04 * bScale, mDark, 0, -0.1 * bScale, 0, swordGroup); // Grip
+        this.box(0.06 * bScale, 0.06 * bScale, 0.06 * bScale, mGold, 0, -0.2 * bScale, 0, swordGroup); // Pommel
+        this.box(0.25 * bScale, 0.03 * bScale, 0.08 * bScale, mGold, 0, 0, 0, swordGroup); // Crossguard
+
+        // Blade
+        let bladeLen = (1.0 + (tier * 0.12)) * bScale;
+        let bladeMat = mArmor;
+        if (tier >= 6) bladeMat = mG; // Energy Blade
+        if (tier >= 9) bladeLen *= 1.4; // Manga sized
+
+        const blade = this.box(0.1 * bScale, bladeLen, 0.02 * bScale, bladeMat, 0, bladeLen / 2, 0, swordGroup);
+        // Fuller (Blood groove) - visual detail? (Actually just 2 thinner strips if we wanted, but low poly is fine)
 
         if (tier >= 6) {
-            blade.material = mG; // Energy sword
-            blade.userData.idle = true; blade.userData.pulse = { speed: 5, amp: 0.1, base: 1 };
+            blade.userData.idle = true; blade.userData.pulse = { speed: 8, amp: 0.1, base: 1 };
         }
 
-        // Shield
-        const shieldGroup = new THREE.Group(); shieldGroup.position.set(0, -0.2, 0.2); leftArm.add(shieldGroup);
-        const sW = 0.4 + (tier * 0.03), sH = 0.5 + (tier * 0.03);
-        const shield = this.box(sW, sH, 0.05, mArmor, 0, 0, 0, shieldGroup);
+        // SHIELD (Left Hand)
+        const shieldGroup = new THREE.Group();
+        shieldGroup.position.set(0.1 * bScale, -0.2 * bScale, 0.2 * bScale); // Side mount
+        shieldGroup.rotation.y = 1.57; // Face forward
+        leftForearm.add(shieldGroup);
 
-        if (tier >= 3) this.box(sW * 0.8, sH * 0.8, 0.06, mG, 0, 0, 0.02, shieldGroup);
+        let sW = (0.5 + (tier * 0.06)) * bScale;
+        let sH = (0.7 + (tier * 0.06)) * bScale;
+        let sMat = mArmor;
 
-        // Breathing
-        shieldGroup.userData.idle = true; shieldGroup.userData.pulse = { speed: 1, amp: 0.05, base: 1 };
+        if (tier >= 6) { sW *= 1.2; sH *= 1.2; sMat = mEnergy; } // Energy Tower Shield
 
-        g.scale.set(s, s, s); return { mesh: g, weapon: rightArm };
+        // Shield Base
+        const shield = this.box(sW, sH, 0.06 * bScale, sMat, 0, 0, 0, shieldGroup);
+        // Shield Rim
+        if (tier < 6) {
+            this.box(sW * 1.1, sH * 1.1, 0.04 * bScale, mDark, 0, 0, -0.02 * bScale, shieldGroup);
+        }
+        // Shield Core
+        if (tier >= 2) {
+            this.box(sW * 0.6, sH * 0.6, 0.08 * bScale, mGold, 0, 0, 0.02 * bScale, shieldGroup);
+            this.box(0.15 * bScale, 0.15 * bScale, 0.1 * bScale, mG, 0, 0, 0.05 * bScale, shieldGroup); // Glowing center
+        }
+
+        // --- EXTRAS ---
+        // Cape (Tier 3+)
+        if (tier >= 3) {
+            const capeL = 1.0 + (tier * 0.08);
+            const cape = this.box(0.7 * bScale, capeL * bScale, 0.05, mG, 0, -0.2 * bScale, -0.25 * bScale, torsoGroup);
+            cape.rotation.x = 0.2;
+            cape.userData.idle = true; cape.userData.swing = { axis: 'x', speed: 1.0, amp: 0.15, base: 0.2 };
+        }
+
+        // Orbitals (Tier 7+)
+        if (tier >= 7) {
+            const orbitalGroup = new THREE.Group();
+            g.add(orbitalGroup);
+            // 2 Floating Shields
+            for (let i = 0; i < 2; i++) {
+                const orb = this.box(0.3 * bScale, 0.4 * bScale, 0.05, mEnergy, i === 0 ? 1 : -1, 1.5 * bScale, 0, orbitalGroup);
+                orb.userData.idle = true; orb.userData.float = { speed: 2, amp: 0.2, offset: i * 3 };
+            }
+            orbitalGroup.userData.idle = true; orbitalGroup.userData.spin = { axis: 'y', speed: 0.5 };
+        }
+
+        // Animation Props
+        torsoGroup.userData.idle = true;
+        torsoGroup.userData.float = { speed: 1, amp: 0.02, baseY: 0.95 * bScale }; // Breathing heave
+
+        g.scale.set(s, s, s);
+        return { mesh: g, weapon: rightForearm }; // Return right forearm as weapon parent for attack animations
     },
 
     createHacker(c, s = 1, tier = 0) {
