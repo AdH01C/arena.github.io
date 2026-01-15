@@ -536,6 +536,7 @@
     <script src="js/game/systems/dialogue.js"></script>
     <script src="js/game/systems/tutorial.js"></script>
     <script src="js/game/systems/iap.js"></script>
+    <script src="js/game/systems/admin.js"></script>
     <script src="js/game/ui.js"></script>
 
     <script>
@@ -543,10 +544,13 @@
         window.addEventListener('load', () => {
             // Initialize engine once all scripts are loaded
             engine.init();
+            
+            // Initialize Admin System
+            game.admin = new AdminSystem(game);
 
             const tutorialCompleted = localStorage.getItem('tutorialCompleted');
             // Auto-start if tutorial needs to be shown
-            if (!tutorialCompleted) {
+            if (!tualCd) {
                 setTimeout(() => game.startRun(), 500);
             }
         });

@@ -224,15 +224,49 @@ Object.assign(game, {
     },
 
     showText(txt, pos, color) {
-        // Clone position immediately to capture the exact spot where event happened
-        // safely handle if pos is not a Vector3 (unlikely but good practice) or just assume it is
-        const safePos = pos && pos.clone ? pos.clone() : new THREE.Vector3(0, 0, 0);
+        // INSTANT TEXT (No Queue)
+        const div = document.createElement('div');
+        div.innerText = txt;
+        div.style.cssText = `
+            position: absolute; 
+            color: ${color || '#fff'}; 
+            font-weight: bold; 
+            font-size: 24px; 
+            pointer-events: none; 
+            text-shadow: 0 0 5px #000;
+            z-index: 1000;
+            transition: all 1s;
+        `;
 
-        this.textQueue.push({ txt, pos: safePos, color });
+        // Convert 3D position to 2D screen coordinates
+        // Use window.engine if available, else fallback
+        const engineRef = window.engine || engine;
+        if (engineRef && engineRef.camera) {
+            const vector = pos ? pos.clone() : new THREE.Vector3();
+            vector.project(engineRef.camera);
+            const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+            const y = (-(vector.y * 0.5) + 0.5) * window.innerHeight;
 
-        if (!this.isProcessingText) {
-            this.processTextQueue();
+            // Add random scatter
+            const rX = (Math.random() - 0.5) * 40;
+            const rY = (Math.random() - 0.5) * 40;
+
+            div.style.left = (x + rX) + 'px';
+            div.style.top = (y + rY) + 'px';
+        } else {
+            div.style.left = '50%';
+            div.style.top = '50%';
         }
+
+        document.body.appendChild(div);
+
+        // Animate
+        setTimeout(() => {
+            div.style.transform = `translateY(-50px) scale(1.2)`;
+            div.style.opacity = '0';
+        }, 50);
+
+        setTimeout(() => div.remove(), 1000);
     },
 
     setScreen(id) {
