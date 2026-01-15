@@ -95,8 +95,21 @@ class Unit {
         this.shieldOrb = new THREE.Mesh(sGeo, sMat);
         this.mesh.add(this.shieldOrb);
     }
-    attackAnim(cb) {
+    attackAnim(cb, isStationary = false) {
         const weapon = this.model.weapon; const pivot = this.mesh;
+
+        if (isStationary) {
+            // Just animate weapon or tiny recoil
+            if (weapon) {
+                engine.tween(weapon.rotation, 'x', -0.2, 50, () => {
+                    setTimeout(() => { engine.tween(weapon.rotation, 'x', 0, 100, cb); }, 50);
+                });
+            } else {
+                setTimeout(cb, 100);
+            }
+            return;
+        }
+
         const startX = pivot.position.x; const targetX = this.isPlayer ? 0.5 : -0.5;
         engine.tween(pivot.position, 'x', targetX, 100, () => {
             if (weapon) weapon.rotation.x = -0.5;

@@ -37,6 +37,39 @@ Object.assign(game, {
             engine.spawnLightning(start, pos, color);
             engine.spawnParticles(pos, color, 5, 0.2);
         }
+        else if (type === 'shot') {
+            // Instant gunshot tracer
+            const gunPos = game.player.mesh.position.clone().add(new THREE.Vector3(0.5, 1.0, 0.5));
+            engine.spawnLightning(gunPos, pos, color); // Use lightning for stylized tracer
+            engine.spawnParticles(pos, color, 12, 0.6); // Impact
+            engine.addShake(0.1);
+
+            // Muzzle flash
+            engine.spawnParticles(gunPos, 0xffffaa, 5, 0.2);
+        }
+        else if (type === 'slash_h') {
+            // Horizontal Slash (0 rotation for horizontal arc, or PI)
+            engine.spawnSlash(pos, color, 1.5, 0); // 0 = standard Rainbow arch?
+            // Wait, if rotation Z is 0: Right->Left or Top?
+            // Ring 0..PI.
+            // Ring is flat XY plane? No, usually XY.
+            // LookAt camera -> XY plane faces camera.
+            // 0..PI is upper half.
+            // We want horizontal line.
+            // We want it to lie flat on the ground? Or horizontal across screen?
+            // "Horizontal rather than vertical" implies across the screen (-).
+            // Currently slash is random rotation.
+            // Let's try rotation 0 (Rainbow) or PI (Bowl). That's horizontal-ish.
+            // Let's force rotation 0.
+            engine.spawnParticles(pos, color, 8, 0.4);
+        }
+        else if (type === 'beam_h') {
+            const start = game.player.mesh.position.clone().add(new THREE.Vector3(0, 1.0, 0));
+            // pos is target position
+            engine.spawnHorizontalBeam(start, pos, color, 0.3);
+            engine.spawnParticles(pos, color, 10, 0.5);
+            engine.addShake(0.1);
+        }
         else if (type === 'beam') {
             engine.spawnBeam(pos, color, 8, 0.6);
             engine.addShake(0.1);
@@ -58,7 +91,7 @@ Object.assign(game, {
             engine.spawnParticles(pos, color, 6, 0.4);
             engine.addShake(0.03);
             // Muzzle flash feel
-            const gunPos = game.player.mesh.position.clone().add(new THREE.Vector3(0.5, 0, 0));
+            const gunPos = game.player.mesh.position.clone().add(new THREE.Vector3(0.5, 1.0, 0));
             engine.spawnLightning(gunPos, pos, color);
         }
         else if (type === 'explode') {

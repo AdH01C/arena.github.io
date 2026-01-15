@@ -1,4 +1,35 @@
 Object.assign(engine, {
+    updateIgris(mesh) {
+        // 1. Purple Lightning Arcs
+        if (Math.random() < 0.08) {
+            const startNode = mesh.children[Math.floor(Math.random() * mesh.children.length)];
+            // find random child of child
+            if (startNode && startNode.children.length > 0) {
+                const endNode = mesh.children[Math.floor(Math.random() * mesh.children.length)];
+
+                const posA = new THREE.Vector3(); startNode.getWorldPosition(posA);
+                const posB = new THREE.Vector3(); endNode ? endNode.getWorldPosition(posB) : mesh.getWorldPosition(posB).add(new THREE.Vector3((Math.random() - 0.5) * 2, 2, (Math.random() - 0.5) * 2));
+
+                this.spawnLightning(posA, posB, 0xaa00ff);
+            }
+        }
+
+        // 2. Void Particles from Sword
+        if (mesh.userData.weapon) {
+            const w = mesh.userData.weapon; // This is the arm group
+            // Trying to find the actual blade?
+            // mesh is the Group returned by createIgris
+            // The weaponGroup inside needs to be found if we want blade specific particles
+            // For now, spawn around the arm
+            if (Math.random() < 0.2) {
+                const pos = new THREE.Vector3(); w.getWorldPosition(pos);
+                pos.y -= 0.5; // Tip of sword roughly
+                pos.x += (Math.random() - 0.5) * 0.5;
+                pos.z += (Math.random() - 0.5) * 0.5;
+                this.spawnParticles(pos, 0x220033, 1, 0.05);
+            }
+        }
+    },
     updateGlitch(bossMesh) {
         // Randomly offset "glitch parts"
         if (Math.random() < 0.1) {
@@ -24,6 +55,43 @@ Object.assign(engine, {
         }
     },
     addShake(intensity) { this.shakeIntensity = Math.max(this.shakeIntensity, intensity); },
+
+    triggerVoidConsume() {
+        const overlay = document.getElementById('vfx-overlay');
+        overlay.style.animation = 'void-consume 1.5s cubic-bezier(0.1, 0.9, 0.2, 1)';
+        setTimeout(() => overlay.style.animation = '', 1500);
+    },
+
+    triggerImpactLine() {
+        // Create a temporary div for the line
+        const line = document.createElement('div');
+        line.style.position = 'fixed';
+        line.style.top = '50%';
+        line.style.left = '50%';
+        line.style.width = '120%';
+        line.style.height = '2px';
+        line.style.background = '#fff';
+        line.style.boxShadow = '0 0 10px #fff';
+        line.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg) scaleX(0)`;
+        line.style.zIndex = '1000';
+        line.style.transition = 'transform 0.1s ease-out';
+
+        document.body.appendChild(line);
+
+        // Flash screen red
+        const overlay = document.getElementById('vfx-overlay');
+        overlay.style.animation = 'flash-red 0.3s ease-out';
+        setTimeout(() => overlay.style.animation = '', 300);
+
+        // Animate line
+        requestAnimationFrame(() => {
+            line.style.transform = line.style.transform.replace('scaleX(0)', 'scaleX(1)');
+            setTimeout(() => {
+                line.style.opacity = '0';
+                setTimeout(() => line.remove(), 100);
+            }, 100);
+        });
+    },
 
     spawnParticles(pos, color, count = 15, speed = 0.3) {
         const geo = new THREE.BoxGeometry(0.15, 0.15, 0.15);
@@ -140,6 +208,30 @@ Object.assign(engine, {
         // Add core for glow
         const geo2 = new THREE.CylinderGeometry(width * 0.5, width * 0.5, height, 16);
         const mat2 = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95 });
+        const core = new THREE.Mesh(geo2, mat2);
+        mesh.add(core);
+    },
+
+    spawnHorizontalBeam(start, end, color, width = 0.2) {
+        const dist = start.distanceTo(end);
+        const geo = new THREE.CylinderGeometry(width, width, dist, 8);
+        geo.rotateX(-Math.PI / 2); // Rotate to point along Z/Forward initially
+        geo.translate(0, 0, dist / 2); // Pivot at start
+
+        const mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.9 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(start);
+        mesh.lookAt(end);
+
+        mesh.userData.type = 'beam';
+        mesh.userData.life = 1.0; // Persist slightly
+        this.scene.add(mesh); this.particles.push(mesh);
+
+        // Core
+        const geo2 = new THREE.CylinderGeometry(width * 0.4, width * 0.4, dist, 8);
+        geo2.rotateX(-Math.PI / 2);
+        geo2.translate(0, 0, dist / 2);
+        const mat2 = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1.0 });
         const core = new THREE.Mesh(geo2, mat2);
         mesh.add(core);
     },

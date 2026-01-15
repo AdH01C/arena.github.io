@@ -95,7 +95,17 @@ Object.assign(game, {
 
         const targetY = this.enemy.mesh.userData.baseY;
         this.enemy.mesh.position.y = 10;
-        engine.tween(this.enemy.mesh.position, 'y', targetY, 800);
+        engine.tween(this.enemy.mesh.position, 'y', targetY, 800, () => {
+            // Trigger Boss Intro after spawn animation
+            if (this.enemy && ['midboss', 'boss', 'architect', 'igris'].includes(this.enemy.type)) {
+                // Determine name based on what was set in UI
+                const name = document.getElementById('enemy-name').innerText;
+                console.log(`[BOSS_INTRO] Triggering for Type: ${this.enemy.type}, Name: ${name}`);
+                this.triggerBossIntro(this.enemy.type, name);
+            } else {
+                console.log(`[BOSS_INTRO] No intro for Type: ${this.enemy ? this.enemy.type : 'null'}`);
+            }
+        });
     },
 
     executePhase2Transform() {
@@ -216,6 +226,33 @@ Object.assign(game, {
         }
     },
 
+    endEnemyTurn() {
+        const regen = this.player.manaRegen;
+        this.player.mana = Math.min(this.player.maxMana, this.player.mana + regen);
+        this.showText(`+${regen} MP`, this.player.mesh.position, '#00f2ff');
+
+        // Tick down buff durations at start of new player turn
+        this.tickBuffs();
+
+        this.updateUI();
+
+        if (this.player.hp <= 0) {
+            // Check for revive token
+            if (this.iapBoosts.reviveTokens > 0) {
+                this.iapBoosts.reviveTokens--;
+                this.player.hp = Math.floor(this.player.maxHp * 0.5); // Revive at 50% HP
+                this.player.mana = this.player.maxMana;
+                this.showText('💀 REVIVED!', this.player.mesh.position, '#ff00ff');
+                this.updateUI();
+                this.state = 'IDLE';
+            } else {
+                this.handleDefeat();
+            }
+        } else {
+            this.state = 'IDLE';
+        }
+    },
+
     enemyTurn() {
         if (this.floor >= 100) this.bossStarted = true;
 
@@ -224,9 +261,40 @@ Object.assign(game, {
             let isSpecial = false;
 
             // --- BOSS SPECIAL ATTACK (Every 3 turns) ---
-            if (['boss', 'midboss', 'architect'].includes(this.enemy.type)) {
+            if (['boss', 'midboss', 'architect', 'igris'].includes(this.enemy.type)) {
                 this.enemy.turnCount = (this.enemy.turnCount || 0) + 1;
-                if (this.enemy.turnCount % 3 === 0) {
+
+                // Igris Specific Mechanics
+                if (this.enemy.type === 'igris') {
+                    if (this.enemy.turnCount % 4 === 0) {
+                        // VOID SLICE (Multi-Hit)
+                        isSpecial = true;
+                        dmg = Math.floor(dmg * 0.7); // Per hit
+                        engine.spawnParticles(this.player.mesh.position, 0xaa00ff, 30);
+                        setTimeout(() => { this.player.takeDmg(dmg); this.showText(dmg, this.player.mesh.position, '#aa00ff'); }, 100);
+                        setTimeout(() => { this.player.takeDmg(dmg); this.showText(dmg, this.player.mesh.position, '#aa00ff'); }, 300);
+                        setTimeout(() => {
+                            this.player.takeDmg(dmg);
+                            this.showText(dmg, this.player.mesh.position, '#aa00ff');
+                            // Resume turn logic
+                            this.endEnemyTurn();
+                        }, 500);
+                        this.showText("<< VOID SLICE >>", this.enemy.mesh.position, '#aa00ff');
+                        return; // Async completion triggers endEnemyTurn
+
+                    } else if (Math.random() < 0.15) {
+                        // VOID TRAP (Stun)
+                        isSpecial = true;
+                        this.showText("<< VOID TRAP >>", this.player.mesh.position, '#220033');
+                        engine.triggerVoidConsume();
+                        engine.addShake(1.0);
+                        // Skip player turn simulation (or just huge damage if no skip logic)
+                        // For now, deal massive damage as "Stun Punishment"
+                        dmg *= 2.5;
+                    }
+                }
+                // Standard Boss Critical
+                else if (this.enemy.turnCount % 3 === 0) {
                     dmg *= 2;
                     isSpecial = true;
                     engine.addShake(0.6);
@@ -235,6 +303,11 @@ Object.assign(game, {
             }
 
             this.player.takeDmg(dmg);
+            // Hardcore Hit Impact (Only specific bosses)
+            if (['igris', 'ronin', 'samurai'].includes(this.enemy.type) || (this.enemy.name && (this.enemy.name.includes('RONIN') || this.enemy.name.includes('SAMURAI')))) {
+                engine.triggerImpactLine();
+            }
+
             this.showText(dmg, this.player.mesh.position, isSpecial ? '#ff0000' : '#ff0055');
             engine.addShake(isSpecial ? 0.3 : 0.1);
 
@@ -269,30 +342,7 @@ Object.assign(game, {
                 }
             }
 
-            const regen = this.player.manaRegen;
-            this.player.mana = Math.min(this.player.maxMana, this.player.mana + regen);
-            this.showText(`+${regen} MP`, this.player.mesh.position, '#00f2ff');
-
-            // Tick down buff durations at start of new player turn
-            this.tickBuffs();
-
-            this.updateUI();
-
-            if (this.player.hp <= 0) {
-                // Check for revive token
-                if (this.iapBoosts.reviveTokens > 0) {
-                    this.iapBoosts.reviveTokens--;
-                    this.player.hp = Math.floor(this.player.maxHp * 0.5); // Revive at 50% HP
-                    this.player.mana = this.player.maxMana;
-                    this.showText('💀 REVIVED!', this.player.mesh.position, '#ff00ff');
-                    this.updateUI();
-                    this.state = 'IDLE';
-                } else {
-                    this.handleDefeat();
-                }
-            } else {
-                this.state = 'IDLE';
-            }
+            this.endEnemyTurn();
         });
     },
 
@@ -378,6 +428,115 @@ Object.assign(game, {
         // Tutorial: After first battle, show perk selection step
         if (this.tutorialState === 'ACTIVE' && this.tutorialStep === 2) {
             this.nextTutorialStep(); // Advance to step 3 (floor progression)
+        }
+    },
+
+    // --- BOSS INTRO SYSTEM ---
+    triggerBossIntro(bossType, bossName) {
+        const BOSS_INFO = {
+            'WARDEN': {
+                title: "THE WARDEN",
+                desc: "A heavily armored construct designed to detain intruders.",
+                abilities: [
+                    { name: "REACTIVE SHIELD", desc: "Projects a barrier that reflects 50% of incoming damage back to the attacker every 3rd turn. Timing your attacks is crucial." },
+                    { name: "IRON CLAD", desc: "Reinforced plating grants extremely high base Armor. Heavy attacks or armor-piercing abilities are recommended." }
+                ]
+            },
+            'EXECUTIONER': {
+                title: "THE EXECUTIONER",
+                desc: "A dual-axe wielding unit that grows stronger as the fight prolongs.",
+                abilities: [
+                    { name: "SHADOW CHARGE", desc: "Accumulates Dark Momentum whenever the player dodges an attack. At max stacks, the next hit is unblockable." },
+                    { name: "GUILLOTINE", desc: "A devastating overhead swing that deals bonus execution damage if the target's HP is below 30%." }
+                ]
+            },
+            'OVERLORD': {
+                title: "THE OVERLORD",
+                desc: "A psychic entity that manipulates mana and reality.",
+                abilities: [
+                    { name: "MANA DRAIN", desc: "Siphons MP directly from your Energy Cell each turn to fuel its own powers. Keep your mana reserves high." },
+                    { name: "VOID TRAP", desc: "Manipulates space to immobilize you, skipping your turn and exposing you to a guaranteed critical hit." }
+                ]
+            },
+            'IGRIS': {
+                title: "IGRIS THE DESTROYER",
+                desc: "The Red Knight. An anomaly distinct from the system's logic.",
+                abilities: [
+                    { name: "VOID SLICE", desc: "Unleashes a flurry of dimension-cutting slashes that bypasses all Energy Shields and direct mitigation." },
+                    { name: "VOID TRAP", desc: "15% chance to manifest a gravitational singularity that stuns you and deals massive trauma damage." },
+                    { name: "SCREEN SLASH", desc: "A reality-distorting impact that cracks the visual feed. The interface itself becomes unstable under his blows." }
+                ]
+            },
+            'ARCHITECT': {
+                title: "THE ARCHITECT",
+                desc: "The source code of the simulation.",
+                abilities: [
+                    { name: "REALITY BREAK", desc: "Tears the simulation fabric, dealing massive True Damage that ignores Armor and Mitigation completely." },
+                    { name: "SYSTEM PURGE", desc: "Initiates a code-cleansing sequence that instantly wipes all active Buffs from the player." },
+                    { name: "RECOMPILE", desc: "The Architect rewrites its own code to repair damage, regenerating a large portion of HP over time." }
+                ]
+            }
+        };
+
+        // Match based on Name or Type
+        let info = null;
+        if (bossName.includes('WARDEN')) info = BOSS_INFO['WARDEN'];
+        else if (bossName.includes('EXECUTIONER')) info = BOSS_INFO['EXECUTIONER'];
+        else if (bossName.includes('OVERLORD')) info = BOSS_INFO['OVERLORD'];
+        else if (bossName.includes('IGRIS')) info = BOSS_INFO['IGRIS'];
+        else if (bossName.includes('ARCHITECT')) info = BOSS_INFO['ARCHITECT'];
+
+        if (info) {
+            const content = `
+                <div style="text-align:center; padding:5px;">
+                    <div style="font-style:italic; color:#aaa; font-size:13px; margin-bottom:10px;">"${info.desc}"</div>
+                    <div style="text-align:left; border:1px solid #333; padding:8px; background:rgba(0,0,0,0.5); border-radius:4px;">
+                        <div style="color:#ffaa00; font-size:11px; margin-bottom:6px; border-bottom:1px solid #444; padding-bottom:2px; font-weight:bold; letter-spacing:1px;">TACTICAL DATA</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            ${info.abilities.map(a => `
+                                <div style="background:rgba(255,255,255,0.05); padding:6px; border-radius:4px; border:1px solid #333;">
+                                    <div style="color:#fff; font-weight:bold; font-size:13px; margin-bottom:2px; color:#00f2ff;">${a.name}</div>
+                                    <div style="color:#aaa; font-size:11px; line-height:1.2;">${a.desc}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Re-use Tutorial UI for Boss Intro
+            const overlay = document.getElementById('tutorial-overlay');
+            const panel = document.getElementById('tutorial-panel');
+
+            overlay.style.display = 'block';
+            panel.style.display = 'block';
+            panel.style.top = '50%';
+            panel.style.left = '50%';
+            panel.style.transform = 'translate(-50%, -50%)';
+
+            panel.innerHTML = `
+                <div class="tutorial-title" style="color:#ffaa00; border-bottom-color:#ffaa00;">⚠ ${info.title} DETECTED</div>
+                <div class="tutorial-content" style="font-style:italic; color:#ccc; font-size:16px;">"${info.desc}"</div>
+                
+                <div style="margin-top:15px; border-top:1px solid #333; padding-top:10px;">
+                    <div style="font-size:14px; color:#ffaa00; letter-spacing:1px; margin-bottom:8px; font-weight:bold;">TACTICAL DATA</div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        ${info.abilities.map(a => `
+                            <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:4px; border:1px solid #444;">
+                                <div style="color:#00f2ff; font-weight:bold; font-size:15px; margin-bottom:4px;">${a.name}</div>
+                                <div style="color:#bbb; font-size:13px; line-height:1.3;">${a.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="tutorial-actions" style="margin-top:20px;">
+                    <button class="tutorial-btn" onclick="
+                        document.getElementById('tutorial-overlay').style.display='none';
+                        document.getElementById('tutorial-panel').style.display='none';
+                    ">ENGAGE</button>
+                </div>
+            `;
         }
     },
 });

@@ -273,6 +273,11 @@ const engine = {
             this.updateGlitch(game.enemy.mesh);
         }
 
+        // Igris VFX Hook
+        if (typeof game !== 'undefined' && game.enemy && game.enemy.type === 'igris') {
+            this.updateIgris(game.enemy.mesh);
+        }
+
         this.renderer.render(this.scene, this.camera);
     },
 

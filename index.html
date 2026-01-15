@@ -14,6 +14,7 @@
 
 <body>
 
+    <div id="vfx-overlay"></div>
     <div id="rotate-warning">
         <h1>⚠ SYSTEM ERROR ⚠</h1>
         <p>PLEASE ROTATE DEVICE<br>TO LANDSCAPE MODE</p>
@@ -522,10 +523,14 @@
     <script src="js/data/story.js"></script>
     <script src="js/data/classes.js"></script>
 
-    <!-- ENGINE -->
+    <!-- CORE ENGINE (Modularized) -->
     <script src="js/engine/core.js"></script>
-    <script src="js/engine/models.js"></script>
     <script src="js/engine/vfx.js"></script>
+    <!-- MODELS (Split) -->
+    <script src="js/models/base.js"></script>
+    <script src="js/models/player.js"></script>
+    <script src="js/models/enemies.js"></script>
+    <script src="js/models/bosses.js"></script>
 
     <!-- GAME -->
     <script src="js/game/unit.js"></script>
@@ -553,7 +558,7 @@
 
             const tutorialCompleted = localStorage.getItem('tutorialCompleted');
             // Auto-start if tutorial needs to be shown
-            if (!tualCd) {
+            if (!tutorialCompleted) {
                 setTimeout(() => game.startRun(), 500);
             }
         });

@@ -168,26 +168,29 @@ Object.assign(game, {
         // Remove current enemy
         if (this.enemy && this.enemy.mesh) engine.scene.remove(this.enemy.mesh);
 
-        // Spawn THE ANOMALY
-        // Spawn THE ANOMALY
+        // Spawn IGRIS THE DESTROYER
         // Unit(isPlayer, hp, maxHp, atk, color, type/name)
-        // Using 'boss' type for model, but specific stats
-        this.enemy.isPlayer = false; // Just to be safe
-        // pStats might not be fully available if we called this too early, but usually fine.
+        this.enemy.isPlayer = false;
         const pStats = this.player;
-        const eHp = 1000000000000; // 1 Trillion HP
-        const eAtk = pStats.maxHp * 0.4;
+        const eHp = 5000000000000; // 5 Trillion HP (Harder than Anomaly)
+        const eAtk = pStats.maxHp * 0.5;
 
-        this.enemy = new Unit(false, eHp, eHp, eAtk, 0xff0000, 'boss');
-        this.enemy.name = "SYSTEM ANOMALY";
+        this.enemy = new Unit(false, eHp, eHp, eAtk, 0xaa00ff, 'igris');
+        this.enemy.name = "IGRIS THE DESTROYER";
         this.enemy.isPlayer = false;
 
-        this.enemy.model.mesh.scale.set(3, 3, 3); // Giant
+        this.enemy.model.mesh.scale.set(3.5, 3.5, 3.5); // Giant Knight
+        this.enemy.mesh.userData.baseY = 0; // Grounded
 
         // Special Visuals
-        game.showText("⚠ ANOMALY DETECTED ⚠", this.player.mesh.position, "#ff0000");
+        game.showText("⚠ VOID DETECTED ⚠", this.player.mesh.position, "#aa00ff");
         engine.addShake(1.0);
         this.updateUI();
+
+        // Trigger Boss Intro Manual
+        setTimeout(() => {
+            this.triggerBossIntro('IGRIS', "IGRIS THE DESTROYER");
+        }, 1000);
     },
 
     restoreGameState() {
@@ -394,7 +397,7 @@ Object.assign(game, {
                     if (this.enemy.hp <= 0) this.winBattle();
                     else this.enemyTurn();
                 }, 500 + (hits * delay));
-            });
+            }, skill.stationary);
         }
         this.updateUI();
     },
@@ -558,6 +561,10 @@ Object.assign(game, {
         this.enemy.takeDmg(raw);
         this.showText(raw, this.enemy.mesh.position, '#ffffff');
 
+        // Screen Slash Removed for Player Hits
+        // User requested: "igris getting hit no need slash"
+        // This keeps the Igris fight clean from constant screen slashes.
+
         // --- WEAPON EFFECTS ---
         if (this.player.gear.weapon && this.player.gear.weapon.onHit) {
             this.player.gear.weapon.onHit(this.player, this.enemy);
@@ -581,6 +588,7 @@ Object.assign(game, {
 
         this.updateUI();
         const pos = this.enemy.mesh.position.clone();
+        pos.y += 1.0; // Aim at center/chest, not feet
         this.runVFX(skill.vfx, pos, skill.color, index, totalHits);
     },
 

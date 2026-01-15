@@ -117,6 +117,12 @@ class AdminSystem {
 
         this.addBtn("CLOSE", () => this.togglePanel());
 
+        this.addBtn("⚔️ SPAWN IGRIS", () => {
+            this.game.showText("SUMMONING...", this.game.player.mesh.position, "#aa00ff");
+            this.game.floor = 666;
+            this.game.startSeasonalBoss();
+        });
+
         document.body.appendChild(this.panel);
     }
 
