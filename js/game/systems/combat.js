@@ -88,7 +88,7 @@ Object.assign(game, {
         }
 
         // --- STATS ---
-        this.enemy.baseArmor = this.floor * 5; // Armor helps trash mobs survive rapid weak hits
+        this.enemy.baseArmor = Math.floor(this.floor * 1.5); // Armor helps trash mobs survive rapid weak hits
         this.enemy.armor = this.enemy.baseArmor;
         this.enemy.critChance = Math.min(0.20, this.floor * 0.002);
         if (this.floor > 10) this.enemy.dodge = Math.min(0.15, (this.floor - 10) * 0.002);
@@ -271,11 +271,11 @@ Object.assign(game, {
                         isSpecial = true;
                         dmg = Math.floor(dmg * 0.7); // Per hit
                         engine.spawnParticles(this.player.mesh.position, 0xaa00ff, 30);
-                        setTimeout(() => { this.player.takeDmg(dmg); this.showText(dmg, this.player.mesh.position, '#aa00ff'); }, 100);
-                        setTimeout(() => { this.player.takeDmg(dmg); this.showText(dmg, this.player.mesh.position, '#aa00ff'); }, 300);
+                        setTimeout(() => { const ad = this.player.takeDmg(dmg); if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff'); }, 100);
+                        setTimeout(() => { const ad = this.player.takeDmg(dmg); if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff'); }, 300);
                         setTimeout(() => {
-                            this.player.takeDmg(dmg);
-                            this.showText(dmg, this.player.mesh.position, '#aa00ff');
+                            const ad = this.player.takeDmg(dmg);
+                            if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff');
                             // Resume turn logic
                             this.endEnemyTurn();
                         }, 500);
@@ -302,13 +302,13 @@ Object.assign(game, {
                 }
             }
 
-            this.player.takeDmg(dmg);
+            const actualDmg = this.player.takeDmg(dmg);
             // Hardcore Hit Impact (Only specific bosses)
             if (['igris', 'ronin', 'samurai'].includes(this.enemy.type) || (this.enemy.name && (this.enemy.name.includes('RONIN') || this.enemy.name.includes('SAMURAI')))) {
                 engine.triggerImpactLine();
             }
 
-            this.showText(dmg, this.player.mesh.position, isSpecial ? '#ff0000' : '#ff0055');
+            if (actualDmg > 0) this.showText(actualDmg, this.player.mesh.position, isSpecial ? '#ff0000' : '#ff0055');
             engine.addShake(isSpecial ? 0.3 : 0.1);
 
             if (this.enemy.type === 'architect') {

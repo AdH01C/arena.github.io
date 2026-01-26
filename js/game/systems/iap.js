@@ -108,7 +108,7 @@ Object.assign(game, {
         });
     },
 
-    buyOverclock() {
+    buyOverlock() {
         this.showModal("SYSTEM OVERCLOCK", "Purchase SYSTEM OVERCLOCK for $2.99?<br>(+100% DAMAGE & SPEED for 10 Floors)", () => {
             this.iapBoosts.overclockFloors = 10;
             if (this.player) {
@@ -116,6 +116,16 @@ Object.assign(game, {
                 this.showText("SYSTEM OVERCLOCK!!", this.player.mesh.position, '#ff0055');
             }
             this.showModal("SUCCESS", "⚡ SYSTEM OVERCLOCK ACTIVE!");
+        });
+    },
+
+    buyOverlord() {
+        this.showModal("SUMMONER OVERLORD", "Purchase OVERLORD PROTOCOL for $49.99?<br><br>• 👑 UNLOCK +1 MAX SUMMONS<br>• PERMANENT UPGRADE", () => {
+            if (this.player) {
+                this.player.maxMinions = (this.player.maxMinions || 3) + 1;
+                this.showText("MAX SUMMONS INCREASED!", this.player.mesh.position, '#ffd700');
+            }
+            this.showModal("SUCCESS", "👑 OVERLORD PROTOCOL ENGAGED! Max Summons Increased.");
         });
     },
 
@@ -158,6 +168,12 @@ Object.assign(game, {
                     <div style="color:#00ff00;font-weight:bold">+100% PLAYER DAMAGE</div>
                     <div style="color:#00ff00;font-weight:bold">+100% ATTACK SPEED</div>
                     <p style="font-size:10px;margin-top:5px;opacity:0.6">DURATION: 10 FLOORS</p>`;
+        } else if (type === 'overlord') {
+            html = `<h4 style="color:#ffd700;margin:0">OVERLORD PROTOCOL</h4>
+                    <p style="font-size:12px;color:#aaa">Breaks the simulation limits.</p>
+                    <div style="color:#00ff00;font-weight:bold">+1 MAX SUMMONS</div>
+                    <div style="color:#00ff00;font-weight:bold">PERMANENT</div>
+                    <p style="font-size:10px;margin-top:5px;opacity:0.6">Only for the truly elite.</p>`;
         } else if (type === 'revive') {
             html = `<h4 style="color:#00f2ff;margin:0">REVIVE PACK</h4>
                     <p style="font-size:12px;color:#aaa">Emergency data recovery protocols.</p>

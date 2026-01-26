@@ -332,6 +332,14 @@ Object.assign(game, {
             this.showText(`-${selfDmg} DATA LEAK`, this.player.mesh.position, '#ff0000');
         }
 
+        // Handle summon skills
+        if (skill.isSummon) {
+            this.summonMinion(skill.summonStats);
+            this.state = 'IDLE';
+            this.minionTurn(); // Minions attack after player summon
+            return;
+        }
+
         // Handle buff skills
         if (skill.isBuff) {
             this.applyBuff(skill);
@@ -339,7 +347,7 @@ Object.assign(game, {
             this.showText(skill.name, this.player.mesh.position, '#ffe600');
             setTimeout(() => {
                 this.state = 'IDLE';
-                this.enemyTurn();
+                this.minionTurn(); // Minions attack after player buff
             }, 500);
             this.updateUI();
             this.updateButtons();
@@ -384,7 +392,7 @@ Object.assign(game, {
                     }
                     setTimeout(() => {
                         if (this.enemy.hp <= 0) this.winBattle();
-                        else this.enemyTurn();
+                        else this.minionTurn(); // Minions attack after player attack
                     }, 300);
                 }, mashDuration);
             });
@@ -395,11 +403,225 @@ Object.assign(game, {
                 }
                 setTimeout(() => {
                     if (this.enemy.hp <= 0) this.winBattle();
-                    else this.enemyTurn();
+                    else this.minionTurn(); // Minions attack after player attack
                 }, 500 + (hits * delay));
             }, skill.stationary);
         }
         this.updateUI();
+    },
+
+    summonMinion(stats) {
+        // Default max is 3, but can be increased by Perks/Skills
+        const maxSummons = this.player.maxMinions || 3;
+
+        if (this.player.minions.length >= maxSummons) {
+            this.showText("MAX MINIONS", this.player.mesh.position, '#ff0000');
+            return;
+        }
+
+        if (this.player.minions.length === 0) {
+            // First Summon: RETREAT Player
+            // Standard Pos: -2.5. Retreat Pos: -4.5
+            engine.tween(this.player.mesh.position, 'x', -4.5, 300);
+            this.showText("TACTICAL RETREAT", this.player.mesh.position, '#00ffaa');
+        }
+
+        // --- CALCULATE STATS ---
+        let finalHp = stats.hp || 50;
+        let finalAtk = stats.atk || 10;
+
+        // Apply Multipliers if present (Scaling Logic)
+        if (stats.hpMult) finalHp = Math.floor(this.player.maxHp * stats.hpMult);
+        if (stats.atkMult) finalAtk = Math.floor(this.player.atk * stats.atkMult);
+
+        // Sanity check
+        finalHp = Math.max(1, finalHp);
+        finalAtk = Math.max(1, finalAtk);
+
+        // Create Minion Unit
+        const minion = new Unit(true, finalHp, finalHp, finalAtk, stats.color, 'humanoid');
+        minion.name = stats.name;
+        minion.isMinion = true;
+        minion.baseAtk = finalAtk;
+
+        // Store Scaling Multipliers for Dynamic Updates
+        if (stats.atkMult) minion.scalingAtkMult = stats.atkMult;
+
+        // Position Logic: DYNAMIC ARMY FORMATION
+        // Slot 0-2: Vanguard Triangle
+        // Slot 3-4: Flankers
+        // Slot 5+: The Legion (Grid Formation behind)
+
+        // Find first available slot
+        const takenSlots = this.player.minions.map(m => m.slotIndex);
+        let slotIndex = 0;
+        let found = false;
+        while (!found) {
+            if (!takenSlots.includes(slotIndex)) found = true;
+            else slotIndex++;
+        }
+
+        minion.slotIndex = slotIndex;
+
+        let xPos = -2.0;
+        let zPos = 0;
+
+        if (slotIndex === 0) { xPos = -2.0; zPos = 0; } // Front Point
+        else if (slotIndex === 1) { xPos = -3.0; zPos = -1.5; } // Top Flank
+        else if (slotIndex === 2) { xPos = -3.0; zPos = 1.5; } // Bot Flank
+        else if (slotIndex === 3) { xPos = -4.0; zPos = -0.8; } // Rear Top
+        else if (slotIndex === 4) { xPos = -4.0; zPos = 0.8; } // Rear Bot
+        else {
+            // ARMY GRID (Slot 5+)
+            // Start further back (Player is at -4.5 usually)
+            // Rows of 3, starting at x = -5.5
+            const armyIndex = slotIndex - 5;
+            const row = Math.floor(armyIndex / 3);
+            const col = armyIndex % 3;
+
+            xPos = -5.5 - (row * 1.0); // Move back 1 unit per row
+
+            // Spread columns centered around 0
+            // 0 -> Top, 1 -> Center, 2 -> Bottom? Or:
+            // Let's do: -1.5, 0, 1.5
+            if (col === 0) zPos = -1.5;
+            if (col === 1) zPos = 0;
+            if (col === 2) zPos = 1.5;
+        }
+
+        // Animate Spawn: Fall from sky or pop in
+        minion.mesh.position.set(xPos, 5, zPos); // Start high
+        engine.tween(minion.mesh.position, 'y', 0, 400); // Drop down
+
+        minion.mesh.scale.set(0.9, 0.9, 0.9); // Slightly smaller
+
+        // Visual Spawn
+        engine.spawnParticles(minion.mesh.position, stats.color, 20);
+        this.showText("SUMMON!", minion.mesh.position, stats.color);
+
+        this.player.minions.push(minion);
+        minion.createHealthBar();
+    },
+
+    resetPlayerPosition() {
+        if (!this.player || !this.player.mesh) return;
+
+        // If minions exist, player stays in backline!
+        const targetX = (this.player.minions && this.player.minions.length > 0) ? -4.5 : -2.5;
+
+        if (this.player.minions && this.player.minions.length > 0) {
+            // FIX: If minions exist, player starts in backline
+            // If Army is large (5+), Player might need to be even further back?
+            // Or Player stands in the middle of them?
+            // Let's keep Player at -4.5 (Commander Position)
+            // The Army starts at -5.5, so they are behind the player. Good.
+            this.player.mesh.position.set(-4.5, this.player.mesh.userData.baseY || 0, 0);
+
+            // RESET MINION POSITIONS
+            this.repositionMinions();
+        } else {
+            this.player.mesh.position.set(-2.5, this.player.mesh.userData.baseY || 0, 0);
+        }
+        this.player.mesh.rotation.y = Math.PI / 2;
+    },
+
+    repositionMinions() {
+        if (!this.player || !this.player.minions) return;
+
+        this.player.minions.forEach(minion => {
+            const slotIndex = minion.slotIndex;
+            let xPos = -2.0;
+            let zPos = 0;
+
+            if (slotIndex === 0) { xPos = -2.0; zPos = 0; } // Front Point
+            else if (slotIndex === 1) { xPos = -3.0; zPos = -1.5; } // Top Flank
+            else if (slotIndex === 2) { xPos = -3.0; zPos = 1.5; } // Bot Flank
+            else if (slotIndex === 3) { xPos = -4.0; zPos = -0.8; } // Rear Top
+            else if (slotIndex === 4) { xPos = -4.0; zPos = 0.8; } // Rear Bot
+            else {
+                // ARMY GRID (Slot 5+)
+                const armyIndex = slotIndex - 5;
+                const row = Math.floor(armyIndex / 3);
+                const col = armyIndex % 3;
+
+                xPos = -5.5 - (row * 1.0); // Move back 1 unit per row
+                // Spread columns centered around 0
+                if (col === 0) zPos = -1.5;
+                if (col === 1) zPos = 0;
+                if (col === 2) zPos = 1.5;
+            }
+
+            // Snap to position
+            if (minion.mesh) {
+                minion.mesh.position.set(xPos, 0, zPos);
+            }
+        });
+    },
+
+    // CHEAT / IAP
+    unlockMaxSummons() {
+        this.player.maxMinions = 99;
+        this.showText("ARMY UNLOCKED!", this.player.mesh.position, '#ffd700');
+        this.showModal("DEV MODE", "MAX SUMMONS SET TO 99. GO NUTS.");
+    },
+
+    updateMinionBars() {
+        if (!this.player || !this.player.minions) return;
+        this.player.minions.forEach(minion => {
+            if (minion.updateHealthBarPosition) minion.updateHealthBarPosition();
+        });
+    },
+
+    minionTurn() {
+        if (!this.player.minions || this.player.minions.length === 0) {
+            this.enemyTurn();
+            return;
+        }
+
+        let delayTotal = 0;
+        // SPEED UPDATE: Fire almost simultaneously (Machine Gun style)
+        const stagger = 100; // 100ms instead of 400ms
+
+        this.player.minions.forEach((minion, i) => {
+            setTimeout(() => {
+                if (minion.hp > 0 && this.enemy && this.enemy.hp > 0) {
+                    minion.attackAnim(() => {
+                        // Dynamic Damage Update (Buff Sharing)
+                        if (minion.scalingAtkMult) {
+                            minion.atk = Math.floor(this.player.atk * minion.scalingAtkMult);
+                        }
+
+                        // Prevent 0 damage
+                        minion.atk = Math.max(1, minion.atk);
+
+                        const rawDmg = minion.atk;
+                        const actualDmg = this.enemy.takeDmg(rawDmg);
+
+                        // CRITICAL FIX: Update UI immediately so HB drops
+                        this.updateUI();
+
+                        // Visual Fix: Offset Text
+                        const offset = { x: (Math.random() - 0.5) * 1.5, y: (Math.random() * 1.0) };
+                        const tPos = new THREE.Vector3(
+                            this.enemy.mesh.position.x + offset.x,
+                            this.enemy.mesh.position.y + offset.y,
+                            this.enemy.mesh.position.z
+                        );
+
+                        // Show ACTUAL damage (post-mitigation)
+                        if (actualDmg > 0) this.showText(actualDmg, tPos, '#ffffff');
+                        engine.spawnParticles(this.enemy.mesh.position, 0xffffff, 3);
+                    });
+                }
+            }, i * stagger);
+            delayTotal = i * stagger;
+        });
+
+        // Pass turn to enemy after minions are done (plus a small buffer)
+        setTimeout(() => {
+            if (this.enemy.hp <= 0) this.winBattle();
+            else this.enemyTurn();
+        }, delayTotal + 800);
     },
 
     applyBuff(skill) {
@@ -558,8 +780,8 @@ Object.assign(game, {
             if (ls > 0) this.player.hp = Math.min(this.player.maxHp, this.player.hp + ls);
         }
 
-        this.enemy.takeDmg(raw);
-        this.showText(raw, this.enemy.mesh.position, '#ffffff');
+        const actualDmg = this.enemy.takeDmg(raw);
+        if (actualDmg > 0) this.showText(actualDmg, this.enemy.mesh.position, '#ffffff');
 
         // Screen Slash Removed for Player Hits
         // User requested: "igris getting hit no need slash"

@@ -43,6 +43,8 @@ class Unit {
         // --- NEW: SKILL SYSTEM ---
         this.unlockedSkills = []; // Stores all known skills
         this.pinnedSkills = [null, null, null, null, null, null]; // Stores the 6 active skills in slots
+        this.minions = []; // Summoned units act as shields and attackers
+        this.isMinion = false;
         // -------------------------
 
         // --- NEW: GEAR SYSTEM ---
@@ -117,6 +119,31 @@ class Unit {
         });
     }
     takeDmg(amount) {
+        // --- SUMMONER MECHANIC: MINION SHIELD ---
+        // If player has minions, they take the hit instead.
+        if (this.isPlayer && this.minions && this.minions.length > 0) {
+            const shieldMinion = this.minions[0]; // First in line acts as shield
+            const residual = shieldMinion.takeDmg(amount);
+
+            if (shieldMinion.updateHealthBar) shieldMinion.updateHealthBar(); // UPDATE BAR
+
+            // If minion died (hp <= 0), remove it
+            if (shieldMinion.hp <= 0) {
+                game.showText("MINION DESTROYED", shieldMinion.mesh.position, '#ff0000');
+                if (shieldMinion.mesh) engine.scene.remove(shieldMinion.mesh);
+                if (shieldMinion.removeHealthBar) shieldMinion.removeHealthBar(); // REMOVE BAR
+                this.minions.shift(); // Remove from array
+
+                // If no minions left, Player returns to front
+                if (this.minions.length === 0) {
+                    engine.tween(this.mesh.position, 'x', -2.5, 400);
+                    game.showText("ENGAGING...", this.mesh.position, '#ffffff');
+                }
+            }
+            // Player takes 0 damage if minion tanked it
+            return 0;
+        }
+
         // Invincible check
         if (this.isPlayer && this.invincible) {
             game.showText("IMMUNE!", this.mesh.position, '#ffd700');
@@ -135,7 +162,10 @@ class Unit {
             return 0;
         }
         // Armor reduces damage
-        let finalDmg = Math.max(1, amount - this.armor);
+        // PENETRATION UPDATE: Always deal at least 15% of raw damage to prevent "1 damage" situations
+        let reduced = amount - this.armor;
+        let minDmg = Math.floor(amount * 0.15);
+        let finalDmg = Math.max(1, Math.max(reduced, minDmg));
 
         // --- BOSS MECHANIC: REACTIVE ARMOR [DISABLED] ---
         // if (!this.isPlayer && ['boss', 'midboss', 'architect'].includes(this.type)) {
@@ -211,7 +241,8 @@ class Unit {
             this.mesh.position.x -= 0.2;
             setTimeout(() => this.mesh.position.x = base, 50);
         }
-        // Show Text handled in TriggerHit
+        // Return actual damage dealt for UI display
+        return finalDmg;
     }
     unequip(slot) {
         const old = this.gear[slot];
@@ -346,5 +377,60 @@ class Unit {
         engine.addShake(1.0);
         engine.hitStop(50);
         game.runVFX('shockwave', this.mesh.position, '#ff0000', 0, 2.0);
+    }
+
+    // --- MINION HEALTH BAR ---
+    createHealthBar() {
+        const div = document.createElement('div');
+        div.className = 'minion-hp-bar';
+        div.innerHTML = `
+            <div class="minion-name">${this.name}</div>
+            <div class="minion-hp-fill"></div>
+        `;
+        document.getElementById('minion-ui-container').appendChild(div);
+        this.hpBar = div;
+        this.updateHealthBar();
+    }
+
+    updateHealthBar() {
+        if (!this.hpBar) return;
+        const pct = Math.max(0, this.hp / this.maxHp) * 100;
+        const fill = this.hpBar.querySelector('.minion-hp-fill');
+        if (fill) fill.style.width = pct + '%';
+
+        // Color Change based on HP
+        if (pct < 30) fill.style.background = '#ff0000';
+        else if (pct < 60) fill.style.background = '#ffe600';
+        else fill.style.background = '#00ffaa';
+    }
+
+    updateHealthBarPosition() {
+        if (!this.hpBar || !this.mesh) return;
+
+        // Project 3D position to 2D screen
+        // Minions are typically at y=0 or 1.5. HP bar should be above them.
+        const pos = this.mesh.position.clone();
+        pos.y += 2.2; // Float above head
+
+        pos.project(engine.camera);
+
+        const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
+        const y = (-(pos.y * 0.5) + 0.5) * window.innerHeight;
+
+        // Hide if behind camera
+        if (pos.z > 1) {
+            this.hpBar.style.display = 'none';
+        } else {
+            this.hpBar.style.display = 'block';
+            this.hpBar.style.left = x + 'px';
+            this.hpBar.style.top = y + 'px';
+        }
+    }
+
+    removeHealthBar() {
+        if (this.hpBar) {
+            this.hpBar.remove();
+            this.hpBar = null;
+        }
     }
 }

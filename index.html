@@ -40,6 +40,7 @@
         </div>
 
         <div id="buff-container"></div>
+        <div id="minion-ui-container"></div>
 
 
 
@@ -180,6 +181,24 @@
                         </div>
                         <div class="iap-price-btn" style="background: #ff0000; color: #fff;">BREACH</div>
                     </div>
+
+                    <!-- OVERLORD CARD -->
+                    <div class="iap-card elite" onclick="game.buyOverlord()" onmouseenter="game.previewIAP('overlord')"
+                        onmouseleave="game.previewIAP(null)"
+                        style="border-color: #ffd700; background: linear-gradient(135deg, #443300, #000);">
+                        <div class="iap-tag" style="background: #ffd700; color: #000;">GAME BREAKER</div>
+                        <div class="iap-title" style="color: #ffd700;">OVERLORD PROTOCOL</div>
+                        <div class="iap-icon-box">
+                            <div class="crown-icon" style="filter: hue-rotate(45deg);"></div>
+                        </div>
+                        <div class="iap-benefits">
+                            <span style="color:#ffd700;">👑 +1 MAX SUMMONS</span>
+                            <span>PERMANENT UPGRADE</span>
+                            <span>BREAK THE LIMITS</span>
+                        </div>
+                        <div class="iap-price-btn">$49.99</div>
+                    </div>
+
                     <div class="iap-card elite" onclick="game.buyNeonPrime()"
                         onmouseenter="game.previewIAP('neon_prime')" onmouseleave="game.previewIAP(null)">
                         <div class="iap-tag">BEST VALUE</div>
@@ -221,6 +240,13 @@
                         <div class="iap-title">REVIVE PROTOCOL x5</div>
                         <div class="iap-desc">5 Tokens to cheat death</div>
                         <div class="iap-price-btn">$1.99</div>
+                    </div>
+
+                    <!-- DEV TOOL -->
+                    <div class="iap-card" onclick="game.unlockMaxSummons()" style="border-color:#fff; opacity:0.7;">
+                        <div class="iap-title">DEV: UNLOCK 99</div>
+                        <div class="iap-desc">God Mode: Max Summons = 99</div>
+                        <div class="iap-price-btn" style="background:#444;">FREE</div>
                     </div>
 
                     <!-- BANK -->

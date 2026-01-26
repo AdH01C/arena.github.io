@@ -24,7 +24,7 @@ Object.assign(game, {
             document.querySelector('#class-screen h2').innerText = "SELECT BASE CLASS";
 
             // 1. Define all available classes
-            const allJobs = ['RONIN', 'PRIEST', 'MECH', 'GUNSLINGER', 'SQUIRE', 'SHADOW', 'BRAWLER', 'HACKER', 'REAPER'];
+            const allJobs = ['RONIN', 'PRIEST', 'MECH', 'GUNSLINGER', 'SQUIRE', 'SHADOW', 'BRAWLER', 'HACKER', 'REAPER', 'SUMMONER'];
 
             // 2. Shuffle and pick 3 random classes
             const randomJobs = allJobs
@@ -122,7 +122,8 @@ Object.assign(game, {
                 titleColor: "#ffffff"
             },
             "HACKER": { border: "2px solid #00ff00", shadow: "0 0 25px rgba(0, 255, 0, 0.8), inset 0 0 10px rgba(0,255,0,0.2)", bg: "repeating-linear-gradient(45deg, #000 0px, #001100 10px, #000 20px)", titleColor: "#00ff00" },
-            "REAPER": { border: "2px solid #5500aa", shadow: "0 0 20px rgba(85, 0, 170, 0.6)", bg: "linear-gradient(135deg, rgba(20,0,40,0.9), rgba(40,0,80,0.9))", titleColor: "#9933ff" }
+            "REAPER": { border: "2px solid #5500aa", shadow: "0 0 20px rgba(85, 0, 170, 0.6)", bg: "linear-gradient(135deg, rgba(20,0,40,0.9), rgba(40,0,80,0.9))", titleColor: "#9933ff" },
+            "SUMMONER": { border: "2px solid #00ffaa", shadow: "0 0 20px rgba(0, 255, 170, 0.6)", bg: "linear-gradient(135deg, rgba(0,40,30,0.9), rgba(0,80,60,0.9))", titleColor: "#00ffaa" }
         };
 
         // Fallback style if key is missing
@@ -160,7 +161,8 @@ Object.assign(game, {
             "BRAWLER": "+100 Max HP, +20 ATK",
             "HACKER": "+100 Max Mana, -25% Mana Costs",
             "REAPER": "+10% Lifesteal, Execute < 15% HP",
-            "SQUIRE": "+15 Armor, +15% Phy. Mitigation, +50 HP"
+            "SQUIRE": "+15 Armor, +15% Phy. Mitigation, +50 HP",
+            "SUMMONER": "Minions act as Shields and deal DMG"
         };
         const statDesc = STAT_BONUSES[jobKey] || "Standard Stats";
 
@@ -302,6 +304,10 @@ Object.assign(game, {
                 this.player.lifesteal += 0.10;
                 this.player.executeThreshold += 0.15; // Execute enemies below 15%
                 setTimeout(() => this.showText("SOUL HARVEST READY", this.player.mesh.position, "#5500aa"), 500);
+            } else if (type === 'SUMMONER') {
+                this.player.maxMana += 50;
+                this.player.mana = this.player.maxMana;
+                setTimeout(() => this.showText("SPIRIT LINK ESTABLISHED", this.player.mesh.position, "#00ffaa"), 500);
             }
         } else if (skillIndex >= 0) {
             // Advancement: Unlock Selected Skill
@@ -365,6 +371,8 @@ Object.assign(game, {
             this.player.model = Models.createHacker(color, 1.5, tier);
         } else if (type === 'REAPER') {
             this.player.model = Models.createReaper(color, 1.5, tier);
+        } else if (type === 'SUMMONER') {
+            this.player.model = Models.createPriest(color, 1.5, tier); // Re-use Priest model for now
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }

@@ -69,7 +69,14 @@ Object.assign(game, {
 
     resetPlayerPosition() {
         if (this.player && this.player.mesh) {
-            this.player.mesh.position.set(-2.5, this.player.mesh.userData.baseY || 0, 0);
+            // FIX: If minions exist, player starts in backline to avoid overlap
+            const targetX = (this.player.minions && this.player.minions.length > 0) ? -4.5 : -2.5;
+
+            // Use tween for smoother transition if visible, but set is fine for resets
+            // Since this is often called on floor load (instant), let's just set it.
+            // But if called after battle, tween might be nicer? 
+            // The original was .set(), let's stick to .set() for now to avoid async issues on floor gen.
+            this.player.mesh.position.set(targetX, this.player.mesh.userData.baseY || 0, 0);
             this.player.mesh.rotation.y = Math.PI / 2;
         }
     },
@@ -105,7 +112,25 @@ Object.assign(game, {
                 else if (rand < rareChance) tier = RARITY.RARE;
             }
 
-            const template = PERK_POOL[Math.floor(Math.random() * PERK_POOL.length)];
+            let template;
+            let valid = false;
+            let attempts = 0;
+
+            // Rarity Restriction Logic
+            while (!valid && attempts < 10) {
+                template = PERK_POOL[Math.floor(Math.random() * PERK_POOL.length)];
+
+                // RESTRICTION: OVERLORD is Legendary Only
+                if (template.name === 'OVERLORD') {
+                    if (tier.id === 'legendary') valid = true;
+                    else valid = false; // Reroll if we got Overlord on non-legendary
+                } else {
+                    valid = true;
+                }
+                attempts++;
+            }
+            // Fallback if loop creates issues (unlikely)
+            if (!valid) template = PERK_POOL[0];
             let finalVal = Math.floor(template.baseVal * tier.mult * scaling);
 
             // Corrupted Logic (25% chance in rebirth OR Floor 50+)

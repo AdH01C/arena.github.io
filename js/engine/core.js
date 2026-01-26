@@ -278,6 +278,10 @@ const engine = {
             this.updateIgris(game.enemy.mesh);
         }
 
+        if (typeof game !== 'undefined' && game.updateMinionBars) {
+            game.updateMinionBars();
+        }
+
         this.renderer.render(this.scene, this.camera);
     },
 
