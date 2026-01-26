@@ -500,7 +500,7 @@ Object.assign(game, {
 
     triggerHit(skill, index, totalHits, frenzyBonus = 0) {
         let isCrit = Math.random() < this.player.critChance;
-        const critMult = this.player.critDamage + (this.floor * 0.05);
+        const critMult = this.player.critDamage;
         let raw = Math.floor(this.player.atk * skill.mult * (isCrit ? critMult : 1));
 
         // BRAWLER: Apply frenzy bonus (click speed)

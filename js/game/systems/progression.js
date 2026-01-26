@@ -108,8 +108,8 @@ Object.assign(game, {
             const template = PERK_POOL[Math.floor(Math.random() * PERK_POOL.length)];
             let finalVal = Math.floor(template.baseVal * tier.mult * scaling);
 
-            // Corrupted Logic (25% chance in rebirth)
-            let isCorrupted = (this.rebirth > 0 && Math.random() < 0.25);
+            // Corrupted Logic (25% chance in rebirth OR Floor 50+)
+            let isCorrupted = ((this.rebirth > 0 || this.floor >= 50) && Math.random() < 0.25);
             let penaltyDesc = "";
             let penaltyFunc = null;
 
