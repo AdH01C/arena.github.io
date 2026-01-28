@@ -40,47 +40,117 @@ Object.assign(window.Models, {
     },
 
     // NEW: THE ARCHITECT (Floor 100)
+    // NEW: THE ARCHITECT (Floor 100) - "Digital God" Overhaul
     createArchitect(s = 1) {
         const g = new THREE.Group();
-        const mGold = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 1.0, roughness: 0.1, emissive: 0x332200 });
-        const mVoid = new THREE.MeshBasicMaterial({ color: 0x000000 });
-        const mGlitch = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
 
-        // The Core (Stable)
-        const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.6, 0), mVoid);
-        core.position.y = 2.5;
-        core.userData.idle = true; core.userData.rotatorY = 0.05; core.userData.pulse = { speed: 5, amp: 0.1, base: 1 };
+        // Materials
+        const mCore = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: 0xffffff,
+            emissiveIntensity: 0.8,
+            roughness: 0,
+            metalness: 1
+        });
+        const mGold = new THREE.MeshStandardMaterial({
+            color: 0xffd700,
+            metalness: 1.0,
+            roughness: 0.1,
+            emissive: 0x332200
+        });
+        const mData = new THREE.MeshBasicMaterial({
+            color: 0x00ffff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.6
+        });
+        const mVoid = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+        // --- THE CORE ---
+        // Massive, blinding central processor
+        const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.8, 1), mCore);
+        core.position.y = 3.0;
         g.add(core);
 
-        // Glitch Rings (Will be manipulated by updateGlitch)
-        const rings = new THREE.Group(); rings.position.y = 2.5; g.add(rings);
+        // Core Animation: Violent Pulse
+        core.userData.idle = true;
+        core.userData.pulse = { speed: 4, amp: 0.15, base: 1 };
+        core.userData.rotatorY = 0.5;
+        core.userData.rotatorX = 0.3;
 
-        const r1 = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.05, 4, 32), mGold);
-        r1.userData.isGlitchPart = true;
-        rings.add(r1);
+        // --- ORBITAL RINGS ---
+        // Multiple concentric rings rotating on different axes
+        const ringGroup = new THREE.Group();
+        ringGroup.position.copy(core.position);
+        g.add(ringGroup);
 
-        const r2 = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.08, 4, 4), mGlitch);
-        r2.rotation.x = Math.PI / 2;
-        r2.userData.isGlitchPart = true;
-        rings.add(r2);
+        const mkRing = (rad, tube, color, speedX, speedY) => {
+            const r = new THREE.Mesh(new THREE.TorusGeometry(rad, tube, 6, 64), color);
+            const rG = new THREE.Group();
+            rG.add(r);
+            ringGroup.add(rG);
+            rG.userData.idle = true;
+            if (speedX) rG.userData.rotatorX = speedX;
+            if (speedY) rG.userData.rotatorY = speedY;
+            return r;
+        };
 
-        const r3 = new THREE.Mesh(new THREE.BoxGeometry(3, 0.1, 0.1), mGold);
-        r3.userData.isGlitchPart = true;
-        rings.add(r3);
+        mkRing(1.4, 0.05, mGold, 0.2, 0);   // Inner Gold
+        mkRing(1.8, 0.03, mData, 0, 0.3);   // Mid Data
+        mkRing(2.2, 0.08, mGold, 0.1, 0.1); // Outer Gold
+        mkRing(2.5, 0.02, mData, -0.2, 0);  // Outer Data field
 
-        // Wings (Floating Cubes)
-        for (let i = 0; i < 8; i++) {
-            const cube = this.box(0.3, 0.3, 0.3, mGold, 0, 0, 0, null);
-            cube.position.set(Math.cos(i * 0.785) * 2, 2.5 + Math.sin(i * 0.785) * 2, 0);
-            cube.userData.isGlitchPart = true; // Mark for glitch effect
-            g.add(cube);
+        // --- FLOATING DATA SHARDS (WINGS) ---
+        // Procedural cloud of cubes that form "wings"
+        const wingGroup = new THREE.Group();
+        wingGroup.position.copy(core.position);
+        g.add(wingGroup);
+
+        for (let i = 0; i < 20; i++) {
+            const size = 0.2 + Math.random() * 0.3;
+            // Spread out in wing shape
+            const x = (Math.random() > 0.5 ? 1 : -1) * (1.5 + Math.random() * 2);
+            const y = (Math.random() - 0.5) * 3;
+            const z = (Math.random() - 0.5) * 1;
+
+            const shard = this.box(size, size, size, (Math.random() > 0.5 ? mGold : mData), x, y, z, wingGroup);
+
+            // Random rotations
+            shard.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
+
+            // Independent float
+            shard.userData.idle = true;
+            shard.userData.float = true;
+            shard.userData.baseY = y;
+            shard.userData.idleSpeed = 1 + Math.random();
+            shard.userData.idleAmp = 0.2;
+
+            // Random glitch twitches
+            if (Math.random() > 0.7) {
+                shard.userData.swing = { axis: 'z', speed: 10 + Math.random() * 10, amp: 0.1, base: 0 };
+            }
         }
 
-        g.userData.idle = true; g.userData.float = true; g.userData.baseY = 0; g.userData.idleSpeed = 0.5; g.userData.idleAmp = 0.1;
+        // --- PARTICLE AURA ---
+        g.userData.idle = true;
+        g.userData.float = true;
+        g.userData.baseY = 0;
+        g.userData.idleSpeed = 0.5;
+        g.userData.idleAmp = 0.1;
+
+        g.userData.emitParticles = {
+            color: 0x00ffff, // Cyan data bleed
+            size: 0.15,
+            speed: 0.5,
+            spread: 1.0
+        };
+        g.userData.emitChance = 0.8; // High emission
+
         g.scale.set(s, s, s);
         return { mesh: g, weapon: core };
     },
 
+    // HIDDEN BOSS: IGRIS (The Blood Commander)
     createIgris(s = 1) {
         const g = new THREE.Group();
         // Materials
@@ -88,156 +158,115 @@ Object.assign(window.Models, {
         const mVoid = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Pure Void
         const mGold = new THREE.MeshStandardMaterial({ color: 0xaa00ff, metalness: 1, roughness: 0, emissive: 0x440088 }); // Accents (Purple Gold)
         const mGlow = new THREE.MeshBasicMaterial({ color: 0xaa00ff });
-        const mSpike = new THREE.MeshStandardMaterial({ color: 0x330044, metalness: 0.5, roughness: 0.1 });
 
-        // --- ANIMATED TORSO (Ronin Style) ---
-        // Main body group for breathing animation
+        // --- ANIMATED TORSO ---
         const body = new THREE.Group();
-        body.position.y = 0.8;
+        body.position.y = 1.0;
         g.add(body);
 
         // Torso Core
-        const chest = this.box(0.5, 0.6, 0.35, mArmor, 0, 0.2, 0, body);
-        this.box(0.2, 0.4, 0.1, mVoid, 0, 0, 0.18, chest); // Void Channel
+        const chest = this.box(0.5, 0.7, 0.4, mArmor, 0, 0.2, 0, body);
+        this.box(0.25, 0.5, 0.15, mVoid, 0, 0, 0.2, chest); // Void Core
 
-        // Ribcage / Armor plates (Cylinders for complexity)
-        const ribGeo = new THREE.CylinderGeometry(0.3, 0.2, 0.5, 6);
-        const rib = new THREE.Mesh(ribGeo, mArmor);
-        rib.rotation.y = Math.PI / 2;
-        rib.position.set(0, 0, 0);
-        chest.add(rib);
-
-        // --- HEAD (Complex Helm) ---
+        // --- HEAD (Commander Helm) ---
         const head = new THREE.Group();
-        head.position.set(0, 0.6, 0);
-        body.add(head); // Attached to body so it moves with breath
+        head.position.set(0, 0.7, 0);
+        body.add(head);
 
         // Helm Base
-        const helmGeo = new THREE.DodecahedronGeometry(0.25, 0);
+        const helmGeo = new THREE.DodecahedronGeometry(0.28, 0);
         const helm = new THREE.Mesh(helmGeo, mArmor);
         head.add(helm);
 
-        // Face Plate (Void Visor)
-        this.box(0.18, 0.05, 0.1, mGlow, 0, 0, 0.2, head); // Glowing Visor
+        // Void Visor (Glowing Slit)
+        this.box(0.22, 0.05, 0.1, mGlow, 0, 0, 0.22, head);
 
-        // Horns/Plume (Complex Spikes)
-        const hornGeo = new THREE.ConeGeometry(0.05, 0.6, 4);
-        const hornL = new THREE.Mesh(hornGeo, mGold);
-        hornL.position.set(-0.15, 0.3, -0.1); hornL.rotation.z = 0.3; hornL.rotation.x = -0.2;
-        head.add(hornL);
-        const hornR = new THREE.Mesh(hornGeo, mGold);
-        hornR.position.set(0.15, 0.3, -0.1); hornR.rotation.z = -0.3; hornR.rotation.x = -0.2;
-        head.add(hornR);
+        // High Plume (Hair)
+        const plumeVar = 0.6;
+        const plume = this.box(0.1, plumeVar, 0.1, mGold, 0, 0.4, -0.15, head);
+        plume.rotation.x = -0.5;
+        // Plume animation?
 
-        // --- SHOULDERS (Spiked Pauldrons) ---
-        const pauldronGeo = new THREE.OctahedronGeometry(0.25, 0);
+        // --- SHOULDERS (Floating Pauldrons) ---
+        const pauldronGeo = new THREE.OctahedronGeometry(0.3, 0);
 
         const pL = new THREE.Mesh(pauldronGeo, mGold);
-        pL.position.set(-0.45, 0.4, 0);
-        body.add(pL);
+        const pLGrp = new THREE.Group(); pLGrp.position.set(-0.55, 0.5, 0); pLGrp.add(pL);
+        body.add(pLGrp);
+        pL.userData.idle = true; pL.userData.float = true; pL.userData.baseY = 0; pL.userData.idleSpeed = 2; pL.userData.idleAmp = 0.05;
 
         const pR = new THREE.Mesh(pauldronGeo, mGold);
-        pR.position.set(0.45, 0.4, 0);
-        body.add(pR);
+        const pRGrp = new THREE.Group(); pRGrp.position.set(0.55, 0.5, 0); pRGrp.add(pR);
+        body.add(pRGrp);
+        pR.userData.idle = true; pR.userData.float = true; pR.userData.baseY = 0; pR.userData.idleSpeed = 2; pR.userData.idleAmp = 0.05;
 
-        // --- ARMS (Ronin Swing Animation) ---
-        const armGeo = new THREE.BoxGeometry(0.12, 0.5, 0.12);
+        // --- ARMS ---
+        const mkArm = (x, isRight) => {
+            const grp = new THREE.Group(); grp.position.set(x, 0.4, 0); body.add(grp);
+            this.box(0.15, 0.6, 0.15, mArmor, 0, -0.3, 0, grp); // Upper
+            const low = new THREE.Group(); low.position.set(0, -0.6, 0); grp.add(low);
+            this.box(0.14, 0.6, 0.14, mArmor, 0, -0.3, 0, low); // Forearm
+            this.box(0.16, 0.4, 0.16, mGold, 0, -0.3, 0, low); // Gauntlet
+            return { top: grp, low: low };
+        };
 
-        // LEFT ARM (Swing A)
-        const lArmGrp = new THREE.Group();
-        lArmGrp.position.set(-0.5, 0.3, 0);
-        body.add(lArmGrp);
-        const lArm = new THREE.Mesh(armGeo, mArmor);
-        lArm.position.y = -0.25;
-        lArmGrp.add(lArm);
-
-        // RIGHT ARM (Swing B - Opposing)
-        const rArmGrp = new THREE.Group();
-        rArmGrp.position.set(0.5, 0.3, 0);
-        body.add(rArmGrp);
-        const rArm = new THREE.Mesh(armGeo, mArmor);
-        rArm.position.y = -0.25;
-        rArmGrp.add(rArm);
+        const lArm = mkArm(-0.6, false);
+        const rArm = mkArm(0.6, true);
 
         // --- LEGS ---
-        // Legs are static relative to root, or can slightly sway
-        const legGeo = new THREE.CylinderGeometry(0.12, 0.08, 0.7, 8);
+        const mkLeg = (x) => {
+            const leg = new THREE.Group(); leg.position.set(x, 0, 0); g.add(leg);
+            this.box(0.18, 0.5, 0.18, mArmor, 0, 0.7, 0, leg); // Thigh
+            this.box(0.16, 0.6, 0.16, mArmor, 0, 0.2, 0, leg); // Shin
+            this.box(0.2, 0.2, 0.22, mGold, 0, 0, 0.05, leg); // Boot
+        };
+        mkLeg(-0.25); mkLeg(0.25);
 
-        const lLeg = new THREE.Mesh(legGeo, mArmor);
-        lLeg.position.set(-0.2, 0.35, 0);
-        g.add(lLeg);
-
-        const rLeg = new THREE.Mesh(legGeo, mArmor);
-        rLeg.position.set(0.2, 0.35, 0);
-        g.add(rLeg);
-
-        // --- WEAPON: VOID SLAYER (More Complex) ---
+        // --- WEAPON: VOID GREATSWORD ---
         const weaponGroup = new THREE.Group();
-        weaponGroup.position.set(0, -0.4, 0.3);
-        rArmGrp.add(weaponGroup); // Attached to right arm
+        weaponGroup.position.set(0, -0.5, 0);
+        rArm.low.add(weaponGroup);
 
         // Hilt
-        const hiltGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.4, 8);
-        const hilt = new THREE.Mesh(hiltGeo, mGold);
-        hilt.rotation.x = Math.PI / 2;
-        weaponGroup.add(hilt);
-
-        // Crossguard (Spiked)
-        const guardGeo = new THREE.OctahedronGeometry(0.15, 0);
-        const guard = new THREE.Mesh(guardGeo, mGold);
-        guard.scale.set(2, 0.5, 0.5);
+        this.box(0.05, 0.6, 0.05, mArmor, 0, 0, 0, weaponGroup);
+        // Guard
+        const guard = new THREE.Mesh(new THREE.OctahedronGeometry(0.25, 0), mGold);
+        guard.scale.set(1.5, 0.5, 0.5); guard.position.y = 0.3;
         weaponGroup.add(guard);
-
-        // Blade (Jagged)
-        const bladeGeo = new THREE.BoxGeometry(0.1, 1.8, 0.02);
-        const blade = new THREE.Mesh(bladeGeo, mArmor);
-        blade.position.y = 1.0;
-        weaponGroup.add(blade);
-
+        // Blade
+        const blade = this.box(0.25, 2.5, 0.05, mVoid, 0, 1.6, 0, weaponGroup);
         // Energy Edge
-        const edge = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.7, 0.03), mGlow);
-        edge.position.y = 1.0;
-        weaponGroup.add(edge);
+        const edge = this.box(0.27, 2.4, 0.02, mGlow, 0, 1.6, 0, weaponGroup); // Laser edge
 
-        // --- CAPE (Flowing) ---
-        const cape = new THREE.Group();
-        cape.position.set(0, 0.5, -0.2);
-        body.add(cape);
-
-        // Cape segments
-        for (let i = 0; i < 3; i++) {
-            const seg = this.box(0.5 - (i * 0.1), 0.4, 0.02, mVoid, 0, -0.2 - (i * 0.35), 0, cape);
-            seg.rotation.x = 0.1 + (i * 0.1);
+        // --- VOID CAPE (Multi-Segment) ---
+        const capeGrp = new THREE.Group(); capeGrp.position.set(0, 0.6, -0.25); body.add(capeGrp);
+        for (let i = 0; i < 5; i++) {
+            // Tattered strips
+            const strip = this.box(0.15, 1.2, 0.02, mVoid, (i - 2) * 0.16, -0.6, 0, capeGrp);
+            strip.userData.idle = true;
+            strip.userData.swing = { axis: 'x', speed: 2 + Math.random(), amp: 0.3, base: 0.2, offset: i };
         }
 
-        // --- ANIMATION DATA (RONIN STYLE) ---
-        // 1. Torso Pulse (Breathing) - INCREASED INTENSITY
-        body.userData.idle = true;
-        body.userData.pulse = { speed: 2.5, amp: 0.08, base: 1 }; // Was 0.02, now 0.08 (Visible breathing)
+        // --- ANIMATIONS ---
+        body.userData.idle = true; body.userData.pulse = { speed: 2, amp: 0.05, base: 1 };
 
-        // 2. Arm Swings (Opposing, Dynamic)
-        lArmGrp.userData.idle = true;
-        lArmGrp.userData.swing = { axis: 'x', speed: 2, amp: 0.2, base: 0 };
+        // Combat Stance
+        lArm.top.rotation.z = 0.2; lArm.top.rotation.x = 0.2;
+        rArm.top.rotation.z = -0.2; rArm.top.rotation.x = -0.4; // Arm forward
 
-        rArmGrp.userData.idle = true;
-        rArmGrp.userData.swing = { axis: 'x', speed: 2, amp: 0.2, base: 0, offset: Math.PI }; // Opposing phase
+        // Swing Animations
+        lArm.top.userData.idle = true; lArm.top.userData.swing = { axis: 'x', speed: 1.5, amp: 0.1, base: 0.2 };
+        rArm.top.userData.idle = true; rArm.top.userData.swing = { axis: 'x', speed: 1.5, amp: 0.1, base: -0.4 };
 
-        // 3. Cape Flow
-        cape.userData.idle = true;
-        cape.userData.swing = { axis: 'x', speed: 3, amp: 0.3, base: 0.3 };
-
-        // 4. Floating (Godlike)
+        // Float
         g.userData.idle = true;
-        g.userData.float = true;
-        g.userData.baseY = 0;
-        g.userData.idleSpeed = 1.5;
-        g.userData.idleAmp = 0.2; // Was 0.1
+        g.userData.float = true; g.userData.baseY = 0; g.userData.idleSpeed = 1.0; g.userData.idleAmp = 0.15;
 
-        // Mark parts for VFX
-        g.userData.isIgris = true;
-        weaponGroup.userData.isVoidBlade = true;
+        // Aura
+        g.userData.emitParticles = { color: 0xaa00ff, size: 0.1, speed: 0.4, spread: 0.6 };
+        g.userData.emitChance = 0.6;
 
         g.scale.set(s, s, s);
-        return { mesh: g, weapon: rArmGrp };
+        return { mesh: g, weapon: rArm.low };
     }
 });

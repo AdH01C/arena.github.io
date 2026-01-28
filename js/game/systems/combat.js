@@ -6,7 +6,7 @@ Object.assign(game, {
         this.bossStarted = false; // Reset boss AI gate
 
         const isFinalBoss = (this.floor >= 100);
-        const isMidBoss = (this.floor === 25 || this.floor === 50 || this.floor === 75);
+        const isMidBoss = (this.floor === 20 || this.floor === 40 || this.floor === 60 || this.floor === 80);
         const isFloorBoss = (this.floor % 5 === 0 && !isFinalBoss && !isMidBoss);
 
         let hp, atk;
@@ -14,74 +14,142 @@ Object.assign(game, {
         // --- THE "GOLDEN RATIO" SCALING (1.13) ---
         // Floor 1:   200 HP
         // Floor 50:  90,000 HP
-        // Floor 75:  3,800,000 HP  <-- Perfect for your 2M hits (2 hits to kill)
-        // Floor 99:  70,000,000 HP <-- Tough, but not a chore
+        // Floor 75:  3,800,000 HP
         const difficultyScale = this.floor + (this.rebirth * 50);
 
+        // ... (HP Calc omitted for brevity, logic remains same)
+        // Recalculating HP/ATK just in case to be safe within this function block context if needed,
+        // but assuming the original scaling code is below or we just inject above checks.
+
+        // Standard Scaling Logic (Re-pasted Ensure Safety)
         if (this.floor <= 50) {
             hp = Math.floor(200 * Math.pow(1.13, difficultyScale));
             atk = Math.floor(10 * Math.pow(1.085, difficultyScale));
         } else {
-            // STEAPER POST-50 SCALING
-            // Calculate Floor 50 base for continuity
             const scaleAt50 = 50 + (this.rebirth * 50);
             const hpAt50 = 200 * Math.pow(1.13, scaleAt50);
             const atkAt50 = 10 * Math.pow(1.085, scaleAt50);
-
             const extraFloors = this.floor - 50;
             hp = Math.floor(hpAt50 * Math.pow(1.18, extraFloors));
             atk = Math.floor(atkAt50 * Math.pow(1.12, extraFloors));
         }
 
-        // Rebirth Multiplier (Stacked on top of base scale)
+        // Rebirth Multiplier
         if (this.rebirth > 0) {
             hp = Math.floor(hp * Math.pow(2.8, this.rebirth));
             atk = Math.floor(atk * Math.pow(1.6, this.rebirth));
         }
 
         if (isFinalBoss) {
-            this.bossPhase = 1; // <--- NEW TRACKER
-
-            // Phase 1: The "Avatar" (Weaker version)
-            // MASSIVE BUFF: 2.5B Base HP / 8x Multiplier per rebirth
+            this.bossPhase = 1;
             hp = 2500000000 * Math.pow(8, this.rebirth);
             atk = 450000 * Math.pow(2.5, this.rebirth);
-
             document.getElementById('enemy-name').innerText = `THE ARCHITECT (AVATAR)`;
             document.getElementById('enemy-name').style.color = '#ffd700';
             this.enemy = new Unit(false, hp, hp, atk, 0xffd700, 'architect');
             this.enemy.mitigation = 0.4;
         }
         else if (isMidBoss) {
-            hp *= 18; // Tanky mid-bosses (was 10x)
-            atk *= 3.5; // (was 2.5x)
-            const names = { 25: "WARDEN", 50: "EXECUTIONER", 75: "OVERLORD" };
-            const variants = { 25: 0, 50: 1, 75: 2 };
-            document.getElementById('enemy-name').innerText = `${names[this.floor]}`;
-            document.getElementById('enemy-name').style.color = '#ff5500';
-            this.enemy = new Unit(false, hp, hp, atk, '#ff5500', 'midboss', variants[this.floor]);
+            hp *= 25; // Massive Boss HP (was 18x)
+            atk *= 4.0; // Hard Hitter
+
+            let name = "BOSS";
+            let type = "boss";
+            let color = "#ff0000";
+
+            if (this.floor === 20) { name = "NEON HYDRA"; type = "neonHydra"; color = "#00ff00"; }
+            if (this.floor === 40) { name = "IRON COLOSSUS"; type = "ironColossus"; color = "#ffaa00"; }
+            if (this.floor === 60) { name = "VOID MOTHER"; type = "voidMother"; color = "#aa00ff"; }
+            if (this.floor === 80) { name = "CORRUPTED CORE"; type = "corruptedCore"; color = "#ff0000"; }
+
+            document.getElementById('enemy-name').innerText = `${name}`;
+            document.getElementById('enemy-name').style.color = color;
+            this.enemy = new Unit(false, hp, hp, atk, color, type);
+
+            // Initial Mechanic Setup
+            if (this.floor === 40) { this.enemy.mitigation = 0.8; this.showText("ARMOR PLATING ACTIVE", this.enemy.mesh.position, "#aaaaaa"); }
         }
-        else if (isFloorBoss) {
-            hp *= 8.0; // (was 5.0x)
-            atk *= 2.5; // (was 2.0x)
-            document.getElementById('enemy-name').innerText = `SECTOR BOSS - ${this.floor}`;
-            document.getElementById('enemy-name').style.color = '#ff0000';
-            this.enemy = new Unit(false, hp, hp, atk, '#ff0000', 'boss');
+        else if (isFloorBoss) { // Multiples of 5 (5, 10, 15, 25, 30, 35, 45...)
+            hp *= 8.0;
+            atk *= 2.5;
+
+            let name = `SECTOR BOSS - ${this.floor}`;
+            let type = "boss";
+
+            // --- MINI-BOSS MAPPING ---
+            if (this.floor === 5) { name = "MUTATED RAT"; type = "rat"; }
+            else if (this.floor === 10) { name = "BIO-SOLDIER"; type = "bioSoldier"; }
+            else if (this.floor === 15) { name = "CYBORG PROTOTYPE"; type = "cyborg"; }
+
+            else if (this.floor === 25) { name = "GATLING BOT"; type = "gatlingBot"; }
+            else if (this.floor === 30) { name = "MISSILE WALKER"; type = "missileWalker"; }
+            else if (this.floor === 35) { name = "DREADNOUGHT"; type = "dreadnought"; }
+
+            else if (this.floor === 45) { name = "NULL SPHERE"; type = "nullSphere"; }
+            else if (this.floor === 50) { name = "DOPPELGANGER"; type = "doppelganger"; }
+            else if (this.floor === 55) { name = "NIGHTMARE SHAPE"; type = "nightmare"; }
+
+            else if (this.floor === 65) { name = "GLITCH WARRIOR"; type = "glitchWarrior"; }
+            else if (this.floor === 70) { name = "LOGIC VIRUS"; type = "logicVirus"; }
+            else if (this.floor === 75) { name = "FATAL EXCEPTION"; type = "fatalException"; }
+
+            // --- SANCTUM BOSSES ---
+            else if (this.floor === 85) { name = "LUMINOUS PALADIN"; type = "luminousPaladin"; }
+            else if (this.floor === 90) { name = "DIVINITY SEEKER"; type = "divinitySeeker"; }
+            else if (this.floor === 95) { name = "SERAPHIM COMMANDER"; type = "seraphimCommander"; }
+
+            document.getElementById('enemy-name').innerText = name;
+            document.getElementById('enemy-name').style.color = '#ff5500';
+            this.enemy = new Unit(false, hp, hp, atk, '#ff5500', type);
         }
         else {
             // Apply Mutation Scaling
             if (this.currentMutation === 'encryption') {
                 hp = Math.floor(hp * 0.6);
             }
-            const enemyTypes = ['drone', 'sentinel', 'construct', 'tank', 'spider', 'wraith', 'floater'];
-            const type = enemyTypes[this.floor % enemyTypes.length];
+
+            // --- SECTOR THEMED SPAWNING ---
+            let type = 'mutant';
+            let colorHex = 0xffffff;
+
+            if (this.floor < 20) {
+                type = 'mutant';
+                colorHex = 0xaa5555; // Reddish flesh
+            } else if (this.floor < 40) {
+                type = 'mech';
+                colorHex = 0x5555aa; // Blueish steel
+            } else if (this.floor < 60) {
+                type = 'voidEntity';
+                colorHex = 0xaa00ff; // Purple void
+            } else if (this.floor < 80) {
+                type = 'glitchEntity';
+                colorHex = 0x00ff00; // Matrix green
+            } else {
+                // Celestial Variants
+                const variants = ['celestial_knight', 'celestial_ronin', 'celestial_priest', 'celestial_summoner'];
+                type = variants[Math.floor(Math.random() * variants.length)];
+                colorHex = 0xffd700; // Holy Gold
+            }
+
             document.getElementById('enemy-name').innerText = `${type.toUpperCase()} - F${this.floor}`;
             document.getElementById('enemy-name').style.color = '#aaa';
-            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.5);
+            const color = new THREE.Color(colorHex); // Pass base color for glows
             this.enemy = new Unit(false, hp, hp, atk, color, type);
         }
 
         // Apply Mutation Instance Effects
+
+        // Apply Mutation Instance Effects
+
+        // --- DEBUG: FORCE IGRIS ---
+        if (window.forceIgris) {
+            if (this.enemy) engine.scene.remove(this.enemy.mesh);
+            this.enemy = new Unit(false, hp * 5, hp * 5, atk * 2, '#aa00ff', 'igris');
+            document.getElementById('enemy-name').innerText = "IGRIS THE VOID COMMANDER";
+            document.getElementById('enemy-name').style.color = "#aa00ff";
+        }
+        // -------------------------
+
         if (this.currentMutation === 'encryption' && this.enemy) {
             this.enemy.baseArmor += 100;
             this.enemy.recalculateStats();
@@ -224,6 +292,13 @@ Object.assign(game, {
             this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
             this.showText(`+${this.formatNum(heal)} RECOVER`, this.enemy.mesh.position, '#00ff00');
         }
+
+        // --- SECTOR BOSS PASSIVES ---
+        if (this.enemy.type === 'neonHydra') {
+            const regen = Math.floor(this.enemy.maxHp * 0.02);
+            this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + regen);
+            this.showText(`+${this.formatNum(regen)} REGEN`, this.enemy.mesh.position, '#00ff00');
+        }
     },
 
     endEnemyTurn() {
@@ -270,15 +345,23 @@ Object.assign(game, {
                         // VOID SLICE (Multi-Hit)
                         isSpecial = true;
                         dmg = Math.floor(dmg * 0.7); // Per hit
-                        engine.spawnParticles(this.player.mesh.position, 0xaa00ff, 30);
-                        setTimeout(() => { const ad = this.player.takeDmg(dmg); if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff'); }, 100);
-                        setTimeout(() => { const ad = this.player.takeDmg(dmg); if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff'); }, 300);
+                        engine.createVFX('SLASH', this.player.mesh.position, { color: 0xaa00ff, count: 15, axis: new THREE.Vector3(1, 0.2, 0) });
+                        setTimeout(() => {
+                            const ad = this.player.takeDmg(dmg);
+                            if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff');
+                            engine.createVFX('SLASH', this.player.mesh.position, { color: 0xaa00ff, count: 15, axis: new THREE.Vector3(-1, 0.2, 0) });
+                        }, 150);
+                        setTimeout(() => {
+                            const ad = this.player.takeDmg(dmg);
+                            if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff');
+                            engine.createVFX('SLASH', this.player.mesh.position, { color: 0xaa00ff, count: 15, axis: new THREE.Vector3(0, 1, 0) });
+                        }, 350);
                         setTimeout(() => {
                             const ad = this.player.takeDmg(dmg);
                             if (ad > 0) this.showText(ad, this.player.mesh.position, '#aa00ff');
                             // Resume turn logic
                             this.endEnemyTurn();
-                        }, 500);
+                        }, 550);
                         this.showText("<< VOID SLICE >>", this.enemy.mesh.position, '#aa00ff');
                         return; // Async completion triggers endEnemyTurn
 
@@ -286,6 +369,7 @@ Object.assign(game, {
                         // VOID TRAP (Stun)
                         isSpecial = true;
                         this.showText("<< VOID TRAP >>", this.player.mesh.position, '#220033');
+                        engine.createVFX('VOID', this.player.mesh.position, { size: 0.5, count: 50, speed: 2.0 });
                         engine.triggerVoidConsume();
                         engine.addShake(1.0);
                         // Skip player turn simulation (or just huge damage if no skip logic)
@@ -314,19 +398,106 @@ Object.assign(game, {
             if (this.enemy.type === 'architect') {
                 const attacks = ['god_beam', 'blackhole', 'matrix', 'nuke'];
                 const vfx = attacks[Math.floor(Math.random() * attacks.length)];
+                if (vfx === 'god_beam') engine.createVFX('BEAM', this.player.mesh.position, { color: 0xffd700, size: 0.5, speed: 5 });
+                else if (vfx === 'matrix') engine.createVFX('GLITCH', this.player.mesh.position, { color: 0x00ff00, count: 30, speed: 2 });
+                else engine.createVFX('BURST', this.player.mesh.position, { color: 0xff0000, count: 50, size: 0.3 });
+
                 this.runVFX(vfx, this.player.mesh.position, 0xff0000, 0, isSpecial ? 1.5 : 1);
             } else if (this.enemy.type === 'boss' || this.enemy.type === 'midboss') {
+                engine.createVFX('BURST', this.player.mesh.position, { color: 0xff5500, count: 40, size: 0.25 });
                 this.runVFX(isSpecial ? 'nuke' : 'heavy', this.player.mesh.position, 0xff5500, 0, isSpecial ? 1.2 : 1);
             } else {
                 engine.spawnParticles(this.player.mesh.position, 0xffaa00, 5);
             }
 
             // --- NEW: BOSS MECHANICS ---
-            if (this.enemy.isRaging || this.enemy.type === 'midboss') {
+            if (this.enemy.isRaging || this.enemy.type === 'midboss' || ['neonHydra', 'ironColossus', 'voidMother', 'corruptedCore'].includes(this.enemy.type)) {
                 this.enemy.turnCount = (this.enemy.turnCount || 0) + 1;
 
-                // Warden (Floor 25): Reactive Shield every 3 turns
-                if (this.floor >= 25 && this.floor < 40 && this.enemy.turnCount % 3 === 0) {
+                // --- NEON HYDRA (F20) ---
+                if (this.enemy.type === 'neonHydra') {
+                    // Acid Spray (Every 3 turns)
+                    if (this.enemy.turnCount % 3 === 0) {
+                        this.showText("<< ACID SPRAY >>", this.player.mesh.position, '#00ff00');
+                        this.player.armor = Math.floor(this.player.armor * 0.8); // 20% Armor Shred
+                        engine.createVFX('BURST', this.player.mesh.position, { color: 0x00ff00, count: 40, speed: 0.8, size: 0.3 });
+                    }
+                }
+
+                // --- IRON COLOSSUS (F40) ---
+                if (this.enemy.type === 'ironColossus') {
+                    // Armor Shatter Mechanic
+                    if (this.enemy.hp < this.enemy.maxHp * 0.5 && this.enemy.mitigation > 0) {
+                        this.enemy.mitigation = 0; // SHATTERED!
+                        this.showText("<< ARMOR SHATTERED >>", this.enemy.mesh.position, '#ffaa00');
+                        engine.addShake(1.5);
+                        engine.createVFX('BURST', this.enemy.mesh.position, { color: 0xaaaaaa, count: 60, speed: 2.0, size: 0.4 });
+                    }
+                    // Seismic Slam (Every 4 turns)
+                    if (this.enemy.turnCount % 4 === 0) {
+                        isSpecial = true;
+                        dmg = Math.floor(dmg * 1.5);
+                        this.showText("<< SEISMIC SLAM >>", this.player.mesh.position, '#ff4400');
+                        engine.addShake(2.0);
+                        engine.createVFX('BURST', this.player.mesh.position, { color: 0xff4400, count: 50, speed: 1.5, size: 0.4 });
+                    }
+                }
+
+                // --- VOID MOTHER (F60) ---
+                if (this.enemy.type === 'voidMother') {
+                    // Reality Shift: Hide UI randomly
+                    if (Math.random() < 0.2) {
+                        this.showText("<< REALITY SHIFT >>", this.player.mesh.position, '#aa00ff');
+                        document.getElementById('hud').style.opacity = '0.2';
+                        setTimeout(() => { document.getElementById('hud').style.opacity = '1'; }, 2000);
+                    }
+                }
+
+                // --- CORRUPTED CORE (F80) ---
+                if (this.enemy.type === 'corruptedCore') {
+                    // Data Glitch: Randomize Mana
+                    if (this.enemy.turnCount % 3 === 0) {
+                        this.showText("<< DATA GLITCH >>", this.player.mesh.position, '#ff0000');
+                        this.player.mana = Math.floor(Math.random() * this.player.maxMana);
+                    }
+                }
+
+                // --- SANCTUM BOSSES (Floor 85-95) ---
+                if (this.enemy.type === 'luminousPaladin') {
+                    // Sun Strike (Heavy Hit)
+                    if (this.enemy.turnCount % 3 === 0) {
+                        isSpecial = true;
+                        dmg = Math.floor(dmg * 1.5);
+                        this.showText("<< SUN STRIKE >>", this.player.mesh.position, '#ffd700');
+                        engine.createVFX('BEAM', this.player.mesh.position, { color: 0xffd700, size: 0.4, speed: 4 });
+                    }
+                }
+                if (this.enemy.type === 'divinitySeeker') {
+                    // Holy Nova (AoE + Self Heal)
+                    if (this.enemy.turnCount % 3 === 0) {
+                        this.showText("<< HOLY NOVA >>", this.player.mesh.position, '#00ffff');
+                        const heal = Math.floor(this.enemy.maxHp * 0.03);
+                        this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
+                        engine.spawnParticles(this.enemy.mesh.position, 0x00ffff, 30);
+                        dmg = Math.floor(dmg * 0.8); // Slightly lower dmg for AoE
+                    }
+                }
+                if (this.enemy.type === 'seraphimCommander') {
+                    // Judgment (Execute if < 40%)
+                    if (this.enemy.turnCount % 4 === 0) {
+                        if ((this.player.hp / this.player.maxHp) < 0.4) {
+                            dmg *= 2.0;
+                            this.showText("<< JUDGMENT >>", this.player.mesh.position, '#ff0000');
+                        } else {
+                            this.showText("<< HOLY FIRE >>", this.player.mesh.position, '#ffaa00');
+                            dmg *= 1.2;
+                        }
+                        engine.createVFX('BURST', this.player.mesh.position, { color: 0xffaa00, count: 60, speed: 1.5 });
+                    }
+                }
+
+                // Warden (Floor 25 - Legacy): Reactive Shield every 3 turns
+                if (this.floor >= 25 && this.floor < 40 && this.enemy.turnCount % 3 === 0 && this.enemy.type === 'midboss') {
                     this.enemy.reflectShield = 0.5; // Reflect 50%
                     this.showText("REACTIVE SHIELD ACTIVE", this.enemy.mesh.position, '#00f2ff');
                     this.runVFX('shield', this.enemy.mesh.position, 0x00f2ff, 0, 1.5);
@@ -334,8 +505,8 @@ Object.assign(game, {
                     this.enemy.reflectShield = 0;
                 }
 
-                // Overlord (Floor 75): Mana Drain
-                if (this.floor >= 75 && this.floor < 90) {
+                // Overlord (Floor 75 - Legacy): Mana Drain
+                if (this.floor >= 75 && this.floor < 90 && this.enemy.type === 'midboss') {
                     const drain = 15;
                     this.player.mana = Math.max(0, this.player.mana - drain);
                     this.showText(`-${drain} MP (DRAIN)`, this.player.mesh.position, '#ff00ff');
@@ -434,6 +605,62 @@ Object.assign(game, {
     // --- BOSS INTRO SYSTEM ---
     triggerBossIntro(bossType, bossName) {
         const BOSS_INFO = {
+            'NEON HYDRA': {
+                title: "NEON HYDRA",
+                desc: "A cybernetic serpent capable of rapid self-repair.",
+                abilities: [
+                    { name: "REGENERATION", desc: "Regains HP every turn. Burst damage is required to overwhelm its repair protocols." },
+                    { name: "ACID SPRAY", desc: "Coats the player in corrosive nanites, reducing armor efficiency." }
+                ]
+            },
+            'IRON COLOSSUS': {
+                title: "IRON COLOSSUS",
+                desc: "A walking fortress with impenetrable plating.",
+                abilities: [
+                    { name: "ARMOR PLATING", desc: "Takes 80% reduced damage until its plating is shattered. Persist until the armor breaks." },
+                    { name: "SEISMIC SLAM", desc: "Deals massive damage and shakes the ground, potentially stunning stability systems." }
+                ]
+            },
+            'VOID MOTHER': {
+                title: "VOID MOTHER",
+                desc: "A geometric anomaly from beyond the boundary.",
+                abilities: [
+                    { name: "REALITY SHIFT", desc: "Inverts the simulation's rules, causing UI distortions and input lag." },
+                    { name: "FRACTAL BEAM", desc: "A beam that splits on impact, hitting multiple times." }
+                ]
+            },
+            'CORRUPTED CORE': {
+                title: "CORRUPTED CORE",
+                desc: "The malfunctioning heart of Sector 4.",
+                abilities: [
+                    { name: "DATA GLITCH", desc: "Randomizes the mana cost of your skills. Adaptation is key." },
+                    { name: "ERROR 404", desc: "Deletion beam. If your HP drops too low, execution is instant." }
+                ]
+            },
+            'LUMINOUS PALADIN': {
+                title: "LUMINOUS PALADIN",
+                desc: "An ancient guardian clad in unbreaking golden plate.",
+                abilities: [
+                    { name: "TOWER SHIELD", desc: "Massive mitigation against physical attacks." },
+                    { name: "SUN STRIKE", desc: "Channeled solar energy that bypasses armor." }
+                ]
+            },
+            'DIVINITY SEEKER': {
+                title: "DIVINITY SEEKER",
+                desc: "A floating construct searching for the ultimate truth.",
+                abilities: [
+                    { name: "HOLY NOVA", desc: "Explosion of light that heals the caster while damaging enemies." },
+                    { name: "TRUTH", desc: "A piercing gaze that reveals vulnerabilities." }
+                ]
+            },
+            'SERAPHIM COMMANDER': {
+                title: "SERAPHIM COMMANDER",
+                desc: "The highest ranking angel of the Sanctum.",
+                abilities: [
+                    { name: "JUDGMENT", desc: "Executes targets below 40% Health instantly." },
+                    { name: "SIX WINGS", desc: "Hyper-mobility allows it to dodge frequent attacks." }
+                ]
+            },
             'WARDEN': {
                 title: "THE WARDEN",
                 desc: "A heavily armored construct designed to detain intruders.",
@@ -459,7 +686,7 @@ Object.assign(game, {
                 ]
             },
             'IGRIS': {
-                title: "IGRIS THE DESTROYER",
+                title: "IGRIS THE VOID COMMANDER",
                 desc: "The Red Knight. An anomaly distinct from the system's logic.",
                 abilities: [
                     { name: "VOID SLICE", desc: "Unleashes a flurry of dimension-cutting slashes that bypasses all Energy Shields and direct mitigation." },
@@ -480,7 +707,14 @@ Object.assign(game, {
 
         // Match based on Name or Type
         let info = null;
-        if (bossName.includes('WARDEN')) info = BOSS_INFO['WARDEN'];
+        if (bossName.includes('NEON HYDRA')) info = BOSS_INFO['NEON HYDRA'];
+        else if (bossName.includes('IRON COLOSSUS')) info = BOSS_INFO['IRON COLOSSUS'];
+        else if (bossName.includes('VOID MOTHER')) info = BOSS_INFO['VOID MOTHER'];
+        else if (bossName.includes('CORRUPTED CORE')) info = BOSS_INFO['CORRUPTED CORE'];
+        else if (bossName.includes('LUMINOUS PALADIN')) info = BOSS_INFO['LUMINOUS PALADIN'];
+        else if (bossName.includes('DIVINITY SEEKER')) info = BOSS_INFO['DIVINITY SEEKER'];
+        else if (bossName.includes('SERAPHIM COMMANDER')) info = BOSS_INFO['SERAPHIM COMMANDER'];
+        else if (bossName.includes('WARDEN')) info = BOSS_INFO['WARDEN'];
         else if (bossName.includes('EXECUTIONER')) info = BOSS_INFO['EXECUTIONER'];
         else if (bossName.includes('OVERLORD')) info = BOSS_INFO['OVERLORD'];
         else if (bossName.includes('IGRIS')) info = BOSS_INFO['IGRIS'];
@@ -503,6 +737,10 @@ Object.assign(game, {
                     </div>
                 </div>
             `;
+
+            // FORCE UI NAME UPDATE (Sync with Boss Info)
+            document.getElementById('enemy-name').innerText = info.title;
+            document.getElementById('enemy-name').style.color = "#ff0000";
 
             // Re-use Tutorial UI for Boss Intro
             const overlay = document.getElementById('tutorial-overlay');

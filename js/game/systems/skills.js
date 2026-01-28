@@ -247,6 +247,9 @@ Object.assign(game, {
 
         // New Logic for Skills
         if (tier === 0) {
+            // New Run/Class: Generate visual seed for consistent procedural look across upgrades
+            this.player.visualSeed = Math.random() * 1000;
+
             // Base Class: Unlock All 3
             this.player.unlockedSkills = [...CLASS_TREES[type][0].skills];
             // Pin first 2 skills to Slot 1 & 2. Pin 3rd skill (Buff) to Slot 3 (Index 3).
@@ -318,6 +321,8 @@ Object.assign(game, {
 
         // Update player model based on class
         this.updatePlayerModel(type, tier);
+        // ... (rest of function omitted for replacement context match, ensuring we close properly)
+
 
         if (tier > 0) {
             const scale = tier + 1;
@@ -354,25 +359,25 @@ Object.assign(game, {
         const color = colors[type] || 0x00f2ff;
 
         if (type === 'RONIN') {
-            this.player.model = Models.createRonin(color, 1.5, tier);
+            this.player.model = Models.createRonin(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'PRIEST') {
-            this.player.model = Models.createPriest(color, 1.5, tier);
+            this.player.model = Models.createPriest(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'MECH') {
-            this.player.model = Models.createMech(color, 1.5, tier);
+            this.player.model = Models.createMech(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'SHADOW') {
-            this.player.model = Models.createShadow(color, 1.5, tier);
+            this.player.model = Models.createShadow(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'BRAWLER') {
-            this.player.model = Models.createBrawler(color, 1.5, tier);
+            this.player.model = Models.createBrawler(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'GUNSLINGER') {
-            this.player.model = Models.createGunslinger(color, 1.5, tier);
+            this.player.model = Models.createGunslinger(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'KNIGHT') {
-            this.player.model = Models.createKnight(color, 1.5, tier);
+            this.player.model = Models.createKnight(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'HACKER') {
-            this.player.model = Models.createHacker(color, 1.5, tier);
+            this.player.model = Models.createHacker(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'REAPER') {
-            this.player.model = Models.createReaper(color, 1.5, tier);
+            this.player.model = Models.createReaper(color, 1.5, tier, this.player.visualSeed);
         } else if (type === 'SUMMONER') {
-            this.player.model = Models.createPriest(color, 1.5, tier); // Re-use Priest model for now
+            this.player.model = Models.createSummoner(color, 1.5, tier, this.player.visualSeed);
         } else {
             this.player.model = Models.createHumanoid(color, 1.5);
         }

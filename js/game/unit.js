@@ -60,15 +60,53 @@ class Unit {
         this.awakened = false; // Unlocked at floor 50
 
         // Create model based on type
-        if (isPlayer) this.model = Models.createHumanoid(color, 1.5);
+        if (type === 'minion') this.model = Models.createMinion(color, 1.2);
+        else if (isPlayer) this.model = Models.createHumanoid(color, 1.5);
         else if (type === 'architect') this.model = Models.createArchitect(2.5);
         else if (type === 'midboss') this.model = Models.createMidBoss(color, 2.2, variant);
         else if (type === 'boss') this.model = Models.createBoss(color, 2.0);
+        else if (type === 'neonHydra') this.model = Models.createNeonHydra(color, 2.5);
+        else if (type === 'ironColossus') this.model = Models.createIronColossus(color, 2.8);
+        else if (type === 'voidMother') this.model = Models.createVoidMother(color, 2.5);
+        else if (type === 'corruptedCore') this.model = Models.createCorruptedCore(color, 2.5);
+        else if (type === 'igris') this.model = Models.createIgris(2.5);
+
+        // --- MINI-BOSSES ---
+        else if (type === 'rat') this.model = Models.createRat(color, 1.0);
+        else if (type === 'bioSoldier') this.model = Models.createBioSoldier(color, 1.4);
+        else if (type === 'cyborg') this.model = Models.createCyborg(color, 1.5);
+        else if (type === 'gatlingBot') this.model = Models.createGatlingBot(color, 1.6);
+        else if (type === 'missileWalker') this.model = Models.createMissileWalker(color, 1.8);
+        else if (type === 'dreadnought') this.model = Models.createDreadnought(color, 2.0);
+        else if (type === 'nullSphere') this.model = Models.createNullSphere(color, 1.5);
+        else if (type === 'doppelganger') this.model = Models.createDoppelganger(color, 1.5);
+        else if (type === 'nightmare') this.model = Models.createNightmare(color, 1.8);
+        else if (type === 'glitchWarrior') this.model = Models.createGlitchWarrior(color, 1.5);
+        else if (type === 'logicVirus') this.model = Models.createLogicVirus(color, 1.5);
+        else if (type === 'fatalException') this.model = Models.createFatalException(color, 1.8);
+
         else if (type === 'drone') this.model = Models.createDrone(color, 1.3);
         else if (type === 'sentinel') this.model = Models.createSentinel(color, 1.4);
         else if (type === 'tank') this.model = Models.createTank(color, 1.5);
         else if (type === 'spider') this.model = Models.createSpider(color, 1.4);
         else if (type === 'floater') this.model = Models.createFloater(color, 1.3);
+        else if (type === 'mutant') this.model = Models.createMutant(color, 1.5);
+        else if (type === 'mech') this.model = Models.createMech(color, 1.5);
+        else if (type === 'voidEntity') this.model = Models.createVoidEntity(color, 1.5);
+        else if (type === 'glitchEntity') this.model = Models.createGlitchEntity(color, 1.5);
+
+        // Celestial Variants
+        else if (type === 'celestial_knight') this.model = Models.createCelestialVariant(color, 'knight', 1.8);
+        else if (type === 'celestial_ronin') this.model = Models.createCelestialVariant(color, 'ronin', 1.8);
+        else if (type === 'celestial_priest') this.model = Models.createCelestialVariant(color, 'priest', 1.8);
+        else if (type === 'celestial_summoner') this.model = Models.createCelestialVariant(color, 'summoner', 1.8);
+        else if (type === 'celestial') this.model = Models.createCelestial(color, 2.0); // Keep base just in case
+
+        // Sanctum Bosses
+        else if (type === 'luminousPaladin') this.model = Models.createLuminousPaladin(color, 2.5);
+        else if (type === 'divinitySeeker') this.model = Models.createDivinitySeeker(color, 2.2);
+        else if (type === 'seraphimCommander') this.model = Models.createSeraphimCommander(color, 2.5);
+
         else this.model = Models.createHumanoid(color, 1.5);
 
         this.mesh = this.model.mesh;

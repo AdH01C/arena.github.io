@@ -439,7 +439,7 @@ Object.assign(game, {
         finalAtk = Math.max(1, finalAtk);
 
         // Create Minion Unit
-        const minion = new Unit(true, finalHp, finalHp, finalAtk, stats.color, 'humanoid');
+        const minion = new Unit(true, finalHp, finalHp, finalAtk, stats.color, 'minion');
         minion.name = stats.name;
         minion.isMinion = true;
         minion.baseAtk = finalAtk;
@@ -463,31 +463,11 @@ Object.assign(game, {
 
         minion.slotIndex = slotIndex;
 
-        let xPos = -2.0;
-        let zPos = 0;
+        minion.slotIndex = slotIndex;
 
-        if (slotIndex === 0) { xPos = -2.0; zPos = 0; } // Front Point
-        else if (slotIndex === 1) { xPos = -3.0; zPos = -1.5; } // Top Flank
-        else if (slotIndex === 2) { xPos = -3.0; zPos = 1.5; } // Bot Flank
-        else if (slotIndex === 3) { xPos = -4.0; zPos = -0.8; } // Rear Top
-        else if (slotIndex === 4) { xPos = -4.0; zPos = 0.8; } // Rear Bot
-        else {
-            // ARMY GRID (Slot 5+)
-            // Start further back (Player is at -4.5 usually)
-            // Rows of 3, starting at x = -5.5
-            const armyIndex = slotIndex - 5;
-            const row = Math.floor(armyIndex / 3);
-            const col = armyIndex % 3;
-
-            xPos = -5.5 - (row * 1.0); // Move back 1 unit per row
-
-            // Spread columns centered around 0
-            // 0 -> Top, 1 -> Center, 2 -> Bottom? Or:
-            // Let's do: -1.5, 0, 1.5
-            if (col === 0) zPos = -1.5;
-            if (col === 1) zPos = 0;
-            if (col === 2) zPos = 1.5;
-        }
+        const pos = this.getMinionSlotPos(slotIndex);
+        const xPos = pos.x;
+        const zPos = pos.z;
 
         // Animate Spawn: Fall from sky or pop in
         minion.mesh.position.set(xPos, 5, zPos); // Start high
@@ -525,36 +505,39 @@ Object.assign(game, {
         this.player.mesh.rotation.y = Math.PI / 2;
     },
 
+    // Helper for consistent positioning
+    getMinionSlotPos(slotIndex) {
+        let xPos = -2.0;
+        let zPos = 0;
+
+        if (slotIndex === 0) { xPos = -2.0; zPos = 0; } // Front Point
+        else if (slotIndex === 1) { xPos = -3.0; zPos = -1.5; } // Top Flank
+        else if (slotIndex === 2) { xPos = -3.0; zPos = 1.5; } // Bot Flank
+        else if (slotIndex === 3) { xPos = -4.0; zPos = -0.8; } // Rear Top
+        else if (slotIndex === 4) { xPos = -4.0; zPos = 0.8; } // Rear Bot
+        else {
+            // ARMY GRID (Slot 5+)
+            // WIDER FORMATION (6 Cols)
+            const armyIndex = slotIndex - 5;
+            const colsPerRow = 6;
+            const row = Math.floor(armyIndex / colsPerRow);
+            const col = armyIndex % colsPerRow;
+
+            xPos = -5.5 - (row * 0.8); // Denser rows
+
+            // Map col 0..5 to Z values centered around 0
+            // Spacing 1.3
+            // 0 -> -3.25, 5 -> +3.25
+            zPos = (col - 2.5) * 1.3;
+        }
+        return { x: xPos, z: zPos };
+    },
+
     repositionMinions() {
         if (!this.player || !this.player.minions) return;
-
         this.player.minions.forEach(minion => {
-            const slotIndex = minion.slotIndex;
-            let xPos = -2.0;
-            let zPos = 0;
-
-            if (slotIndex === 0) { xPos = -2.0; zPos = 0; } // Front Point
-            else if (slotIndex === 1) { xPos = -3.0; zPos = -1.5; } // Top Flank
-            else if (slotIndex === 2) { xPos = -3.0; zPos = 1.5; } // Bot Flank
-            else if (slotIndex === 3) { xPos = -4.0; zPos = -0.8; } // Rear Top
-            else if (slotIndex === 4) { xPos = -4.0; zPos = 0.8; } // Rear Bot
-            else {
-                // ARMY GRID (Slot 5+)
-                const armyIndex = slotIndex - 5;
-                const row = Math.floor(armyIndex / 3);
-                const col = armyIndex % 3;
-
-                xPos = -5.5 - (row * 1.0); // Move back 1 unit per row
-                // Spread columns centered around 0
-                if (col === 0) zPos = -1.5;
-                if (col === 1) zPos = 0;
-                if (col === 2) zPos = 1.5;
-            }
-
-            // Snap to position
-            if (minion.mesh) {
-                minion.mesh.position.set(xPos, 0, zPos);
-            }
+            const pos = this.getMinionSlotPos(minion.slotIndex);
+            if (minion.mesh) minion.mesh.position.set(pos.x, 0, pos.z);
         });
     },
 
