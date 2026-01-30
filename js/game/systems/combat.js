@@ -24,14 +24,14 @@ Object.assign(game, {
         // Standard Scaling Logic (Re-pasted Ensure Safety)
         if (this.floor <= 50) {
             hp = Math.floor(200 * Math.pow(1.13, difficultyScale));
-            atk = Math.floor(10 * Math.pow(1.085, difficultyScale));
+            atk = Math.floor(15 * Math.pow(1.10, difficultyScale)); // Buffed: 10->15, 1.085->1.10
         } else {
             const scaleAt50 = 50 + (this.rebirth * 50);
             const hpAt50 = 200 * Math.pow(1.13, scaleAt50);
-            const atkAt50 = 10 * Math.pow(1.085, scaleAt50);
+            const atkAt50 = 15 * Math.pow(1.10, scaleAt50);
             const extraFloors = this.floor - 50;
             hp = Math.floor(hpAt50 * Math.pow(1.18, extraFloors));
-            atk = Math.floor(atkAt50 * Math.pow(1.12, extraFloors));
+            atk = Math.floor(atkAt50 * Math.pow(1.14, extraFloors)); // Buffed: 1.12->1.14
         }
 
         // Rebirth Multiplier
