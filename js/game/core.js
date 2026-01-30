@@ -439,7 +439,7 @@ Object.assign(game, {
         finalAtk = Math.max(1, finalAtk);
 
         // Create Minion Unit
-        const minion = new Unit(true, finalHp, finalHp, finalAtk, stats.color, 'minion');
+        const minion = new Unit(true, finalHp, finalHp, finalAtk, stats.color, 'minion', stats.archetype);
         minion.name = stats.name;
         minion.isMinion = true;
         minion.baseAtk = finalAtk;

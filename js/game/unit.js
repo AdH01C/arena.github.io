@@ -60,7 +60,8 @@ class Unit {
         this.awakened = false; // Unlocked at floor 50
 
         // Create model based on type
-        if (type === 'minion') this.model = Models.createMinion(color, 1.2);
+        this.visualSeed = Math.random() * 1000;
+        if (type === 'minion') this.model = Models.createMinion(color, 1.2, this.visualSeed, variant);
         else if (isPlayer) this.model = Models.createHumanoid(color, 1.5);
         else if (type === 'architect') this.model = Models.createArchitect(2.5);
         else if (type === 'midboss') this.model = Models.createMidBoss(color, 2.2, variant);

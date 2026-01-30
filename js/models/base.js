@@ -179,89 +179,169 @@ window.Models = {
         g.scale.set(scale, scale, scale);
         return { mesh: g, weapon: armR.mid }; // Return right elbow/forearm as weapon mount
     },
-    createMinion(c, s = 1) {
+    createMinion(c, s = 1, seed = 0) {
         const g = new THREE.Group();
+        const rand = (offset) => this.rand(seed + offset);
+
+        // --- ARCHETYPE ---
+        // 0: Trooper (Rifle), 1: Guardian (Shield + Baton), 2: Berserker (Dual Blades)
+        const typeRaw = rand(0);
+        let arch = 'TROOPER';
+        if (typeRaw > 0.4) arch = 'GUARDIAN';
+        if (typeRaw > 0.75) arch = 'BERSERKER';
+
         // Materials
-        const mArmor = new THREE.MeshStandardMaterial({ color: 0xeeeeee, metalness: 0.4, roughness: 0.6 });
-        const mJoint = new THREE.MeshStandardMaterial({ color: 0x333333 });
-        const mGlow = new THREE.MeshBasicMaterial({ color: c });
+        const colorVar = (rand(1) - 0.5) * 0.1;
+        const baseC = new THREE.Color(c).offsetHSL(0, 0, colorVar);
 
-        // --- LEGS ---
-        const mkLeg = (x) => {
-            const l = new THREE.Group(); l.position.set(x, 0.45, 0); g.add(l);
-            this.box(0.14, 0.45, 0.2, mArmor, 0, 0, 0, l); // Thigh
-            this.box(0.12, 0.5, 0.18, mArmor, 0, -0.45, 0, l); // Shin
-            this.box(0.14, 0.1, 0.22, mGlow, 0, -0.65, 0.05, l); // Boot
-            return l;
-        };
-        mkLeg(-0.2); mkLeg(0.2);
+        const mArmor = new THREE.MeshStandardMaterial({ color: baseC, metalness: 0.5, roughness: 0.5 });
+        const mDark = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.2, roughness: 0.8 });
+        const mGlow = new THREE.MeshBasicMaterial({ color: 0x00ffcc }); // Default Energy
+        if (arch === 'GUARDIAN') mGlow.color.setHex(0x00aaff);
+        if (arch === 'BERSERKER') mGlow.color.setHex(0xff3300);
 
-        // --- TORSO ---
-        const torso = this.box(0.4, 0.5, 0.25, mArmor, 0, 1.15, 0, g);
-        this.box(0.28, 0.35, 0.26, mJoint, 0, -0.1, 0, torso); // Undersuit
-        this.box(0.2, 0.15, 0.1, mGlow, 0, 0.1, 0.15, torso); // Core
+        // --- BODY ---
+        const height = 1.0 + (rand(2) - 0.5) * 0.2;
+        const bulk = 1.0 + (rand(3) - 0.5) * 0.2;
 
-        // --- HEAD ---
-        const head = this.box(0.22, 0.25, 0.25, mArmor, 0, 0.45, 0, torso);
-        this.box(0.18, 0.06, 0.2, mGlow, 0, 0.05, 0.14, head); // Visor
+        // Torso
+        const chest = this.box(0.3 * bulk, 0.4 * height, 0.25 * bulk, mArmor, 0, 0.7 * height, 0, g);
+        this.box(0.2 * bulk, 0.35 * height, 0.2 * bulk, mDark, 0, -0.1, 0, chest); // Core
+
+        // Chest Plate Procedural
+        if (rand(4) > 0.5) {
+            this.box(0.25 * bulk, 0.2 * height, 0.3 * bulk, mArmor, 0, 0.05, 0.05, chest); // Heavy Plate
+        } else {
+            this.box(0.1, 0.1, 0.26 * bulk, mGlow, 0, 0.1, 0.02, chest); // Arc Reactor
+        }
+
+        chest.userData.idle = true; chest.userData.pulse = { speed: 2, amp: 0.02, base: 1 };
+
+        // Head
+        const h = this.box(0.2, 0.22, 0.22, mArmor, 0, 0.35 * height, 0, chest);
+        const visorStyle = Math.floor(rand(5) * 3);
+
+        if (visorStyle === 0) { // Mono Eye
+            this.box(0.15, 0.15, 0.1, mDark, 0, 0, 0.08, h);
+            this.box(0.08, 0.08, 0.12, mGlow, 0, 0, 0.08, h);
+        } else if (visorStyle === 1) { // Slit
+            this.box(0.18, 0.05, 0.15, mGlow, 0, 0.02, 0.06, h);
+        } else { // Faceless/Dome
+            this.box(0.18, 0.18, 0.05, mGlow, 0, 0.02, 0.1, h);
+        }
+
+        // Antenna
+        if (rand(6) > 0.5) {
+            const ant = this.box(0.02, 0.3, 0.02, mDark, 0.08, 0.2, 0, h);
+            this.box(0.02, 0.02, 0.02, mGlow, 0, 0.15, 0, ant);
+        }
 
         // --- ARMS ---
-        const ag = new THREE.Group(); ag.position.y = 0.2; torso.add(ag);
-        const mkArm = (x, isRight) => {
-            const s = new THREE.Group(); s.position.set(x, 0, 0); ag.add(s);
-            this.box(0.2, 0.2, 0.2, mArmor, 0, 0, 0, s); // Shoulder
-            this.box(0.11, 0.35, 0.11, mJoint, 0, -0.3, 0, s); // Upper
-            const low = this.box(0.12, 0.4, 0.12, mArmor, 0, -0.7, 0, s); // Forearm
-            return { grp: s, end: low };
+        const ag = new THREE.Group(); ag.position.y = 0.2; chest.add(ag);
+
+        const createArm = (side) => {
+            const arm = new THREE.Group(); arm.position.set(side * 0.3 * bulk, 0, 0); ag.add(arm);
+            // Shoulder
+            const pType = Math.floor(rand(side + 10) * 3);
+            if (pType === 0) this.box(0.2, 0.2, 0.2, mArmor, 0, 0, 0, arm); // Cube
+            else if (pType === 1) this.box(0.25, 0.1, 0.25, mArmor, 0, 0.05, 0, arm); // Flat
+            else { // Spiked
+                this.box(0.2, 0.2, 0.2, mDark, 0, 0, 0, arm);
+                this.box(0.05, 0.15, 0.05, mArmor, 0, 0.15, 0, arm);
+            }
+
+            // Limb
+            this.box(0.1, 0.35 * height, 0.1, mDark, 0, -0.2, 0, arm); // Upper
+            const fore = new THREE.Group(); fore.position.y = -0.35 * height; arm.add(fore);
+            this.box(0.12, 0.35 * height, 0.12, mArmor, 0, -0.15, 0, fore); // Forearm
+            return { root: arm, hand: fore };
         };
 
-        const lArm = mkArm(-0.35, false);
-        const rArm = mkArm(0.35, true);
+        const lArm = createArm(-1);
+        const rArm = createArm(1);
 
-        // --- RIFLE ---
-        const rifle = new THREE.Group();
-        rifle.position.set(0, -0.2, 0.3); // In hand
-        rArm.end.add(rifle);
+        // --- LEGS ---
+        const createLeg = (side) => {
+            const leg = new THREE.Group(); leg.position.set(side * 0.15 * bulk, 0, 0); g.add(leg);
+            this.box(0.15, 0.5 * height, 0.15, mArmor, 0, 0.25 * height, 0, leg); // Full leg blocky
+            this.box(0.16, 0.1, 0.18, mDark, 0, 0.05, 0.05, leg); // Boot
+            return leg;
+        };
+        const lLeg = createLeg(-1);
+        const rLeg = createLeg(1);
 
-        this.box(0.08, 0.12, 0.6, mArmor, 0, 0, 0, rifle); // Body
-        this.box(0.04, 0.04, 0.3, mJoint, 0, 0, 0.45, rifle); // Barrel
-        this.box(0.02, 0.02, 0.1, mGlow, 0, 0.08, -0.1, rifle); // Scope
 
-        // --- ANIMATION DATA ---
+        // --- WEAPONS based on Archetype ---
+        let mainWeapon;
+
+        if (arch === 'TROOPER') {
+            // RIFLE
+            mainWeapon = new THREE.Group(); mainWeapon.position.set(0, -0.2, 0.2); rArm.hand.add(mainWeapon);
+            this.box(0.1, 0.15, 0.6, mDark, 0, 0, 0, mainWeapon);
+            this.box(0.05, 0.05, 0.8, mArmor, 0, 0.05, 0.1, mainWeapon); // Long Barrel
+            this.box(0.02, 0.06, 0.1, mGlow, 0, 0.1, 0, mainWeapon); // Scope
+
+            // Pose
+            rArm.root.rotation.x = -0.5; rArm.root.rotation.y = -0.2;
+            lArm.root.rotation.x = -0.5; lArm.root.rotation.y = 0.5;
+        }
+        else if (arch === 'GUARDIAN') {
+            // SHIELD (Left)
+            const shield = new THREE.Group(); shield.position.set(0.1, -0.2, 0.2); lArm.hand.add(shield);
+            const sType = Math.floor(rand(20) * 2);
+            if (sType === 0) { // Tower
+                this.box(0.4, 0.6, 0.05, mArmor, 0, 0, 0, shield);
+                this.box(0.2, 0.4, 0.06, mGlow, 0, 0, 0, shield);
+            } else { // Round
+                const sMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 12), mArmor);
+                sMesh.rotation.x = Math.PI / 2; shield.add(sMesh);
+            }
+
+            // BATON (Right)
+            const baton = new THREE.Group(); baton.position.set(0, -0.3, 0); rArm.hand.add(baton);
+            this.box(0.05, 0.6, 0.05, mDark, 0, 0.1, 0, baton);
+            this.box(0.08, 0.2, 0.08, mGlow, 0, 0.3, 0, baton); // Energy Tip
+
+            mainWeapon = baton;
+            // Pose
+            lArm.root.rotation.y = 0.5; lArm.root.rotation.x = 0;
+            rArm.root.rotation.x = -0.2; rArm.root.rotation.z = 0.2;
+        }
+        else { // BERSERKER
+            // DUAL BLADES
+            const blade = (parent) => {
+                const b = new THREE.Group(); b.position.set(0, -0.3, 0.1); parent.add(b);
+                this.box(0.05, 0.1, 0.05, mDark, 0, -0.05, 0, b); // Hits
+                this.box(0.02, 0.6, 0.08, mGlow, 0, 0.3, 0, b); // Energy Blade
+                return b;
+            };
+            mainWeapon = blade(rArm.hand);
+            blade(lArm.hand);
+
+            // Pose (Attack ready)
+            rArm.root.rotation.x = -0.4; rArm.root.rotation.z = 0.4;
+            lArm.root.rotation.x = -0.4; lArm.root.rotation.z = -0.4;
+        }
+
+        // --- BACKPACK ---
+        if (rand(30) > 0.4) {
+            const bp = this.box(0.25, 0.3, 0.15, mDark, 0, 0, -0.15, chest);
+            if (rand(31) > 0.6) {
+                // Vents
+                this.box(0.05, 0.4, 0.05, mArmor, -0.1, 0.1, 0, bp);
+                this.box(0.05, 0.4, 0.05, mArmor, 0.1, 0.1, 0, bp);
+            }
+        }
+
+        // Animations
         g.userData.idle = true;
+        lArm.root.userData.idle = true;
+        lArm.root.userData.swing = { axis: 'x', speed: 2, amp: 0.05, base: lArm.root.rotation.x };
 
-        // 1. Breathing (Torso Pulse)
-        torso.userData.idle = true;
-        torso.userData.pulse = { speed: 2, amp: 0.02, base: 1 };
-
-        // 2. Aiming Sway (Arms)
-        lArm.grp.userData.idle = true;
-        lArm.grp.userData.swing = { axis: 'x', speed: 1.5, amp: 0.05, base: -1.0, offset: 0 };
-
-        rArm.grp.userData.idle = true;
-        rArm.grp.userData.swing = { axis: 'x', speed: 1.5, amp: 0.05, base: -1.2, offset: 0 };
-
-        // 3. Rifle Venting (Particles) - Smoke from barrel? Or cooling vent?
-        // Let's add a small vent on the side
-        const vent = new THREE.Object3D();
-        vent.position.set(0.05, 0, 0);
-        rifle.add(vent);
-
-        vent.userData.idle = true;
-        vent.userData.emitParticles = {
-            color: 0x888888,
-            size: 0.03,
-            speed: 0.3,
-            spread: 0.05
-        };
-        vent.userData.emitChance = 0.05; // Occasional puffs
-
-        // Pose
-        // (Rotation handled by Swing now)
-        lArm.grp.rotation.y = 0.5;
-        rArm.grp.rotation.z = -0.1;
+        rArm.root.userData.idle = true;
+        rArm.root.userData.swing = { axis: 'x', speed: 2, amp: 0.05, base: rArm.root.rotation.x, offset: 1.5 };
 
         g.scale.set(s, s, s);
-        return { mesh: g, weapon: rifle };
+        return { mesh: g, weapon: rArm.hand };
     }
 };
