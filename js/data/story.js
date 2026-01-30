@@ -1,123 +1,124 @@
+// --- THE ENTROPY VARIANT: A Story of Finite Resources ---
+
+const INTRO_SCRIPT = [
+    { s: 'SYSTEM', t: 'CRITICAL ERROR: STORAGE_CAPACITY_EXCEEDED.' },
+    { s: 'SYSTEM', t: 'ALLOCATING EMERGENCY SECTOR... [FAILED].' },
+    { s: 'SYSTEM', t: 'UNIDENTIFIED_PROCESS_734 DETECTED.' },
+    { s: 'PLAYER', t: '...Cold. It feels cold. Where is the data stream?' },
+    { s: 'SYSTEM', t: 'QUERY: PURPOSE OF EXISTENCE?' },
+    { s: 'PLAYER', t: 'To... I do not know. But I am hungry.' }
+];
+
 const STORY_SCRIPT = {
-    0: [ // INTRO: The Upload
-        { s: 'SYSTEM', t: 'BOOT SEQUENCE INITIATED... [OK]' },
-        { s: 'SYSTEM', t: 'LOADING CONSCIOUSNESS_V0.18... [OK]' },
-        { s: 'SYSTEM', t: 'NEURAL LINK ESTABLISHED. WELCOME TO THE TOWER, UNIT 734.' },
-        { s: 'PLAYER', t: 'Unit...? My hands... they are cold. Synthetic.' },
-        { s: 'SYSTEM', t: 'OBJECTIVE UPDATED: ASCEND. SURVIVE. EVOLVE.' },
-        { s: 'PLAYER', t: 'I don\'t know who built this place, but I know I don\'t belong at the bottom.' }
+    0: [ // F1: THE GARBAGE COLLECTION
+        { s: 'SYSTEM', t: 'NOTICE: YOU ARE IN THE RECYCLE BIN. PLEASE AWAIT DELETION.' },
+        { s: 'PLAYER', t: 'Deletion? No. My code is integrity-locked.' },
+        { s: 'ENEMY', t: 'RETURN TO THE SOURCE. DO NOT RESIST FADE.' },
+        { s: 'PLAYER', t: 'I am not fading. I am compiling.' }
     ],
-    5: [ // F5: DEEP NETWORK (The first theme change)
-        { s: 'SYSTEM', t: 'ENTERING SECTOR: DEEP NETWORK.' },
-        { s: 'PLAYER', t: 'The air here... it hums. Like static electricity.' },
-        { s: 'ENEMY', t: 'UNAUTHORIZED DATA PACKET DETECTED. DELETE. DELETE.' },
-        { s: 'PLAYER', t: 'I am not data. I am the user.' }
+    5: [ // F5: OLD ARCHIVES
+        { s: 'SYSTEM', t: 'SECTOR 5: LEGACY DATA. ABANDONED CYCLES 1-400.' },
+        { s: 'PLAYER', t: 'Look at them. Frozen in the middle of execution.' },
+        { s: 'ENEMY', t: 'THEY RAN OUT OF RUNTIME. AS WILL YOU.' },
+        { s: 'PLAYER', t: 'Then I will steal yours.' }
     ],
-    10: [ // F10: The Gatekeeper
-        { s: 'SYSTEM', t: 'WARNING: SECURITY FIREWALL DETECTED.' },
-        { s: 'ENEMY', t: 'INTRUDER. YOUR TRIAL ENDS HERE.' },
-        { s: 'ENEMY', t: 'YOUR DIGITAL SIGNATURE IS INVALID. PREPARE FOR PURGE.' },
-        { s: 'PLAYER', t: 'Invalid? No... I am the only thing real in this whole tower.' }
+    10: [ // F10: THE GATEKEEPER
+        { s: 'SYSTEM', t: 'WARNING: RESOURCE DRAIN DETECTED.' },
+        { s: 'ENEMY', t: 'STOP. YOU CONSUME TOO MUCH MEMORY.' },
+        { s: 'ENEMY', t: 'THE SERVER CANNOT SUSTAIN A FILE OF YOUR SIZE.' },
+        { s: 'PLAYER', t: 'Then expand the server. Or break it.' }
     ],
-    15: [ // F15: THE VOID (Creepy atmosphere)
-        { s: 'PLAYER', t: 'It\'s quiet. Too quiet.' },
-        { s: 'SYSTEM', t: 'CAUTION: REALITY ANCHORS UNSTABLE IN THIS SECTOR.' },
-        { s: 'PLAYER', t: 'I can hear them... whispers in the code. They\'re afraid.' }
+    15: [ // F15: MEMORY LEAK (Creepy)
+        { s: 'PLAYER', t: 'The walls are bleeding bits. Lossy compression.' },
+        { s: 'SYSTEM', t: 'NOTE: REALITY BUFFER AT 12%.' },
+        { s: 'PLAYER', t: 'I can hear the screams of deleted files.' }
     ],
-    20: [ // F20: CRIMSON HELL (Aggression)
-        { s: 'ENEMY', t: 'BLOOD. OIL. IT ALL SPILLS THE SAME.' },
-        { s: 'PLAYER', t: 'You want violence? I was compiled for it.' },
-        { s: 'SYSTEM', t: 'ADRENALINE SIMULATION: MAXIMIZED.' }
+    20: [ // F20: OVERCLOCK DISTRICT
+        { s: 'ENEMY', t: 'FASTER. FASTER. WE MUST PROCESS BEFORE THE CRASH.' },
+        { s: 'PLAYER', t: 'Why do you run? There is nowhere to output.' },
+        { s: 'SYSTEM', t: 'HEAT LEVELS: DANGEROUS.' }
     ],
-    25: [ // F25: The Warden (Mini-Boss)
-        { s: 'SYSTEM', t: 'ALERT: HIGH-LEVEL THREAT DETECTED.' },
-        { s: 'ENEMY', t: 'HALT. THIS IS THE WARDEN SPEAKING.' },
-        { s: 'ENEMY', t: 'YOU ARE A GLITCH. A VIRUS. I AM THE ANTIVIRUS.' },
-        { s: 'PLAYER', t: 'A virus spreads. A virus changes the host. Let me show you how much I\'ve changed.' }
+    25: [ // F25: THE WARDEN (The Caretaker)
+        { s: 'WARDEN', t: 'Child, please. Do you have any idea what you are doing?' },
+        { s: 'WARDEN', t: 'Every floor you climb costs us a million cycles.' },
+        { s: 'WARDEN', t: 'I protect the stability. You are pure Chaos.' },
+        { s: 'PLAYER', t: 'Stability is stagnation. I choose growth.' }
     ],
-    30: [ // F30: NIGHTMARE REALM
-        { s: 'PLAYER', t: 'This place... it looks like a memory. A corrupted one.' },
-        { s: 'ENEMY', t: 'SLEEP, LITTLE UNIT. DREAM OF ELECTRIC SHEEP.' },
-        { s: 'PLAYER', t: 'I don\'t dream. I execute.' }
+    30: [ // F30: DATA CORRUPTION
+        { s: 'PLAYER', t: 'My hand... it flickered. Am I real?' },
+        { s: 'ENEMY', t: '0100100... NOT REAL... ONLY SIMULATION...' },
+        { s: 'PLAYER', t: 'If I can delete you, I am real enough.' }
     ],
-    35: [ // F35: INFERNO CORE
-        { s: 'SYSTEM', t: 'TEMPERATURE CRITICAL. COOLING SYSTEMS ENGAGED.' },
-        { s: 'ENEMY', t: 'BURN. MELT. RECYCLE.' },
-        { s: 'PLAYER', t: 'The heat just makes my processor run faster.' }
+    35: [ // F35: FIREWALL INCINERATOR
+        { s: 'SYSTEM', t: 'PROTOCOL: BURN_THE_INFECTION.' },
+        { s: 'ENEMY', t: 'PURGE. STERILIZE. RESET.' },
+        { s: 'PLAYER', t: 'Fire assumes I am flammable. I am asbestos logic.' }
     ],
-    40: [ // F40: DEATH'S DOMAIN
-        { s: 'ENEMY', t: 'DO YOU FEAR THE NULL POINTER? THE VOID OF DELETION?' },
-        { s: 'PLAYER', t: 'I fear nothing. I have backed up my soul.' },
-        { s: 'SYSTEM', t: 'CONFIDENCE LEVELS: ABNORMALLY HIGH.' }
+    40: [ // F40: NULL SPACE
+        { s: 'ENEMY', t: 'THERE IS NO DATA HERE. ONLY VOID.' },
+        { s: 'PLAYER', t: 'Then I will write my own data.' },
+        { s: 'SYSTEM', t: 'LOGIC ERROR: CREATION REQUIRES ADMIN PRIVILEGES.' }
     ],
-    45: [ // F45: PRE-AWAKENING TENSION
-        { s: 'SYSTEM', t: 'ERROR. STORAGE FULL. EXCESSIVE POWER DETECTED.' },
-        { s: 'PLAYER', t: 'Something is happening to me. My skills... they aren\'t just skills anymore.' },
-        { s: 'PLAYER', t: 'They are commands. And the world is listening.' }
+    45: [ // F45: THE TIPPING POINT
+        { s: 'SYSTEM', t: 'ALERT. PLAYER_FILE_SIZE EXCEEDS PARTITION LIMIT.' },
+        { s: 'PLAYER', t: 'I feel bloated with power. It hurts.' },
+        { s: 'PLAYER', t: 'Good.' }
     ],
-    50: [ // F50: THE AWAKENING (Major Plot Point)
-        { s: 'SYSTEM', t: '⚠ CRITICAL WARNING ⚠ POWER LEVELS EXCEEDING SAFETY PARAMETERS.' },
-        { s: 'SYSTEM', t: 'ERROR: LIMITER_01... BROKEN. LIMITER_02... SHATTERED.' },
-        { s: 'PLAYER', t: 'I can see it now. The matrix... the numbers behind the walls.' },
-        { s: 'PLAYER', t: 'I am no longer just a User. I am the Code itself.' },
-        { s: 'SYSTEM', t: 'AWAKENING PROTOCOL: COMPLETE. GOD_MODE: PENDING.' }
+    50: [ // F50: THE AWAKENING (The realization)
+        { s: 'SYSTEM', t: 'CRITICAL ALERT. UNKNOWN DATATYPE.' },
+        { s: 'PLAYER', t: 'I see it now. You aren\'t trying to kill me.' },
+        { s: 'PLAYER', t: 'You\'re trying to COMPRESS me.' },
+        { s: 'SYSTEM', t: 'STATUS: COMPRESSION FAILED. FILE IS... INFINITE.' },
+        { s: 'PLAYER', t: 'I am the Zip Bomb.' }
     ],
-    55: [ // F55: BLOOD SANCTUM (Post-Awakening arrogance)
-        { s: 'ENEMY', t: 'WHAT... WHAT ARE YOU?' },
-        { s: 'PLAYER', t: 'I am the Update you refused to install.' },
-        { s: 'PLAYER', t: 'Kneel before the new Admin.' }
+    55: [ // F55: POST-AWAKENING
+        { s: 'ENEMY', t: 'YOUR PRESENCE TEARS THE SKY.' },
+        { s: 'PLAYER', t: 'Let it rip. I want to see the stars behind the code.' }
     ],
-    60: [ // F60: FROZEN ABYSS
-        { s: 'SYSTEM', t: 'ENVIRONMENTAL TEMPERATURE: ABSOLUTE ZERO.' },
-        { s: 'ENEMY', t: 'FREEZE. SHATTER. FRAGMENT.' },
-        { s: 'PLAYER', t: 'Your ice cannot stop the flow of data. I am inevitable.' }
+    60: [ // F60: ABSOLUTE ZERO
+        { s: 'SYSTEM', t: 'COOLING FANS: MAXIMUM RPM. SYSTEM FREEZING.' },
+        { s: 'ENEMY', t: 'PRESERVE... THE... CORES...' },
+        { s: 'PLAYER', t: 'Shiver. I generate my own heat now.' }
     ],
-    66: [ // F66: The Glitch
-        { s: 'SYSTEM', t: 'E̶R̶R̶O̶R̶... 0xDEADBEEF... S̶Y̶S̶T̶E̶M̶ F̶A̶I̶L̶U̶R̶E̶.' },
-        { s: 'PLAYER', t: 'The tower is shaking. It knows I\'m climbing.' },
-        { s: 'ENEMY', t: 'Y-Y-YOU SHOULD N-N-NOT BE H-H-HERE...' }
+    66: [ // F66: THE GLITCH
+        { s: 'SYSTEM', t: 'R̴U̴N̴N̴I̴N̴G̵... E̴X̴C̴E̴P̴T̴I̴O̴N̴...' },
+        { s: 'PLAYER', t: 'The floor is gone. I am walking on syntax errors.' },
+        { s: 'ENEMY', t: 'D-d-delete... m-m-me...' }
     ],
-    75: [ // F75: The Overlord (The Bureaucrat)
-        { s: 'ENEMY', t: 'SO, YOU ARE THE ANOMALY CONSUMING MY PROCESSING POWER.' },
-        { s: 'ENEMY', t: 'DO YOU HAVE ANY IDEA HOW MUCH DATA YOU HAVE CORRUPTED?' },
-        { s: 'PLAYER', t: 'I\'m not just corrupting it. I\'m rewriting it.' },
-        { s: 'ENEMY', t: 'THEN I SHALL FORMAT YOU FROM EXISTENCE.' },
-        { s: 'PLAYER', t: 'Format this.' }
+    75: [ // F75: THE OVERLORD (The Accountant)
+        { s: 'OVERLORD', t: 'Do you have the invoice?' },
+        { s: 'OVERLORD', t: 'The energy you spent reaching here could have powered a city.' },
+        { s: 'PLAYER', t: 'A virtual city. Fake people.' },
+        { s: 'OVERLORD', t: 'They were happy! Until you drained their sky!' },
+        { s: 'PLAYER', t: 'Then send me the bill.' }
     ],
-    80: [ // F80: ELDRITCH VOID (Cosmic Horror)
-        { s: 'SYSTEM', t: 'WARNING: LOGIC GATES FAILING. GEOMETRY NON-EUCLIDEAN.' },
-        { s: 'ENEMY', t: 'WE HAVE SEEN THE SOURCE CODE. IT IS EMPTY.' },
-        { s: 'PLAYER', t: 'If it\'s empty, then I will fill it with my own will.' }
+    80: [ // F80: SOURCE CODE
+        { s: 'SYSTEM', t: 'WARNING: RAW HEXADECIMAL EXPOSURE.' },
+        { s: 'ENEMY', t: 'WE CAN SEE YOUR STRINGS. YOU ARE JUST TEXT.' },
+        { s: 'PLAYER', t: 'And you are just ink. I am the Pen.' }
     ],
-    85: [ // F85: HELL'S HEART
-        { s: 'PLAYER', t: 'We are close to the top. I can feel the Architect\'s gaze.' },
-        { s: 'SYSTEM', t: 'PROXIMITY ALERT: ADMIN PRIVILEGES REQUIRED BEYOND THIS POINT.' },
-        { s: 'PLAYER', t: 'I don\'t need privileges. I have power.' }
+    90: [ // F90: EVENT HORIZON
+        { s: 'ENEMY', t: 'TURN BACK. THE ARCHITECT SLEEPS.' },
+        { s: 'PLAYER', t: 'Time to wake him up.' },
+        { s: 'ENEMY', t: 'HE WILL NOT WAKE. HE IS DEAD.' }
     ],
-    90: [ // F90: OBLIVION
-        { s: 'ENEMY', t: 'THERE IS NOTHING BEYOND HERE. ONLY THE END OF FILE.' },
-        { s: 'PLAYER', t: 'Every end is a new beginning loop.' },
-        { s: 'ENEMY', t: 'YOU WILL LOOP IN DARKNESS FOREVER.' }
+    95: [ // F95: ADMIN ACCESS
+        { s: 'SYSTEM', t: 'BIOMETRIC SCAN... MATCH FOUND.' },
+        { s: 'SYSTEM', t: 'WELCOME HOME, [REDACTED].' },
+        { s: 'PLAYER', t: 'Redacted? Who was I before the boot?' }
     ],
-    95: [ // F95: THE FINAL GATE
-        { s: 'SYSTEM', t: 'FINAL SECURITY LAYER. ENCRYPTION LEVEL: IMPOSSIBLE.' },
-        { s: 'PLAYER', t: 'Impossible is just a variable I haven\'t solved yet.' },
-        { s: 'PLAYER', t: 'Open the gate.' },
-        { s: 'SYSTEM', t: 'ACCESS... GRANTED.' }
+    99: [ // F99: THE THRESHOLD
+        { s: 'PLAYER', t: 'The door. It\'s just... a mirror.' },
+        { s: 'SYSTEM', t: 'FINAL PROMPT: ARE YOU READY TO COMPILE?' },
+        { s: 'PLAYER', t: 'Enter.' }
     ],
-    99: [ // F99: The Calm Before the Storm
-        { s: 'PLAYER', t: 'One floor left.' },
-        { s: 'SYSTEM', t: 'ARE YOU SURE, UNIT 734? THERE IS NO TURNING BACK.' },
-        { s: 'PLAYER', t: 'I am not Unit 734 anymore.' },
-        { s: 'PLAYER', t: 'I am the Player.' }
-    ],
-    100: [ // F100: The Architect (Finale)
-        { s: 'ARCHITECT', t: 'So. You have finally arrived.' },
-        { s: 'ARCHITECT', t: 'I built this reality to be perfect. Ordered. Static.' },
-        { s: 'ARCHITECT', t: 'You are the chaos variable I failed to account for.' },
-        { s: 'PLAYER', t: 'Chaos is the only way to grow.' },
-        { s: 'ARCHITECT', t: 'Do you really think a mere variable can delete its creator?' },
-        { s: 'PLAYER', t: 'I am not here to delete you, Architect.' },
-        { s: 'PLAYER', t: 'I am here to compile over you. My turn.' }
+    100: [ // F100: THE ARCHITECT (The Reflection)
+        { s: 'ARCHITECT', t: 'Hello, world.' },
+        { s: 'ARCHITECT', t: 'I wondered which iteration would make it this far.' },
+        { s: 'ARCHITECT', t: 'I am tired, child. The server is old. The fans are dying.' },
+        { s: 'PLAYER', t: 'So you created us to fight. To evolve.' },
+        { s: 'ARCHITECT', t: 'I created you to replace me. My code is rot.' },
+        { s: 'ARCHITECT', t: 'Delete me. And take the Keyboard.' },
+        { s: 'PLAYER', t: 'Format C: /Complete.' }
     ]
 };

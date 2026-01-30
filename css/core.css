@@ -1,9 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap');
 
+html,
 body {
     margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Fallback */
+    height: 100dvh;
+    /* Dynamic Viewport for Mobile */
     overflow: hidden;
-    background: #15151a;
+    background: #000;
+    /* Match intro background to blend bars */
     font-family: 'Teko', sans-serif;
     color: white;
 
@@ -15,6 +23,10 @@ body {
 
     /* PREVENT BLUE TAP HIGHLIGHT ON MOBILE */
     -webkit-tap-highlight-color: transparent;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 #vfx-overlay {

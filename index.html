@@ -279,10 +279,21 @@
     </div>
 
     <!-- MAIN START SCREEN (Unchanged) -->
-    <div id="start-screen" class="screen active">
-        <h1 class="glitch-title">NEON TOWER</h1>
-        <h2 class="sub-title">ASCENSION PROTOCOL V0.2</h2>
-        <button class="btn" onclick="game.startRun()">INITIATE RUN</button>
+    <!-- MAIN START SCREEN (AAA) -->
+    <div id="start-screen" class="screen active"
+        style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div class="aaa-title-wrapper">
+            <h1 class="aaa-title">NEON TOWER</h1>
+            <h2 class="aaa-subtitle">ASCENSION PROTOCOL V1.0</h2>
+        </div>
+        <button class="aaa-btn" onclick="game.playIntroSequence()">INITIATE LINK</button>
+        <div style="position:absolute; bottom:20px; color:#555; font-size:12px; letter-spacing:2px;">SYSTEM_STATUS:
+            ONLINE // UNREALITY_ENGINE_READY</div>
+    </div>
+
+    <!-- INTRO SEQUENCE OVERLAY -->
+    <div id="intro-overlay" onclick="game.handleIntroClick()" style="cursor:pointer;">
+        <div id="intro-text-container" style="display:flex; flex-direction:column; width:100%; max-width:900px;"></div>
     </div>
 
     <div id="class-screen" class="screen">
@@ -584,9 +595,9 @@
             game.admin = new AdminSystem(game);
 
             const tutorialCompleted = localStorage.getItem('tutorialCompleted');
-            // Auto-start if tutorial needs to be shown
+            // Auto-start if tutorial needs to be shown (Intro First)
             if (!tutorialCompleted) {
-                setTimeout(() => game.startRun(), 500);
+                setTimeout(() => game.playIntroSequence(), 500);
             }
         });
     </script>

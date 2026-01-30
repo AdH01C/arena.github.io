@@ -1,4 +1,103 @@
 Object.assign(game, {
+    async playIntroSequence() {
+        const startScreen = document.getElementById('start-screen');
+        const introOverlay = document.getElementById('intro-overlay');
+        const container = document.getElementById('intro-text-container');
+
+        startScreen.classList.remove('active');
+        introOverlay.style.display = 'flex';
+        container.innerHTML = '';
+
+        this.introActive = true;
+        this.introSkipSignal = false;
+
+        // Async Sleep that can be interrupted by click
+        const interruptibleWait = (ms) => new Promise(resolve => {
+            let elapsed = 0;
+            const checkRate = 10;
+            const t = setInterval(() => {
+                elapsed += checkRate;
+                if (!this.introActive || elapsed >= ms || this.introSkipSignal) {
+                    clearInterval(t);
+                    resolve(this.introSkipSignal); // Return true if skipped
+                }
+            }, checkRate);
+        });
+
+        for (const line of INTRO_SCRIPT) {
+            if (!this.introActive) break;
+
+            // Reset skip signal for the new line phase
+            this.introSkipSignal = false;
+
+            const el = document.createElement('div');
+            el.className = `terminal-line ${line.s.toLowerCase()}`;
+            if (line.s === 'SYSTEM') el.style.color = '#00f2ff';
+            if (line.s === 'PLAYER') el.style.color = '#ffffff';
+            el.textContent = `> ${line.s}: `;
+
+            const span = document.createElement('span');
+            el.appendChild(span);
+            container.appendChild(el);
+
+            // Fade in
+            requestAnimationFrame(() => el.style.opacity = '1');
+
+            // --- TYPEWRITER PHASE ---
+            let textFnished = false;
+            for (let i = 0; i < line.t.length; i++) {
+                if (!this.introActive) break;
+
+                // If skip signaled during typing, print rest and exit loop
+                if (this.introSkipSignal) {
+                    span.textContent = line.t; // Fill all
+                    this.introSkipSignal = false; // Consume signal
+                    textFnished = true;
+                    break;
+                }
+
+                span.textContent += line.t[i];
+                window.scrollTo(0, document.body.scrollHeight);
+                await interruptibleWait(30);
+            }
+            if (!this.introActive) break;
+
+            // --- READING PHASE ---
+            // If we just skipped typing, we might want to pause briefly unless clicked again?
+            // User requested "Allow skipping of lines". 
+            // Standard behavior: Click (Finish Type) -> Wait -> Click (Next).
+
+            // Calculate delay based on text length
+            const baseDelay = 1000 + (line.t.length * 20);
+
+            // Wait for delay OR signal
+            await interruptibleWait(baseDelay);
+        }
+
+        this.finishIntro();
+    },
+
+    handleIntroClick() {
+        if (this.introActive) {
+            this.introSkipSignal = true;
+        }
+    },
+
+    finishIntro() {
+        if (!this.introActive) return;
+        this.introActive = false; // Stop the loop
+
+        const introOverlay = document.getElementById('intro-overlay');
+        introOverlay.style.opacity = '0';
+        introOverlay.style.transition = 'opacity 1s';
+
+        setTimeout(() => {
+            introOverlay.style.display = 'none';
+            introOverlay.style.opacity = '1';
+            this.startRun();
+        }, 1000);
+    },
+
     showClassTierModal(classKey, tierIndex) {
         // Remove existing modal
         const existing = document.getElementById('class-tier-modal'); if (existing) existing.remove();
