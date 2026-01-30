@@ -386,23 +386,61 @@ Object.assign(game, {
                 }
             }
 
-            const actualDmg = this.player.takeDmg(dmg);
+            // --- AOE DAMAGE HELPER ---
+            const dealAOE = (dmgVal, color = '#ff0000') => {
+                // 1. Hit Player
+                const pDmg = this.player.takeDmg(dmgVal);
+                if (pDmg > 0) this.showText(pDmg, this.player.mesh.position, color);
+
+                // 2. Hit All Minions
+                if (this.player.minions && this.player.minions.length > 0) {
+                    this.player.minions.forEach(minion => {
+                        const mDmg = minion.takeDmg(dmgVal); // Minions have own armor/stats logic
+                        if (mDmg > 0) this.showText(mDmg, minion.mesh.position, color);
+                        if (minion.updateHealthBar) minion.updateHealthBar();
+                    });
+                    // Cleanup dead minions immediately for visual clarity
+                    this.player.minions = this.player.minions.filter(m => {
+                        if (m.hp <= 0) {
+                            if (m.mesh) engine.scene.remove(m.mesh);
+                            if (m.removeHealthBar) m.removeHealthBar();
+                            return false;
+                        }
+                        return true;
+                    });
+                    this.updateMinionBars();
+                    if (this.player.minions.length === 0) this.resetPlayerPosition();
+                }
+            };
+
             // Hardcore Hit Impact (Only specific bosses)
             if (['igris', 'ronin', 'samurai'].includes(this.enemy.type) || (this.enemy.name && (this.enemy.name.includes('RONIN') || this.enemy.name.includes('SAMURAI')))) {
                 engine.triggerImpactLine();
             }
 
-            if (actualDmg > 0) this.showText(actualDmg, this.player.mesh.position, isSpecial ? '#ff0000' : '#ff0055');
-            engine.addShake(isSpecial ? 0.3 : 0.1);
+            // --- STANDARD ATTACK (Single Target) OR SPECIAL AOE ---
+            if (!isSpecial) {
+                // Normal hit: Targets player (or shield minion handles it via takeDmg logic)
+                const actualDmg = this.player.takeDmg(dmg);
+                if (actualDmg > 0) this.showText(actualDmg, this.player.mesh.position, '#ff0055');
+                engine.addShake(0.1);
+            }
 
             if (this.enemy.type === 'architect') {
                 const attacks = ['god_beam', 'blackhole', 'matrix', 'nuke'];
                 const vfx = attacks[Math.floor(Math.random() * attacks.length)];
-                if (vfx === 'god_beam') engine.createVFX('BEAM', this.player.mesh.position, { color: 0xffd700, size: 0.5, speed: 5 });
-                else if (vfx === 'matrix') engine.createVFX('GLITCH', this.player.mesh.position, { color: 0x00ff00, count: 30, speed: 2 });
-                else engine.createVFX('BURST', this.player.mesh.position, { color: 0xff0000, count: 50, size: 0.3 });
 
+                // Architect always feels like AOE visually, but let's make the Nuke actually AOE
+                if (vfx === 'nuke') {
+                    dealAOE(Math.floor(dmg * 0.8), '#ff0000'); // AOE Hit
+                    engine.createVFX('BURST', this.player.mesh.position, { color: 0xff0000, count: 50, size: 0.3 });
+                } else {
+                    if (vfx === 'god_beam') engine.createVFX('BEAM', this.player.mesh.position, { color: 0xffd700, size: 0.5, speed: 5 });
+                    else if (vfx === 'matrix') engine.createVFX('GLITCH', this.player.mesh.position, { color: 0x00ff00, count: 30, speed: 2 });
+                    else engine.createVFX('BURST', this.player.mesh.position, { color: 0xff0000, count: 50, size: 0.3 });
+                }
                 this.runVFX(vfx, this.player.mesh.position, 0xff0000, 0, isSpecial ? 1.5 : 1);
+
             } else if (this.enemy.type === 'boss' || this.enemy.type === 'midboss') {
                 engine.createVFX('BURST', this.player.mesh.position, { color: 0xff5500, count: 40, size: 0.25 });
                 this.runVFX(isSpecial ? 'nuke' : 'heavy', this.player.mesh.position, 0xff5500, 0, isSpecial ? 1.2 : 1);
@@ -416,10 +454,13 @@ Object.assign(game, {
 
                 // --- NEON HYDRA (F20) ---
                 if (this.enemy.type === 'neonHydra') {
-                    // Acid Spray (Every 3 turns)
+                    // Acid Spray (Every 3 turns) - TARGETS ALL (AOE)
                     if (this.enemy.turnCount % 3 === 0) {
                         this.showText("<< ACID SPRAY >>", this.player.mesh.position, '#00ff00');
-                        this.player.armor = Math.floor(this.player.armor * 0.8); // 20% Armor Shred
+                        this.player.armor = Math.floor(this.player.armor * 0.8); // 20% Armor Shred (Player only)
+
+                        // AOE DAMAGE
+                        dealAOE(Math.floor(dmg * 0.5), '#00ff00');
                         engine.createVFX('BURST', this.player.mesh.position, { color: 0x00ff00, count: 40, speed: 0.8, size: 0.3 });
                     }
                 }
@@ -433,12 +474,13 @@ Object.assign(game, {
                         engine.addShake(1.5);
                         engine.createVFX('BURST', this.enemy.mesh.position, { color: 0xaaaaaa, count: 60, speed: 2.0, size: 0.4 });
                     }
-                    // Seismic Slam (Every 4 turns)
+                    // Seismic Slam (Every 4 turns) - AOE
                     if (this.enemy.turnCount % 4 === 0) {
-                        isSpecial = true;
-                        dmg = Math.floor(dmg * 1.5);
                         this.showText("<< SEISMIC SLAM >>", this.player.mesh.position, '#ff4400');
                         engine.addShake(2.0);
+
+                        // MASSIVE AOE
+                        dealAOE(Math.floor(dmg * 1.5), '#ff4400');
                         engine.createVFX('BURST', this.player.mesh.position, { color: 0xff4400, count: 50, speed: 1.5, size: 0.4 });
                     }
                 }
@@ -459,6 +501,8 @@ Object.assign(game, {
                     if (this.enemy.turnCount % 3 === 0) {
                         this.showText("<< DATA GLITCH >>", this.player.mesh.position, '#ff0000');
                         this.player.mana = Math.floor(Math.random() * this.player.maxMana);
+                        // Glitch hits everyone lightly
+                        dealAOE(Math.floor(dmg * 0.3), '#ff0000');
                     }
                 }
 
@@ -479,7 +523,9 @@ Object.assign(game, {
                         const heal = Math.floor(this.enemy.maxHp * 0.03);
                         this.enemy.hp = Math.min(this.enemy.maxHp, this.enemy.hp + heal);
                         engine.spawnParticles(this.enemy.mesh.position, 0x00ffff, 30);
-                        dmg = Math.floor(dmg * 0.8); // Slightly lower dmg for AoE
+
+                        // AOE HIT
+                        dealAOE(Math.floor(dmg * 0.8), '#00ffff');
                     }
                 }
                 if (this.enemy.type === 'seraphimCommander') {

@@ -319,7 +319,45 @@ Object.assign(game, {
         }
 
         if (!skill) return;
-        const actualCost = Math.max(0, Math.floor(skill.cost * this.player.manaCostMult * (1 - this.player.manaCostReduction)));
+        let actualCost = Math.max(0, Math.floor(skill.cost * this.player.manaCostMult * (1 - this.player.manaCostReduction)));
+
+        // Logic for Mass Summon (Legion Ritual) - Pay Per Unit
+        if (skill.fillMinionSlots) {
+            const max = this.player.maxMinions || 1;
+            const current = this.player.minions ? this.player.minions.length : 0;
+            if (current >= max) {
+                this.showText("ARMY FULL", this.player.mesh.position, '#ff0000');
+                return;
+            }
+
+            // Calculate Affordability
+            const unitCost = actualCost;
+            const affordable = Math.floor(this.player.mana / Math.max(1, unitCost));
+            const needed = max - current;
+            const toSummon = Math.min(needed, affordable);
+
+            if (toSummon <= 0) {
+                this.showText("NO MANA", this.player.mesh.position, '#00f2ff');
+                return;
+            }
+
+            // Proceed with cast
+            this.state = 'ANIMATING';
+            const totalCost = toSummon * unitCost;
+            this.player.mana -= totalCost;
+
+            this.showText(`LEGION RISES (+${toSummon})`, this.player.mesh.position, '#ffffff');
+
+            for (let i = 0; i < toSummon; i++) {
+                this.summonMinion(skill.summonStats);
+            }
+
+            this.state = 'IDLE';
+            this.minionTurn();
+            this.updateUI();
+            return;
+        }
+
         if (this.player.mana < actualCost) { this.showText("NO MANA", this.player.mesh.position, '#00f2ff'); return; }
 
         this.state = 'ANIMATING';
@@ -412,10 +450,17 @@ Object.assign(game, {
 
     summonMinion(stats) {
         // Default max is 3, but can be increased by Perks/Skills
+        // Summoner class has maxMinions = 3 (per logic)
         const maxSummons = this.player.maxMinions || 3;
 
-        if (this.player.minions.length >= maxSummons) {
-            this.showText("MAX MINIONS", this.player.mesh.position, '#ff0000');
+        // Count Used Slots (Support for Multi-Slot Units)
+        let currentSlots = 0;
+        this.player.minions.forEach(m => currentSlots += (m.slotsUsed || 1));
+
+        const slotsNeeded = stats.slotsRequired || 1;
+
+        if (currentSlots + slotsNeeded > maxSummons) {
+            this.showText(slotsNeeded > 1 ? "NEED MORE SPACE" : "MAX MINIONS", this.player.mesh.position, '#ff0000');
             return;
         }
 
@@ -443,6 +488,7 @@ Object.assign(game, {
         minion.name = stats.name;
         minion.isMinion = true;
         minion.baseAtk = finalAtk;
+        minion.slotsUsed = slotsNeeded;
 
         // Store Scaling Multipliers for Dynamic Updates
         if (stats.atkMult) minion.scalingAtkMult = stats.atkMult;
@@ -452,7 +498,11 @@ Object.assign(game, {
         // Slot 3-4: Flankers
         // Slot 5+: The Legion (Grid Formation behind)
 
-        // Find first available slot
+        // Find available slot INDICES to occupy
+        // If a unit takes 3 slots, it might just need 'Slot 0' logically but blocking others?
+        // Simpler approach: Just assign the first open 'visual' slot index, but it technically consumes capacity.
+        // For Bosses (slots=3), we put them in center slot (0) usually.
+
         const takenSlots = this.player.minions.map(m => m.slotIndex);
         let slotIndex = 0;
         let found = false;

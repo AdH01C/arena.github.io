@@ -263,10 +263,11 @@ Object.assign(game, {
 
             // --- CLASS INHERENT STAT BONUSES ---
             if (type === 'SQUIRE') {
-                this.player.baseArmor += 15;
-                this.player.armor += 15;
-                this.player.mitigation = 0.15; // 15% inherent mitigation
-                this.player.maxHp += 50;
+                this.player.baseArmor += 30; // Was 15
+                this.player.armor += 30;
+                this.player.mitigation = 0.20; // 20% inherent mitigation
+                this.player.tenacity = 0.40; // New: Cannot take > 40% HP in one hit
+                this.player.maxHp += 200; // Was 50
                 this.player.hp = this.player.maxHp;
                 setTimeout(() => this.showText("HEAVY PLATING EQUIPPED", this.player.mesh.position, "#888888"), 500);
             } else if (type === 'RONIN') {
@@ -279,9 +280,11 @@ Object.assign(game, {
                 this.player.hpRegen = (this.player.hpRegen || 0) + 10; // Native HP Regen
                 setTimeout(() => this.showText("HOLY AURA ACTIVE", this.player.mesh.position, "#00f2ff"), 500);
             } else if (type === 'MECH') {
-                this.player.baseArmor += 10;
-                this.player.armor += 10;
-                this.player.maxHp += 200; // Hull Tank
+                this.player.baseArmor += 25; // Was 10
+                this.player.armor += 25;
+                this.player.mitigation = 0.10; // New: 10% Mitigation
+                this.player.tenacity = 0.35; // New: Cannot take > 35% HP in one hit
+                this.player.maxHp += 400; // Was 200
                 this.player.hp = this.player.maxHp;
                 setTimeout(() => this.showText("HULL REINFORCED", this.player.mesh.position, "#ff6600"), 500);
             } else if (type === 'GUNSLINGER') {
@@ -293,10 +296,13 @@ Object.assign(game, {
                 this.player.doubleStrike += 0.10;
                 setTimeout(() => this.showText("CLOAKING ACTIVE", this.player.mesh.position, "#220044"), 500);
             } else if (type === 'BRAWLER') {
-                this.player.maxHp += 100;
+                this.player.maxHp += 350; // Was 100
                 this.player.hp = this.player.maxHp;
-                // Berserker scaling handled in combat logic usually, but we give raw stats here
-                this.player.atk += 20;
+                this.player.baseArmor += 20; // New: Tough Skin
+                this.player.armor += 20;
+                this.player.mitigation = 0.10; // New: Shrug it off
+                this.player.tenacity = 0.50; // New: Won't die easily (Max 50% HP hit)
+                this.player.atk += 25;
                 setTimeout(() => this.showText("FRENZY INDUCED", this.player.mesh.position, "#ff0000"), 500);
             } else if (type === 'HACKER') {
                 this.player.manaCostReduction += 0.25; // Efficiency
@@ -310,6 +316,7 @@ Object.assign(game, {
             } else if (type === 'SUMMONER') {
                 this.player.maxMana += 50;
                 this.player.mana = this.player.maxMana;
+                this.player.maxMinions = 3; // Summoner Class Bonus
                 setTimeout(() => this.showText("SPIRIT LINK ESTABLISHED", this.player.mesh.position, "#00ffaa"), 500);
             }
         } else if (skillIndex >= 0) {

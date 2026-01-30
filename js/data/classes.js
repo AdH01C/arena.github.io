@@ -14,7 +14,7 @@ const CLASS_TREES = {
             name: "SHADOW-STRIKER", desc: "Tier 2: Evasion Overclock", skills: [
                 { name: "PHANTOM CUT", cost: 0, mult: 0.5, color: 0x9900ff, vfx: 'multi', hits: 3, desc: "Triple-strike from the shadows before the enemy can respond." },
                 { name: "ASSASSINATE", cost: 40, mult: 4.5, color: 0xff0000, vfx: 'crit', hits: 1, desc: "A lethal thrust aimed at the target's weakest logic gate." },
-                { name: "SHADOW CLOAK", cost: 25, isBuff: true, buffType: 'dodge', buffVal: 0.25, duration: 8, color: 0x9900ff, stationary: true, desc: "Bend light around your chassis to gain 25% dodge chance." }
+                { name: "SHADOW CLONE", cost: 60, isSummon: true, summonStats: { hpMult: 0.25, atkMult: 0.45, name: "SHADOW CLONE", color: 0x9900ff, archetype: 'SHADOW' }, desc: "Summon a Shadow Clone (25% HP, 45% ATK) to deal extra damage." }
             ]
         },
         // 20-29: VELOCITY-BLADE
@@ -113,7 +113,7 @@ const CLASS_TREES = {
             name: "ANGEL-MK1", stationary: true, desc: "Tier 4: Flight", skills: [
                 { name: "LASER WING", cost: 0, mult: 0.35, color: 0xffffff, vfx: 'beam_h', hits: 4, manaGain: 30, stationary: true, desc: "Unfurl wings of coherent light that draw power from the enviroment." },
                 { name: "HEAVENLY RAY", cost: 100, mult: 2.0, color: 0xffffdd, vfx: 'god_beam', hits: 4, healPercent: 0.40, stationary: true, desc: "A concentrated beam of divine power that burns the unholy and heals 40% HP." },
-                { name: "DIVINE GRACE", cost: 35, isBuff: true, buffType: 'regen', buffVal: 0.10, duration: 8, color: 0xffffff, stationary: true, desc: "Invoke a higher-tier maintenance routine for 10% HP regen per turn." }
+                { name: "GUARDIAN ANGEL", cost: 80, isSummon: true, summonStats: { hpMult: 0.6, atkMult: 0.7, name: "ARCHANGEL", color: 0xffffdd, archetype: 'ANGEL' }, desc: "Summon a powerful Archangel (60% HP, 70% ATK) to protect you." }
             ]
         },
         // 40-49
@@ -180,7 +180,7 @@ const CLASS_TREES = {
             name: "WAR-TITAN", stationary: true, desc: "Tier 2: Dakka", skills: [
                 { name: "ROTARY", cost: 0, mult: 0.2, color: 0xff9900, vfx: 'gatling', hits: 6, stationary: true, desc: "Spin up dual-rotary cannons for a relentless hail of lead." },
                 { name: "NUKE", cost: 50, mult: 5.0, color: 0xff2200, vfx: 'nuke', hits: 1, stationary: true, desc: "Deploy a tactical nuclear device for localized catastrophic damage." },
-                { name: "SIEGE MODE", cost: 25, isBuff: true, buffType: 'atk', buffVal: 0.25, duration: 8, color: 0xff9900, stationary: true, desc: "Sacrifice mobility to reroute all power to weapon systems (+25% ATK)." }
+                { name: "DEPLOY TURRET", cost: 60, isSummon: true, summonStats: { hpMult: 0.3, atkMult: 0.8, name: "GUN TURRET", color: 0xff9900, archetype: 'TURRET' }, desc: "Deploy a stationary Gun Turret (30% HP, 80% ATK) for fire support." }
             ]
         },
         // 20-29
@@ -452,7 +452,7 @@ const CLASS_TREES = {
             name: "COMMANDO", stationary: true, desc: "Tier 5: Heavy", skills: [
                 { name: "SUPPRESSION", cost: 0, mult: 0.2, color: 0xffff00, vfx: 'gatling', hits: 15, stationary: true, desc: "15 rounds of high-volume fire to keep the enemy pinned down." },
                 { name: "RPG", cost: 110, mult: 5.0, color: 0xffaa00, vfx: 'nuke', hits: 2, stationary: true, desc: "Launch a dual-warhead rocket for massive explosive coverage." },
-                { name: "GUERRILLA", cost: 40, isBuff: true, buffType: 'armor', buffVal: 0.20, duration: 8, color: 0x55aa00, stationary: true, desc: "Utilize cover and tactical awareness to gain +20% Armor." }
+                { name: "SPOTTER DRONE", cost: 50, isSummon: true, summonStats: { hpMult: 0.3, atkMult: 0.3, name: "DRONE Mk.I", color: 0x55aa00, archetype: 'DRONE' }, desc: "Deploy a Spotter Drone (30% HP/ATK) to assist targeting." }
             ]
         },
         // 50-59
@@ -518,7 +518,7 @@ const CLASS_TREES = {
             name: "SENTINEL", desc: "Tier 3: Watcher", skills: [
                 { name: "PIERCING THRUST", cost: 0, mult: 1.0, color: 0xffd700, vfx: 'beam', hits: 2, desc: "Two precise strikes that exploit gaps in enemy plating." },
                 { name: "RETRIBUTION", cost: 60, mult: 5.0, color: 0xffaa00, vfx: 'heavy', hits: 1, desc: "A counter-strike delivered with punishing force." },
-                { name: "OVERWATCH", cost: 35, isBuff: true, buffType: 'shield', buffVal: 0.60, duration: 8, color: 0xffd700, stationary: true, desc: "Enter a defensive stance, generating a shield for 60% Max HP." }
+                { name: "PHALANX", cost: 70, isSummon: true, summonStats: { hpMult: 0.8, atkMult: 0.2, name: "SHIELD BEARER", color: 0xffd700, archetype: 'GUARDIAN' }, desc: "Summon a heavy Shield Bearer (80% HP, 20% ATK) to tank damage." }
             ]
         },
         // 30-39
@@ -747,7 +747,7 @@ const CLASS_TREES = {
         {
             name: "BEAST-CALLER", desc: "Tier 1: Spirit Wolf", skills: [
                 { name: "SPIRIT CLAW", cost: 0, mult: 1.2, color: 0x00ffaa, vfx: 'slash', hits: 3, manaGain: 10, desc: "A spiritual strike that gains 10 Mana." },
-                { name: "SUMMON WOLF", cost: 40, isSummon: true, summonStats: { hpMult: 0.3, atkMult: 0.2, name: "SPIRIT WOLF", color: 0x00ffaa, archetype: 'BERSERKER' }, desc: "Summon a Spirit Wolf (30% HP, 20% ATK) to fight and absorb damage." },
+                { name: "SUMMON WOLF", cost: 40, isSummon: true, summonStats: { hpMult: 0.3, atkMult: 0.2, name: "SPIRIT WOLF", color: 0x00ffaa, archetype: 'WOLF' }, desc: "Summon a Spirit Wolf (30% HP, 20% ATK) to fight and absorb damage." },
                 { name: "PACK MENTALITY", cost: 20, isBuff: true, buffType: 'atk', buffVal: 0.25, duration: 8, color: 0x00ffaa, stationary: true, desc: "Channel the strength of the pack for +25% ATK." }
             ]
         },
@@ -755,7 +755,7 @@ const CLASS_TREES = {
         {
             name: "CONJURER", desc: "Tier 2: Golem", skills: [
                 { name: "EARTH SHARD", cost: 0, mult: 1.5, color: 0x885500, vfx: 'heavy', hits: 1, manaGain: 15, desc: "Hurl a heavy rock shard (1.5x) and gain 15 Mana." },
-                { name: "SUMMON GOLEM", cost: 60, isSummon: true, summonStats: { hpMult: 0.5, atkMult: 0.15, name: "STONE GOLEM", color: 0x885500, archetype: 'GUARDIAN' }, desc: "Summon a Tank Golem (50% HP, 15% ATK) that serves as a heavy shield." },
+                { name: "SUMMON GOLEM", cost: 60, isSummon: true, summonStats: { hpMult: 0.5, atkMult: 0.15, name: "STONE GOLEM", color: 0x885500, archetype: 'GOLEM' }, desc: "Summon a Tank Golem (50% HP, 15% ATK) that serves as a heavy shield." },
                 { name: "STONE SKIN", cost: 30, isBuff: true, buffType: 'armor', buffVal: 0.40, duration: 8, color: 0x885500, stationary: true, desc: "Harden your skin like stone, gaining +40% Armor." }
             ]
         },
@@ -763,15 +763,15 @@ const CLASS_TREES = {
         {
             name: "NECROMANCER", desc: "Tier 3: Undead", skills: [
                 { name: "BONE SPEAR", cost: 0, mult: 0.8, color: 0xaaaaaa, vfx: 'beam', hits: 4, manaGain: 20, desc: "Launch 4 bone spears (Mana Gain: 20)." },
-                { name: "RAISE SKELETON", cost: 45, isSummon: true, summonStats: { hpMult: 0.3, atkMult: 0.3, name: "SKELEWARRIOR", color: 0xffffff, archetype: 'TROOPER' }, desc: "Summon a Skeleton Warrior (30% HP, 30% ATK)." },
-                { name: "DEATH PACT", cost: 25, isBuff: true, buffType: 'lifesteal', buffVal: 0.30, duration: 8, color: 0x550055, stationary: true, desc: "Link your life force to the dead for 30% Lifesteal." }
+                { name: "RAISE SKELETON", cost: 45, isSummon: true, summonStats: { hpMult: 0.3, atkMult: 0.3, name: "SKELEWARRIOR", color: 0xffffff, archetype: 'SKELETON' }, desc: "Summon a Skeleton Warrior (30% HP, 30% ATK)." },
+                { name: "LEGION RITUAL", cost: 45, fillMinionSlots: true, summonStats: { hpMult: 0.3, atkMult: 0.3, name: "SKELEWARRIOR", color: 0xffffff, archetype: 'SKELETON' }, desc: "Fill empty minion slots (45 Mana each)." }
             ]
         },
         // 30-39
         {
             name: "HIVE-MIND", desc: "Tier 4: Insectoid", skills: [
                 { name: "STING", cost: 0, mult: 0.5, color: 0xffff00, vfx: 'slash', hits: 8, desc: "8 quick toxic stings." },
-                { name: "SUMMON SWARM", cost: 50, isSummon: true, summonStats: { hpMult: 0.25, atkMult: 0.5, name: "KILLER WASP", color: 0xffff00, archetype: 'BERSERKER' }, desc: "Summon a Killer Wasp (25% HP, 50% ATK) with high damage output." },
+                { name: "SUMMON SWARM", cost: 50, isSummon: true, summonStats: { hpMult: 0.25, atkMult: 0.5, name: "KILLER WASP", color: 0xffff00, archetype: 'WASP' }, desc: "Summon a Killer Wasp (25% HP, 50% ATK) with high damage output." },
                 { name: "HIVE FURY", cost: 35, isBuff: true, buffType: 'doubleStrike', buffVal: 0.40, duration: 8, color: 0xffff00, stationary: true, desc: "Attack with the speed of the swarm (+40% Double Strike)." }
             ]
         },
@@ -779,7 +779,7 @@ const CLASS_TREES = {
         {
             name: "ELEMENTALIST", desc: "Tier 5: Fire", skills: [
                 { name: "FIREBOLT", cost: 0, mult: 3.0, color: 0xff4400, vfx: 'nuke', hits: 1, manaGain: 25, desc: "A concentrated bolt of flame (3.0x DMG, +25 Mana)." },
-                { name: "SUMMON IFRIT", cost: 80, isSummon: true, summonStats: { hpMult: 0.5, atkMult: 0.6, name: "FIRE IFRIT", color: 0xff4400, archetype: 'BERSERKER' }, desc: "Summon a Fire Ifrit (50% HP, 60% ATK) that burns with intensity." },
+                { name: "SUMMON IFRIT", cost: 80, isSummon: true, summonStats: { hpMult: 0.5, atkMult: 0.6, name: "FIRE IFRIT", color: 0xff4400, archetype: 'IFRIT' }, desc: "Summon a Fire Ifrit (50% HP, 60% ATK) that burns with intensity." },
                 { name: "INNER FIRE", cost: 40, isBuff: true, buffType: 'critDamage', buffVal: 0.60, duration: 8, color: 0xff4400, stationary: true, desc: "Stoke your internal fires for +60% Crit Damage." }
             ]
         },
@@ -787,7 +787,7 @@ const CLASS_TREES = {
         {
             name: "VOID-CALLER", desc: "Tier 6: Void", skills: [
                 { name: "VOID ORB", cost: 0, mult: 0.8, color: 0xaa00cc, vfx: 'implode', hits: 8, manaGain: 30, desc: "Crush the target with 8 gravity orbs (+30 Mana)." },
-                { name: "SUMMON WALKER", cost: 100, isSummon: true, summonStats: { hpMult: 0.8, atkMult: 0.4, name: "VOID WALKER", color: 0xaa00cc, archetype: 'TROOPER' }, desc: "Summon a Void Walker (80% HP, 40% ATK) from the abyss." },
+                { name: "SUMMON WALKER", cost: 100, isSummon: true, summonStats: { hpMult: 0.8, atkMult: 0.4, name: "VOID WALKER", color: 0xaa00cc, archetype: 'WALKER' }, desc: "Summon a Void Walker (80% HP, 40% ATK) from the abyss." },
                 { name: "VOID SHIELD", cost: 50, isBuff: true, buffType: 'shield', buffVal: 0.75, duration: 8, color: 0xaa00cc, stationary: true, desc: "Wrap yourself in void energy, absorbing 75% Max HP." }
             ]
         },
@@ -795,7 +795,7 @@ const CLASS_TREES = {
         {
             name: "DRAGON-KIN", desc: "Tier 7: Drake", skills: [
                 { name: "DRAGON CLAW", cost: 0, mult: 1.5, color: 0xffaa00, vfx: 'slash_h', hits: 5, desc: "Swipe with the force of a dragon (5 hits, 1.5x each)." },
-                { name: "SUMMON DRAKE", cost: 140, isSummon: true, summonStats: { hpMult: 0.7, atkMult: 0.7, name: "EMBER DRAKE", color: 0xffaa00, archetype: 'TROOPER' }, desc: "Summon a lesser Ember Drake (70% HP, 70% ATK)." },
+                { name: "SUMMON DRAKE", cost: 140, isSummon: true, summonStats: { hpMult: 0.7, atkMult: 0.7, name: "EMBER DRAKE", color: 0xffaa00, archetype: 'DRAKE' }, desc: "Summon a lesser Ember Drake (70% HP, 70% ATK)." },
                 { name: "DRAGON SCALES", cost: 55, isBuff: true, buffType: 'armor', buffVal: 0.60, duration: 8, color: 0xffaa00, stationary: true, desc: "Grow dragon scales to increase Armor by 60%." }
             ]
         },
@@ -803,7 +803,7 @@ const CLASS_TREES = {
         {
             name: "GATE-KEEPER", desc: "Tier 8: Guardian", skills: [
                 { name: "BANISH", cost: 0, mult: 5.0, color: 0x00f2ff, vfx: 'beam', hits: 1, manaGain: 50, desc: "A massive expulsion beam (5.0x DMG, +50 Mana)." },
-                { name: "SUMMON GUARDIAN", cost: 180, isSummon: true, summonStats: { hpMult: 1.2, atkMult: 0.5, name: "GATE GUARDIAN", color: 0x00f2ff, archetype: 'GUARDIAN' }, desc: "Summon a Gate Guardian (120% HP, 50% ATK) with immense durability." },
+                { name: "SUMMON GUARDIAN", cost: 180, isSummon: true, summonStats: { hpMult: 1.2, atkMult: 0.5, name: "GATE GUARDIAN", color: 0x00f2ff, archetype: 'GOLEM' }, desc: "Summon a Gate Guardian (120% HP, 50% ATK) with immense durability." },
                 { name: "SANCTUARY", cost: 60, isBuff: true, buffType: 'regen', buffVal: 0.25, duration: 8, color: 0x00f2ff, stationary: true, desc: "Stand on holy ground, regenerating 25% HP per turn." }
             ]
         },
@@ -811,7 +811,7 @@ const CLASS_TREES = {
         {
             name: "DEMON-LORD", desc: "Tier 9: Pit Lord", skills: [
                 { name: "HELLFIRE", cost: 0, mult: 0.3, color: 0xff0000, vfx: 'rain', hits: 30, desc: "Rain hellfire (30 hits) to purge the weak." },
-                { name: "SUMMON PIT LORD", cost: 250, isSummon: true, summonStats: { hpMult: 1.0, atkMult: 1.0, name: "PIT LORD", color: 0xff0000, archetype: 'BERSERKER' }, desc: "Summon a Pit Lord (100% HP, 100% ATK) from the deepest hell." },
+                { name: "SUMMON PIT LORD", cost: 250, isSummon: true, summonStats: { hpMult: 1.5, atkMult: 1.5, name: "PIT LORD", color: 0xff0000, archetype: 'DEMON', slotsRequired: 3 }, desc: "Summon a Pit Lord (150% HP/ATK). Consumes 3 Slots." },
                 { name: "DEMONIC POWER", cost: 70, isBuff: true, buffType: 'all_offense', buffVal: 0.80, duration: 8, color: 0xff0000, stationary: true, desc: "Channel demonic energy for +80% to all offense." }
             ]
         },
@@ -819,7 +819,7 @@ const CLASS_TREES = {
         {
             name: "EIDOLON", desc: "Tier 10: Avatar", skills: [
                 { name: "DIVINE SMITE", cost: 0, mult: 0.2, color: 0xffd700, vfx: 'god_beam', hits: 60, manaGain: 100, desc: "60 strikes of judgement. (+100 Mana)." },
-                { name: "SUMMON AVATAR", cost: 500, isSummon: true, summonStats: { hpMult: 2.0, atkMult: 1.5, name: "DIVINE AVATAR", color: 0xffd700, archetype: 'GUARDIAN' }, desc: "Summon a Divine Avatar (200% HP, 150% ATK). The ultimate being." },
+                { name: "SUMMON AVATAR", cost: 500, isSummon: true, summonStats: { hpMult: 3.0, atkMult: 2.0, name: "DIVINE AVATAR", color: 0xffd700, archetype: 'AVATAR', slotsRequired: 3 }, desc: "Summon a Divine Avatar (300% HP, 200% ATK). Consumes 3 Slots." },
                 { name: "ASCENSION", cost: 100, isBuff: true, buffType: 'all_defense', buffVal: 1.5, duration: 8, color: 0xffd700, stationary: true, desc: "Ascend beyond mortality, +150% to all defensive stats." }
             ]
         }

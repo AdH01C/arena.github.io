@@ -25,6 +25,8 @@ class Unit {
         this.mana = this.maxMana;
         this.manaRegen = this.baseManaRegen;
         this.armor = 0;
+        this.mitigation = 0; // % Damage Reduction (0.0 - 1.0)
+        this.tenacity = 0;   // Max Damage Cap (% of Max HP, e.g. 0.35)
 
         this.critChance = 0.05; this.critDamage = 1.5; this.lifesteal = 0; this.jobType = null; this.jobTier = 0;
         this.dodge = 0; this.thorns = 0; this.doubleStrike = 0; this.manaCostReduction = 0;
@@ -44,6 +46,7 @@ class Unit {
         this.unlockedSkills = []; // Stores all known skills
         this.pinnedSkills = [null, null, null, null, null, null]; // Stores the 6 active skills in slots
         this.minions = []; // Summoned units act as shields and attackers
+        this.maxMinions = 1; // Default max is 1 (User Request)
         this.isMinion = false;
         // -------------------------
 
@@ -203,6 +206,12 @@ class Unit {
         // Armor reduces damage
         // PENETRATION UPDATE: Always deal at least 15% of raw damage to prevent "1 damage" situations
         let reduced = amount - this.armor;
+
+        // Apply Percentage Mitigation (Tanks)
+        if (this.mitigation > 0) {
+            reduced = Math.floor(reduced * (1 - this.mitigation));
+        }
+
         let minDmg = Math.floor(amount * 0.15);
         let finalDmg = Math.max(1, Math.max(reduced, minDmg));
 
@@ -217,6 +226,17 @@ class Unit {
         // --- MUTATION: OVERCLOCKED ---
         if (game.currentMutation === 'overclocked') {
             finalDmg = Math.floor(finalDmg * 1.5);
+        }
+
+        // --- TENACITY (Damage Cap) ---
+        // Prevents one-shots at high floors
+        if (this.tenacity > 0) {
+            const cap = Math.floor(this.maxHp * this.tenacity);
+            if (finalDmg > cap) {
+                finalDmg = cap;
+                // Optional: Show visual indicator for resisted damage?
+                // game.showText("RESIST", this.mesh.position, "#ffffff");
+            }
         }
 
         if (this.isPlayer && game.enemy && game.enemy.reflectShield > 0) {
@@ -349,6 +369,41 @@ class Unit {
         game.showText(`EQUIPPED ${item.name}`, this.mesh.position, '#00ff00');
     }
 
+    getStatCaps() {
+        // DEFAULT CAPS
+        let caps = {
+            dodge: 0.60,      // Standard Dodge Cap
+            crit: 1.00,       // Standard Crit Cap
+            armor: 999999,    // Uncapped
+            lifesteal: 0.25,  // Standard Lifesteal Cap (25%)
+            mitigation: 0.80  // Max 80% Mitigation (Prevent immunity)
+        };
+
+        // If no job type (e.g. enemy or starter), return defaults
+        if (!this.jobType) return caps;
+
+        const type = this.jobType;
+
+        // --- ROGUE TYPES (High Dodge, Low Mitigation) ---
+        if (['SHADOW', 'RONIN', 'GUNSLINGER', 'HACKER'].includes(type)) {
+            caps.dodge = 0.85;
+            caps.mitigation = 0.50; // Squishy
+        }
+
+        // --- TANK TYPES (Low Dodge, Low Lifesteal, High Tenacity) ---
+        if (['MECH', 'SQUIRE', 'KNIGHT', 'BRAWLER'].includes(type)) {
+            caps.dodge = 0.35;
+            caps.lifesteal = 0.05; // Tanks cannot lifesteal tank (Max 5%)
+        }
+
+        // --- REAPER (The Potato/Vampire Class) ---
+        if (type === 'REAPER') {
+            caps.lifesteal = 1.00; // Uncapped Lifesteal (Identity)
+        }
+
+        return caps;
+    }
+
     recalculateStats() {
         const oldMaxHp = this.maxHp;
         const oldMaxMana = this.maxMana;
@@ -357,8 +412,22 @@ class Unit {
         this.maxHp = Math.floor(this.baseMaxHp * (1 + (this.hpMult || 0)));
         this.atk = Math.floor(this.baseAtk * (1 + (this.atkMult || 0)));
         this.maxMana = Math.floor(this.baseMaxMana * (1 + (this.manaMult || 0)));
-        this.armor = Math.floor(this.baseArmor + (this.baseAtk * 0.1 * (this.armorMult || 0))); // Armor scales with 10% of base ATK for meaningful padding
+
+        // --- ARMOR UPDATE (User Req: "Bring up armour") ---
+        // OLD: scale only with multiplier.
+        // NEW: Base armor + 20% of ATK is converted to Armor (Natural Toughness).
+        // Then apply multiplier to the whole sum.
+        const naturalArmor = Math.floor(this.atk * 0.20);
+        this.armor = Math.floor((this.baseArmor + naturalArmor) * (1 + (this.armorMult || 0)));
+
         this.manaRegen = Math.floor(this.baseManaRegen * (1 + (this.manaRegenMult || 0)));
+
+        // --- APPLY HARD CAPS ---
+        const caps = this.getStatCaps();
+        if (this.dodge > caps.dodge) this.dodge = caps.dodge;
+        if (this.critChance > caps.crit) this.critChance = caps.crit;
+        if (this.lifesteal > caps.lifesteal) this.lifesteal = caps.lifesteal;
+        if (this.mitigation > caps.mitigation) this.mitigation = caps.mitigation;
 
         // Maintain HP/Mana ratio when max changes
         if (oldMaxHp > 0) {
