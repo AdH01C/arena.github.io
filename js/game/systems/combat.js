@@ -11,34 +11,26 @@ Object.assign(game, {
 
         let hp, atk;
 
-        // --- THE "GOLDEN RATIO" SCALING (1.13) ---
-        // Floor 1:   200 HP
-        // Floor 50:  90,000 HP
-        // Floor 75:  3,800,000 HP
-        const difficultyScale = this.floor + (this.rebirth * 50);
+        // --- CONTINUOUS SCALING (No difficulty drop) ---
+        // Treat R1 F1 as Floor 101.
+        const effectiveFloor = this.floor + (this.rebirth * 100);
 
-        // ... (HP Calc omitted for brevity, logic remains same)
-        // Recalculating HP/ATK just in case to be safe within this function block context if needed,
-        // but assuming the original scaling code is below or we just inject above checks.
-
-        // Standard Scaling Logic (Re-pasted Ensure Safety)
-        if (this.floor <= 50) {
-            hp = Math.floor(200 * Math.pow(1.13, difficultyScale));
-            atk = Math.floor(15 * Math.pow(1.10, difficultyScale)); // Buffed: 10->15, 1.085->1.10
+        if (effectiveFloor <= 50) {
+            hp = Math.floor(200 * Math.pow(1.13, effectiveFloor));
+            atk = Math.floor(15 * Math.pow(1.10, effectiveFloor));
         } else {
-            const scaleAt50 = 50 + (this.rebirth * 50);
-            const hpAt50 = 200 * Math.pow(1.13, scaleAt50);
-            const atkAt50 = 15 * Math.pow(1.10, scaleAt50);
-            const extraFloors = this.floor - 50;
+            // Base stats at Floor 50
+            const hpAt50 = 200 * Math.pow(1.13, 50);
+            const atkAt50 = 15 * Math.pow(1.10, 50);
+
+            const extraFloors = effectiveFloor - 50;
+            // Steep late-game curve
             hp = Math.floor(hpAt50 * Math.pow(1.18, extraFloors));
-            atk = Math.floor(atkAt50 * Math.pow(1.14, extraFloors)); // Buffed: 1.12->1.14
+            atk = Math.floor(atkAt50 * Math.pow(1.14, extraFloors));
         }
 
-        // Rebirth Multiplier
-        if (this.rebirth > 0) {
-            hp = Math.floor(hp * Math.pow(2.8, this.rebirth));
-            atk = Math.floor(atk * Math.pow(1.6, this.rebirth));
-        }
+        // Removed separate exponential Rebirth Multiplier 
+        // because effectiveFloor already provides exponential scaling.
 
         if (isFinalBoss) {
             this.bossPhase = 1;
