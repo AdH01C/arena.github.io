@@ -135,10 +135,10 @@ window.Models = {
             return { top: grp, mid: elbow, bottom: low };
         };
 
-        const legL = mkLimb(true, false);
-        const legR = mkLimb(true, true);
-        const armL = mkLimb(false, false);
-        const armR = mkLimb(false, true);
+        const legL = mkLimb(true, false); legL.top.name = "LegL";
+        const legR = mkLimb(true, true); legR.top.name = "LegR";
+        const armL = mkLimb(false, false); armL.top.name = "ArmL";
+        const armR = mkLimb(false, true); armR.top.name = "ArmR";
 
         // --- IDLE POSE & ANIM ---
         // Random Stance
@@ -279,7 +279,7 @@ window.Models = {
                 box(0.3 * bulk, 0.8 * h, 0.3 * bulk, mArmor, side * 0.2, -0.4 * h, 0, arm);
                 return arm;
             }
-            mArm(1); mArm(-1);
+            mArm(1).name = "ArmR"; mArm(-1).name = "ArmL";
         }
         else {
             // --- STANDARD HUMANOID FALLBACK ---
@@ -309,13 +309,13 @@ window.Models = {
                 box(limbThick * 1.2, 0.35 * height, limbThick * 1.2, mArmor, 0, -0.17, 0, fore);
                 return { root: arm, hand: fore };
             }
-            const lArm = mkArm(-1); const rArm = mkArm(1);
+            const lArm = mkArm(-1); lArm.root.name = "ArmL"; const rArm = mkArm(1); rArm.root.name = "ArmR";
             const mkLeg = (side) => {
                 const leg = new THREE.Group(); leg.position.set(side * 0.15 * bulk, 0.45 * height, 0); g.add(leg);
                 box(limbThick * 1.5, 0.5 * height, limbThick * 1.5, mArmor, 0, -0.25 * height, 0, leg);
                 return leg;
             }
-            const lLeg = mkLeg(-1); const rLeg = mkLeg(1);
+            const lLeg = mkLeg(-1); lLeg.name = "LegL"; const rLeg = mkLeg(1); rLeg.name = "LegR";
 
             if (isAngel || arch === 'DRAKE') {
                 const wing = (side) => {
@@ -361,6 +361,20 @@ window.Models = {
         g.scale.set(s, s, s);
         if (arch === 'TURRET' || arch === 'DRONE' || arch === 'WASP') return { mesh: g, weapon: g };
         return { mesh: g, weapon: g };
-    }
+        if (arch === 'TURRET' || arch === 'DRONE' || arch === 'WASP') return { mesh: g, weapon: g };
+        return { mesh: g, weapon: g };
+    },
+
+    // --- CLASS WRAPPERS ---
+    createRonin(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createPriest(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createMech(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createShadow(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createBrawler(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createGunslinger(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createKnight(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createHacker(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createReaper(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); },
+    createSummoner(c, s, tier, seed) { return this.createHumanoid(c, { scale: s, seed: seed }); }
 
 };

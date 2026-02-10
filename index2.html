@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Tower: Side Scroller</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #222;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .key {
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            margin: 0 2px;
+            font-size: 12px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+    <div id="controls-hint"
+        style="position: absolute; top: 20px; left: 20px; color: rgba(255, 255, 255, 0.7); pointer-events: none; user-select: none;">
+        <div style="margin-bottom:5px; font-weight:bold; color:#00f2ff;">CONTROLS</div>
+        <div style="line-height: 1.5;">
+            <span class="key">←</span> <span class="key">→</span> MOVE<br>
+            <span class="key">SPACE</span> JUMP<br>
+            <span class="key">↓</span> DUCK / PLATFORM<br>
+            <span class="key">Z</span> <span class="key">X</span> <span class="key">C</span> SKILLS &nbsp;&nbsp;
+            <span class="key">I</span> / <span class="key">S</span> STATUS
+        </div>
+    </div>
+
+    <!-- UI OVERLAY -->
+    <div id="ui-layer"
+        style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; font-family:'Courier New', monospace; font-weight:bold;">
+
+        <!-- TOP RIGHT: FLOOR INDICATOR -->
+        <div style="position:absolute; top:20px; right:20px; text-align:right;">
+            <div style="font-size:24px; color:#ffd700; text-shadow:0 0 10px #ff0000;">
+                <span id="hud-floor">FLOOR 1</span>
+            </div>
+            <div style="font-size:12px; color:#888;">DEPTH: <span id="hud-depth">0</span>m</div>
+        </div>
+
+        <!-- SKILL BAR (Moved Up) -->
+        <div id="skill-bar"
+            style="position:absolute; bottom:90px; left:50%; transform:translateX(-50%); display:flex; gap:20px;">
+            <div class="skill" id="skill-z"
+                style="position:relative; width:100px; background:rgba(0,0,0,0.6); border:2px solid #fff; padding:5px; border-radius:8px; display:flex; flex-direction:column; align-items:center; text-align:center; overflow:hidden;">
+                <b style="font-size:14px; color:#fff;">Z</b>
+                <span id="name-z" style="font-size:10px; color:#0ff;">Slash</span>
+                <span id="desc-z" style="font-size:9px; color:#ccc;">Fast Attack</span>
+                <div id="cd-z" class="cd-overlay"
+                    style="position:absolute; top:0; left:0; width:100%; height:100%; background:transparent;"></div>
+            </div>
+            <div class="skill" id="skill-x"
+                style="position:relative; width:100px; background:rgba(0,0,0,0.6); border:2px solid #fff; padding:5px; border-radius:8px; display:flex; flex-direction:column; align-items:center; text-align:center; overflow:hidden;">
+                <b style="font-size:14px; color:#fff;">X</b>
+                <span id="name-x" style="font-size:10px; color:#0ff;">Spin</span>
+                <span id="desc-x" style="font-size:9px; color:#ccc;">AoE Attack</span>
+                <div id="cd-x" class="cd-overlay"
+                    style="position:absolute; top:0; left:0; width:100%; height:100%; background:transparent;"></div>
+            </div>
+            <div class="skill" id="skill-c"
+                style="position:relative; width:100px; background:rgba(0,0,0,0.6); border:2px solid #fff; padding:5px; border-radius:8px; display:flex; flex-direction:column; align-items:center; text-align:center; overflow:hidden;">
+                <b style="font-size:14px; color:#fff;">C</b>
+                <span id="name-c" style="font-size:10px; color:#0ff;">Dash</span>
+                <span id="desc-c" style="font-size:9px; color:#ccc;">Dodge</span>
+                <div id="cd-c" class="cd-overlay"
+                    style="position:absolute; top:0; left:0; width:100%; height:100%; background:transparent;"></div>
+            </div>
+            <!-- V SKILL (ULTIMATE) - Hidden until unlocked -->
+            <div class="skill" id="slot-v"
+                style="display:none; position:relative; width:100px; background:rgba(0,0,0,0.6); border:2px solid #ff00ff; padding:5px; border-radius:8px; flex-direction:column; align-items:center; text-align:center; overflow:hidden;">
+                <b style="font-size:14px; color:#ff00ff;">V</b>
+                <span id="name-v" style="font-size:10px; color:#ff00ff;">ULTIMATE</span>
+                <span id="desc-v" style="font-size:9px; color:#ccc;">Locked</span>
+                <div id="cd-v" class="cd-overlay"
+                    style="position:absolute; top:0; left:0; width:100%; height:100%; background:transparent;"></div>
+            </div>
+        </div>
+
+        <!-- STATS HUD (Bottom Line) -->
+        <div id="stats-hud"
+            style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:20px; background:rgba(0,0,0,0.8); padding:10px 20px; border-radius:10px; border:1px solid #444;">
+
+            <!-- PLAYER INFO (New) -->
+            <div id="player-info-box"
+                style="display:flex; flex-direction:column; align-items:flex-start; min-width:100px; border-right:1px solid #555; padding-right:15px; margin-right:5px;">
+                <span id="hud-class-name" style="color:#00f2ff; font-size:14px;">CLASS</span>
+                <span id="hud-level-text" style="color:#ffff00; font-size:12px;">LVL 1</span>
+                <div style="width:100%; height:4px; background:#444; margin-top:2px;">
+                    <div id="hud-xp-fill" style="width:0%; height:100%; background:#ffff00;"></div>
+                </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="color:#f00; font-size:18px;">HP:</span>
+                <div style="width:200px; height:15px; background:#440000; border:1px solid #f00; position:relative;">
+                    <div id="hud-hp-fill" style="width:100%; height:100%; background:#f00; transition:width 0.2s;">
+                    </div>
+                    <div id="hud-shield-fill"
+                        style="position:absolute; top:0; left:0; width:0%; height:100%; background:#00ffff; opacity:0.6; transition:width 0.2s;">
+                    </div>
+                </div>
+                <span id="hud-hp-text" style="color:#fff; font-size:12px; width:60px; text-align:right;"></span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="color:#00f; font-size:18px;">MP:</span>
+                <div style="width:200px; height:15px; background:#000044; border:1px solid #44f;">
+                    <div id="hud-mp-fill" style="width:100%; height:100%; background:#44f; transition:width 0.2s;">
+                    </div>
+                </div>
+                <span id="hud-mp-text" style="color:#fff; font-size:12px; width:60px; text-align:right;"></span>
+            </div>
+            <!-- GOLD DISPLAY -->
+            <div style="text-align:right; margin-left:20px;">
+                <div style="font-size:10px; color:#ffd700;">CREDITS</div>
+                <div id="hud-gold" style="font-size:18px; color:#fff;">0</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- POTION SLOT -->
+    <div id="hud-potion"
+        style="position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; align-items: center; gap: 5px; z-index: 100;">
+        <div
+            style="background: rgba(0,0,0,0.5); border: 2px solid #ff0044; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; position: relative; box-shadow: 0 0 10px #ff0044;">
+            <div style="font-size: 16px; font-weight: bold; color: #ff0044; font-family: 'Courier New', monospace;">HP
+            </div>
+            <div style="position: absolute; bottom: -5px; right: -5px; background: #fff; color: #000; width: 16px; height: 16px; font-size: 10px; display: flex; justify-content: center; align-items: center; font-weight: bold; border: 1px solid #000;"
+                id="potion-count">0</div>
+        </div>
+        <div style="color: #ccc; font-size: 10px; font-weight: bold; font-family: 'Courier New', monospace;">SHIFT</div>
+    </div>
+
+    <!-- FANCY BOSS HUD -->
+    <div id="boss-hud"
+        style="display: none; position: fixed; top: 100px; left: 50%; transform: translateX(-50%); width: 600px; text-align: center; pointer-events: none; z-index: 900;">
+        <div id="boss-name"
+            style="color: #ff0000; font-size: 28px; text-shadow: 0 0 15px #ff0000; margin-bottom: 5px; font-weight: bold; letter-spacing: 3px; font-family: 'Courier New', monospace;">
+            BOSS NAME</div>
+        <div
+            style="width: 100%; height: 25px; background: rgba(20,0,0,0.8); border: 3px solid #ff0000; position: relative; box-shadow: 0 0 25px rgba(255,0,0,0.5); transform: skewX(-20deg);">
+            <div id="boss-hp-fill"
+                style="width: 100%; height: 100%; background: linear-gradient(90deg, #aa0000, #ff0000, #ff4400); transition: width 0.2s;">
+            </div>
+            <div id="boss-hp-text"
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 2px #000; transform: skewX(20deg);">
+                1000/1000</div>
+        </div>
+    </div>
+
+    <!-- SHOP SCREEN -->
+    <div id="shop-screen" class="screen"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 950; color: white; font-family: 'Courier New', monospace; pointer-events: auto;">
+        <h2 style="color:#ffd700; border-bottom:2px solid #ffd700; padding-bottom:5px;">SUPPLY STATION</h2>
+        <div style="color:#888; margin-bottom:20px; font-size:12px;">OUTPOST TERMINAL -- AUTHENTICATED</div>
+
+        <div id="shop-items" style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center; max-width:800px;">
+            <!-- Injected by JS -->
+        </div>
+
+        <button class="btn" style="margin-top:30px; border-color:#ffd700; color:#ffd700;"
+            onclick="game.closeShop()">LEAVE STATION</button>
+    </div>
+
+    <!-- JOB ADVANCEMENT SCREEN -->
+    <div id="job-screen" class="screen"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 960; color: white; font-family: 'Courier New', monospace; pointer-events: auto;">
+        <h2 style="color:#ff00ff; text-shadow:0 0 10px #ff00ff;">JOB ADVANCEMENT</h2>
+        <div style="color:#ccc; margin-bottom:20px;">CHOOSE YOUR EVOLUTION</div>
+
+        <div id="job-cards" style="display:flex; gap:20px;">
+            <!-- Injected by JS -->
+        </div>
+    </div>
+
+    <!-- CHARACTER MENU -->
+    <div id="character-menu" class="screen"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 900; color: white; font-family: 'Courier New', monospace; pointer-events: auto;">
+        <h2 class="screen-title" style="color:#00f2ff; border-color:#00f2ff;">CHARACTER PROTOCOL</h2>
+
+        <div style="display:flex; justify-content:space-around; width:100%; max-width:800px; margin-top:20px;">
+
+            <!-- STATS COLUMN -->
+            <div
+                style="width:45%; background:rgba(0,0,0,0.8); border:1px solid #00f2ff; padding:20px; border-radius:10px;">
+                <h3 style="color:#fff; text-align:center; margin-top:0;">ATTRIBUTES</h3>
+                <div style="color:#ffff00; text-align:center; margin-bottom:15px;">AVAILABLE POINTS: <span
+                        id="menu-ap">0</span></div>
+
+                <div class="stat-row"
+                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:18px;">
+                    <span style="color:#ff5555;">STR (ATK)</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span id="val-str" style="color:#fff;">10</span>
+                        <button class="btn-small" onclick="game.spendPoint('str')"
+                            style="width:30px; height:30px; padding:0; line-height:30px;">+</button>
+                    </div>
+                </div>
+                <div class="stat-row"
+                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:18px;">
+                    <span style="color:#55ff55;">VIT (HP)</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span id="val-vit" style="color:#fff;">10</span>
+                        <button class="btn-small" onclick="game.spendPoint('vit')"
+                            style="width:30px; height:30px; padding:0; line-height:30px;">+</button>
+                    </div>
+                </div>
+                <div class="stat-row"
+                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:18px;">
+                    <span style="color:#5555ff;">INT (MP)</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span id="val-int" style="color:#fff;">10</span>
+                        <button class="btn-small" onclick="game.spendPoint('int')"
+                            style="width:30px; height:30px; padding:0; line-height:30px;">+</button>
+                    </div>
+                </div>
+                <div class="stat-row"
+                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:18px;">
+                    <span style="color:#ffff55;">AGI (SPD)</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span id="val-agi" style="color:#fff;">10</span>
+                        <button class="btn-small" onclick="game.spendPoint('agi')"
+                            style="width:30px; height:30px; padding:0; line-height:30px;">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DERIVED STATS -->
+            <div
+                style="width:45%; background:rgba(0,0,0,0.8); border:1px solid #aaa; padding:20px; border-radius:10px;">
+                <h3 style="color:#fff; text-align:center; margin-top:0;">STATUS</h3>
+                <div style="line-height:2; font-size:16px; color:#ddd;">
+                    ATK: <span id="deriv-atk" style="color:#fff; float:right;">0</span><br>
+                    MAX HP: <span id="deriv-hp" style="color:#fff; float:right;">0</span><br>
+                    MAX MP: <span id="deriv-mp" style="color:#fff; float:right;">0</span><br>
+                    SPEED: <span id="deriv-spd" style="color:#fff; float:right;">0</span><br>
+                    CRIT: <span id="deriv-crit" style="color:#fff; float:right;">0%</span>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="btn" style="margin-top:30px;" onclick="game.toggleCharacterMenu()">CLOSE</button>
+    </div>
+
+    <!-- CLASS SELECTION OVERLAY -->
+    <div id="class-selection" style="
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); display: flex; flex-direction: column;
+        align-items: center; justify-content: center; z-index: 1000;
+        color: white; font-family: 'Courier New', monospace; pointer-events: auto;
+    ">
+        <h1 style="margin-bottom: 20px; color: #00f2ff; text-shadow: 0 0 10px #00f2ff;">SELECT CLASS</h1>
+        <div id="class-container"
+            style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; max-width: 800px;">
+            <!-- Injected by JS -->
+        </div>
+    </div>
+
+    <!-- 1. Data/Models -->
+    <script src="js/models/base.js"></script>
+    <script src="js/models/player.js"></script>
+    <script src="js/models/bosses.js"></script>
+    <script src="js/classes2.js"></script> <!-- ADDED THIS -->
+
+    <!-- 2. Engine (Simplified) -->
+    <script src="js/engine2.js"></script>
+
+    <!-- 3. Game Logic -->
+    <script src="js/game2.js"></script>
+
+    <script>
+        // Init Sequence
+        window.addEventListener('load', () => {
+            console.log("Starting Engine 2...");
+            engine.init(); // Starts Loop
+
+            // Populate Class Selection
+            if (typeof CLASS_DATA === 'undefined') {
+                console.error("CLASS_DATA not found! Check classes2.js");
+                return;
+            }
+
+            const container = document.getElementById('class-container');
+
+            Object.keys(CLASS_DATA).forEach(key => {
+                const cls = CLASS_DATA[key];
+                if (!cls || !cls.stats) return; // Skip invalid entries
+                const btn = document.createElement('div');
+                const colorHex = '#' + (cls.stats.color || 0xffffff).toString(16).padStart(6, '0');
+
+                btn.style.border = `2px solid ${colorHex}`;
+                btn.style.padding = '15px';
+                btn.style.cursor = 'pointer';
+                btn.style.width = '140px';
+                btn.style.textAlign = 'center';
+                btn.style.transition = '0.3s';
+                btn.style.background = 'rgba(255,255,255,0.05)';
+                btn.style.borderRadius = '8px';
+
+                btn.innerHTML = `
+                    <h2 style="color: ${colorHex}; margin: 0 0 10px 0; font-size: 18px;">${cls.name}</h2>
+                    <p style="font-size: 11px; color: #ccc; height: 30px;">${cls.desc}</p>
+                    <div style="text-align: left; font-size: 10px; margin-top: 10px; border-top: 1px solid #444; padding-top: 5px;">
+                        <div style="display:flex; justify-content:space-between;"><span>HP:</span> <b>${cls.stats.hp}</b></div>
+                        <div style="display:flex; justify-content:space-between;"><span>ATK:</span> <b>${cls.stats.atk}</b></div>
+                    </div>
+                `;
+
+                btn.onmouseenter = () => {
+                    btn.style.background = 'rgba(255,255,255,0.2)';
+                    btn.style.transform = 'scale(1.05)';
+                    btn.style.boxShadow = `0 0 15px ${colorHex}`;
+                };
+                btn.onmouseleave = () => {
+                    btn.style.background = 'rgba(255,255,255,0.05)';
+                    btn.style.transform = 'scale(1.0)';
+                    btn.style.boxShadow = 'none';
+                };
+                btn.onclick = () => {
+                    document.getElementById('class-selection').style.display = 'none';
+                    game.init(key); // Start with class
+                };
+
+                container.appendChild(btn);
+            });
+
+            // DO NOT auto-call game.init() here. Wait for button click.
+        });
+    </script>
+</body>
+
+</html>

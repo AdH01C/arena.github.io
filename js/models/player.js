@@ -29,10 +29,11 @@ Object.assign(window.Models, {
         // Legs
         if (style === 2) {
             // Robes
-            this.box(0.35, 0.5, 0.3, mB, 0, 0.25, 0, g);
+            const robe = this.box(0.35, 0.5, 0.3, mB, 0, 0.25, 0, g);
+            robe.name = 'Legs'; // Robes don't articulate well
         } else {
-            this.box(0.12, 0.5, 0.15, mB, -0.15, 0.25, 0, g);
-            this.box(0.12, 0.5, 0.15, mB, 0.15, 0.25, 0, g);
+            const l = this.box(0.12, 0.5, 0.15, mB, -0.15, 0.25, 0, g); l.name = 'LegL';
+            const r = this.box(0.12, 0.5, 0.15, mB, 0.15, 0.25, 0, g); r.name = 'LegR';
         }
 
         // Head
@@ -66,10 +67,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.1, 0.5, 0.1, mB, 0, -0.25, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.1, 0.5, 0.1, mB, 0, -0.25, 0, rightArm);
 
         // Katana
@@ -123,10 +124,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.3; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.32, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.32, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.12, 0.45, 0.12, mB, 0, -0.25, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.32, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.32, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.12, 0.45, 0.12, mB, 0, -0.25, 0, rightArm);
         rightArm.rotation.x = -0.5;
 
@@ -173,15 +174,17 @@ Object.assign(window.Models, {
 
         // Legs
         if (bodyType === 0) {
-            this.box(0.25, 0.6, 0.3, mB, -0.25, 0.3, 0, g);
-            this.box(0.25, 0.6, 0.3, mB, 0.25, 0.3, 0, g);
+            const l = this.box(0.25, 0.6, 0.3, mB, -0.25, 0.3, 0, g); l.name = 'LegL';
+            const r = this.box(0.25, 0.6, 0.3, mB, 0.25, 0.3, 0, g); r.name = 'LegR';
         } else {
             // Reverse Joint
-            this.box(0.15, 0.4, 0.2, mDark, -0.3, 0.4, 0.1, g);
-            this.box(0.2, 0.5, 0.2, mB, -0.3, 0.1, -0.1, g);
+            const l = new THREE.Group(); l.position.set(-0.3, 0, 0); g.add(l); l.name = 'LegL';
+            this.box(0.15, 0.4, 0.2, mDark, 0, 0.4, 0.1, l);
+            this.box(0.2, 0.5, 0.2, mB, 0, 0.1, -0.1, l);
 
-            this.box(0.15, 0.4, 0.2, mDark, 0.3, 0.4, 0.1, g);
-            this.box(0.2, 0.5, 0.2, mB, 0.3, 0.1, -0.1, g);
+            const r = new THREE.Group(); r.position.set(0.3, 0, 0); g.add(r); r.name = 'LegR';
+            this.box(0.15, 0.4, 0.2, mDark, 0, 0.4, 0.1, r);
+            this.box(0.2, 0.5, 0.2, mB, 0, 0.1, -0.1, r);
         }
 
         // Head
@@ -190,10 +193,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.2; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.6, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.6, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.2, 0.5, 0.2, mB, 0, -0.2, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.6, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.6, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.2, 0.5, 0.2, mB, 0, -0.2, 0, rightArm);
 
         // Gun Arm Procedural
@@ -232,8 +235,8 @@ Object.assign(window.Models, {
         const mVoid = new THREE.MeshBasicMaterial({ color: 0xaa00ff, transparent: true, opacity: 0.7 });
 
         // Legs
-        this.box(0.1, 0.5, 0.1, mB, -0.12, 0.25, 0, g);
-        this.box(0.1, 0.5, 0.1, mB, 0.12, 0.25, 0, g);
+        const l = this.box(0.1, 0.5, 0.1, mB, -0.12, 0.25, 0, g); l.name = 'LegL';
+        const r = this.box(0.1, 0.5, 0.1, mB, 0.12, 0.25, 0, g); r.name = 'LegR';
 
         // Torso
         const t = this.box(0.35, 0.4, 0.2, mB, 0, 0.7, 0, g);
@@ -259,10 +262,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.25, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.25, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.08, 0.35, 0.08, mB, 0, -0.18, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.25, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.25, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.08, 0.35, 0.08, mB, 0, -0.18, 0, rightArm);
 
         // Procedural Daggers
@@ -304,8 +307,8 @@ Object.assign(window.Models, {
         g.userData.idle = true; g.userData.pulse = { speed: 3, amp: 0.03, base: 1 };
 
         // Legs
-        this.box(0.14, 0.5, 0.14, mB, -0.15, 0.25, 0, g);
-        this.box(0.14, 0.5, 0.14, mB, 0.15, 0.25, 0, g);
+        const l = this.box(0.14, 0.5, 0.14, mB, -0.15, 0.25, 0, g); l.name = 'LegL';
+        const r = this.box(0.14, 0.5, 0.14, mB, 0.15, 0.25, 0, g); r.name = 'LegR';
 
         // Torso
         const t = this.box(0.45, 0.45, 0.25, mB, 0, 0.72, 0, g);
@@ -339,10 +342,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.12, 0.4, 0.12, mB, 0, -0.2, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.12, 0.4, 0.12, mB, 0, -0.2, 0, rightArm);
 
         // Boxer Guard stance
@@ -405,8 +408,8 @@ Object.assign(window.Models, {
         const mGun = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9, roughness: 0.2 });
 
         // Legs
-        this.box(0.12, 0.5, 0.14, mS, -0.15, 0.25, 0, g);
-        this.box(0.12, 0.5, 0.14, mS, 0.15, 0.25, 0, g);
+        const l = this.box(0.12, 0.5, 0.14, mS, -0.15, 0.25, 0, g); l.name = 'LegL';
+        const r = this.box(0.12, 0.5, 0.14, mS, 0.15, 0.25, 0, g); r.name = 'LegR';
         this.box(0.05, 0.15, 0.1, mB, -0.23, 0.35, 0, g); // Holster
         this.box(0.05, 0.15, 0.1, mB, 0.23, 0.35, 0, g); // Holster
 
@@ -442,10 +445,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.3, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.3, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.1, 0.4, 0.1, mB, 0, -0.2, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.3, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.3, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.1, 0.4, 0.1, mB, 0, -0.2, 0, rightArm);
 
         // Aiming stance
@@ -565,9 +568,9 @@ Object.assign(window.Models, {
 
         // Arms visual
         const ag = new THREE.Group(); ag.position.y = 1.35 * bScale; g.add(ag);
-        const lArm = new THREE.Group(); lArm.position.set(-0.35, 0, 0); ag.add(lArm);
+        const lArm = new THREE.Group(); lArm.position.set(-0.35, 0, 0); ag.add(lArm); lArm.name = 'ArmL';
         this.box(0.12, 0.6, 0.12, mArmor, 0, -0.3, 0, lArm);
-        const rArm = new THREE.Group(); rArm.position.set(0.35, 0, 0); ag.add(rArm);
+        const rArm = new THREE.Group(); rArm.position.set(0.35, 0, 0); ag.add(rArm); rArm.name = 'ArmR';
         this.box(0.12, 0.6, 0.12, mArmor, 0, -0.3, 0, rArm);
 
         // SHIELD (Left)
@@ -614,8 +617,8 @@ Object.assign(window.Models, {
 
         // Glitchy Legs
         if (tier < 7 && !glitchLegs) {
-            this.box(0.12, 0.5, 0.12, mDark, -0.15, 0.25, 0, g);
-            this.box(0.12, 0.5, 0.12, mDark, 0.15, 0.25, 0, g);
+            const l = this.box(0.12, 0.5, 0.12, mDark, -0.15, 0.25, 0, g); l.name = 'LegL';
+            const r = this.box(0.12, 0.5, 0.12, mDark, 0.15, 0.25, 0, g); r.name = 'LegR';
         } else {
             // Data Stream Legs
             for (let i = 0; i < 5; i++) {
@@ -655,10 +658,10 @@ Object.assign(window.Models, {
         // Arms & Rig
         const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
 
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.3, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.3, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.1, 0.4, 0.1, mDark, 0, -0.2, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.3, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.3, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.1, 0.4, 0.1, mDark, 0, -0.2, 0, rightArm);
 
         // Typing Pose
@@ -713,10 +716,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.2; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0.1); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0.1); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.1, 0.45, 0.1, mB, 0, -0.2, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0.1); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0.1); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.1, 0.45, 0.1, mB, 0, -0.2, 0, rightArm);
         rightArm.rotation.x = -0.8; // Holding scythe forward
 
@@ -807,10 +810,10 @@ Object.assign(window.Models, {
 
         // Arms
         const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
-        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0); ag.add(leftArm);
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0); ag.add(leftArm); leftArm.name = 'ArmL';
         this.box(0.12, 0.45, 0.12, mRobe, 0, -0.2, 0, leftArm);
 
-        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0); ag.add(rightArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0); ag.add(rightArm); rightArm.name = 'ArmR';
         this.box(0.12, 0.45, 0.12, mRobe, 0, -0.2, 0, rightArm);
         rightArm.rotation.x = -0.5; // Holding staff
 

@@ -3,604 +3,270 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1280">
-    <title>NEON TOWER: FINAL</title>
-    <link rel="stylesheet" href="css/core.css">
-    <link rel="stylesheet" href="css/hud.css">
-    <link rel="stylesheet" href="css/ui.css">
-    <link rel="stylesheet" href="css/modules.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON TOWER: HUB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050508;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --neon-blue: #00f2ff;
+            --neon-purple: #bf00ff;
+            --text: #ffffff;
+            --text-dim: #888;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(0, 242, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(191, 0, 255, 0.05) 0%, transparent 40%);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .header {
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .title {
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-dim);
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            margin-left: 12px;
+            /* Visual center adjustment */
+        }
+
+        .launcher-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .launcher-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .launcher-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, var(--accent-color) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .launcher-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-color);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(var(--accent-rgb), 0.2);
+        }
+
+        .launcher-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .card-legacy {
+            --accent-color: var(--neon-blue);
+            --accent-rgb: 0, 242, 255;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .card-v2 {
+            --accent-color: var(--neon-purple);
+            --accent-rgb: 191, 0, 255;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px var(--accent-color));
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .launch-btn {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px 30px;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .launcher-card:hover .launch-btn {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            font-size: 0.6rem;
+            color: #444;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Neon Tower</h1>
+            <p class="subtitle">Nexus Interface</p>
+        </header>
 
-    <div id="vfx-overlay"></div>
-    <div id="rotate-warning">
-        <h1>⚠ SYSTEM ERROR ⚠</h1>
-        <p>PLEASE ROTATE DEVICE<br>TO LANDSCAPE MODE</p>
+        <main class="launcher-grid">
+            <a href="game.html" class="launcher-card card-legacy" id="btn-legacy">
+                <div class="card-tag">Stable Release</div>
+                <div class="card-icon">🗼</div>
+                <h2 class="card-title">Legacy</h2>
+                <p class="card-desc">The classic Neon Tower experience. Ascension Protocol V1.0. Fully functional and
+                    stable.</p>
+                <div class="launch-btn">Enter V1.0</div>
+            </a>
+
+            <a href="index2.html" class="launcher-card card-v2" id="btn-v2">
+                <div class="card-tag">Active Development</div>
+                <div class="card-icon">🛸</div>
+                <h2 class="card-title">Side Scroller</h2>
+                <p class="card-desc">The next generation of Neon Tower. New engine, physics, and gameplay mechanics.
+                    Experimental V2.0.</p>
+                <div class="launch-btn">Breach V2.0</div>
+            </a>
+        </main>
     </div>
 
-    <div id="hud">
-        <div id="top-ui">
-            <div class="stat-box" id="floor-display">FLOOR <span id="floor-num">1</span></div>
-            <div class="stat-box" id="combo-display" style="display:none;">🔥 COMBO <span id="combo-num">0</span></div>
-            <!-- Seasonal Boss Button Removed from Top UI -->
-            <!-- Removed Class Tree Button -->
-            <div class="stat-box" id="gold-display">CREDITS: <span id="gold-num">0</span></div>
-        </div>
-
-        <div id="mutation-display"
-            style="display:none; position:absolute; top:90px; left:50%; transform:translateX(-50%); background:rgba(255,0,0,0.2); border:1px solid #ff0000; padding:10px; border-radius:10px; color:#fff; font-size:12px; min-width:220px; z-index:100; pointer-events:none; box-shadow: 0 0 15px rgba(255,0,0,0.4); text-align:center;">
-            <div style="font-weight:bold; color:#ff0000; margin-bottom:3px; font-size: 10px; letter-spacing: 1px;">⚠️
-                SECTOR MUTATION</div>
-            <div id="mutation-name" style="font-size:16px; font-weight:bold; color: #fff; text-shadow: 0 0 5px #f00;">
-                OVERCLOCKED</div>
-            <div id="mutation-desc" style="color:#aaa; font-style: italic; line-height: 1.2; margin-top:2px;">All units
-                deal +50% DMG</div>
-        </div>
-
-        <div id="buff-container"></div>
-        <div id="minion-ui-container"></div>
-
-
-
-        <div id="p-wrapper" class="unit-hud">
-            <div id="gear-container">
-                <div class="gear-edit-label">GEAR ▸</div>
-                <div class="gear-slot" id="slot-weapon" onclick="game.showGearTooltip('weapon')">
-                    <div class="gear-icon">⚔️</div>
-                    <div class="gear-empty">EMPTY</div>
-                </div>
-                <div class="gear-slot" id="slot-accessory" onclick="game.showGearTooltip('accessory')">
-                    <div class="gear-icon">💍</div>
-                    <div class="gear-empty">EMPTY</div>
-                </div>
-            </div>
-            <div class="hp-label">HULL INTEGRITY</div>
-            <div class="bar-container" id="p-hp-bar">
-                <div class="bar-fill hp-fill" id="p-hp-fill"></div>
-                <div class="overlay-text" id="p-hp-text">100 / 100</div>
-            </div>
-
-            <div id="p-shield-wrapper" style="display:none; margin-top:5px;">
-                <div class="hp-label" style="color:#00f2ff">ENERGY SHIELD</div>
-                <div class="bar-container" id="p-shield-bar" style="border-color: #00f2ff; height: 12px;">
-                    <div class="bar-fill" id="p-shield-fill" style="background: #00f2ff; box-shadow: 0 0 10px #00f2ff;">
-                    </div>
-                    <div class="overlay-text" id="p-shield-text" style="font-size: 14px;">0</div>
-                </div>
-            </div>
-
-            <div class="hp-label" style="margin-top:5px; color:#0088ff">ENERGY CELL (MANA)</div>
-            <div class="bar-container" id="p-mana-bar" style="border-color: #0088ff;">
-                <div class="bar-fill mana-fill" id="p-mana-fill"></div>
-                <div class="overlay-text" id="p-mana-text">50 / 50</div>
-            </div>
-
-            <!-- Buffs -->
-            <div id="p-buffs" style="display:flex; gap:4px; margin-top:5px; flex-wrap:wrap; min-height:20px;"></div>
-        </div>
-
-        <div id="e-wrapper" class="unit-hud" style="text-align:right;">
-            <div class="hp-label" id="enemy-name">TARGET SIGNAL</div>
-            <div class="bar-container" id="e-hp-bar">
-                <div class="bar-fill hp-fill" id="e-hp-fill" style="float:right;"></div>
-                <div class="overlay-text" id="e-hp-text">100 / 100</div>
-            </div>
-            <div id="e-shield-wrapper" style="display:none; margin-top:5px;">
-                <div class="bar-container" style="height:12px; border-color:#00f2ff;">
-                    <div class="bar-fill" id="e-shield-fill"
-                        style="background:#00f2ff; height:100%; width:0%; float:right;"></div>
-                </div>
-                <div style="color:#00f2ff; font-size:14px; text-shadow:0 0 5px #00f2ff; margin-top:2px;">
-                    🛡️ <span id="e-shield-text">0</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- IAP SHOP BUTTON (Always visible) -->
-    <button id="iap-btn" onclick="game.openIAPShop()">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
-            <path d="M12,2L2,7l3,12l7,3l7-3l3-12L12,2z M12,18l-5-2l-2-8l7-3l7,3l-2,8L12,18z" />
-        </svg>
-    </button>
-
-
-    <div id="battle-controls">
-        <button id="btn-skill-1" class="btn" onclick="game.useSkill(0)">
-            <span class="btn-name">STRIKE</span><br><span class="btn-cost" id="cost-0">0 MP</span>
-        </button>
-        <button id="btn-skill-2" class="btn" onclick="game.useSkill(1)">
-            <span class="btn-name">HEAVY</span><br><span class="btn-cost" id="cost-1">20 MP</span>
-        </button>
-
-        <!-- Skill 3 Wrapper -->
-        <div style="display:inline-block; position:relative; vertical-align:top;">
-            <div id="extra-skills">
-                <button id="btn-skill-4" class="btn btn-small" onclick="game.useSkill(3)">
-                    <span class="btn-name">SKILL 4</span>
-                </button>
-                <button id="btn-skill-5" class="btn btn-small" onclick="game.useSkill(4)">
-                    <span class="btn-name">SKILL 5</span>
-                </button>
-                <button id="btn-skill-6" class="btn btn-small" onclick="game.useSkill(5)">
-                    <span class="btn-name">SKILL 6</span>
-                </button>
-            </div>
-            <button id="btn-skill-3" class="btn btn-buff" onclick="game.useSkill(2)">
-                <span class="btn-name">BUFF</span><br><span class="btn-cost" id="cost-2">0 MP</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- IAP SHOP SCREEN -->
-    <div id="iap-screen" class="screen">
-        <div class="iap-layout">
-            <!-- SIDEBAR -->
-            <div class="iap-sidebar">
-                <div class="iap-sidebar-top">
-                    <h2 class="screen-title" style="margin:0; text-align:left; border:none; padding:0;">STORE</h2>
-                    <div style="color:#bf00ff; letter-spacing:2px; font-size:14px; margin-bottom:20px;">ACCESS LEVEL:
-                        UNLIMITED</div>
-                    <p style="color:#aaa; font-size:12px; line-height:1.4;">
-                        Upgrade your status and acquire premium supplies to dominate the tower.
-                    </p>
-                </div>
-                <!-- CLOSE BUTTON IN SIDEBAR FOR UNIFIED LOOK, OR KEEP ABSOLUTE? 
-                     Let's keep absolute for consistency with other screens if preferred, 
-                     but moving it to sidebar is cleaner. Let's keep the existing absolute one visible 
-                     but maybe move it into the global layout if needed. 
-                     Actually, let's put a "BACK" button in sidebar bottom. -->
-                <div class="iap-sidebar-bottom">
-                    <button class="btn" style="width:100%; border-color:#bf00ff; color:#bf00ff;"
-                        onclick="game.closeIAPShop()">CLOSE STORE</button>
-                </div>
-            </div>
-
-            <!-- CONTENT GRID -->
-            <div class="iap-content">
-                <div class="iap-grid">
-                    <!-- FEATURED -->
-                    <div class="iap-section-title">ELITE STATUS</div>
-
-                    <!-- NEW ANOMALY ACCESS CARD -->
-                    <div class="iap-card elite" onclick="game.startSeasonalBoss()"
-                        onmouseenter="game.previewIAP('seasonal')" onmouseleave="game.previewIAP(null)"
-                        style="border-color: #ff0000; background: linear-gradient(135deg, #300, #111);">
-                        <div class="iap-tag" style="background: #ff0000; color: #fff;">EVENT</div>
-                        <div class="iap-title" style="color: #ff0000;">ANOMALY DETECTED</div>
-                        <div class="iap-icon-box" style="border: 2px solid #ff0000; background: #000;">
-                            <img src="/Users/adrian/.gemini/antigravity/brain/01858684-e365-48e6-bdf1-5cefe3dea1ab/boss_thumb_1768228657945.png"
-                                style="width:100%; height:100%; object-fit:cover;">
-                        </div>
-                        <div class="iap-benefits">
-                            <span style="color:#ff5555;">⚠ BOSS: SYSTEM ANOMALY</span>
-                            <span>REWARD: LEGENDARY CACHE</span>
-                            <span>RISK: EXTREME</span>
-                        </div>
-                        <div class="iap-price-btn" style="background: #ff0000; color: #fff;">BREACH</div>
-                    </div>
-
-                    <!-- OVERLORD CARD -->
-                    <div class="iap-card elite" onclick="game.buyOverlord()" onmouseenter="game.previewIAP('overlord')"
-                        onmouseleave="game.previewIAP(null)"
-                        style="border-color: #ffd700; background: linear-gradient(135deg, #443300, #000);">
-                        <div class="iap-tag" style="background: #ffd700; color: #000;">GAME BREAKER</div>
-                        <div class="iap-title" style="color: #ffd700;">OVERLORD PROTOCOL</div>
-                        <div class="iap-icon-box">
-                            <div class="crown-icon" style="filter: hue-rotate(45deg);"></div>
-                        </div>
-                        <div class="iap-benefits">
-                            <span style="color:#ffd700;">👑 +1 MAX SUMMONS</span>
-                            <span>PERMANENT UPGRADE</span>
-                            <span>BREAK THE LIMITS</span>
-                        </div>
-                        <div class="iap-price-btn">$49.99</div>
-                    </div>
-
-                    <div class="iap-card elite" onclick="game.buyNeonPrime()"
-                        onmouseenter="game.previewIAP('neon_prime')" onmouseleave="game.previewIAP(null)">
-                        <div class="iap-tag">BEST VALUE</div>
-                        <div class="iap-title">NEON PRIME</div>
-                        <div class="iap-icon-box">
-                            <div class="crown-icon"></div>
-                        </div>
-                        <div class="iap-benefits">
-                            <span>+50% CREDITS FOREVER</span>
-                            <span>GOLD USERNAME</span>
-                            <span>EXCLUSIVE AURA</span>
-                        </div>
-                        <div class="iap-price-btn">$19.99</div>
-                    </div>
-
-                    <div class="iap-card" onclick="game.buyRemoveAds()" onmouseenter="game.previewIAP('remove_ads')"
-                        onmouseleave="game.previewIAP(null)">
-                        <div class="iap-title">NO ADS + KIT</div>
-                        <div class="iap-desc">Remove forced ads & get Starter Gear Set</div>
-                        <div class="iap-price-btn">$4.99</div>
-                    </div>
-
-                    <!-- SUPPLY -->
-                    <div class="iap-section-title" style="margin-top:30px;">SUPPLY DROPS</div>
-                    <div class="iap-card" onclick="game.buyLootCrate('legendary')"
-                        onmouseenter="game.previewIAP('loot_crate')" onmouseleave="game.previewIAP(null)">
-                        <div class="iap-title">LOOT CRATE</div>
-                        <div class="iap-desc">Contains 1 Random Item.</div>
-                        <div class="iap-price-btn">$4.99</div>
-                    </div>
-                    <div class="iap-card" onclick="game.buyOverclock()" onmouseenter="game.previewIAP('overclock')"
-                        onmouseleave="game.previewIAP(null)">
-                        <div class="iap-title">SYSTEM OVERCLOCK</div>
-                        <div class="iap-desc">+100% DAMAGE & SPEED for 10 Floors</div>
-                        <div class="iap-price-btn">$2.99</div>
-                    </div>
-                    <div class="iap-card" onclick="game.buyRevivePack()" onmouseenter="game.previewIAP('revive')"
-                        onmouseleave="game.previewIAP(null)">
-                        <div class="iap-title">REVIVE PROTOCOL x5</div>
-                        <div class="iap-desc">5 Tokens to cheat death</div>
-                        <div class="iap-price-btn">$1.99</div>
-                    </div>
-
-                    <!-- DEV TOOL -->
-                    <div class="iap-card" onclick="game.unlockMaxSummons()" style="border-color:#fff; opacity:0.7;">
-                        <div class="iap-title">DEV: UNLOCK 99</div>
-                        <div class="iap-desc">God Mode: Max Summons = 99</div>
-                        <div class="iap-price-btn" style="background:#444;">FREE</div>
-                    </div>
-
-                    <!-- BANK -->
-                    <div class="iap-section-title" style="margin-top:30px;">CREDIT BANK</div>
-                    <div class="iap-row-container">
-                        <div class="iap-card small" onclick="game.buyCredits(10000, 1.99)"
-                            onmouseenter="game.previewIAP('credits', 10000)" onmouseleave="game.previewIAP(null)">
-                            <div class="iap-row"><span class="iap-qty">10k</span><span class="iap-cost">$1.99</span>
-                            </div>
-                        </div>
-                        <div class="iap-card small" onclick="game.buyCredits(50000, 4.99)"
-                            onmouseenter="game.previewIAP('credits', 50000)" onmouseleave="game.previewIAP(null)">
-                            <div class="iap-row"><span class="iap-qty">50k</span><span class="iap-cost">$4.99</span>
-                            </div>
-                        </div>
-                        <div class="iap-card small" onclick="game.buyCredits(150000, 9.99)"
-                            onmouseenter="game.previewIAP('credits', 150000)" onmouseleave="game.previewIAP(null)">
-                            <div class="iap-row"><span class="iap-qty">150k</span><span class="iap-cost">$9.99</span>
-                            </div>
-                        </div>
-                        <div class="iap-card small" onclick="game.buyCredits(500000, 24.99)"
-                            onmouseenter="game.previewIAP('credits', 500000)" onmouseleave="game.previewIAP(null)">
-                            <div class="iap-row"><span class="iap-qty">500k</span><span class="iap-cost">$24.99</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN START SCREEN (Unchanged) -->
-    <!-- MAIN START SCREEN (AAA) -->
-    <div id="start-screen" class="screen active"
-        style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div class="aaa-title-wrapper">
-            <h1 class="aaa-title">NEON TOWER</h1>
-            <h2 class="aaa-subtitle">ASCENSION PROTOCOL V1.0</h2>
-        </div>
-        <button class="aaa-btn" onclick="game.playIntroSequence()">INITIATE LINK</button>
-        <div style="position:absolute; bottom:20px; color:#555; font-size:12px; letter-spacing:2px;">SYSTEM_STATUS:
-            ONLINE // UNREALITY_ENGINE_READY</div>
-    </div>
-
-    <!-- INTRO SEQUENCE OVERLAY -->
-    <div id="intro-overlay" onclick="game.handleIntroClick()" style="cursor:pointer;">
-        <div id="intro-text-container" style="display:flex; flex-direction:column; width:100%; max-width:900px;"></div>
-    </div>
-
-    <div id="class-screen" class="screen">
-        <h2 class="screen-title">CLASS ASCENSION</h2>
-        <div class="card-container" id="class-container"></div>
-    </div>
-
-    <div id="reward-screen" class="screen">
-        <h2 class="screen-title">SYSTEM UPGRADE</h2>
-        <div class="card-container" id="perk-container"></div>
-    </div>
-
-    <div id="shop-screen" class="screen">
-        <div class="shop-layout">
-            <!-- DIV 1: INFO & NAVIGATION -->
-            <div class="shop-sidebar">
-                <div class="shop-sidebar-top">
-                    <h2 class="shop-title">THE ARMORY</h2>
-                    <div id="shop-tier-box">
-                        <div id="shop-tier-label">TIER 1</div>
-                        <div id="shop-player-stats">ATK: 0 | HP: 0</div>
-                    </div>
-                </div>
-
-                <div class="shop-sidebar-bottom">
-                    <div class="shop-credit-display">
-                        CREDITS: <span id="shop-gold">0</span>
-                    </div>
-                    <button class="btn big-next-btn" onclick="game.nextFloor()">NEXT FLOOR</button>
-                </div>
-            </div>
-
-            <!-- DIV 2: SYSTEM UPGRADES & SHOP ITEMS -->
-            <div class="shop-content">
-                <div class="shop-grid" id="shop-container"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- INVENTORY SCREEN -->
-    <div id="inventory-screen" class="screen">
-        <div class="inv-dashboard">
-            <!-- COL 1: HERO STATS -->
-            <div class="inv-col inv-hero-panel">
-                <h2 class="screen-title"
-                    style="margin:0; text-align:left; color:#00f2ff; text-shadow:0 0 10px #00f2ff;">HERO</h2>
-                <div class="inv-hero-details">
-                    <div id="inv-class-title" style="font-size:20px; color:#fff; font-weight:bold; margin-bottom:10px;">
-                        CLASS</div>
-                    <div id="inv-level-display" style="font-size:14px; color:#aaa; margin-bottom:20px;">LVL 0</div>
-                </div>
-                <div id="equip-stats" class="stats-panel">STATS...</div>
-            </div>
-
-            <!-- COL 2: PAPERDOLL -->
-            <div class="inv-col inv-paperdoll">
-                <div class="paperdoll-container">
-                    <!-- 3D Model Canvas Container -->
-                    <div id="paperdoll-model-container"></div>
-
-                    <!-- SLOTS -->
-                    <div id="equip-weapon" class="equip-slot big-slot weapon-slot"
-                        onclick="game.selectEquippedItem('weapon')">
-                        <div class="slot-label">WEAPON</div>
-                        <div class="slot-content">EMPTY</div>
-                    </div>
-                    <div id="equip-accessory" class="equip-slot big-slot accessory-slot"
-                        onclick="game.selectEquippedItem('accessory')">
-                        <div class="slot-label">ACCESSORY</div>
-                        <div class="slot-content">EMPTY</div>
-                    </div>
-                </div>
-
-                <!-- AUTO-CLOSE BUTTON FOR MOBILE CONVENIENCE -->
-                <button class="btn btn-close-inv" onclick="game.closeInventory()">CLOSE</button>
-            </div>
-
-            <!-- COL 3: STORAGE VAULT -->
-            <div class="inv-col inv-vault">
-                <div class="vault-header">
-                    <h2 class="screen-title" style="margin:0; font-size:24px; color:#ffe600;">VAULT</h2>
-                    <div class="vault-capacity" style="color:#666; font-size:12px;">STORAGE</div>
-                </div>
-                <div class="inv-content">
-                    <div id="inventory-grid" class="inventory-grid"></div>
-                </div>
-
-                <!-- DETAILS OVERLAY (Appears when item clicked) -->
-                <div id="inv-details-overlay" class="details-overlay" style="display:none;">
-                    <div id="inv-details-content"></div>
-                    <button class="btn"
-                        onclick="document.getElementById('inv-details-overlay').style.display='none'">CLOSE</button>
-                    <div class="details-actions">
-                        <button id="btn-equip" class="btn btn-action">EQUIP</button>
-                        <button id="btn-sell" class="btn btn-action btn-danger">SELL</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- CUSTOM REWARD/MSG MODAL -->
-    <div id="modal-overlay" class="modal-overlay">
-        <div id="modal-box" class="modal-box">
-            <h2 id="modal-title">TITLE</h2>
-            <div id="modal-content">Content</div>
-            <div id="modal-actions">
-                <button class="btn" id="modal-ok">CONFIRM</button>
-                <button class="btn btn-secondary" id="modal-cancel" style="display:none;">CANCEL</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CRATE OPENING ANIMATION OVERLAY -->
-    <div id="crate-overlay" class="modal-overlay" style="background:rgba(0,0,0,0.95); z-index:200;">
-        <div id="crate-box"
-            style="text-align:center; transform:scale(0); transition:transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-            <div id="crate-visual" style="font-size:100px; margin-bottom:20px;">📦</div>
-            <div id="crate-light"
-                style="width:10px; height:10px; background:#fff; margin:0 auto; box-shadow:0 0 50px 20px #fff; border-radius:50%; transition:all 0.5s;">
-            </div>
-            <h1 id="crate-title" style="color:#fff; font-size:40px; margin-top:20px; opacity:0; transition:opacity 1s;">
-                ITEM ACQUIRED</h1>
-            <div id="crate-item" style="opacity:0; transition:opacity 1s;"></div>
-            <button class="btn" onclick="game.closeCrate()" style="margin-top:30px; opacity:0;"
-                id="crate-close-btn">COLLECT</button>
-        </div>
-    </div>
-
-    <div id="gameover-screen" class="screen">
-        <h1 class="crit-fail">CRITICAL FAILURE</h1>
-        <p class="fail-stats">FLOOR REACHED: <span id="final-floor">0</span></p>
-        <button id="retry-btn" class="btn" onclick="game.retryFloor()">RETRY FROM SAVED DATA</button>
-    </div>
-
-    <div id="awakening-screen" class="screen">
-        <div class="awakening-vfx-ring"></div>
-        <div class="awakening-container">
-            <h1 class="awakening-title">NEURAL EVOLUTION</h1>
-            <div class="awakening-subtitle">SECTOR 50 // PROTOCOL AWAKENED</div>
-
-            <p class="awakening-desc">
-                Your consciousness has surpassed the limitations of the physical tower.
-                Neural pathways have synchronized with the <strong>System Core</strong>.
-            </p>
-
-            <div class="unlock-panel">
-                <div class="unlock-item">
-                    <span class="unlock-icon">🔒</span>
-                    <div class="unlock-info">
-                        <div class="unlock-name">TITANIUM TIER ACCESS</div>
-                        <div class="unlock-detail">Level 50+ Gear now available in The Armory.</div>
-                    </div>
-                </div>
-                <div class="unlock-item">
-                    <span class="unlock-icon">☠️</span>
-                    <div class="unlock-info">
-                        <div class="unlock-name">SYSTEM CORRUPTION</div>
-                        <div class="unlock-detail">Warning: Perks may now appear corrupted. High risk, high reward.
-                        </div>
-                    </div>
-                </div>
-                <div class="unlock-item">
-                    <span class="unlock-icon">⚔️</span>
-                    <div class="unlock-info">
-                        <div class="unlock-name">ADVANCED COMBAT DATA</div>
-                        <div class="unlock-detail">Deep scan of Floor 50+ enemy weakpoints engaged.</div>
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn awaken-btn" onclick="game.completeAwakening()">EMBRACE THE VOID</button>
-        </div>
-    </div>
-
-    <div id="rebirth-screen" class="screen">
-        <h1 style="color:#ff00ff; text-shadow: 0 0 20px #ff00ff, 0 0 40px #aa00ff; margin-bottom: 10px;">✦ REBIRTH ✦
-        </h1>
-
-        <p style="color:#fff; font-size:18px; margin:0 auto 15px auto;">
-            THE ARCHITECT HAS FALLEN
-        </p>
-
-        <div style="
-            background:rgba(0,0,0,0.7); 
-            border:2px solid #ff00ff; 
-            padding:20px; 
-            margin:0 auto 20px auto; 
-            max-width:800px; 
-            border-radius:15px; 
-            display: flex; 
-            flex-direction: row; 
-            align-items: center; 
-            justify-content: space-between; 
-            gap: 30px;
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
-        ">
-
-            <div style="flex: 1; text-align: left; border-right: 1px solid rgba(255,0,255,0.3); padding-right: 20px;">
-                <h2 style="color:#ff00ff; margin:0 0 10px 0; font-size: 24px;">LVL <span id="rebirth-level"
-                        style="color:#fff;">1</span></h2>
-                <p style="color:#00ff00; margin:5px 0; font-size:16px; font-weight:bold;"> +<span
-                        id="rebirth-bonus">10000</span> CREDITS</p>
-                <p style="color:#ff5500; margin:5px 0; font-size:15px;">+50% ATK, HP, MANA</p>
-                <p style="color:#ffaa00; margin:5px 0; font-size:15px;">+0.5% Breach Damage</p>
-                <p style="color:#00f2ff; margin:5px 0; font-size:15px;">+1% Combo Multiplier</p>
-            </div>
-
-            <div style="flex: 1; text-align: left;">
-                <h2 style="color:#aaa; margin:0 0 10px 0; font-size: 18px;">WORLD CHANGES</h2>
-                <p style="color:#ff0000; margin:5px 0; font-size:14px;">⚠ ENEMIES: 2.5x HP</p>
-                <p style="color:#ff4444; margin:5px 0; font-size:14px;">☣ CORRUPTED PERKS UNLOCKED</p>
-                <p style="color:#ff00ea; margin:5px 0; font-size:14px;">🌀 SECTOR MUTATIONS ACTIVE</p>
-                <p style="color:#00ff00; margin:5px 0; font-size:14px;">$ 3x GOLD DROPS</p>
-                <p style="color:#888; margin:5px 0; font-size:14px;">↺ FLOORS RESET TO 1</p>
-            </div>
-
-        </div>
-
-        <button class="btn" style="
-            background:linear-gradient(90deg, #aa00ff, #ff00ff, #aa00ff); 
-            font-size:18px; 
-            padding: 12px 40px; 
-            width: 400px; 
-            letter-spacing: 2px;
-            font-weight: bold;
-        " onclick="game.completeRebirth()">BEGIN NEW CYCLE</button>
-    </div>
-
-    <!-- CLASSES & SKILLS VIEWER SCREEN -->
-    <!-- <div id="classes-screen" class="screen" style="position: relative; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">    
-        <button class="btn next-btn" onclick="game.closeClassesViewer()" style="position: absolute; top: 20px; right: 20px; z-index: 10;">CLOSE</button>
-        <h1 style="color: #00f2ff; text-shadow: 0 0 30px #00f2ff; text-align: center; font-size: 48px; margin-bottom: 30px; margin-top: 20px; letter-spacing: 3px;">JOB ADVANCEMENT</h1>
-        <div id="classes-viewer-container" style="max-width: 1400px; width: 100%;"></div>
-    </div> -->
-
-    <div id="classes-screen" class="screen"
-        style="overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;">
-
-        <h1
-            style="color: #00f2ff; text-shadow: 0 0 30px #00f2ff; text-align: center; font-size: 48px; margin-bottom: 30px; margin-top: 20px; letter-spacing: 3px;">
-            JOB ADVANCEMENT</h1>
-        <div id="classes-viewer-container" style="max-width: 1400px; width: 100%;"></div>
-
-    </div>
-
-    <!-- DIALOGUE OVERLAY -->
-    <div id="dialogue-overlay" class="screen" onclick="game.advanceDialogue()">
-        <div id="cinematic-bars"></div>
-        <div id="dialogue-box">
-            <div id="dialogue-name">NAME</div>
-            <div id="dialogue-text"></div>
-            <div id="dialogue-prompt">TAP TO CONTINUE ▼</div>
-        </div>
-    </div>
-
-    <!-- TUTORIAL OVERLAY & PANELS -->
-    <div id="tutorial-overlay" style="display:none;"></div>
-    <div id="tutorial-spotlight" style="display:none;"></div>
-    <div id="tutorial-panel" style="display:none;"></div>
-
-    <!-- DATA -->
-    <script src="js/data/items.js"></script>
-    <script src="js/data/story.js"></script>
-    <script src="js/data/classes.js"></script>
-
-    <!-- CORE ENGINE (Modularized) -->
-    <script src="js/engine/core.js"></script>
-    <script src="js/engine/vfx.js"></script>
-    <!-- MODELS (Split) -->
-    <script src="js/models/base.js"></script>
-    <script src="js/models/player.js"></script>
-    <script src="js/models/enemies.js"></script>
-    <script src="js/models/bosses.js"></script>
-
-    <!-- GAME -->
-    <script src="js/game/unit.js"></script>
-    <script src="js/game/core.js"></script>
-    <script src="js/game/systems/vfx.js"></script>
-    <script src="js/game/systems/combat.js"></script>
-    <script src="js/game/systems/inventory.js"></script>
-    <script src="js/game/systems/shop.js"></script>
-    <script src="js/game/systems/skills.js"></script>
-    <script src="js/game/systems/progression.js"></script>
-    <script src="js/game/systems/dialogue.js"></script>
-    <script src="js/game/systems/tutorial.js"></script>
-    <script src="js/game/systems/iap.js"></script>
-    <script src="js/game/systems/admin.js"></script>
-    <script src="js/game/ui.js"></script>
-
-    <script>
-        // Auto-start the game if tutorial hasn't been completed
-        window.addEventListener('load', () => {
-            // Initialize engine once all scripts are loaded
-            engine.init();
-
-            // Initialize Admin System
-            game.admin = new AdminSystem(game);
-
-            const tutorialCompleted = localStorage.getItem('tutorialCompleted');
-            // Auto-start if tutorial needs to be shown (Intro First)
-            if (!tutorialCompleted) {
-                setTimeout(() => game.playIntroSequence(), 500);
-            }
-        });
-    </script>
+    <footer class="status-bar">
+        <span>System: Online</span>
+        <span>Version: 2.0.0-HUB</span>
+        <span>Sector: 00-HUB</span>
+    </footer>
 </body>
 
 </html>
