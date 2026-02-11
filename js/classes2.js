@@ -98,9 +98,9 @@ window.CLASS_DATA = {
         desc: "Lifesteal and harvesting.",
         stats: { hp: 170, atk: 28, speed: 0.24, color: 0x111111 },
         skills: {
-            z: { name: "Scythe", cd: 700, mpCost: 5, anim: "slash", type: "melee", data: { mult: 1.1, range: [5, 4], color: 0x550055, vfx: "slash" }, desc: "Scythe (5 MP)" },
-            x: { name: "Harvest", cd: 5000, mpCost: 30, anim: "cast", type: "aoe", data: { mult: 1.0, radius: 5, color: 0x220022, lifesteal: 0.5 }, desc: "Drain Life (30 MP)" },
-            c: { name: "Death form", cd: 15000, mpCost: 60, anim: "cast", type: "buff", data: { type: "atk", val: 2.0, dur: 4000 }, desc: "Double ATK (60 MP)" }
+            z: { name: "Grim Scythe", cd: 700, mpCost: 5, anim: "slash", type: "melee", data: { mult: 1.2, range: [6, 4], color: 0x5500aa, vfx: "slash" }, desc: "Grim Slash (5 MP)" },
+            x: { name: "Spirit Shot", cd: 3000, mpCost: 20, anim: "shoot", type: "shoot", data: { mult: 1.5, speed: 0.8, color: 0x8800ff, proj: "bullet" }, desc: "Soul Bolt (20 MP)" },
+            c: { name: "Wraith Step", cd: 6000, mpCost: 40, anim: "dash", type: "dash", data: { speed: 3.0, invuln: 500, color: 0xaa00ff, mult: 2.0 }, desc: "Dash + Dmg (40 MP)" }
         }
     },
     "SUMMONER": {
@@ -225,11 +225,11 @@ window.CLASS_TREES = {
             desc: "Collector of souls.",
             stats: { hp: 250, atk: 35, speed: 0.26, color: 0x220022 },
             skills: [
-                { name: "Grim Slice", cd: 600, mpCost: 5, anim: "slash", type: "melee", data: { mult: 1.3, range: [6, 4], color: 0x550055, vfx: "slash" }, desc: "Wide Reaping (5 MP)" },
-                { name: "Death Circle", cd: 4000, mpCost: 35, anim: "cast", type: "aoe", data: { mult: 1.5, radius: 8, color: 0x220022, lifesteal: 0.8 }, desc: "Mass Drain (35 MP)" },
-                { name: "Reaper Form", cd: 12000, mpCost: 60, anim: "cast", type: "buff", data: { type: "atk", val: 2.5, dur: 5000 }, desc: "2.5x ATK (60 MP)" }
+                { name: "Harvester's Cleave", cd: 600, mpCost: 5, anim: "slash", type: "melee", data: { mult: 1.4, range: [7, 4], color: 0x550055, vfx: "slash" }, desc: "Wide Slash (5 MP)" },
+                { name: "Death's Due", cd: 4000, mpCost: 35, anim: "cast", type: "aoe", data: { mult: 1.8, radius: 8, color: 0x220022, lifesteal: 0.8 }, desc: "Mass Drain (35 MP)" },
+                { name: "Ghost Form", cd: 12000, mpCost: 60, anim: "cast", type: "buff", data: { type: "invuln", val: 1, dur: 3000 }, desc: "Invincible (60 MP)" }
             ],
-            ultimate: { name: "Soul Storm", cd: 40000, mpCost: 100, anim: "spin", type: "aoe", data: { mult: 4.0, radius: 12, color: 0xaa00aa, lifesteal: 1.0 }, desc: "Soul Harvest (100 MP)" }
+            ultimate: { name: "Soul Storm", cd: 40000, mpCost: 100, anim: "spin", type: "aoe", data: { mult: 5.0, radius: 15, color: 0xaa00aa, lifesteal: 1.0 }, desc: "Soul Harvest (100 MP)" }
         }
     ],
     "SUMMONER": [

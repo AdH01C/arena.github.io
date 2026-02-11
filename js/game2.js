@@ -1260,11 +1260,27 @@ const game = {
             this.mobs.forEach(m => {
                 const dx = m.x - this.player.x;
                 const dy = Math.abs(m.y - this.player.y);
-                const inFront = this.player.facingRight ? dx > 0 : dx < 0;
-                if (inFront && Math.abs(dx) < rangeW && dy < rangeH) {
+                const inFront = this.player.facingRight ? dx > -1.0 : dx < 1.0; // Allow 1.0 unit behind
+                // Range check: 
+                // Forward: must be less than rangeW
+                // Backward: already handled by inFront check (>-1.0 or <1.0)
+                // We need to check if the distance *in the facing direction* is within range
+
+                let hit = false;
+                if (Math.abs(dy) < rangeH) {
+                    if (this.player.facingRight) {
+                        // Facing Right: dx should be > -1.0 and < rangeW
+                        if (dx > -1.0 && dx < rangeW) hit = true;
+                    } else {
+                        // Facing Left: dx should be < 1.0 and > -rangeW
+                        if (dx < 1.0 && dx > -rangeW) hit = true;
+                    }
+                }
+
+                if (hit) {
                     this.takeDamage(m, dmg, this.player);
                     // Use skill knockback or default
-                    const kb = (data.knockback || 0.3) * 10;
+                    const kb = (data.knockback || 0.3);
                     m.vx = this.player.facingRight ? kb : -kb; m.vy = 0.2;
                     hitAny = true;
 
@@ -1778,7 +1794,8 @@ const game = {
         if (data.invuln) this.player.invulnTimer = (data.invuln / 1000) * 60;
 
         // Visuals
-        engine.spawnParticles(this.player.mesh.position, 'smoke', 0x00ffff, 10);
+        const color = data.color || 0x00ffff;
+        engine.spawnParticles(this.player.mesh.position, 'smoke', color, 10);
         // Slash Trail
         for (let i = 0; i < 5; i++) {
             setTimeout(() => {
@@ -1786,26 +1803,30 @@ const game = {
                     x: this.player.x + (dir * i * 2),
                     y: this.player.y,
                     z: 0
-                }, 'slash_h', 0x00ffff, 5);
+                }, 'slash_h', color, 5);
             }, i * 50);
         }
 
         // Spawn Ghosts
         for (let i = 0; i < 5; i++) {
-            setTimeout(() => this.createGhost(this.player), i * 50);
+            setTimeout(() => this.createGhost(this.player, color), i * 50);
         }
 
         // DAMAGE: Cut through enemies
         const rangeW = 8; // Dash distance approx
         const rangeH = 2;
+
+        // Damage Multiplier (Default 2.0x if not specified)
+        const mult = data.mult !== undefined ? data.mult : 2.0;
+
         this.mobs.forEach(m => {
             const dx = m.x - this.player.x;
             const dy = Math.abs(m.y - this.player.y);
             const inFront = this.player.facingRight ? dx > 0 : dx < 0;
             if (inFront && Math.abs(dx) < rangeW && dy < rangeH) {
-                this.takeDamage(m, this.player.atk * 2.0, this.player); // 200% Dmg
+                this.takeDamage(m, this.player.atk * mult, this.player);
                 m.vx = dir * 1.0; // Knockback with dash
-                engine.spawnParticles(m.mesh.position, 'slash', 0xff0000, 10);
+                engine.spawnParticles(m.mesh.position, 'slash', color, 10);
             }
         });
     },
@@ -1874,10 +1895,13 @@ const game = {
         // Knockback Logic
         if (source) {
             const dir = entity.x > source.x ? 1 : -1;
-            // Base knockback + extra if simplified
-            const force = (source.knockback || 0.5) * (entity.tenacity ? (1 - entity.tenacity) : 1);
-            entity.vx = dir * force;
-            entity.vy = 0.3 * force;
+            const force = ((source.knockback || 0.5) * 3);
+            entity.vx = dir * force * 1.75;
+            entity.vy = 0.25 * force; // Slight pop up
+
+            // STUN to prevent immediate overwrite of velocity
+            entity.stunned = true;
+            entity.stunTimer = 15; // Frames (approx 0.25s)
         }
 
         // Blood/Sparks
@@ -1933,47 +1957,8 @@ const game = {
         entity.isGrounded = false;
     },
     checkEntityCollisions() {
-        // Collect active entities
-        const entities = [this.player, ...this.mobs, ...this.summons].filter(e => e && e.hp > 0);
-
-        for (let i = 0; i < entities.length; i++) {
-            for (let j = i + 1; j < entities.length; j++) {
-                const e1 = entities[i];
-                const e2 = entities[j];
-
-                const dx = e1.x - e2.x;
-                const dy = e1.y - e2.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const minDist = 0.8; // Body Radius * 2
-
-                if (dist < minDist) {
-                    // Skip collision if one is player and other is friendly summon
-                    const e1IsPlayer = e1 === this.player;
-                    const e2IsPlayer = e2 === this.player;
-                    const e1IsFriendly = e1.owner === this.player;
-                    const e2IsFriendly = e2.owner === this.player;
-
-                    if ((e1IsPlayer && e2IsFriendly) || (e2IsPlayer && e1IsFriendly)) {
-                        continue; // Skip collision between player and their summons
-                    }
-
-                    // Only collide if roughly on same horizontal plane (allow jumping over)
-                    if (Math.abs(dy) < 0.8) {
-                        const overlap = minDist - dist;
-                        const push = Math.max(0, overlap * 0.5);
-                        const dir = dx > 0 ? 1 : -1;
-
-                        // Soft Push Position
-                        e1.x += dir * push;
-                        e2.x -= dir * push;
-
-                        // Friction/Bump effect
-                        e1.vx *= 0.5;
-                        e2.vx *= 0.5;
-                    }
-                }
-            }
-        }
+        // COLLISIONS DISABLED AS REQUESTED
+        return;
     },
 
     // --- LEVEL PROGRESSION ---
@@ -2101,6 +2086,12 @@ const game = {
         this.player.mesh.rotation.y += (rotY - this.player.mesh.rotation.y) * 0.2;
         this.updateAnim(this.player);
         if (this.player.invulnTimer > 0) this.player.invulnTimer--;
+
+        // Handle Stun Timer
+        if (this.player.stunned) {
+            if (this.player.stunTimer > 0) this.player.stunTimer--;
+            else this.player.stunned = false;
+        }
         // Rapid Fire Buff
         if (this.player.buffs.rapidfire > 0) {
             this.player.buffs.rapidfire -= 16; // ms per frame approx
@@ -2212,8 +2203,17 @@ const game = {
             e.vy -= this.GRAVITY; e.y += e.vy;
             this.checkPlatformCollisions(e);
 
-            // Basic Logic (Summon AI)
-            if (e.owner) {
+            // Handle Stun
+            if (e.stunned) {
+                if (e.stunTimer > 0) e.stunTimer--;
+                else e.stunned = false;
+            }
+
+            // Skip AI if stunned (Preserve Knockback Momentum)
+            if (e.stunned) {
+                // Drag
+                e.vx *= 0.9;
+            } else if (e.owner) {
                 e.life--;
                 if (e.life <= 0) {
                     this.killEntity(e);
@@ -3092,7 +3092,7 @@ game.updateMobAI = function (e) {
     const isFriendly = e.owner === this.player;
     if (!isFriendly && dist < 1 && Math.abs(this.player.y - e.y) < 2 && this.player.invulnTimer <= 0) {
         this.takeDamage(this.player, e.atk, e);
-        this.player.invulnTimer = 60;
+        this.player.invulnTimer = 30; // 0.5s invuln (More frequent hits)
     }
 
     // STATE MACHINE
@@ -3126,18 +3126,20 @@ game.updateMobAI = function (e) {
         }
 
         // Skill Trigger
-        const attackInterval = (e.isBoss ? 150 : 300) / (e.speedMult || 1);
+        const attackInterval = (e.isBoss ? 150 : 200) / (e.speedMult || 1); // More frequent attacks
         if (e.timer++ > attackInterval && dist < 10) {
             e.state = 'CHARGE';
             e.timer = 0;
-            e.vx = 0;
-            const chargeTime = 600 / (e.speedMult || 1); // Faster charge too?
+            // e.vx = 0; // DON'T STOP COMPLETELY
+            e.vx = dir * 0.02; // Slow down but keep moving
+            const chargeTime = 600 / (e.speedMult || 1);
             this.playAnim(e, 'cast', chargeTime);
             engine.createFloatingText("!", { x: e.x, y: e.y + 2, z: 0 }, '#ff0000');
         }
     }
     else if (e.state === 'CHARGE') {
-        e.vx = 0;
+        const dir = (this.player.x > e.x) ? 1 : -1;
+        e.vx = dir * 0.02; // Keep moving slowly
         // Flashing Warning
         if (e.timer++ % 10 === 0) {
             e.mesh.traverse(c => {
@@ -3150,7 +3152,7 @@ game.updateMobAI = function (e) {
             }, 100);
         }
 
-        const chargeDur = 60 / (e.speedMult || 1);
+        const chargeDur = 40 / (e.speedMult || 1); // Reduced from 60
         if (e.timer > chargeDur) {
             e.state = 'ATTACK';
             e.timer = 0;
