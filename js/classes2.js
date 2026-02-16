@@ -14,8 +14,8 @@ window.CLASS_DATA = {
         desc: "Healing and holy magic.",
         stats: { hp: 220, atk: 15, speed: 0.18, color: 0xffdd00 },
         skills: {
-            z: { name: "Smite", cd: 600, mpCost: 5, anim: "cast", type: "shoot", data: { mult: 1.2, speed: 0.5, color: 0xffdd00, proj: "beam" }, desc: "Holy beam (5 MP)" },
-            x: { name: "Holy Nova", cd: 12000, mpCost: 30, anim: "cast", type: "aoe", data: { mult: 11.0, radius: 8, color: 0xffff00, heal: 20 }, desc: "ULTRA BLAST (12s CD)" },
+            z: { name: "Smite", cd: 600, mpCost: 5, anim: "cast", type: "shoot", data: { mult: 1.2, speed: 0.5, color: 0xffdd00, proj: "beam", vfx: "bow" }, desc: "Holy beam (5 MP)" },
+            x: { name: "Holy Nova", cd: 12000, mpCost: 30, anim: "cast", type: "aoe", data: { mult: 11.0, radius: 8, color: 0xffff00, heal: 20, vfx: "holy_nova" }, desc: "ULTRA BLAST (12s CD)" },
             c: { name: "Divine Heal", cd: 10000, mpCost: 60, anim: "cast", type: "buff", data: { type: "heal", val: 0.5 }, desc: "Heal 50% HP (60 MP)" }
         }
     },
@@ -54,8 +54,8 @@ window.CLASS_DATA = {
         desc: "Combo melee fighter.",
         stats: { hp: 250, atk: 22, speed: 0.2, color: 0xff5500 },
         skills: {
-            z: { name: "Punch", cd: 300, mpCost: 0, anim: "punch", type: "melee", data: { mult: 0.6, range: [3, 2], color: 0xff5500, vfx: "punch", knockback: 0.8 }, desc: "Punch (Knockback)" },
-            x: { name: "Slam", cd: 2500, mpCost: 20, anim: "slam", type: "aoe", data: { mult: 2.0, radius: 4, color: 0xff8800, vfx: "nuke" }, desc: "Slam (20 MP)" },
+            z: { name: "Punch", cd: 300, mpCost: 0, anim: "punch", type: "melee", data: { mult: 0.8, range: [3, 2], color: 0xff5500, vfx: "punch", knockback: 0.8 }, desc: "Punch (Knockback)" },
+            x: { name: "Slam", cd: 2500, mpCost: 20, anim: "slam", type: "aoe", data: { mult: 2.0, radius: 4, color: 0xff8800, vfx: "brawler_slam" }, desc: "Slam (20 MP)" },
             c: { name: "Iron Will", cd: 10000, mpCost: 50, anim: "cast", type: "buff", data: { type: "iron_will", shieldVal: 100, atkVal: 1.3, dur: 5000 }, desc: "Shield + Dmg (50 MP)" }
         }
     },
@@ -112,6 +112,16 @@ window.CLASS_DATA = {
             x: { name: "Call Wolf", cd: 6000, mpCost: 40, anim: "cast", type: "summon", data: { type: "WOLF", hp: 80, atk: 15, color: 0x00ffaa, duration: 60 }, desc: "Summon Wolf (40 MP)" },
             c: { name: "Call Golem", cd: 15000, mpCost: 80, anim: "cast", type: "summon", data: { type: "GOLEM", hp: 300, atk: 20, color: 0x885500, duration: 60 }, desc: "Summon Golem (80 MP)" }
         }
+    },
+    "FLAME WIZARD": {
+        name: "FLAME WIZARD",
+        desc: "Master of destructive fire.",
+        stats: { hp: 160, atk: 28, speed: 0.22, color: 0xff4400, mp: 300, mpRegen: 1 },
+        skills: {
+            z: { name: "Great Fireball", cd: 15000, mpCost: 250, anim: "shoot", type: "shoot", data: { mult: 3.0, speed: 0.1, color: 0xff4400, proj: "fireball_large", vfx: "trail_heavy", piercing: true, life: 600, scale: 5.0 }, desc: "Massive Slow Burn (250 MP)" },
+            x: { name: "Flame Step", cd: 2500, mpCost: 20, anim: "dash", type: "dash", data: { speed: 0.75, invuln: 300, color: 0xff4400, vfx: "fire_dash", mult: 0.5 }, desc: "Teleport (20 MP)" },
+            c: { name: "Fire Spirits", cd: 150, mpCost: 50, anim: "shoot", type: "shoot", data: { mult: 1.0, speed: 0.6, color: 0xff8800, proj: "fireball", vfx: "homing_fire", count: 1, homing: true }, desc: "Rapid Fire (50 MP)" }
+        }
     }
 };
 window.CLASS_TREES = {
@@ -125,7 +135,7 @@ window.CLASS_TREES = {
                 { name: "Blade Storm", cd: 2500, mpCost: 25, anim: "spin", type: "aoe", data: { mult: 2.0, radius: 6, color: 0x00ffff, vfx: "spin" }, desc: "Massive AOE (25 MP)" },
                 { name: "Flash Step", cd: 3000, mpCost: 30, anim: "dash", type: "dash", data: { speed: 3.0, dur: 200, invuln: 800 }, desc: "Teleport Slash (30 MP)" }
             ],
-            ultimate: { name: "Dimension Cut", cd: 30000, mpCost: 100, anim: "slash", type: "aoe", data: { mult: 10.0, radius: 20, color: 0xffffff, vfx: "slash_h" }, desc: "Screen Slash (100 MP)" }
+            ultimate: { name: "Dimension Cut", cd: 30000, mpCost: 100, anim: "slash", type: "aoe", data: { mult: 10.0, radius: 20, color: 0xffffff, vfx: "slash_h", isUltimate: true }, desc: "Screen Slash (100 MP)" }
         }
     ],
     "PRIEST": [
@@ -138,7 +148,7 @@ window.CLASS_TREES = {
                 { name: "Sanctuary", cd: 10000, mpCost: 40, anim: "cast", type: "aoe", data: { mult: 12.0, radius: 10, color: 0xffff00, heal: 40 }, desc: "GOD BLAST (40 MP)" },
                 { name: "Resurrection", cd: 15000, mpCost: 80, anim: "cast", type: "buff", data: { type: "heal", val: 1.0 }, desc: "Full Heal (80 MP)" } // Full HP
             ],
-            ultimate: { name: "Divinity", cd: 45000, mpCost: 100, anim: "cast", type: "aoe", data: { mult: 5.0, radius: 15, color: 0xffff00, heal: 100 }, desc: "Smite All + Heal (100 MP)" }
+            ultimate: { name: "Divinity", cd: 45000, mpCost: 100, anim: "cast", type: "aoe", data: { mult: 5.0, radius: 15, color: 0xffff00, heal: 100, isUltimate: true }, desc: "Smite All + Heal (100 MP)" }
         }
     ],
     "MECH": [
@@ -151,7 +161,7 @@ window.CLASS_TREES = {
                 { name: "Nuke", cd: 5000, mpCost: 50, anim: "shoot", type: "shoot", data: { mult: 5.0, speed: 0.2, color: 0xff0000, proj: "missile" }, desc: "Tactical Nuke (50 MP)" },
                 { name: "Force Field", cd: 12000, mpCost: 50, anim: "cast", type: "buff", data: { type: "shield", val: 200 }, desc: "Heavy Shield (50 MP)" }
             ],
-            ultimate: { name: "Orbital Strike", cd: 40000, mpCost: 100, anim: "shoot", type: "aoe", data: { mult: 8.0, radius: 12, color: 0xff4400, vfx: "nuke" }, desc: "Orbital Cannon (100 MP)" }
+            ultimate: { name: "Orbital Strike", cd: 40000, mpCost: 100, anim: "shoot", type: "aoe", data: { mult: 8.0, radius: 12, color: 0xff4400, vfx: "nuke", isUltimate: true }, desc: "Orbital Cannon (100 MP)" }
         }
     ],
     "HACKER": [
@@ -164,7 +174,7 @@ window.CLASS_TREES = {
                 { name: "Logic Bomb", cd: 3000, mpCost: 30, anim: "cast", type: "aoe", data: { mult: 0.5, radius: 10, color: 0x00aa00, dot: 10 }, desc: "Mass Infect (30 MP)" },
                 { name: "System Override", cd: 10000, mpCost: 60, anim: "cast", type: "buff", data: { type: "rapidfire", dur: 5000 }, desc: "Overclock++ (60 MP)" }
             ],
-            ultimate: { name: "Red Screen", cd: 60000, mpCost: 100, anim: "cast", type: "aoe", data: { mult: 0.0, radius: 20, color: 0xff0000, slow: 0.9 }, desc: "Freeze World (100 MP)" }
+            ultimate: { name: "Red Screen", cd: 60000, mpCost: 100, anim: "cast", type: "aoe", data: { mult: 0.0, radius: 20, color: 0xff0000, slow: 0.9, isUltimate: true }, desc: "Freeze World (100 MP)" }
         }
     ],
     "SHADOW": [
@@ -177,7 +187,7 @@ window.CLASS_TREES = {
                 { name: "Shadow Stars", cd: 1000, mpCost: 15, anim: "shoot", type: "shoot", data: { mult: 1.0, speed: 1.0, color: 0xaa00ff, proj: "bullet", count: 3, spread: 0.2 }, desc: "Triple Throw (15 MP)" },
                 { name: "Ghost Form", cd: 5000, mpCost: 40, anim: "cast", type: "buff", data: { type: "invuln", val: 1, dur: 3000 }, desc: "Untouchable (40 MP)" }
             ],
-            ultimate: { name: "Void Strike", cd: 50000, mpCost: 100, anim: "slash", type: "melee", data: { mult: 20.0, range: [10, 5], color: 0x000000, vfx: "slash_h" }, desc: "The End (100 MP)" }
+            ultimate: { name: "Void Strike", cd: 50000, mpCost: 100, anim: "slash", type: "melee", data: { mult: 20.0, range: [10, 5], color: 0x000000, vfx: "slash_h", isUltimate: true }, desc: "The End (100 MP)" }
         }
     ],
     "BRAWLER": [
@@ -190,7 +200,7 @@ window.CLASS_TREES = {
                 { name: "Earthquake", cd: 3000, mpCost: 30, anim: "slam", type: "aoe", data: { mult: 3.0, radius: 6, color: 0xff8800, vfx: "nuke" }, desc: "Shatter Earth (30 MP)" },
                 { name: "Titan Mode", cd: 10000, mpCost: 60, anim: "cast", type: "buff", data: { type: "atk", val: 2.0, dur: 6000 }, desc: "Double Dmg (60 MP)" }
             ],
-            ultimate: { name: "Meteor Strike", cd: 35000, mpCost: 100, anim: "slam", type: "aoe", data: { mult: 10.0, radius: 10, color: 0xff4400, vfx: "nuke" }, desc: "METEOR (100 MP)" }
+            ultimate: { name: "Meteor Strike", cd: 35000, mpCost: 100, anim: "slam", type: "aoe", data: { mult: 10.0, radius: 10, color: 0xff4400, vfx: "nuke", isUltimate: true }, desc: "METEOR (100 MP)" }
         }
     ],
     "GUNSLINGER": [
@@ -203,7 +213,7 @@ window.CLASS_TREES = {
                 { name: "Fan Fire", cd: 2000, mpCost: 30, anim: "shoot", type: "shoot", data: { mult: 0.6, speed: 0.9, color: 0xffaa00, proj: "bullet", count: 6, spread: 0.5 }, desc: "Unload Clip (30 MP)" },
                 { name: "Deadeye", cd: 8000, mpCost: 40, anim: "cast", type: "buff", data: { type: "crit", val: 1.0, dur: 5000 }, desc: "Sure Shot (40 MP)" }
             ],
-            ultimate: { name: "High Noon", cd: 45000, mpCost: 100, anim: "shoot", type: "aoe", data: { mult: 5.0, radius: 20, color: 0xffff00 }, desc: "Target All (100 MP)" }
+            ultimate: { name: "High Noon", cd: 45000, mpCost: 100, anim: "shoot", type: "aoe", data: { mult: 5.0, radius: 20, color: 0xffff00, isUltimate: true }, desc: "Target All (100 MP)" }
         }
     ],
     "SQUIRE": [
@@ -216,7 +226,7 @@ window.CLASS_TREES = {
                 { name: "Shield Charge", cd: 2500, mpCost: 20, anim: "punch", type: "melee", data: { mult: 3.0, range: [4, 2], color: 0x00aaff, knockback: 3.0 }, desc: "Heavy Bash (20 MP)" },
                 { name: "Fortress", cd: 12000, mpCost: 50, anim: "cast", type: "buff", data: { type: "invuln", val: 1, dur: 3000 }, desc: "Invincible (50 MP)" }
             ],
-            ultimate: { name: "Holy Ground", cd: 60000, mpCost: 100, anim: "cast", type: "aoe", data: { mult: 5.0, radius: 10, color: 0xffffff, heal: 200 }, desc: "Sanctuary (100 MP)" }
+            ultimate: { name: "Holy Ground", cd: 60000, mpCost: 100, anim: "cast", type: "aoe", data: { mult: 5.0, radius: 10, color: 0xffffff, heal: 200, isUltimate: true }, desc: "Sanctuary (100 MP)" }
         }
     ],
     "REAPER": [
@@ -229,7 +239,7 @@ window.CLASS_TREES = {
                 { name: "Death's Due", cd: 4000, mpCost: 35, anim: "cast", type: "aoe", data: { mult: 1.8, radius: 8, color: 0x220022, lifesteal: 0.8 }, desc: "Mass Drain (35 MP)" },
                 { name: "Ghost Form", cd: 12000, mpCost: 60, anim: "cast", type: "buff", data: { type: "invuln", val: 1, dur: 3000 }, desc: "Invincible (60 MP)" }
             ],
-            ultimate: { name: "Soul Storm", cd: 40000, mpCost: 100, anim: "spin", type: "aoe", data: { mult: 5.0, radius: 15, color: 0xaa00aa, lifesteal: 1.0 }, desc: "Soul Harvest (100 MP)" }
+            ultimate: { name: "Soul Storm", cd: 40000, mpCost: 100, anim: "spin", type: "aoe", data: { mult: 5.0, radius: 15, color: 0xaa00aa, lifesteal: 1.0, isUltimate: true }, desc: "Soul Harvest (100 MP)" }
         }
     ],
     "SUMMONER": [
@@ -242,7 +252,20 @@ window.CLASS_TREES = {
                 { name: "Alpha Wolf", cd: 5000, mpCost: 40, anim: "cast", type: "summon", data: { type: "WOLF", hp: 150, atk: 30, color: 0x00ffaa, duration: 90 }, desc: "Alpha Wolf (40 MP)" },
                 { name: "Iron Golem", cd: 12000, mpCost: 80, anim: "cast", type: "summon", data: { type: "GOLEM", hp: 600, atk: 40, color: 0x555555, duration: 90 }, desc: "Iron Golem (80 MP)" }
             ],
-            ultimate: { name: "Stampede", cd: 45000, mpCost: 100, anim: "cast", type: "summon", data: { type: "WOLF", hp: 100, atk: 25, color: 0xff0000, duration: 30, count: 5 }, desc: "Summon 5/Pack (100 MP)" }
+            ultimate: { name: "Stampede", cd: 45000, mpCost: 100, anim: "cast", type: "summon", data: { type: "WOLF", hp: 100, atk: 25, color: 0xff0000, duration: 30, count: 5, isUltimate: true }, desc: "Summon 5/Pack (100 MP)" }
+        }
+    ],
+    "FLAME WIZARD": [
+        {
+            name: "PYROMANCER",
+            desc: "Walking cataclysm.",
+            stats: { hp: 220, atk: 35, speed: 0.24, color: 0xff2200 },
+            skills: [
+                { name: "Pyroclast", cd: 500, mpCost: 5, anim: "shoot", type: "shoot", data: { mult: 2.0, speed: 0.9, color: 0xff5500, proj: "fireball_large", vfx: "trail_heavy" }, desc: "Magma Shot (5 MP)" },
+                { name: "Inferno Step", cd: 2000, mpCost: 25, anim: "dash", type: "dash", data: { speed: 1.1, invuln: 500, color: 0xff0000, vfx: "fire_dash_heavy", mult: 1.0 }, desc: "Long Teleport (25 MP)" },
+                { name: "Hell Spirits", cd: 150, mpCost: 8, anim: "shoot", type: "shoot", data: { mult: 1.5, speed: 0.7, color: 0xff0000, proj: "fireball_large", vfx: "homing_fire_heavy", count: 2, homing: true }, desc: "2x Rapid Fire (8 MP)" },
+            ],
+            ultimate: { name: "Meteor", cd: 50000, mpCost: 100, anim: "cast", type: "aoe", data: { mult: 10.0, radius: 15, color: 0xff4400, vfx: "meteor_strike", isUltimate: true }, desc: "Doomsday (100 MP)" }
         }
     ]
 };

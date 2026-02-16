@@ -908,11 +908,11 @@ Object.assign(game, {
             }
         }
 
-        // Awakening Event (Floor 50)
-        if (this.floor === 50 && !this.player.awakened) {
-            this.triggerAwakening();
-            return;
-        }
+        // Awakening Event (Floor 50) - REMOVED
+        // if (this.floor === 50 && !this.player.awakened) {
+        //    this.triggerAwakening();
+        //    return;
+        // }
 
         // DELEGATE TO MANAGER
         this.processFloorEvent(false);

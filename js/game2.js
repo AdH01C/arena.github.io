@@ -215,12 +215,36 @@ const game = {
             hp: data.stats.hp, maxHp: data.stats.hp,
             atk: data.stats.atk, baseAtk: data.stats.atk,
             speed: data.stats.speed, baseSpeed: data.stats.speed,
-            mp: 100, maxMp: 100, mpRegen: 0.1, hpRegen: 0.05,
+            mp: data.stats.mp || 100, maxMp: data.stats.mp || 100, mpRegen: data.stats.mpRegen || 0.1, hpRegen: 0.05,
             xp: 0, maxXp: 100, level: 1, gold: 0,
             ap: 0, str: 10, vit: 10, int: 10, agi: 10, potions: 5,
             cooldowns: { z: 0, x: 0, c: 0 }, invulnTimer: 0, buffs: { shield: 0, rapidfire: 0 },
             animState: { current: 'idle', time: 0, duration: 0, locked: false }
         };
+
+        // BRAWLER COMBO INIT
+        if (classKey === 'BRAWLER') {
+            this.combo = 0;
+            // Create UI if not exists
+            if (!document.getElementById('combo-counter')) {
+                const div = document.createElement('div');
+                div.id = 'combo-counter';
+                div.style.position = 'absolute';
+                div.style.top = '15%';
+                div.style.left = '50%';
+                div.style.transform = 'translate(-50%, -50%)';
+                div.style.fontSize = '40px';
+                div.style.fontWeight = 'bold';
+                div.style.color = '#ffaa00';
+                div.style.textShadow = '0 0 10px #ff0000';
+                div.style.pointerEvents = 'none';
+                div.style.display = 'none';
+                document.body.appendChild(div);
+                this.comboUI = div;
+            } else {
+                this.comboUI = document.getElementById('combo-counter');
+            }
+        }
         engine.scene.add(this.player.mesh);
         engine.updateEntityUI(this.player);
         this.updateHUD(); // Initial HUD update
@@ -267,7 +291,20 @@ const game = {
         const xpFill = document.getElementById('hud-xp-fill');
         if (classTxt) classTxt.innerText = this.player.classKey || "HERO";
         if (lvlTxt) lvlTxt.innerText = `LVL ${this.player.level}`;
+        if (lvlTxt) lvlTxt.innerText = `LVL ${this.player.level}`;
         if (xpFill) xpFill.style.width = Math.max(0, xpPct) + '%';
+
+        // Update Combo UI (Brawler)
+        if (this.player.classKey === 'BRAWLER' && this.comboUI) {
+            if (this.combo > 0) {
+                this.comboUI.style.display = 'block';
+                this.comboUI.innerText = `${this.combo} HIT COMBO!`;
+                this.comboUI.style.fontSize = `${30 + (this.combo * 5)}px`;
+                this.comboUI.style.color = this.combo >= 5 ? '#ff4400' : '#ffaa00';
+            } else {
+                this.comboUI.style.display = 'none';
+            }
+        }
 
         // Cooldown Pie Timers
         const slots = ['z', 'x', 'c', 'v'];
@@ -349,7 +386,14 @@ const game = {
         // STANDARD MOB SPAWNING
         const mobTypes = ['TROOPER', 'SKELETON', 'DRONE', 'WASP', 'GOLEM'];
         const levelMult = Math.max(1, this.currentLevel || 1);
-        const count = 5 + Math.floor(levelMult * 1.5); // More mobs per level
+        // SCALING LOGIC (Exponential + Density Capping)
+        const rawCount = 5 + Math.floor(levelMult * 1.5);
+        const maxMobs = 25; // Hard cap to prevent lag
+        const actualCount = Math.min(rawCount, maxMobs);
+        const densityMult = rawCount / actualCount; // Buff remaining mobs if we capped them
+
+        // Exponential Difficulty: 1.1^Level (approx 2.5x at Lv10, 6.7x at Lv20)
+        const difficultyMult = Math.pow(1.1, this.currentLevel - 1);
 
         // Mob Variety Logic
         let pool = [];
@@ -358,7 +402,7 @@ const game = {
         else if (this.currentLevel < 10) pool = ['TROOPER', 'DRONE', 'SKELETON'];
         else pool = mobTypes;
 
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < actualCount; i++) {
             const type = pool[Math.floor(Math.random() * pool.length)];
             let startX = 10 + Math.random() * 30; // Spawn mostly on right side initially
             let startY = 5;
@@ -367,19 +411,32 @@ const game = {
                 startX = p.x; startY = p.y + 2;
             }
 
-            const modelData = Models.createMinion(0xff0000, 1, Math.random() * 100, type);
-            const maxHp = 100 * (1 + (levelMult - 1) * 0.2); // +20% HP per level
+            const modelData = Models.createMinion(0xff0000, 1 + (densityMult * 0.1), Math.random() * 100, type); // Slightly larger if dense
+
+            // Stats Calculation
+            const baseHp = 100 * difficultyMult;
+            const finalHp = baseHp * densityMult;
+
+            const baseAtk = 10 * difficultyMult;
+            const finalAtk = baseAtk * densityMult;
+
+            const baseXp = (20 * (1 + (this.currentLevel - 1) * 0.2));
+            const finalXp = baseXp * densityMult;
+
+            const baseGold = 10 + (levelMult * 5);
+            const finalGold = baseGold * densityMult;
 
             const mob = {
                 mesh: modelData.mesh, limbs: this.cacheLimbs(modelData.mesh),
                 x: startX, y: startY, vx: 0, vy: 0,
                 isGrounded: false, type: type,
-                hp: maxHp, maxHp: maxHp,
-                atk: 10 * (1 + (levelMult - 1) * 0.1), // +10% ATK per level
+                hp: finalHp, maxHp: finalHp,
+                atk: finalAtk,
                 status: { dot: 0, slow: 0 }, buffs: { shield: 0 },
                 animState: { current: 'idle', time: 0, duration: 0 },
                 speedMult: 1 + (this.currentLevel * 0.05), // +5% Speed/Rate per level
-                goldValue: 10 + Math.floor(Math.random() * 20) + (levelMult * 5)
+                goldValue: Math.floor(finalGold),
+                xpValue: Math.floor(finalXp) // Custom XP value support needed in gainXp
             };
             this.mobs.push(mob);
             engine.scene.add(mob.mesh);
@@ -1078,7 +1135,6 @@ const game = {
         }
 
         // MP CHECK
-        // MP CHECK
         const cost = skill.mpCost || 0;
         if (this.player.mp < cost) {
             // Prevent Spam: Check timestamp
@@ -1154,6 +1210,11 @@ const game = {
             const dmg = this.player.atk * data.mult;
             const color = data.color || 0xffffff;
 
+            // BRAWLER COMBO HIT CHECK (Pre-calc)
+            if (this.player.classKey === 'BRAWLER' && data.name === 'Punch') {
+                // We do this check inside the collision loop typically, but to count "attacks" checking here
+                // Actually, needs to be on HIT.
+            }
             // VFX SELECTOR
             const dir = this.player.facingRight ? 1 : -1;
 
@@ -1278,6 +1339,22 @@ const game = {
                 }
 
                 if (hit) {
+                    // BRAWLER COMBO INCREMENT
+                    if (this.player.classKey === 'BRAWLER' && data.name === 'Punch') {
+                        if (typeof this.combo === 'undefined') this.combo = 0;
+                        if (this.combo < 5) this.combo++;
+                        this.updateHUD();
+                        // Attack Speed Buff: Reduce Z cooldown?
+                        // Simple: Just flat -100ms next punch time?
+                        // Or just stats.speed?
+                        // Let's just keep it simple: Damage Bonus is the main payoff.
+                        // But plan said Attack Speed.
+                        // We'll reduce current cooldown of Punch by 50ms * combo
+                        if (this.player.cooldowns.z > Date.now()) {
+                            this.player.cooldowns.z -= (50 * this.combo);
+                        }
+                    }
+
                     this.takeDamage(m, dmg, this.player);
                     // Use skill knockback or default
                     const kb = (data.knockback || 0.3);
@@ -1301,14 +1378,90 @@ const game = {
         // Muzzle Flash
         engine.spawnParticles({ x: this.player.x + (this.player.facingRight ? 1 : -1), y: this.player.y + 1, z: 0 }, 'explode', 0xffff00, 5);
 
-        for (let i = 0; i < count; i++) {
-            const vyOffset = (Math.random() - 0.5) * spread;
+        // LIGHT BOW ANIMATION
+        if (data.vfx === 'bow') {
             const dirX = this.player.facingRight ? 1 : -1;
+            const bowGroup = new THREE.Group();
+
+            // Refined Bow Shape (Curved Line)
+            const curve = new THREE.QuadraticBezierCurve3(
+                new THREE.Vector3(0, 1.5, 0),
+                new THREE.Vector3(0.5, 0, 0),
+                new THREE.Vector3(0, -1.5, 0)
+            );
+            const points = curve.getPoints(10);
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({ color: 0xffff00, linewidth: 2 });
+            const bow = new THREE.Line(geometry, material);
+
+            // Bowstring
+            const stringGeo = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, 1.5, 0),
+                new THREE.Vector3(0, -1.5, 0)
+            ]);
+            const string = new THREE.Line(stringGeo, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 }));
+
+            bowGroup.add(bow);
+            bowGroup.add(string);
+
+            // Position: In front of player
+            bowGroup.position.set(this.player.x + (dirX * 0.8), this.player.y + 1, 0);
+            if (!this.player.facingRight) bowGroup.rotation.y = Math.PI; // Flip for left
+
+            engine.scene.add(bowGroup);
+
+            // Animate: Scale up -> Release -> Fade
+            let frame = 0;
+            const animBow = () => {
+                frame++;
+                if (frame < 5) {
+                    bowGroup.scale.multiplyScalar(1.1); // Expand
+                    string.position.x = -0.2 * frame; // Pull back string check? No, manual offset better
+                } else if (frame === 5) {
+                    string.position.x = 0; // Release
+                } else {
+                    bow.material.opacity = 1 - (frame - 5) / 10;
+                    string.material.opacity = 0.5 - (frame - 5) / 20;
+                    if (frame > 15) {
+                        engine.scene.remove(bowGroup);
+                        return;
+                    }
+                }
+                requestAnimationFrame(animBow);
+            };
+            animBow();
+        }
+
+        for (let i = 0; i < count; i++) {
+            let vx, vy, startX;
+
+            if (data.homing) {
+                // Fire Spirits: Burst out in random directions first
+                const angle = (Math.random() * Math.PI * 2);
+                vx = Math.cos(angle) * data.speed;
+                vy = Math.sin(angle) * data.speed;
+                startX = this.player.x + vx * 2; // Start slightly away so they don't clip instantly? No, center is fine.
+                // Let's spawn them at player center but moving out
+                startX = this.player.x;
+            } else {
+                const vyOffset = (Math.random() - 0.5) * spread;
+                const dirX = this.player.facingRight ? 1 : -1;
+                vx = dirX * data.speed;
+                vy = vyOffset;
+                startX = this.player.x + dirX;
+            }
+
             this.spawnProjectile({
-                x: this.player.x + dirX, y: this.player.y + 1,
-                vx: dirX * data.speed, vy: vyOffset,
-                dmg: this.player.atk * data.mult, color: data.color, life: 100, owner: this.player,
-                projType: data.proj // 'missile', 'bullet'
+                x: startX, y: this.player.y + 1,
+                vx: vx, vy: vy,
+                dmg: this.player.atk * data.mult, color: data.color,
+                life: data.life || (data.homing ? 300 : 100),
+                owner: this.player,
+                projType: data.proj, // 'missile', 'bullet', 'fireball'
+                homing: data.homing,
+                vfx: data.vfx,
+                piercing: data.piercing,
+                scale: data.scale
             });
         }
     },
@@ -1453,6 +1606,24 @@ const game = {
                 engine.spawnParticles(this.player.mesh.position, 'explode', 0x00ff00, 150);
                 break;
 
+            case 'FLAME WIZARD':
+                // SUPERNOVA: Massive heatwave
+                engine.screenFlash('#ff4400', 600);
+                engine.screenTint('#ff2200', 0.5, 4000);
+                // Excessive particles
+                engine.spawnParticles(this.player.mesh.position, 'explode', 0xff4400, 300);
+                // Ground fissures (using slash lines logic but random)
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        engine.spawnParticles({
+                            x: this.player.x + (Math.random() - 0.5) * 15,
+                            y: this.player.y,
+                            z: 0
+                        }, 'rise', 0xffff00, 5);
+                    }, i * 200);
+                }
+                break;
+
             default: // RONIN
                 // DIMENSION CUT: White flash
                 engine.screenFlash('#ffffff', 400);
@@ -1461,8 +1632,8 @@ const game = {
     },
 
     handleAoE(data) {
-        // ULTIMATE DETECTION: Check if this is a massive ultimate (radius > 15 or mult > 5)
-        const isUltimate = data.radius > 15 || data.mult >= 5;
+        // ULTIMATE DETECTION: Check if this is a massive ultimate (explicit flag)
+        const isUltimate = !!data.isUltimate;
         const playerClass = this.player.classKey || 'RONIN'; // Define here for both blocks
 
         if (isUltimate) {
@@ -1536,6 +1707,289 @@ const game = {
             // 6. PARTICLE EXPLOSION (200+ particles)
             engine.spawnParticles(this.player.mesh.position, 'explode', 0xffffff, 200);
             setTimeout(() => engine.spawnParticles(this.player.mesh.position, 'rise', 0x00ffff, 100), 100);
+
+        } else if (data.vfx === 'holy_nova') {
+            // === HOLY NOVA REFAB ===
+            // 1. Expanding Sphere
+            const sphere = new THREE.Mesh(
+                new THREE.SphereGeometry(1, 32, 32),
+                new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.5, wireframe: true })
+            );
+            sphere.position.copy(this.player.mesh.position);
+            engine.scene.add(sphere);
+
+            // Animate Sphere Expansion
+            let sf = 0;
+            const animSphere = () => {
+                sf++;
+                const scale = 1 + (sf / 20) * data.radius; // Expand to radius
+                sphere.scale.setScalar(scale);
+                sphere.material.opacity = 0.5 - sf / 40;
+                if (sf < 20) requestAnimationFrame(animSphere);
+                else engine.scene.remove(sphere);
+            };
+            animSphere();
+
+            // 2. Light Avatar (Light form above player)
+            const avatar = this.player.mesh.clone();
+            avatar.position.set(this.player.x, this.player.y + 0.5, 0);
+            avatar.scale.setScalar(1.2);
+            avatar.traverse(c => {
+                if (c.isMesh) {
+                    c.material = new THREE.MeshBasicMaterial({ color: 0xffffaa, transparent: true, opacity: 0 });
+                }
+            });
+            engine.scene.add(avatar);
+
+            // Animate Avatar (Fade In -> Fade Out)
+            let af = 0;
+            const animAvatar = () => {
+                af++;
+                if (af < 20) avatar.traverse(c => { if (c.isMesh) c.material.opacity = af / 20; }); // Fade In (20 frames)
+                else avatar.traverse(c => { if (c.isMesh) c.material.opacity = 0.8 - (af - 20) / 100; }); // Slow Fade Out
+
+                avatar.position.y += 0.02; // Float up slowly
+
+                if (af < 120) requestAnimationFrame(animAvatar); // 2 seconds (60fps)
+                else engine.scene.remove(avatar);
+            };
+            animAvatar();
+
+            // 3. Divine Lasers (Hit enemies from top)
+            this.mobs.forEach(m => {
+                const dist = new THREE.Vector3(m.x, m.y, 0).distanceTo(this.player.mesh.position);
+                if (dist < data.radius) {
+                    // Spawn Laser
+                    const laser = new THREE.Mesh(
+                        new THREE.CylinderGeometry(0.2, 0.2, 20, 8),
+                        new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.8 })
+                    );
+                    laser.position.set(m.x, m.y + 10, 0); // Start high
+                    engine.scene.add(laser);
+
+                    // Animate Laser Strike
+                    let lf = 0;
+                    const animLaser = () => {
+                        lf++;
+                        laser.position.y -= 1.0; // Fall down
+                        laser.material.opacity = 0.8 - lf / 15;
+                        if (lf < 15) requestAnimationFrame(animLaser);
+                        else engine.scene.remove(laser);
+                    };
+                    animLaser();
+
+                    // Spark at impact
+                    setTimeout(() => {
+                        engine.spawnParticles(m.mesh.position, 'explode', 0xffff00, 10);
+                    }, 100);
+                }
+            });
+
+            engine.shake(0.5);
+
+        } else if (data.vfx === 'brawler_slam') {
+            // === BRAWLER SLAM VFX ===
+            // CHECK COMBO BONUS
+            let slamMult = data.mult;
+            if (this.player.classKey === 'BRAWLER' && this.combo > 0) {
+                const bonus = 0.5 * this.combo;
+                slamMult += bonus;
+                data.mult = slamMult; // Update for damage loop
+                engine.createFloatingText(`FINISHER! x${slamMult.toFixed(1)}`, { x: this.player.x, y: this.player.y + 3, z: 0 }, '#ff4400', 2);
+                this.combo = 0; // Consume Stacks
+                this.updateHUD();
+            }
+
+            // 1. Fighting Spirit (Red Avatar)
+            const spirit = this.player.mesh.clone();
+            spirit.position.set(this.player.x, this.player.y, 0); // Overlap
+            spirit.scale.setScalar(1.4); // Bigger
+            spirit.traverse(c => {
+                if (c.isMesh) {
+                    c.material = new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.6, wireframe: true });
+                }
+            });
+            engine.scene.add(spirit);
+
+            // Animate Spirit (Vibrate & Fade)
+            let sf = 0;
+            const animSpirit = () => {
+                sf++;
+                spirit.position.x = this.player.x + (Math.random() - 0.5) * 0.2;
+                spirit.position.y = this.player.y + (Math.random() - 0.5) * 0.2;
+                spirit.scale.multiplyScalar(1.01); // Grow slightly
+                spirit.traverse(c => { if (c.isMesh) c.material.opacity = 0.6 - sf / 20; });
+
+                if (sf < 20) requestAnimationFrame(animSpirit);
+                else engine.scene.remove(spirit);
+            };
+            animSpirit();
+
+            // 2. Massive Ground Impact (Crater Ring)
+            const ring = new THREE.Mesh(
+                new THREE.RingGeometry(1, data.radius, 32),
+                new THREE.MeshBasicMaterial({ color: 0xff8800, transparent: true, opacity: 0.8, side: THREE.DoubleSide })
+            );
+            ring.position.set(this.player.x, this.player.y + 0.5, 0);
+            engine.scene.add(ring);
+
+            let rf = 0;
+            const animRing = () => {
+                rf++;
+                ring.scale.setScalar(1 + rf * 0.1);
+                ring.material.opacity = 0.8 - rf / 15;
+                if (rf < 15) requestAnimationFrame(animRing);
+                else engine.scene.remove(ring);
+            };
+            animRing();
+
+            // 3. Debris (Rocks flying up)
+            for (let i = 0; i < 8; i++) {
+                const rock = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.3, 0.3, 0.3),
+                    new THREE.MeshBasicMaterial({ color: 0x553300 })
+                );
+                // Random position within radius
+                const angle = Math.random() * Math.PI * 2;
+                const r = Math.random() * (data.radius * 0.8);
+                rock.position.set(this.player.x + Math.cos(angle) * r, this.player.y, 0);
+
+                engine.scene.add(rock);
+
+                const vx = (Math.random() - 0.5) * 0.5;
+                const vy = 0.5 + Math.random();
+
+                // Closure for animation
+                let rockFrame = 0;
+                const animRock = () => {
+                    rockFrame++;
+                    rock.position.x += vx;
+                    rock.position.y += vy - (rockFrame * 0.05); // Gravity
+                    rock.rotation.z += 0.2;
+
+                    // Remove when below ground or too long
+                    if (rock.position.y < this.player.y - 2 || rockFrame > 60) {
+                        engine.scene.remove(rock);
+                    } else {
+                        requestAnimationFrame(animRock);
+                    }
+                };
+                animRock();
+            }
+
+            engine.shake(1.5); // Heavy shake
+
+        } else if (data.vfx === 'ring_fire' || data.vfx === 'ring_fire_heavy') {
+            // === INFERNO / HELLFIRE ===
+            const isHeavy = data.vfx === 'ring_fire_heavy';
+            const color = isHeavy ? 0xff0000 : 0xff4400;
+
+            // Expanding Fire Ring
+            const ring = new THREE.Mesh(
+                new THREE.RingGeometry(0.5, data.radius, 32),
+                new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent: true, opacity: 0.8 })
+            );
+            ring.position.set(this.player.x, this.player.y + 0.1, 0);
+            ring.rotation.x = -Math.PI / 2;
+            engine.scene.add(ring);
+
+            // Expansion Animation
+            let rf = 0;
+            const animFire = () => {
+                rf++;
+                const scale = 1 + (rf / 20) * 0.5;
+                ring.scale.setScalar(scale);
+                ring.material.opacity = 0.8 - rf / 30;
+
+                // Spawn fire particles along the ring edge
+                if (rf % 2 === 0) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const r = data.radius * scale;
+                    // We need world coords for particles
+                    // ring.position is center.
+                    const px = this.player.x + Math.cos(angle) * r;
+                    const py = this.player.y;
+                    const pz = Math.sin(angle) * r; // Z in 3D is Y in 2D plane? No, Z is depth.
+                    // Wait, game is 2D side scroller visually but used 3D coords?
+                    // Player is at z=0. Ring is rotated X -90. So Ring Z is Player Z (depth).
+                    // Actually, let's stick to spawnParticles standard 2D logic: x, y, z=0
+                    // But for a ring on the ground...
+                    // The game seems to be 2.5D. 
+                    // Let's spawn particles moving UP from the ground.
+
+                    // Simple: particles at random pos in radius
+                    engine.spawnParticles({
+                        x: this.player.x + (Math.random() - 0.5) * data.radius * 2,
+                        y: this.player.y + Math.random() * 2,
+                        z: (Math.random() - 0.5) * 2
+                    }, 'rise', color, 2);
+                }
+
+                if (rf < 30) requestAnimationFrame(animFire);
+                else engine.scene.remove(ring);
+            };
+            animFire();
+            engine.shake(0.5);
+
+        } else if (data.vfx === 'meteor_strike') {
+            // === METEOR STRIKE (Ultimate or Heavy Skill) ===
+            // 1. Warning Marker
+            engine.screenFlash('#ff8800', 200);
+            const marker = new THREE.Mesh(
+                new THREE.RingGeometry(0.5, data.radius, 32),
+                new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide, transparent: true, opacity: 0.5 })
+            );
+            marker.position.set(this.player.x + (this.player.facingRight ? 5 : -5), this.player.y + 0.1, 0); // Aimed ahead? Or self?
+            // Let's make it self-centered for now or screen centered? 
+            // Logic says AoE usually self-centered in this codebase unless projectile. 
+            // Let's put it on player.
+            marker.position.set(this.player.x, this.player.y + 0.1, 0);
+            marker.rotation.x = -Math.PI / 2;
+            engine.scene.add(marker);
+
+            // 2. Meteor Fall (Delayed)
+            setTimeout(() => {
+                engine.scene.remove(marker);
+
+                // Giant Sphere
+                const meteor = new THREE.Mesh(
+                    new THREE.SphereGeometry(4, 16, 16),
+                    new THREE.MeshBasicMaterial({ color: 0xff4400, wireframe: true })
+                );
+                meteor.position.set(this.player.x, this.player.y + 20, 0);
+                engine.scene.add(meteor);
+
+                // Fall Animation
+                let mf = 0;
+                const animMeteor = () => {
+                    mf++;
+                    meteor.position.y -= 1.0; // Fast fall
+                    meteor.rotation.x += 0.1;
+                    meteor.rotation.z += 0.1;
+
+                    if (meteor.position.y <= this.player.y) {
+                        // IMPACT
+                        engine.scene.remove(meteor);
+                        engine.shake(4.0);
+                        engine.screenFlash('#ffffff', 500);
+                        engine.spawnParticles(this.player.mesh.position, 'explode', 0xff4400, 100);
+                        engine.spawnParticles(this.player.mesh.position, 'spark', 0xffff00, 50);
+
+                        // Damage is handled by the main loop below (radius check)
+                        // But we delayed the impact visual... damage should technically coincide.
+                        // The takeDamage call below happens IMMEDIATELY when function is called.
+                        // This visual is "late". 
+                        // For 'cast' type skills, ideally we await impact.
+                        // But 'handleAoE' is called in 'useSkill'.
+                        // If we want delayed damage, we should move the damage loop into the timeout.
+                        // For now, I'll sync visual to be fast enough or accept the disconnect (Explosion magic).
+                        // Actually, let's keep it simple. Instant damage (the heatwave), then meteor finishes them off visually.
+                    } else {
+                        requestAnimationFrame(animMeteor);
+                    }
+                };
+                animMeteor();
+            }, 100);
 
         } else {
             // === NORMAL AOE MODE ===
@@ -1757,6 +2211,34 @@ const game = {
             setTimeout(() => this.player.atk = Math.max(originalAtk, this.player.atk / data.atkVal), data.dur);
             engine.createFloatingText(`IRON WILL`, this.player.mesh.position, '#ff5500');
         }
+        else if (data.type === 'phoenix') {
+            // PHOENIX FORM: Speed + Burn Aura
+            this.player.speed *= data.val;
+            engine.createFloatingText("PHOENIX FORM", this.player.mesh.position, '#ff4400');
+
+            const interval = setInterval(() => {
+                // Aura Visuals
+                engine.spawnParticles({
+                    x: this.player.x + (Math.random() - 0.5),
+                    y: this.player.y + 1 + (Math.random() - 0.5),
+                    z: 0
+                }, 'rise', 0xffaa00, 2);
+
+                // Aura Damage (Burn nearby)
+                this.mobs.forEach(m => {
+                    const d = Math.abs(m.x - this.player.x);
+                    if (d < 3) {
+                        this.takeDamage(m, this.player.atk * 0.2, this.player);
+                    }
+                });
+            }, 500);
+
+            setTimeout(() => {
+                this.player.speed /= data.val;
+                clearInterval(interval);
+                engine.createFloatingText("Phoenix Ended", this.player.mesh.position, '#888888');
+            }, data.dur);
+        }
 
         engine.spawnParticles(this.player.mesh.position, 'rise', 0xffffff, 15);
     },
@@ -1790,20 +2272,34 @@ const game = {
         const dir = this.player.facingRight ? 1 : -1;
         const speed = data.speed || 2.0;
         this.player.vx = dir * speed;
+        this.player.isDashing = true;
+        setTimeout(() => this.player.isDashing = false, 300);
 
         if (data.invuln) this.player.invulnTimer = (data.invuln / 1000) * 60;
 
         // Visuals
         const color = data.color || 0x00ffff;
         engine.spawnParticles(this.player.mesh.position, 'smoke', color, 10);
-        // Slash Trail
+
+        // Trail VFX
+        const trailVfx = data.vfx === 'fire_dash' || data.vfx === 'fire_dash_heavy' ? 'rise' : 'slash_h';
+        const trailColor = (data.vfx === 'fire_dash' || data.vfx === 'fire_dash_heavy') ? 0xff4400 : color;
+
         for (let i = 0; i < 5; i++) {
             setTimeout(() => {
                 engine.spawnParticles({
                     x: this.player.x + (dir * i * 2),
                     y: this.player.y,
                     z: 0
-                }, 'slash_h', color, 5);
+                }, trailVfx, trailColor, 5);
+
+                if (data.vfx === 'fire_dash_heavy') {
+                    engine.spawnParticles({
+                        x: this.player.x + (dir * i * 2),
+                        y: this.player.y,
+                        z: 0
+                    }, 'spark', 0xffff00, 3);
+                }
             }, i * 50);
         }
 
@@ -1826,7 +2322,12 @@ const game = {
             if (inFront && Math.abs(dx) < rangeW && dy < rangeH) {
                 this.takeDamage(m, this.player.atk * mult, this.player);
                 m.vx = dir * 1.0; // Knockback with dash
-                engine.spawnParticles(m.mesh.position, 'slash', color, 10);
+
+                if (data.vfx === 'fire_dash' || data.vfx === 'fire_dash_heavy') {
+                    engine.spawnParticles(m.mesh.position, 'explode', 0xff4400, 10);
+                } else {
+                    engine.spawnParticles(m.mesh.position, 'slash', color, 10);
+                }
             }
         });
     },
@@ -1895,8 +2396,8 @@ const game = {
         // Knockback Logic
         if (source) {
             const dir = entity.x > source.x ? 1 : -1;
-            const force = ((source.knockback || 0.5) * 3);
-            entity.vx = dir * force * 1.75;
+            const force = ((source.knockback || 0.5) * 0.8); // when enemies are hit by long range attack
+            entity.vx = dir * force;
             entity.vy = 0.25 * force; // Slight pop up
 
             // STUN to prevent immediate overwrite of velocity
@@ -1927,7 +2428,7 @@ const game = {
             const isMob = this.mobs.includes(entity);
             if (isMob) {
                 // TESTING: 100x XP
-                const xpGain = (20 * (1 + (this.currentLevel - 1) * 0.2));
+                const xpGain = entity.xpValue || (20 * (1 + (this.currentLevel - 1) * 0.2));
                 this.gainXp(Math.floor(xpGain));
 
                 // Gold Drop
@@ -2155,19 +2656,78 @@ const game = {
                 p.mesh.rotation.z = angle;
             }
 
+            // HOMING LOGIC
+            if (p.homing) {
+                // Find closest target
+                let target = null;
+                let minDist = 1000; // Map wide
+                const targets = p.owner === this.player ? this.mobs : [this.player, ...this.summons];
+
+                targets.forEach(t => {
+                    const d = Math.abs(t.x - p.x) + Math.abs(t.y - p.y); // Manhattan dist ok for quick check
+                    if (d < minDist && t.hp > 0) {
+                        minDist = d;
+                        target = t;
+                    }
+                });
+
+                if (target) {
+                    const dx = target.x - p.x;
+                    const dy = (target.y + 1) - p.y; // Aim for center
+                    // Steer towards target
+                    // Simple steering: adjust VX/VY
+                    const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+                    // Desired Dir
+                    const angleTo = Math.atan2(dy, dx);
+                    const currentAngle = Math.atan2(p.vy, p.vx);
+
+                    // Turn rate
+                    let diff = angleTo - currentAngle;
+                    // Normalize -PI to PI
+                    while (diff < -Math.PI) diff += Math.PI * 2;
+                    while (diff > Math.PI) diff -= Math.PI * 2;
+
+                    const maxTurn = 0.1; // Turn speed
+                    const turn = Math.max(-maxTurn, Math.min(maxTurn, diff));
+
+                    const newAngle = currentAngle + turn;
+                    p.vx = Math.cos(newAngle) * speed;
+                    p.vy = Math.sin(newAngle) * speed;
+                }
+            }
+
             p.life--;
 
             // Trails
             if (p.projType === 'missile') engine.spawnParticles(p.mesh.position, 'smoke', 0x555555, 1);
+            else if (p.projType === 'fireball' || p.projType === 'fireball_large') {
+                engine.spawnParticles(p.mesh.position, 'smoke', 0x555555, 1);
+                engine.spawnParticles(p.mesh.position, 'spark', 0xff4400, 2);
+
+                // Specific VFX for Homing
+                if (p.vfx === 'homing_fire') {
+                    engine.spawnParticles(p.mesh.position, 'spark', 0xffff00, 1);
+                } else if (p.vfx === 'homing_fire_heavy') {
+                    engine.spawnParticles(p.mesh.position, 'spark', 0xff0000, 2);
+                    engine.spawnParticles(p.mesh.position, 'smoke', 0x220000, 1);
+                }
+            }
             else engine.spawnParticles(p.mesh.position, 'spark', p.color, 1);
 
             let hit = false;
+            if (!p.hitList) p.hitList = [];
+
             // Vs Mobs
             if (p.owner === this.player) {
                 this.mobs.forEach(m => {
-                    if (!hit && Math.abs(m.x - p.x) < 1 && Math.abs(m.y - p.y) < 2) {
+                    // Check if already hit this mob (for piercing)
+                    if (p.piercing && p.hitList.includes(m)) return;
+
+                    if (!hit && Math.abs(m.x - p.x) < (1 * (p.scale || 1)) && Math.abs(m.y - p.y) < (2 * (p.scale || 1))) {
                         this.takeDamage(m, p.dmg, this.player);
                         hit = true;
+                        if (p.piercing) p.hitList.push(m);
+
                         if (p.projType === 'missile') { // AoE Explosion
                             engine.spawnParticles(p.mesh.position, 'explode', 0xff0000, 20);
                             engine.shake(0.5);
@@ -2175,24 +2735,35 @@ const game = {
                     }
                 });
             }
-            if (p.life <= 0 || hit) { engine.scene.remove(p.mesh); this.projectiles.splice(i, 1); continue; }
+
+            // Handle Removal
+            if (p.life <= 0 || (hit && !p.piercing)) {
+                engine.scene.remove(p.mesh);
+                this.projectiles.splice(i, 1);
+                continue;
+            }
 
             // Vs Player & Summons (Enemy Projectiles)
             if (p.owner !== this.player) {
                 // Player
                 if (Math.abs(this.player.x - p.x) < 1 && Math.abs(this.player.y - p.y) < 2) {
-                    this.takeDamage(this.player, p.dmg, p.owner);
-                    hit = true;
+                    if (!p.piercing || !p.hitList.includes(this.player)) {
+                        this.takeDamage(this.player, p.dmg, p.owner);
+                        hit = true;
+                        if (p.piercing) p.hitList.push(this.player);
+                    }
                 }
                 // Summons
                 this.summons.forEach(s => {
+                    if (p.piercing && p.hitList.includes(s)) return;
                     if (!hit && Math.abs(s.x - p.x) < 1 && Math.abs(s.y - p.y) < 2) {
                         this.takeDamage(s, p.dmg, p.owner);
                         hit = true;
+                        if (p.piercing) p.hitList.push(s);
                     }
                 });
             }
-            if (hit) { engine.scene.remove(p.mesh); this.projectiles.splice(i, 1); }
+            if (hit && !p.piercing) { engine.scene.remove(p.mesh); this.projectiles.splice(i, 1); }
         }
 
         // Sim updates
@@ -2292,12 +2863,18 @@ const game = {
 game.spawnProjectile = function (opts) {
     // LAYZER BEAM GEOMETRY
     let geo, mat;
+    const scale = opts.scale || 1.0;
+
     if (opts.projType === 'missile') {
-        geo = new THREE.BoxGeometry(0.8, 0.4, 0.4);
+        geo = new THREE.BoxGeometry(0.8 * scale, 0.4 * scale, 0.4 * scale);
         mat = new THREE.MeshBasicMaterial({ color: opts.color || 0xff0000 });
+    } else if (opts.projType === 'fireball' || opts.projType === 'fireball_large') {
+        // Sphere for Fireballs
+        geo = new THREE.SphereGeometry(0.4 * scale, 16, 16);
+        mat = new THREE.MeshBasicMaterial({ color: opts.color || 0xff4400 });
     } else {
         // Laser Beam
-        geo = new THREE.BoxGeometry(1.5, 0.15, 0.15);
+        geo = new THREE.BoxGeometry(1.5 * scale, 0.15 * scale, 0.15 * scale);
         mat = new THREE.MeshBasicMaterial({
             color: opts.color || 0xffff00,
             blending: THREE.AdditiveBlending, // Glow effect
@@ -2306,7 +2883,7 @@ game.spawnProjectile = function (opts) {
         });
 
         // Add Core
-        const coreGeo = new THREE.BoxGeometry(1.5, 0.05, 0.05);
+        const coreGeo = new THREE.BoxGeometry(1.5 * scale, 0.05 * scale, 0.05 * scale);
         const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
     }
 
@@ -2315,13 +2892,24 @@ game.spawnProjectile = function (opts) {
 
     // Add Glow Mesh (Standard trick: bigger mesh, lower opacity)
     if (opts.projType !== 'missile') {
-        const glow = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.4, 0.4), new THREE.MeshBasicMaterial({ color: opts.color, transparent: true, opacity: 0.3 }));
+        let glowGeo;
+        if (opts.projType.includes('fireball')) {
+            glowGeo = new THREE.SphereGeometry(0.6 * scale, 16, 16);
+        } else {
+            glowGeo = new THREE.BoxGeometry(2.0 * scale, 0.4 * scale, 0.4 * scale);
+        }
+        const glow = new THREE.Mesh(glowGeo, new THREE.MeshBasicMaterial({ color: opts.color, transparent: true, opacity: 0.3 }));
         mesh.add(glow);
     }
 
     mesh.position.set(opts.x, opts.y, 0);
     engine.scene.add(mesh);
-    this.projectiles.push({ mesh, ...opts });
+
+    // Initialize HitList for piercing
+    const projData = { mesh, ...opts };
+    if (opts.piercing) projData.hitList = [];
+
+    this.projectiles.push(projData);
 };
 
 // === BOSS AI SYSTEM ===
@@ -3227,6 +3815,37 @@ game.updateMobAI = function (e) {
             } else {
                 e.vx = dir * 0.4; // Dash
                 this.playAnim(e, 'slam', 500);
+
+                // --- MELEE DAMAGE LOGIC ---
+                // Add explicit hitbox check for "hard hit"
+                // Delay slightly to match 'slam' impact
+                setTimeout(() => {
+                    const hitRangeX = 3.5;
+                    const hitRangeY = 3.0;
+
+                    // Visual Swipe
+                    const swipe = new THREE.Mesh(new THREE.PlaneGeometry(3, 3), new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.8, side: THREE.DoubleSide }));
+                    swipe.position.set(e.x + (dir * 1.5), e.y + 1, 0);
+                    swipe.rotation.z = dir * -0.5;
+                    engine.scene.add(swipe);
+                    setTimeout(() => engine.scene.remove(swipe), 150);
+
+                    // Check Hits
+                    [this.player, ...this.summons].forEach(ent => {
+                        const dx = ent.x - e.x;
+                        const dy = Math.abs(ent.y - e.y);
+                        // Accessing 'dir' from closure
+                        const inFront = dir > 0 ? (dx > -1 && dx < hitRangeX) : (dx < 1 && dx > -hitRangeX);
+
+                        if (inFront && dy < hitRangeY && ent.hp > 0) {
+                            // 2.5x HARD HIT
+                            this.takeDamage(ent, e.atk * 2.5, e);
+                            engine.shake(0.2);
+                            engine.spawnParticles(ent.mesh.position, 'explode', 0xff0000, 10);
+                        }
+                    });
+
+                }, 200); // 200ms delay for impact point
             }
         }
 
