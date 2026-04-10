@@ -45,7 +45,7 @@ const game = {
         while (engine.scene.children.length > 5) {
             engine.scene.remove(engine.scene.children[engine.scene.children.length - 1]);
         }
-        engine.generateBackground('city');
+        engine.generateBackground('CITY', 1);
 
         // 2. Restore Summons
         keptSummons.forEach((s, i) => {
@@ -62,20 +62,35 @@ const game = {
     },
 
     setupLevel() {
-        // Theme Rotation (City -> Wasteland -> Glacier -> Volcano -> Cyber)
+        // Theme Rotation (CITY -> WASTELAND -> GLACIER -> VOLCANO -> CYBER)
         const themes = ['CITY', 'WASTELAND', 'GLACIER', 'VOLCANO', 'CYBER'];
-        const themeIndex = Math.floor(this.currentLevel / 10) % themes.length;
+        const currentLvl = this.currentLevel || 1;
+        const themeIndex = Math.floor((currentLvl - 1) / 10) % themes.length;
         if (typeof engine !== 'undefined' && engine.generateBackground) {
-            engine.generateBackground(themes[themeIndex]);
+            engine.generateBackground(themes[themeIndex], currentLvl);
         }
 
         this.platforms = [];
-        this.addPlatform(5, 3, 6);
-        this.addPlatform(15, 6, 8);
-        this.addPlatform(-5, 4, 5);
-        this.addPlatform(25, 4, 6);
-        this.addPlatform(10, 10, 4);
-        this.addPlatform(20, 12, 4);
+
+        // No platforms on boss floors (multiples of 10)
+        if (currentLvl % 10 === 0) return;
+
+        // Procedural Platform Generation (pseudo-random based on level)
+        const seed = currentLvl * 1337;
+        const random = (s = seed) => {
+            let x = Math.sin(s++) * 10000;
+            return x - Math.floor(x);
+        };
+
+        const numPlatforms = 3 + Math.floor(random(seed) * 4); // 3 to 6 platforms
+        let s = seed + 10;
+
+        for (let i = 0; i < numPlatforms; i++) {
+            const x = -10 + (random(s++) * 40); // Between -10 and 30
+            const y = 3 + (random(s++) * 8);    // Between 3 and 11
+            const w = 4 + (random(s++) * 5);    // Width between 4 and 9
+            this.addPlatform(x, y, w);
+        }
     },
 
     addPlatform(x, y, w) {
@@ -205,6 +220,7 @@ const game = {
             case 'SQUIRE': modelData = Models.createKnight(c, 1.2); break; // Knight model for Squire
             case 'REAPER': modelData = Models.createReaper(c, 1.2); break;
             case 'SUMMONER': modelData = Models.createSummoner(c, 1.2); break;
+            case 'FLAME WIZARD': modelData = Models.createFlameWizard(c, 1.2); break;
             default: modelData = Models.createHumanoid(c, 1.2); break;
         }
 
@@ -1156,12 +1172,33 @@ const game = {
         if (this.player.buffs.rapidfire > 0) finalCD = 0;
 
         this.player.cooldowns[slot] = now + finalCD;
-        this.playAnim(this.player, skill.anim || 'cast', 400);
+
+        let anim = skill.anim || 'cast';
+        let skillData = skill.data;
+
+        // RONIN MARTIAL ARTS COMBO
+        if ((this.player.classKey === 'RONIN' || !this.player.classKey) && skill.type === 'melee' && slot === 'z') {
+            const timeSinceLast = now - (this.player.lastComboTime || 0);
+            if (timeSinceLast > 1000) {
+                this.player.roninCombo = 0;
+            }
+            this.player.roninCombo = (this.player.roninCombo || 0) + 1;
+            this.player.lastComboTime = now;
+            
+            skillData = { ...skill.data }; // clone to avoid mutating global class data
+            const step = this.player.roninCombo % 4; 
+            if (step === 1) { anim = 'slash'; skillData.vfx = 'slash'; }
+            else if (step === 2) { anim = 'punch'; skillData.vfx = 'punch'; }
+            else if (step === 3) { anim = 'spin'; skillData.vfx = 'whip'; }
+            else if (step === 0) { anim = 'slam'; skillData.vfx = 'slash_h'; }
+        }
+
+        this.playAnim(this.player, anim, 400);
 
         switch (skill.type) {
-            case 'melee': this.handleMelee(skill.data); break;
-            case 'shoot': this.handleShoot(skill.data); break;
-            case 'aoe': this.handleAoE(skill.data); break;
+            case 'melee': this.handleMelee(skillData); break;
+            case 'shoot': this.handleShoot(skillData); break;
+            case 'aoe': this.handleAoE(skillData); break;
             case 'buff': this.handleBuff(skill.data); break;
             case 'dash': this.handleDash(skill.data); break;
             case 'charge_beam': this.handleChargeBeam(skill.data); break;

@@ -25,7 +25,7 @@ const engine = {
         this.scene.add(dirLight);
 
         // Background
-        this.generateBackground('city');
+        this.generateBackground('CITY', 1);
 
         // Camera Pos
         this.camera.position.set(0, 2, 9); // Lower, tighter
@@ -162,7 +162,14 @@ const engine = {
     },
 
     // --- ENVIRONMENT ---
-    generateBackground(theme) {
+    generateBackground(theme, levelSeed = 1) {
+        // Seeded random helper
+        let currentSeed = levelSeed * 9999;
+        const random = () => {
+            currentSeed = (currentSeed * 9301 + 49297) % 233280;
+            return currentSeed / 233280;
+        };
+
         // Clear old
         this.environment.forEach(obj => this.scene.remove(obj));
         this.environment = [];
@@ -171,17 +178,17 @@ const engine = {
         const X_RANGE = 100;
         const DEPTH_START = -10;
         let floorColor = 0x111111;
-        let fogColor = 0x000000;
+        let fogColor = 0xffffff;
         let fogDensity = 0.02;
 
         if (theme === 'WASTELAND') {
-            floorColor = 0x332211; fogColor = 0x553322; fogDensity = 0.03;
+            floorColor = 0x332211; fogColor = 0xffffff; fogDensity = 0.03;
         } else if (theme === 'GLACIER') {
-            floorColor = 0x88aabb; fogColor = 0xccffff; fogDensity = 0.015;
+            floorColor = 0x88aabb; fogColor = 0xffffff; fogDensity = 0.015;
         } else if (theme === 'VOLCANO') {
-            floorColor = 0x220000; fogColor = 0x330000; fogDensity = 0.04;
+            floorColor = 0x220000; fogColor = 0xffffff; fogDensity = 0.04;
         } else if (theme === 'CYBER') {
-            floorColor = 0x001122; fogColor = 0x001133; fogDensity = 0.02;
+            floorColor = 0x001122; fogColor = 0xffffff; fogDensity = 0.02;
         }
 
         // Apply Fog
@@ -202,15 +209,15 @@ const engine = {
             const mat = new THREE.MeshBasicMaterial({ color: 0x050510 });
             const matGlow = new THREE.MeshBasicMaterial({ color: 0x00ffff });
             for (let i = 0; i < 40; i++) {
-                const w = 2 + Math.random() * 5;
-                const h = 10 + Math.random() * 30;
-                const d = 2 + Math.random() * 5;
-                const x = (Math.random() - 0.5) * X_RANGE;
-                const z = DEPTH_START - Math.random() * 40;
+                const w = 2 + random() * 5;
+                const h = 10 + random() * 30;
+                const d = 2 + random() * 5;
+                const x = (random() - 0.5) * X_RANGE;
+                const z = DEPTH_START - random() * 40;
                 const b = this.createEnvProp(new THREE.BoxGeometry(w, h, d), mat, x, h / 2, z);
                 // Neon
-                if (Math.random() > 0.5) {
-                    this.createEnvProp(new THREE.BoxGeometry(w * 0.8, 0.2, d + 0.1), matGlow, x, b.position.y + (Math.random() - 0.5) * h * 0.8, z);
+                if (random() > 0.5) {
+                    this.createEnvProp(new THREE.BoxGeometry(w * 0.8, 0.2, d + 0.1), matGlow, x, b.position.y + (random() - 0.5) * h * 0.8, z);
                 }
             }
         } else if (theme === 'WASTELAND') {
@@ -219,28 +226,28 @@ const engine = {
             dirLight.position.set(-10, 10, -10); this.scene.add(dirLight); this.environment.push(dirLight);
 
             for (let i = 0; i < 30; i++) {
-                const s = 1 + Math.random() * 6;
-                const x = (Math.random() - 0.5) * X_RANGE;
-                const z = DEPTH_START - Math.random() * 30;
+                const s = 1 + random() * 6;
+                const x = (random() - 0.5) * X_RANGE;
+                const z = DEPTH_START - random() * 30;
                 const rock = this.createEnvProp(new THREE.DodecahedronGeometry(s, 0), matRock, x, s / 2, z);
-                rock.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+                rock.rotation.set(random() * 3, random() * 3, random() * 3);
             }
         } else if (theme === 'GLACIER') {
             const matIce = new THREE.MeshStandardMaterial({ color: 0xaaddff, roughness: 0.1, metalness: 0.8 });
             for (let i = 0; i < 40; i++) {
-                const h = 5 + Math.random() * 15;
-                const w = 1 + Math.random() * 2;
-                const x = (Math.random() - 0.5) * X_RANGE;
-                const z = DEPTH_START - Math.random() * 40;
+                const h = 5 + random() * 15;
+                const w = 1 + random() * 2;
+                const x = (random() - 0.5) * X_RANGE;
+                const z = DEPTH_START - random() * 40;
                 const spike = this.createEnvProp(new THREE.ConeGeometry(w, h, 4), matIce, x, h / 2 - 2, z);
             }
         } else if (theme === 'VOLCANO') {
             const matRock = new THREE.MeshStandardMaterial({ color: 0x220000, roughness: 1.0 });
             const matLava = new THREE.MeshBasicMaterial({ color: 0xff4400 });
             for (let i = 0; i < 30; i++) {
-                const s = 2 + Math.random() * 8;
-                const x = (Math.random() - 0.5) * X_RANGE;
-                const z = DEPTH_START - Math.random() * 40;
+                const s = 2 + random() * 8;
+                const x = (random() - 0.5) * X_RANGE;
+                const z = DEPTH_START - random() * 40;
                 this.createEnvProp(new THREE.TetrahedronGeometry(s, 0), matRock, x, 0, z);
             }
             // Lava rivers (Strips)
@@ -252,12 +259,12 @@ const engine = {
             floor.material = matGrid; // Grid floor
 
             for (let i = 0; i < 50; i++) {
-                const s = 1 + Math.random();
-                const x = (Math.random() - 0.5) * X_RANGE;
-                const y = Math.random() * 20;
-                const z = -5 - Math.random() * 40;
+                const s = 1 + random();
+                const x = (random() - 0.5) * X_RANGE;
+                const y = random() * 20;
+                const z = -5 - random() * 40;
                 const cube = this.createEnvProp(new THREE.BoxGeometry(s, s, s), matGrid, x, y, z);
-                cube.rotation.set(Math.random(), Math.random(), Math.random());
+                cube.rotation.set(random(), random(), random());
             }
         }
     },

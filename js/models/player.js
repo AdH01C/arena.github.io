@@ -868,5 +868,123 @@ Object.assign(window.Models, {
         }
 
         g.scale.set(s, s, s); return { mesh: g, weapon: rightArm };
+    },
+
+    createFlameWizard(c, s = 1, tier = 0, seed = 0) {
+        const g = new THREE.Group();
+        const rnd = (offset) => this.rng(seed + offset + 950);
+
+        const mRobe = new THREE.MeshStandardMaterial({ color: 0x441111, metalness: 0.1, roughness: 0.9 });
+        const mTrim = new THREE.MeshStandardMaterial({ color: 0xffaa00, metalness: 0.8, roughness: 0.2 });
+        const mG = new THREE.MeshBasicMaterial({ color: c || 0xff4400 }); // Fire color
+        const mDark = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.4, roughness: 0.8 });
+
+        // Hover Effect
+        g.userData.idle = true; g.userData.float = true; g.userData.baseY = 0.4; g.userData.idleSpeed = 1.8; g.userData.idleAmp = 0.1;
+
+        // Torso / Main Robe
+        const t = this.box(0.4, 0.65, 0.35, mRobe, 0, 0.65, 0, g);
+        this.box(0.1, 0.4, 0.4, mTrim, 0, 0.3, 0, t); // Belt
+        t.userData.idle = true; t.userData.pulse = { speed: 2, amp: 0.03, base: 1 };
+
+        // Head 
+        const h = this.box(0.25, 0.25, 0.25, mDark, 0, 0.5, 0, t);
+        this.box(0.2, 0.05, 0.05, mG, 0, 0.02, 0.13, h); // Glowing eyes
+
+        // Procedural Headgear
+        const hatType = Math.floor(rnd(1) * 3); // 0: Wizard Hat, 1: Hood, 2: Fire Crown
+        if (hatType === 0) {
+            // Wizard Hat
+            const brim = this.box(0.5, 0.05, 0.5, mRobe, 0, 0.15, 0, h);
+            brim.rotation.x = -0.1;
+            const cone = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.6, 4), mRobe);
+            cone.position.set(0, 0.4, -0.05);
+            cone.rotation.x = -0.2;
+            h.add(cone);
+        } else if (hatType === 1) {
+            // Hood
+            const hood = this.box(0.35, 0.35, 0.35, mRobe, 0, 0.1, -0.05, h);
+            this.box(0.3, 0.1, 0.2, mDark, 0, 0.1, 0.1, hood); // Cowl shadow
+        } else {
+            // Fire Crown (Floating)
+            const crown = new THREE.Group();
+            crown.position.set(0, 0.3, 0);
+            h.add(crown);
+            for (let i = 0; i < 4; i++) {
+                const flame = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.15, 4), mG);
+                flame.position.set(Math.cos(i * 1.57) * 0.15, 0, Math.sin(i * 1.57) * 0.15);
+                crown.add(flame);
+            }
+            crown.userData.idle = true; crown.userData.rotatorY = 0.05;
+        }
+
+        // Shoulders / Mantle
+        this.box(0.5, 0.15, 0.4, mDark, 0, 0.25, 0, t);
+
+        // Arms
+        const ag = new THREE.Group(); ag.position.y = 0.25; t.add(ag);
+
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.35, 0, 0.1); ag.add(leftArm); leftArm.name = 'ArmL';
+        this.box(0.15, 0.4, 0.15, mRobe, 0, -0.2, 0, leftArm);
+
+        const rightArm = new THREE.Group(); rightArm.position.set(0.35, 0, 0.1); ag.add(rightArm); rightArm.name = 'ArmR';
+        this.box(0.15, 0.4, 0.15, mRobe, 0, -0.2, 0, rightArm);
+        rightArm.rotation.x = -0.5; // Holding staff up slightly
+
+        // Procedural Staff
+        const staff = new THREE.Group(); staff.position.set(0, -0.4, 0.1); rightArm.add(staff);
+        const staffType = Math.floor(rnd(2) * 3); // 0: Orb, 1: Torch, 2: Book
+
+        this.box(0.04, 1.4, 0.04, mDark, 0, 0.4, 0, staff); // Handle
+
+        const focalPt = new THREE.Group(); focalPt.position.set(0, 1.2, 0); staff.add(focalPt);
+
+        if (staffType === 0) {
+            // Orb
+            const orb = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), mG);
+            focalPt.add(orb);
+            orb.userData.idle = true; orb.userData.pulse = { speed: 4, amp: 0.1, base: 1 };
+        } else if (staffType === 1) {
+            // Torch / Brazier
+            this.box(0.15, 0.1, 0.15, mTrim, 0, 0, 0, focalPt);
+            const flame = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.25, 4), mG);
+            flame.position.y = 0.15;
+            focalPt.add(flame);
+            flame.userData.idle = true; flame.userData.pulse = { speed: 8, amp: 0.1, base: 1 };
+        } else {
+            // Floating Spellbook
+            const floatBook = new THREE.Group();
+            floatBook.position.set(0, 0.2, 0); // Above staff tip
+            focalPt.add(floatBook);
+
+            // Book covers
+            this.box(0.2, 0.02, 0.15, mTrim, 0, 0, 0, floatBook); // Back
+            this.box(0.18, 0.04, 0.13, new THREE.MeshBasicMaterial({ color: 0xdddddd }), 0, 0.03, 0, floatBook); // Pages
+            this.box(0.2, 0.02, 0.15, mTrim, 0, 0.06, 0, floatBook); // Top
+
+            floatBook.rotation.z = 0.2;
+            floatBook.rotation.y = -0.5;
+            floatBook.userData.idle = true; floatBook.userData.float = true; floatBook.userData.baseY = 0.2; floatBook.userData.idleSpeed = 3; floatBook.userData.idleAmp = 0.05;
+        }
+
+        // Universal VFX: Flame Particles
+        // Burning off the left hand
+        const lHand = new THREE.Group(); lHand.position.set(0, -0.4, 0); leftArm.add(lHand);
+        lHand.userData.emitParticles = { color: c || 0xff4400, size: 0.05, speed: 0.3, spread: 0.1, emitY: 0.1 };
+        lHand.userData.emitChance = 0.3;
+
+        // Burning off the staff focal point
+        focalPt.userData.emitParticles = { color: c || 0xff4400, size: 0.05, speed: 0.4, spread: 0.15, emitY: 0.2 };
+        focalPt.userData.emitChance = 0.5;
+
+        // Charred bottom edge (Tier 3+)
+        if (tier >= 3) {
+            for (let i = 0; i < 4; i++) {
+                const char = this.box(0.1, 0.2, 0.02, mG, (rnd(3 + i) - 0.5) * 0.3, -0.2, (rnd(7 + i) - 0.5) * 0.3, t);
+                char.userData.idle = true; char.userData.pulse = { speed: 4, amp: 0.05, base: 1 };
+            }
+        }
+
+        g.scale.set(s, s, s); return { mesh: g, weapon: rightArm };
     }
 });
